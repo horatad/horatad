@@ -1,4 +1,4 @@
-// Version 2.2.11 | 2026-05-17
+// Version 2.2.12 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -436,13 +436,13 @@ function buildCompareReport(n1,n2){
   const asc1=Math.trunc(pos1[0]/1800),asc2=Math.trunc(pos2[0]/1800);
   const y_ce1=_beToce(n1.y_be,n1.m),y_ce2=_beToce(n2.y_be,n2.m);
   const SEP='<tr><td colspan="5" style="padding:0"><hr style="border:none;border-top:0.5px solid #bbb;margin:3px 0"></td></tr>';
-  const CL='color:#888;font-size:0.9em';
+  const CL='style="color:#888;font-size:0.9em;white-space:nowrap;vertical-align:top;padding-right:8px"';
   let h='<table style="width:auto;margin:0;border-collapse:collapse;line-height:1.3;border-spacing:0">';
   h+=SEP;
   h+=`<tr><td colspan="5" style="padding:2px 0;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงใน</span>  ${_escHtml(n1.name||'—')}  ${n1.d}/${n1.m}/${n1.y_be}(${y_ce1})  ${n1.t}  ${_escHtml(n1.prov||'')}</td></tr>`;
-  h+=`<tr><td colspan="5" style="padding:2px 0 2px;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</td></tr>`;
+  h+=`<tr><td colspan="5" style="padding:1px 0 2px;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</td></tr>`;
   h+=SEP;
-  h+=`<tr style="${CL}"><td style="padding:0 3px 0 0">ดาว</td><td colspan="2" style="padding:0 6px 0 0">ตำแหน่งดาวดวงใน</td><td colspan="2" style="padding:0">ตำแหน่งดาวดวงนอก</td></tr>`;
+  h+=`<tr style="color:#888;font-size:0.9em"><td style="padding:0 3px 0 0">ดาว</td><td colspan="2" style="padding:0 6px 0 0">ตำแหน่งดาวดวงใน</td><td colspan="2" style="padding:0">ตำแหน่งดาวดวงนอก</td></tr>`;
   for(let i=0;i<11;i++){
     const p1=pos1[i],p2=pos2[i];
     const s1=Z_NAMES[Math.trunc(p1/1800)],s2=Z_NAMES[Math.trunc(p2/1800)];
@@ -450,10 +450,10 @@ function buildCompareReport(n1,n2){
     const d2=Math.trunc((p2%1800)/60),m2=p2%60;
     const same=Math.trunc(p1/1800)===Math.trunc(p2/1800);
     const tc=same?'color:#b8860b':'color:#222';
-    h+=`<tr style="${tc}"><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td style="padding:0 4px 0 0;white-space:nowrap">${s1}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 8px 0 0">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:0 4px 0 0;white-space:nowrap">${s2}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
+    h+=`<tr style="${tc}"><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td style="padding:0 6px 0 0;white-space:nowrap">${s1}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 8px 0 0">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:0 6px 0 0;white-space:nowrap">${s2}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
   }
   h+=SEP;
-  h+=`<tr><td style="${CL};padding:1px 3px 1px 0" colspan="5">ความแข็งแกร่ง</td></tr>`;
+  h+=`<tr><td ${CL} colspan="5">ความแข็งแกร่ง</td></tr>`;
   let total1=0,total2=0;
   for(let i=1;i<=8;i++){
     const[sc1,lb1]=getStrength(pos1,vel1,i,asc1);
@@ -461,12 +461,12 @@ function buildCompareReport(n1,n2){
     total1+=sc1;total2+=sc2;
     const c1=sc1>=6?'#2ea043':sc1>=0?'#b8860b':'#f85149';
     const c2=sc2>=6?'#2ea043':sc2>=0?'#b8860b':'#f85149';
-    h+=`<tr><td style="padding:0 3px 0 0;white-space:nowrap;font-weight:500;color:#222">${ST[i]}</td><td colspan="2" style="color:${c1};padding:0 8px 0 0;white-space:nowrap">${lb1}</td><td colspan="2" style="color:${c2};white-space:nowrap">${lb2}</td></tr>`;
+    h+=`<tr><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td colspan="2" style="color:${c1};padding:0 8px 0 0;white-space:nowrap">${lb1}</td><td colspan="2" style="color:${c2};white-space:nowrap">${lb2}</td></tr>`;
   }
   const tc1=total1>=15?'#2ea043':total1>=5?'#b8860b':'#f85149';
   const tc2=total2>=15?'#2ea043':total2>=5?'#b8860b':'#f85149';
   h+=SEP;
-  h+=`<tr><td style="${CL};padding:1px 3px 0 0">คะแนนรวม</td><td colspan="2" style="color:${tc1};font-weight:500;padding:1px 8px 0 0">${(total1>=0?'+':'')+total1}</td><td colspan="2" style="color:${tc2};font-weight:500;padding:1px 0 0 0">${(total2>=0?'+':'')+total2}</td></tr>`;
+  h+=`<tr><td ${CL}>คะแนนรวม</td><td colspan="2" style="color:${tc1};font-weight:500;padding:0 8px 0 0">${(total1>=0?'+':'')+total1}</td><td colspan="2" style="color:${tc2};font-weight:500">${(total2>=0?'+':'')+total2}</td></tr>`;
   h+='</table>';
   return h;
 }
