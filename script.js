@@ -839,8 +839,9 @@ function calculateBoth(){
   calculateChart1();
   // V1.8: persist + history
   _saveState();
-  if(_natal)_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1});
-  if(_transit)_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});
+  if(_natal){const r=_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1});if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);}
+  if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
+  _renderQuickMemory();
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
@@ -1097,15 +1098,17 @@ function _applyState(s){
 }
 
 function _addMemory(entry){
-  if(!entry||!entry.name)return;
+  if(!entry||!entry.name)return null;
   const skip=['ดวงที่ 2','ไม่ระบุ',''];
-  if(skip.includes(entry.name.trim()))return;
+  if(skip.includes(entry.name.trim()))return null;
   let mem=_loadJSON(MEM_KEY)||[];
   const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
   const k=key(entry);
+  const isDup=mem.some(m=>key(m)===k);
   mem=mem.filter(m=>key(m)!==k);
   mem.unshift({...entry,savedAt:Date.now()});
   _saveJSON(MEM_KEY,mem.slice(0,MEM_MAX));
+  return isDup?'updated':'saved';
 }
 
 // ── Memory popup ──────────────────────────────────────────
@@ -1254,10 +1257,18 @@ function saveEvent(){
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
   const entry={name,d,m,y_be,t,prov,lng:_customLngT,savedAt:Date.now()};
   const key=v=>`${v.name}|${v.d}/${v.m}/${v.y_be}|${v.t}|${v.prov}`;
-  let evs=_loadEvents().filter(v=>key(v)!==key(entry));
-  evs.unshift(entry);
-  _saveEvents(evs);
-  alert(`บันทึกเหตุการณ์ "${name}" แล้ว`);
+  const isDup=_loadEvents().some(v=>key(v)===key(entry));
+  const _doSave=()=>{
+    let updated=_loadEvents().filter(v=>key(v)!==key(entry));
+    updated.unshift(entry);
+    _saveEvents(updated);
+    _showToast(`บันทึกเหตุการณ์ "${name}" แล้ว`);
+  };
+  if(isDup){
+    _showConfirm('บันทึกทับเหตุการณ์',`"${name}" มีอยู่แล้ว ทับข้อมูลเดิม?`,_doSave);
+  }else{
+    _doSave();
+  }
 }
 
 let _evtCache=[];
@@ -1400,6 +1411,30 @@ function _updatePre2484Warning(){
 }
 
 // ── PWA Install ───────────────────────────────────────────
+function showContactPage(){
+  document.getElementById('about-main').classList.add('hidden');
+  document.getElementById('about-contact').classList.remove('hidden');
+}
+function hideContactPage(){
+  document.getElementById('about-contact').classList.add('hidden');
+  document.getElementById('about-main').classList.remove('hidden');
+}
+function _renderQuickMemory(){
+  const el=document.getElementById('quick-memory-chips');
+  if(!el)return;
+  const mem=(_loadJSON(MEM_KEY)||[]).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,5);
+  el.innerHTML=mem.map((m,i)=>`<button class="qm-chip" onclick="_quickLoad(${i})">${_escHtml(m.name||'—')}</button>`).join('');
+}
+function _quickLoad(i){
+  const mem=(_loadJSON(MEM_KEY)||[]).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+  const m=mem[i];if(!m)return;
+  const y_use=_era==='BE'?m.y_be:m.y_be-543;
+  _setField('name-1',m.name);_setField('gender1',m.gender||'');_setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
+  if(m.prov)document.getElementById('prov1').value=m.prov;
+  _customLng1=(typeof m.lng==='number')?m.lng:null;
+  _updateLngUI('1');
+  calculateBoth();
+}
 async function installPWA(){
   if(!_deferredInstallPrompt)return;
   _deferredInstallPrompt.prompt();
@@ -1570,6 +1605,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('btn-view').textContent=VIEW_LABELS[0];
   _redraw();
   _updateShareButton();
+  _renderQuickMemory();
 
   // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.1.5)
   if('serviceWorker' in navigator){
@@ -1594,4 +1630,11 @@ window.addEventListener('DOMContentLoaded',()=>{
     const btn=document.getElementById('btn-install-pwa');
     if(btn)btn.classList.add('hidden');
   });
+  // Offline banner
+  const _offlineBanner=document.getElementById('offline-banner');
+  const _setOffline=()=>{if(_offlineBanner)_offlineBanner.classList.remove('hidden');};
+  const _setOnline=()=>{if(_offlineBanner)_offlineBanner.classList.add('hidden');};
+  window.addEventListener('offline',_setOffline);
+  window.addEventListener('online',_setOnline);
+  if(!navigator.onLine)_setOffline();
 });

@@ -22,6 +22,7 @@ canvas{max-width:100%;height:auto}
 </style>
 </head>
 <body>
+<div id="offline-banner" class="offline-banner hidden">⚡ ไม่มีสัญญาณอินเทอร์เน็ต — ข้อมูลในเครื่องใช้ได้ปกติ</div>
 <h1>
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
@@ -129,6 +130,15 @@ canvas{max-width:100%;height:auto}
       </div>
     </div><!-- /input-panel -->
 
+    <!-- Sound toggle + Quick memory -->
+    <div class="quick-bar">
+      <label class="sound-toggle-inline">
+        <input type="checkbox" id="sound-toggle" onchange="toggleSound(this.checked)">
+        <span>🔊 เสียง</span>
+      </label>
+      <div id="quick-memory-chips" class="quick-memory-chips"></div>
+    </div>
+
     <!-- Preview panel: canvas appears here on PC tab-0 -->
     <div class="preview-panel" id="preview-panel"></div>
 
@@ -149,107 +159,87 @@ canvas{max-width:100%;height:auto}
 
 <!-- ── TAB 2: About ──────────────────────────────────────── -->
 <div id="tab-2" class="tab-content hidden">
-  <div class="about-container">
-    <div class="about-card">
-      <img src="horatad_500x500.png" class="about-logo-big" alt="Horatad โหราทาส">
-      <div class="about-header" style="justify-content:center;text-align:center">
+  <!-- หน้าหลัก about -->
+  <div id="about-main" class="about-app">
+    <div class="about-app-brand">
+      <img src="horatad_746x746.png" class="about-logo-big" alt="Horatad โหราทาส">
+      <div class="about-brand-title">
+        <div class="about-title-en">Horatad</div>
+        <div class="about-title-th">โหราทาส</div>
+        <div class="about-version">V 2.1</div>
+      </div>
+      <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
+    </div>
+    <div class="about-features-compact">
+      <div class="about-feature-row">
+        <span class="about-feature-icon">🔒</span>
         <div>
-          <div class="about-title-en">Horatad</div>
-          <div class="about-title-th">โหราทาส</div>
-          <div class="about-version">V 2.1</div>
+          <div class="about-feature-title">เคารพความเป็นส่วนตัว</div>
+          <div class="about-feature-desc">ข้อมูลของคุณอยู่ในเครื่องเท่านั้น</div>
         </div>
       </div>
-      <div class="about-tagline" style="text-align:center">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
-      <div class="about-features">
-        <div class="about-feature">
-          <div class="about-feature-icon">🔒</div>
-          <div class="about-feature-body">
-            <div class="about-feature-title">เคารพความเป็นส่วนตัว</div>
-            <div class="about-feature-desc">ข้อมูลของคุณอยู่ในเครื่องเท่านั้น</div>
+      <div class="about-feature-row">
+        <span class="about-feature-icon">📱</span>
+        <div>
+          <div class="about-feature-title">ใช้งานได้ทุกอุปกรณ์</div>
+          <div class="about-feature-desc">เปิดผ่านเว็บ ติดตั้งใช้ออฟไลน์ได้</div>
+        </div>
+      </div>
+      <div class="about-feature-row">
+        <span class="about-feature-icon">🙏</span>
+        <div>
+          <div class="about-feature-title">พัฒนาด้วยใจ</div>
+          <div class="about-feature-desc">เพื่อสืบทอดวิชาโหราศาสตร์ไทย</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
+  </div>
+
+  <!-- หน้า ช่องทางติดต่อ & สนับสนุน -->
+  <div id="about-contact" class="about-contact-page hidden">
+    <div class="about-contact-header">
+      <button class="btn-back-about" onclick="hideContactPage()">← กลับ</button>
+      <span class="about-contact-title">ช่องทางติดต่อ & สนับสนุน</span>
+    </div>
+    <div class="about-contact-body">
+      <!-- ตั้งค่า & ช่องทาง -->
+      <div class="about-card">
+        <div class="about-card-title">⚙️ ตั้งค่า & ช่องทาง</div>
+        <button id="btn-install-pwa" onclick="installPWA()" class="btn-install-pwa hidden">📲 ติดตั้งแอปบนหน้าจอหลัก</button>
+        <a href="https://youtube.com/playlist?list=PLVymJvguajohzWHXyCYsLz84AL0qk1Uxj&si=lIFzyGRArvg9V1cA" target="_blank" rel="noopener" class="about-link">📺 ดู Playlist วิธีใช้บน YouTube</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSd2unoGXbwCYInaF_-2RUVUcnNai8-qelgLSvsLpww3yVP_8w/viewform" target="_blank" rel="noopener" class="about-link">💬 ส่ง Feedback (Google Form)</a>
+        <a href="mailto:contact@horatad.com" class="about-link">✉️ contact@horatad.com</a>
+      </div>
+      <!-- Donate -->
+      <div class="about-card">
+        <div class="about-card-title">☕ สนับสนุนการพัฒนา</div>
+        <div style="font-size:13px;color:#444;margin-bottom:8px">สมทบทุนค่าไฟและค่าพัฒนาโปรแกรมตามกำลังศรัทธาครับผม</div>
+        <div class="donate-presets">
+          <button class="donate-btn donate-active" onclick="setDonateAmount(this,50)">50</button>
+          <button class="donate-btn" onclick="setDonateAmount(this,100)">100</button>
+          <button class="donate-btn" onclick="setDonateAmount(this,200)">200</button>
+          <button class="donate-btn" onclick="setDonateAmount(this,500)">500</button>
+          <button class="donate-btn" onclick="setDonateAmount(this,0)">กำหนดเอง</button>
+        </div>
+        <div id="donate-custom-row" class="donate-custom-row hidden">
+          <input id="donate-custom-input" type="number" placeholder="ระบุจำนวน (บาท)" min="1" max="100000">
+          <button onclick="applyDonateCustom()" class="donate-apply">ยืนยัน</button>
+        </div>
+        <div class="donate-qr-wrap">
+          <img id="donate-qr" alt="PromptPay QR" class="donate-qr">
+          <div class="donate-fallback hidden" id="donate-fallback">
+            <div>PromptPay: <strong>3102001951829</strong></div>
+            <div>ชื่อ: นายสิทธิเดช ประเสริฐรุ่งเรือง</div>
+            <div class="donate-fallback-note">โหลด QR ไม่สำเร็จ — พิมพ์เลข PromptPay ในแอปธนาคารแทนได้</div>
           </div>
         </div>
-        <div class="about-feature">
-          <div class="about-feature-icon">📱</div>
-          <div class="about-feature-body">
-            <div class="about-feature-title">ใช้งานได้ทุกอุปกรณ์</div>
-            <div class="about-feature-desc">เปิดผ่านเว็บ ติดตั้งใช้ออฟไลน์ได้</div>
-          </div>
-        </div>
-        <div class="about-feature">
-          <div class="about-feature-icon">🙏</div>
-          <div class="about-feature-body">
-            <div class="about-feature-title">พัฒนาด้วยใจ</div>
-            <div class="about-feature-desc">เพื่อสืบทอดวิชาโหราศาสตร์ไทย</div>
-          </div>
+        <div class="donate-info">
+          <div>นายสิทธิเดช ประเสริฐรุ่งเรือง</div>
+          <div class="donate-disclaimer">การบริจาคเป็นความสมัครใจเพื่อสนับสนุนการพัฒนา ไม่มีการคืนเงิน ไม่ถือเป็นการซื้อขายสินค้าหรือบริการ</div>
         </div>
       </div>
     </div>
-
-    <!-- V2.1.9: Sound toggle -->
-    <div class="about-card">
-      <div class="about-card-title">🔊 เสียงเมื่อกดปุ่ม</div>
-      <label class="sound-toggle">
-        <input type="checkbox" id="sound-toggle" onchange="toggleSound(this.checked)">
-        <span>เปิดเสียง beep เมื่อกดปุ่มและคีย์บอร์ด</span>
-      </label>
-    </div>
-
-    <!-- PWA Install — แสดงเฉพาะเมื่อ Chrome พร้อม (beforeinstallprompt) -->
-    <div class="about-card">
-      <button id="btn-install-pwa" onclick="installPWA()" class="btn-install-pwa hidden">
-        📲 ติดตั้งแอปบนหน้าจอหลัก
-      </button>
-    </div>
-
-    <!-- YouTube -->
-    <div class="about-card">
-      <div class="about-card-title">📺 เรียนรู้การใช้งาน</div>
-      <a href="https://youtube.com/playlist?list=PLVymJvguajohzWHXyCYsLz84AL0qk1Uxj&si=lIFzyGRArvg9V1cA" target="_blank" rel="noopener" class="about-link">
-        ดู Playlist วิธีใช้บน YouTube
-      </a>
-    </div>
-
-    <!-- Feedback -->
-    <div class="about-card">
-      <div class="about-card-title">💬 ส่ง Feedback</div>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSd2unoGXbwCYInaF_-2RUVUcnNai8-qelgLSvsLpww3yVP_8w/viewform" target="_blank" rel="noopener" class="about-link">
-        📝 Google Form
-      </a>
-      <a href="mailto:contact@horatad.com" class="about-link">
-        ✉️ Email: contact@horatad.com
-      </a>
-    </div>
-
-    <!-- Donate -->
-    <div class="about-card">
-      <div class="about-card-title">☕ สนับสนุนการพัฒนา</div>
-      <div style="font-size:13px;color:#444;margin-bottom:8px">สมทบทุนค่าไฟและค่าพัฒนาโปรแกรมตามกำลังศรัทธาครับผม</div>
-      <div class="donate-presets">
-        <button class="donate-btn donate-active" onclick="setDonateAmount(this,50)">50</button>
-        <button class="donate-btn" onclick="setDonateAmount(this,100)">100</button>
-        <button class="donate-btn" onclick="setDonateAmount(this,200)">200</button>
-        <button class="donate-btn" onclick="setDonateAmount(this,500)">500</button>
-        <button class="donate-btn" onclick="setDonateAmount(this,0)">กำหนดเอง</button>
-      </div>
-      <div id="donate-custom-row" class="donate-custom-row hidden">
-        <input id="donate-custom-input" type="number" placeholder="ระบุจำนวน (บาท)" min="1" max="100000">
-        <button onclick="applyDonateCustom()" class="donate-apply">ยืนยัน</button>
-      </div>
-      <div class="donate-qr-wrap">
-        <img id="donate-qr" alt="PromptPay QR" class="donate-qr">
-        <div class="donate-fallback hidden" id="donate-fallback">
-          <div>PromptPay: <strong>3102001951829</strong></div>
-          <div>ชื่อ: นายสิทธิเดช ประเสริฐรุ่งเรือง</div>
-          <div class="donate-fallback-note">โหลด QR ไม่สำเร็จ — พิมพ์เลข PromptPay ในแอปธนาคารแทนได้</div>
-        </div>
-      </div>
-      <div class="donate-info">
-        <div>นายสิทธิเดช ประเสริฐรุ่งเรือง</div>
-        <div class="donate-disclaimer">การบริจาคเป็นความสมัครใจเพื่อสนับสนุนการพัฒนา ไม่มีการคืนเงิน ไม่ถือเป็นการซื้อขายสินค้าหรือบริการ</div>
-      </div>
-    </div>
-
-    <div class="about-footer">Horatad โหราทาส V 2.1 · 2026</div>
   </div>
 </div>
 
