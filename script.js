@@ -1,4 +1,4 @@
-// Version 2.2.1 | 2026-05-17
+// Version 2.2.2 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -111,6 +111,7 @@ const NAKSATRA_OFFSET=5;
 // ── State ─────────────────────────────────────────────────
 let _era='BE';
 let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
+let _natal2=null;  // outer ring chart (state 5)
 let _transit=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
@@ -486,8 +487,8 @@ const OUTER_R_TRANSIT=480;
 const NATAL_COLOR_ASC='#ffd966',NATAL_COLOR_STAR='#ffffff',TRANSIT_RED='#f85149';
 const TRANSIT_SLOW=[10,8,7,5,3],TRANSIT_FAST=[9,6,4,2,1];
 const TRANSIT_LABEL={1:'1',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'0'};
-// V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
-const OUTER_LABELS=['ชื่อราศี','ชื่อภพเรือน','แสดงดาวจร','ดาวจรช้า','ไม่แสดง'];
+// V2.2: 6-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง 5=ดาววงนอก
+const OUTER_LABELS=['ชื่อราศี','ชื่อภพเรือน','แสดงดาวจร','ดาวจรช้า','ไม่แสดง','ดาววงนอก'];
 const REPORT_TRANSIT_LABELS=['ดวงเดิม','ดาวจร'];
 const CHART_TYPE_LABELS=['ราศี','ตรียางค์','นวางค์'];
 const VIEW_LABELS=['ดวงที่ 1','ดวงที่ 2'];
@@ -508,7 +509,8 @@ function toggleView(){
   _updateShareButton();
 }
 function toggleOuter(){
-  _outerState=(_outerState+1)%5;
+  _outerState=(_outerState+1)%6;
+  if(_outerState===5&&!_natal2&&_natal)_natal2={..._natal};
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
   _playBeep(700);
   _redraw();
@@ -541,6 +543,25 @@ function toggleReportTransit(){
 function cycleMemory(dir){
   const mem=_loadJSON(MEM_KEY)||[];
   if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
+  // _outerState===5: cycle outer ring (_natal2) ไม่แตะ _natal
+  if(_outerState===5){
+    const curKey=_natal2?`${_natal2.name}|${_natal2.d}/${_natal2.m}/${_natal2.y_be}`:'';
+    const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
+    let idx=mem.findIndex(m=>key(m)===curKey);
+    if(idx===-1)idx=dir>0?-1:mem.length;
+    const next=(idx+dir+mem.length*2)%mem.length;
+    const m=mem[next];
+    const y_be=m.y_be||0;
+    const lng=(typeof m.lng==='number')?m.lng:(PROVINCES[m.prov||'']||100.50);
+    const y_ce=_beToce(y_be,m.m);
+    const[hr,mn2]=(m.t||'00:00').split(':').map(Number);
+    const pos=get_data(m.d,m.m,y_ce,hr,mn2,lng);
+    _natal2={name:m.name,gender:m.gender||'ชาย',pos,vel:[],d:m.d,m:m.m,y_be,t:m.t,prov:m.prov||'กรุงเทพมหานคร'};
+    _playBeep(700);
+    _showToast(`วงนอก ${next+1}/${mem.length} · ${m.name||'—'}`);
+    _redraw();
+    return;
+  }
   const slot=_viewMode===1?'2':'1';
   const curName=_viewMode===1?(_transit?.name||''):(_natal?.name||'');
   const curDmy=_viewMode===1
@@ -552,7 +573,6 @@ function cycleMemory(dir){
   if(idx===-1)idx=dir>0?-1:mem.length;
   const next=(idx+dir+mem.length*2)%mem.length;
   const m=mem[next];
-  // load into current slot's input fields
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   if(slot==='1'){
     _setField('name-1',m.name||'');
@@ -709,6 +729,27 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
     }
   }
   // _outerState===4: ไม่แสดง (nothing)
+  // _outerState===5: ดาววงนอก — _natal2.pos, เลขไทย, สีม่วง
+  if(_outerState===5&&_natal2&&_natal2.pos){
+    const THAI_NUM=['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙','๑๐'];
+    const n2pos=_chartTypeState===1?calcDrekkana(_natal2.pos):_chartTypeState===2?calcNavamsa(_natal2.pos):_natal2.pos;
+    const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
+    let groups=Array.from({length:12},()=>[]);
+    for(let i of showIdx){let z=Math.trunc(n2pos[i]/1800);if(z>=0&&z<12)groups[z].push({lbl:THAI_NUM[i]||String(i),deg:n2pos[i]%1800});}
+    ctx.font='bold 44px Sarabun,sans-serif';
+    const SLOT_GAP=38;
+    for(let iz=0;iz<12;iz++){
+      let its=groups[iz];if(!its.length)continue;
+      its.sort((a,b)=>a.deg-b.deg);
+      let rad=deg2rad(Z_REFS[iz]);
+      let cx0=C+OUTER_R_TRANSIT*Math.cos(rad),cy0=C-OUTER_R_TRANSIT*Math.sin(rad);
+      let pr=rad+Math.PI/2,px=Math.cos(pr),py=-Math.sin(pr);
+      for(let k=0;k<its.length;k++){
+        let off=(k-(its.length-1)/2)*SLOT_GAP;
+        ctx.fillStyle='#5b3fa0';ctx.fillText(its[k].lbl,cx0+px*off,cy0+py*off);
+      }
+    }
+  }
   // logo top-right on canvas (size 160, margin 0, circular clip, alpha 1.0 + brightness)
   if(_logoImg.complete&&_logoImg.naturalWidth>0){
     const ls=160;
