@@ -1,4 +1,4 @@
-/* Version 2.2.6 | 2026-05-17 */
+/* Version 2.2.9 | 2026-05-17 */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
 h1{font-size:15px;font-weight:500;margin-bottom:0.5rem;color:#333;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;min-width:0;overflow:hidden}
@@ -109,6 +109,11 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 .btn-nav:hover{background:#5b3fa0!important}
 .btn-nav:disabled{background:#333!important;color:#666!important;cursor:not-allowed}
 .btn-view-center{flex:1.5!important}
+.btn-view-center.view-outer{background:#5b3fa0!important;animation:blink-outer 1s step-start infinite}
+@keyframes blink-outer{0%,100%{opacity:1}50%{opacity:0.45}}
+.btn-share-progress{position:relative;overflow:hidden}
+.btn-share-progress::after{content:'';position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,0.7);width:0;transition:width 3s linear}
+.btn-share-progress.pressing::after{width:100%}
 /* V2.1.9: split save / share */
 .btn-share-row{display:flex;gap:5px;margin-top:6px}
 .btn-share{margin-top:0;height:32px;flex:1;font-size:13px;font-weight:500;background:#b8860b;color:#fff;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s;padding:0 6px}

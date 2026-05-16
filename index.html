@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.2.6 | 2026-05-17 -->
+<!-- Version 2.2.9 | 2026-05-17 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -256,10 +256,12 @@ canvas{max-width:100%;height:auto}
       <button id="btn-transit"    onclick="toggleReportTransit()"  class="btn-sm">รายงานจร</button>
     </div>
     <div class="btn-share-row" id="btn-share-row">
-      <button id="btn-save" onclick="saveChart()" class="btn-share btn-save" disabled>
+      <button id="btn-save" class="btn-share btn-save" disabled
+        onpointerdown="startLongPress('save',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()">
         💾 บันทึก
       </button>
-      <button id="btn-share" onclick="shareChart()" class="btn-share" disabled>
+      <button id="btn-share" class="btn-share" disabled
+        onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()">
         📤 แชร์
       </button>
     </div>

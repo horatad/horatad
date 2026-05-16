@@ -1,4 +1,4 @@
-// Version 2.2.6 | 2026-05-17
+// Version 2.2.9 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -111,8 +111,7 @@ const NAKSATRA_OFFSET=5;
 // ── State ─────────────────────────────────────────────────
 let _era='BE';
 let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
-let _natal2=null;  // outer ring chart (state 5)
-let _outerStateSaved=0; // saved when ดวงนอก active
+let _natal2=null;  // outer ring chart
 let _transit=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
@@ -432,6 +431,48 @@ function aspectTransit(tpos,ns){
 }
 
 // [12][15] buildReport: no [ดวงที่N] label; transit for both views; ดาวจรสัมพันธ์ ณ
+function buildCompareReport(n1,n2){
+  const pos1=n1.pos,vel1=n1.vel||[],pos2=n2.pos,vel2=n2.vel||[];
+  const asc1=Math.trunc(pos1[0]/1800),asc2=Math.trunc(pos2[0]/1800);
+  const y_ce1=_beToce(n1.y_be,n1.m),y_ce2=_beToce(n2.y_be,n2.m);
+  const BG='background:#1a0d2e;padding:6px 8px;border-radius:8px;';
+  let h=`<div style="${BG}">`;
+  // Header
+  h+=`<div style="font-size:12px;color:#c9d1d9;margin-bottom:4px"><span style="color:#9b7fd4">วงใน</span>  ${_escHtml(n1.name||'—')}  ${n1.d}/${n1.m}/${n1.y_be}(${y_ce1})  ${n1.t}  ${_escHtml(n1.prov||'')}</div>`;
+  h+=`<div style="font-size:12px;color:#c9d1d9;margin-bottom:8px"><span style="color:#9b7fd4">วงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</div>`;
+  // Compare table
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;line-height:1.4">';
+  h+=`<tr style="color:#9b7fd4;font-size:11px"><td style="padding:1px 4px 3px 0">ดาว</td><td style="padding:1px 4px 3px 0">ราศีวงใน</td><td style="padding:1px 4px 3px 0">องศา</td><td style="padding:1px 8px 3px 0">ราศีวงนอก</td><td style="padding:1px 0 3px 0">องศา</td></tr>`;
+  for(let i=0;i<11;i++){
+    const p1=pos1[i],p2=pos2[i];
+    const s1=Z_NAMES[Math.trunc(p1/1800)],s2=Z_NAMES[Math.trunc(p2/1800)];
+    const d1=Math.trunc((p1%1800)/60),m1=p1%60;
+    const d2=Math.trunc((p2%1800)/60),m2=p2%60;
+    const same=Math.trunc(p1/1800)===Math.trunc(p2/1800);
+    const hl=same?'color:#b8860b':'color:#c9d1d9';
+    h+=`<tr style="${hl}"><td style="padding:1px 4px 1px 0;white-space:nowrap;font-weight:500">${ST[i]}</td><td style="padding:1px 4px 1px 0;white-space:nowrap">${s1}</td><td style="padding:1px 4px 1px 0;white-space:nowrap;font-variant-numeric:tabular-nums">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:1px 8px 1px 0;white-space:nowrap">${s2}</td><td style="padding:1px 0 1px 0;white-space:nowrap;font-variant-numeric:tabular-nums">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
+  }
+  h+='</table>';
+  // Strength comparison
+  h+=`<hr style="border:none;border-top:0.5px solid #3d2060;margin:6px 0">`;
+  h+=`<div style="font-size:11px;color:#9b7fd4;margin-bottom:3px">ความแข็งแกร่ง</div>`;
+  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;line-height:1.5">';
+  let total1=0,total2=0;
+  for(let i=1;i<=8;i++){
+    const[sc1,lb1]=getStrength(pos1,vel1,i,asc1);
+    const[sc2,lb2]=getStrength(pos2,vel2,i,asc2);
+    total1+=sc1;total2+=sc2;
+    const c1=sc1>=6?'#2ea043':sc1>=0?'#b8860b':'#f85149';
+    const c2=sc2>=6?'#2ea043':sc2>=0?'#b8860b':'#f85149';
+    h+=`<tr><td style="padding:1px 4px 1px 0;white-space:nowrap;color:#c9d1d9;font-weight:500">${ST[i]}</td><td style="color:${c1};padding:1px 8px 1px 0">${lb1}</td><td style="color:${c2}">${lb2}</td></tr>`;
+  }
+  const tc1=total1>=15?'#2ea043':total1>=5?'#b8860b':'#f85149';
+  const tc2=total2>=15?'#2ea043':total2>=5?'#b8860b':'#f85149';
+  h+=`<tr><td style="color:#9b7fd4;font-size:11px;padding-top:4px">รวม</td><td style="color:${tc1};font-weight:500;padding-top:4px">${(total1>=0?'+':'')+total1}</td><td style="color:${tc2};font-weight:500;padding-top:4px">${(total2>=0?'+':'')+total2}</td></tr>`;
+  h+='</table></div>';
+  return h;
+}
+
 function buildReport(name,gender,d,m,y_be,t,prov,pos,vel,tpos,isView2){
   const asc=Math.trunc(pos[0]/1800),y_ce=_beToce(y_be,m);
   const[tl_id,ts_id]=getIdentity(pos);
@@ -499,24 +540,23 @@ const OUTER_LABEL_V1='#c9d1d9';
 
 function deg2rad(d){return d*Math.PI/180}
 
+function _applyViewMode(){
+  const isV2=_viewMode===1;
+  const btnView=document.getElementById('btn-view');
+  const btnOuter=document.getElementById('btn-outer');
+  btnView.textContent=VIEW_LABELS[_viewMode];
+  if(isV2){btnView.classList.add('view-outer');btnOuter.classList.add('hidden');}
+  else{btnView.classList.remove('view-outer');btnOuter.classList.remove('hidden');}
+}
 function toggleView(){
-  const newMode=(_viewMode+1)%2;
-  _viewMode=newMode;
-  if(_viewMode===1){
-    if(!_natal2&&_natal)_natal2={..._natal}; // ดวงนอก ครั้งแรก: copy natal
-    _outerStateSaved=_outerState; // บันทึก state เดิม
-    _outerState=4;                // force ไม่แสดง overlay
-  }else{
-    _outerState=_outerStateSaved; // restore
-  }
-  document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
-  document.getElementById('btn-view').textContent=VIEW_LABELS[_viewMode];
+  _viewMode=(_viewMode+1)%2;
+  if(_viewMode===1&&!_natal2&&_natal)_natal2={..._natal};
+  _applyViewMode();
   _playBeep(700);
   _redraw();
   _updateShareButton();
 }
 function toggleOuter(){
-  if(_viewMode===1)return; // lock เมื่อ ดวงนอก active
   _outerState=(_outerState+1)%5;
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
   _playBeep(700);
@@ -614,7 +654,9 @@ function _redraw(){
   // isV2: outer ring shows _natal2; otherwise shows transit overlay
   const tposForOuter=isV2?(_natal2?.pos||null):(transitSrc?.pos||null);
   drawChart(pos,vel,ts_id,tposForOuter,pos,isV2);
-  if(_reportTransitShow&&_transitDate&&_transitDate.vel){
+  if(isV2&&_natal2&&_natal2.pos){
+    document.getElementById('report').innerHTML=buildCompareReport(_natal,_natal2);
+  }else if(_reportTransitShow&&_transitDate&&_transitDate.vel){
     const td=_transitDate;
     document.getElementById('report').innerHTML=buildReport(
       'ดาวจร','',td.d,td.m,td.y_be,td.t,td.prov,td.pos,td.vel,null,isV2
@@ -702,40 +744,11 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
     ctx.font='bold 44px Sarabun,sans-serif';ctx.fillStyle='#b8860b';
     ctx.fillText(_chartTypeState===1?'ตรียางค์':'นวางค์',C,C);
   }
-  // outer ring — V2.1 5-state
+  // outer ring — กฎ: isV2 override _outerState (mutual exclusion)
   ctx.textAlign='center';ctx.textBaseline='middle';
   const outerLabelColor=OUTER_LABEL_V1;
-  if(_outerState===0){
-    ctx.font='bold 30px Sarabun,sans-serif';ctx.fillStyle=outerLabelColor;
-    for(let iz=0;iz<12;iz++){let rad=deg2rad(Z_REFS[iz]);ctx.fillText(Z_NAMES[iz],C+OUTER_R_LABEL*Math.cos(rad),C-OUTER_R_LABEL*Math.sin(rad));}
-  }else if(_outerState===1){
-    ctx.font='bold 30px Sarabun,sans-serif';ctx.fillStyle=outerLabelColor;
-    for(let iz=0;iz<12;iz++){
-      let hIdx=(iz-eAscSign+12)%12,rad=deg2rad(Z_REFS[iz]);
-      ctx.fillText(H_SHORT[hIdx],C+OUTER_R_LABEL*Math.cos(rad),C-OUTER_R_LABEL*Math.sin(rad));
-    }
-  }else if((_outerState===2||_outerState===3)&&eTpos){
-    // 2=จรทั้งหมด 3=จรช้า
-    let showIdx=_outerState===3?TRANSIT_SLOW:[...TRANSIT_SLOW,...TRANSIT_FAST];
-    let tGroups=Array.from({length:12},()=>[]);
-    for(let i of showIdx){let z=Math.trunc(eTpos[i]/1800);if(z>=0&&z<12)tGroups[z].push({lbl:TRANSIT_LABEL[i]||String(i),deg:eTpos[i]%1800});}
-    ctx.font='bold 44px sans-serif';
-    const SLOT_GAP=38;
-    for(let iz=0;iz<12;iz++){
-      let its=tGroups[iz];if(!its.length)continue;
-      its.sort((a,b)=>a.deg-b.deg);
-      let rad=deg2rad(Z_REFS[iz]);
-      let cx0=C+OUTER_R_TRANSIT*Math.cos(rad),cy0=C-OUTER_R_TRANSIT*Math.sin(rad);
-      let pr=rad+Math.PI/2,px=Math.cos(pr),py=-Math.sin(pr);
-      for(let k=0;k<its.length;k++){
-        let off=(k-(its.length-1)/2)*SLOT_GAP;
-        ctx.fillStyle=TRANSIT_RED;ctx.fillText(its[k].lbl,cx0+px*off,cy0+py*off);
-      }
-    }
-  }
-  // _outerState===4: ไม่แสดง (nothing)
-  // isV2 (ดวงนอก): _natal2.pos, เลขไทย, สีม่วง
   if(isV2&&_natal2&&_natal2.pos){
+    // ดวงนอก: เลขไทย _natal2 เท่านั้น — ไม่แสดง _outerState ใดๆ
     const THAI_NUM=['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙','๑๐'];
     const n2pos=_chartTypeState===1?calcDrekkana(_natal2.pos):_chartTypeState===2?calcNavamsa(_natal2.pos):_natal2.pos;
     const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
@@ -754,12 +767,42 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
         ctx.fillStyle='#9b7fd4';ctx.fillText(its[k].lbl,cx0+px*off,cy0+py*off);
       }
     }
+  }else{
+    // ดวงใน: ใช้ _outerState ปกติ
+    if(_outerState===0){
+      ctx.font='bold 30px Sarabun,sans-serif';ctx.fillStyle=outerLabelColor;
+      for(let iz=0;iz<12;iz++){let rad=deg2rad(Z_REFS[iz]);ctx.fillText(Z_NAMES[iz],C+OUTER_R_LABEL*Math.cos(rad),C-OUTER_R_LABEL*Math.sin(rad));}
+    }else if(_outerState===1){
+      ctx.font='bold 30px Sarabun,sans-serif';ctx.fillStyle=outerLabelColor;
+      for(let iz=0;iz<12;iz++){
+        let hIdx=(iz-eAscSign+12)%12,rad=deg2rad(Z_REFS[iz]);
+        ctx.fillText(H_SHORT[hIdx],C+OUTER_R_LABEL*Math.cos(rad),C-OUTER_R_LABEL*Math.sin(rad));
+      }
+    }else if((_outerState===2||_outerState===3)&&eTpos){
+      let showIdx=_outerState===3?TRANSIT_SLOW:[...TRANSIT_SLOW,...TRANSIT_FAST];
+      let tGroups=Array.from({length:12},()=>[]);
+      for(let i of showIdx){let z=Math.trunc(eTpos[i]/1800);if(z>=0&&z<12)tGroups[z].push({lbl:TRANSIT_LABEL[i]||String(i),deg:eTpos[i]%1800});}
+      ctx.font='bold 44px sans-serif';
+      const SLOT_GAP=38;
+      for(let iz=0;iz<12;iz++){
+        let its=tGroups[iz];if(!its.length)continue;
+        its.sort((a,b)=>a.deg-b.deg);
+        let rad=deg2rad(Z_REFS[iz]);
+        let cx0=C+OUTER_R_TRANSIT*Math.cos(rad),cy0=C-OUTER_R_TRANSIT*Math.sin(rad);
+        let pr=rad+Math.PI/2,px=Math.cos(pr),py=-Math.sin(pr);
+        for(let k=0;k<its.length;k++){
+          let off=(k-(its.length-1)/2)*SLOT_GAP;
+          ctx.fillStyle=TRANSIT_RED;ctx.fillText(its[k].lbl,cx0+px*off,cy0+py*off);
+        }
+      }
+    }
+    // _outerState===4: ไม่แสดง (nothing)
   }
   // logo top-right on canvas (size 160, margin 0, circular clip, alpha 1.0 + brightness)
   if(_logoImg.complete&&_logoImg.naturalWidth>0){
     const ls=160;
     const lx=1000-ls+8;
-    const ly=-8;
+    const ly=0;
     ctx.save();
     ctx.beginPath();
     ctx.arc(lx+ls/2,ly+ls/2,ls/2,0,Math.PI*2);
@@ -1457,6 +1500,21 @@ function _updatePre2484Warning(){
 }
 
 // ── PWA Install ───────────────────────────────────────────
+// Long-press 3s สำหรับ btn-save / btn-share
+let _lpTimer=null;
+function startLongPress(action,btn){
+  btn.classList.add('btn-share-progress','pressing');
+  _lpTimer=setTimeout(()=>{
+    btn.classList.remove('pressing');
+    if(action==='save')saveChart();
+    else shareChart();
+  },3000);
+}
+function cancelLongPress(){
+  if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}
+  document.querySelectorAll('.btn-share-progress').forEach(b=>b.classList.remove('pressing'));
+}
+
 function showContactPage(){
   document.getElementById('about-main').classList.add('hidden');
   document.getElementById('about-contact').classList.remove('hidden');
@@ -1648,7 +1706,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   switchTab(1);
   calculateChart1();calculateChart2();calculateTransit();
   _viewMode=0;
-  document.getElementById('btn-view').textContent=VIEW_LABELS[0];
+  _applyViewMode();
   _redraw();
   _updateShareButton();
   _renderQuickMemory();
