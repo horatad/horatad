@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!-- Version 2.1.8 | 2026-05-16 -->
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horatad โหราทาส</title>
+<meta name="description" content="เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์">
+<meta name="theme-color" content="#b8860b">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="horatad_128x128.png">
+<link rel="apple-touch-icon" href="horatad_180x180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Critical inline: ป้องกัน Android content:// MIME type issue */
+.hidden{display:none!important}
+.tab-content{display:block}
+#chart-wrap{width:100%}
+canvas{max-width:100%;height:auto}
+</style>
+</head>
+<body>
+<h1>
+  <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
+  <span class="brand-en">Horatad</span>
+  <span class="brand-th">โหราทาส</span>
+  <span class="brand-ver">V 2.1</span>
+</h1>
+
+<!-- Tab nav -->
+<div class="tab-nav">
+  <button id="tab-btn-0" class="tab-btn" onclick="switchTab(0)">🔭 กรอกข้อมูล</button>
+  <button id="tab-btn-1" class="tab-btn tab-active" onclick="switchTab(1)">🖼️ กราฟิก + รายงาน</button>
+  <button id="tab-btn-2" class="tab-btn" onclick="switchTab(2)">ℹ️ เกี่ยวกับ</button>
+</div>
+
+<!-- ── TAB 0: Input ──────────────────────────────────────── -->
+<div id="tab-0" class="tab-content hidden">
+  <div class="input-layout">
+
+    <div class="input-panel">
+      <!-- Era + main action -->
+      <div class="era-row">
+        <button id="btn-era" onclick="toggleEra()" class="btn-era">พ.ศ.</button>
+        <button onclick="calculateBoth()" class="btn-calc-main">ผูกดวง</button>
+      </div>
+
+      <!-- ดวงที่ 1 -->
+      <div class="chart-section section-1">
+        <div class="section-title">ดวงที่ 1</div>
+        <div class="name-gender-row">
+          <input id="name-1" placeholder="ชื่อ">
+          <button class="btn-mem" onclick="openMemory('1')" title="ความทรงจำ">🕐</button>
+          <select id="gender1" class="gender-sel">
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+            <option value="เหตุการณ์">เหตุการณ์</option>
+          </select>
+        </div>
+        <div class="form-row-dmy">
+          <div><label>วัน</label><input id="d1" type="number" min="1" max="31"></div>
+          <div><label>เดือน</label><input id="m1" type="number" min="1" max="12"></div>
+          <div><label>ปี</label><input id="y1" type="number"></div>
+          <div><label>เวลา</label><input id="t1" type="time"></div>
+        </div>
+        <div class="prov-row">
+          <div class="prov-wrap">
+            <input id="prov1" value="กรุงเทพมหานคร" class="prov-input" placeholder="จังหวัด">
+            <div class="prov-list" id="prov-list-1"></div>
+          </div>
+          <button id="btn-cust1" onclick="openLngPad('lng1')" class="btn-custom-lng">สถานที่อื่น</button>
+        </div>
+      </div>
+
+      <!-- ดวงที่ 2 -->
+      <div class="chart-section section-2">
+        <div class="section-title">ดวงที่ 2</div>
+        <div class="name-gender-row">
+          <input id="name-2" placeholder="ชื่อ">
+          <button class="btn-mem" onclick="openMemory('2')" title="ความทรงจำ">🕐</button>
+          <select id="gender2" class="gender-sel">
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+            <option value="เหตุการณ์">เหตุการณ์</option>
+          </select>
+        </div>
+        <div class="form-row-dmy">
+          <div><label>วัน</label><input id="d2" type="number" min="1" max="31"></div>
+          <div><label>เดือน</label><input id="m2" type="number" min="1" max="12"></div>
+          <div><label>ปี</label><input id="y2" type="number"></div>
+          <div><label>เวลา</label><input id="t2" type="time"></div>
+        </div>
+        <div class="prov-row">
+          <div class="prov-wrap">
+            <input id="prov2" value="กรุงเทพมหานคร" class="prov-input" placeholder="จังหวัด">
+            <div class="prov-list" id="prov-list-2"></div>
+          </div>
+          <button id="btn-cust2" onclick="openLngPad('lng2')" class="btn-custom-lng">สถานที่อื่น</button>
+        </div>
+      </div><!-- /section-2 -->
+
+      <!-- วันที่จร -->
+      <div class="chart-section section-transit">
+        <div class="section-title">วันที่จร</div>
+        <div class="name-gender-row">
+          <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)">
+          <button class="btn-mem" onclick="openEvents()" title="เหตุการณ์ที่บันทึก">📌</button>
+        </div>
+        <div class="form-row-dmy">
+          <div><label>วัน</label><input id="dt" type="number" min="1" max="31"></div>
+          <div><label>เดือน</label><input id="mt" type="number" min="1" max="12"></div>
+          <div><label>ปี</label><input id="yt" type="number"></div>
+          <div><label>เวลา</label><input id="tt" type="time"></div>
+        </div>
+        <div class="prov-row">
+          <div class="prov-wrap">
+            <input id="provt" value="กรุงเทพมหานคร" class="prov-input" placeholder="จังหวัด">
+            <div class="prov-list" id="prov-list-t"></div>
+          </div>
+          <button id="btn-custt" onclick="openLngPad('lngt')" class="btn-custom-lng">สถานที่อื่น</button>
+        </div>
+        <div class="btn-row-section">
+          <button onclick="resetTransit()" class="btn-reset">วันนี้</button>
+          <button onclick="saveEvent()" class="btn-reset">บันทึก</button>
+          <button onclick="calculateTransit()" class="btn-calc btn-calc-transit">ผูกดวงจร</button>
+        </div>
+      </div>
+    </div><!-- /input-panel -->
+
+    <!-- Preview panel: canvas appears here on PC tab-0 -->
+    <div class="preview-panel" id="preview-panel"></div>
+
+  </div>
+</div>
+
+<!-- ── TAB 1: Result ─────────────────────────────────────── -->
+<div id="tab-1" class="tab-content">
+  <div class="result-layout">
+    <div class="canvas-slot" id="canvas-slot">
+      <div id="canvas-placeholder" style="text-align:center;padding:2rem;color:#666;font-size:13px">กำลังคำนวณ...</div>
+    </div>
+    <div class="report-panel" id="report-panel">
+      <div id="report" style="font-size:13px;line-height:1.55;overflow-x:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TAB 2: About ──────────────────────────────────────── -->
+<div id="tab-2" class="tab-content hidden">
+  <div class="about-container">
+    <div class="about-card">
+      <div class="about-header">
+        <img src="horatad_192x192.png" class="about-logo" alt="Horatad">
+        <div>
+          <div class="about-title-en">Horatad</div>
+          <div class="about-title-th">โหราทาส</div>
+          <div class="about-version">V 2.1</div>
+        </div>
+      </div>
+      <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
+      <div class="about-features">
+        <div class="about-feature">
+          <div class="about-feature-icon">🔒</div>
+          <div class="about-feature-body">
+            <div class="about-feature-title">เคารพความเป็นส่วนตัว</div>
+            <div class="about-feature-desc">ข้อมูลของคุณอยู่ในเครื่องเท่านั้น</div>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="about-feature-icon">📱</div>
+          <div class="about-feature-body">
+            <div class="about-feature-title">ใช้งานได้ทุกอุปกรณ์</div>
+            <div class="about-feature-desc">เปิดผ่านเว็บ ติดตั้งใช้ออฟไลน์ได้</div>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="about-feature-icon">🙏</div>
+          <div class="about-feature-body">
+            <div class="about-feature-title">พัฒนาด้วยใจ</div>
+            <div class="about-feature-desc">เพื่อสืบทอดวิชาโหราศาสตร์ไทย</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PWA Install — แสดงเฉพาะเมื่อ Chrome พร้อม (beforeinstallprompt) -->
+    <div class="about-card">
+      <button id="btn-install-pwa" onclick="installPWA()" class="btn-install-pwa hidden">
+        📲 ติดตั้งแอปบนหน้าจอหลัก
+      </button>
+    </div>
+
+    <!-- YouTube -->
+    <div class="about-card">
+      <div class="about-card-title">📺 เรียนรู้การใช้งาน</div>
+      <a href="https://youtube.com/playlist?list=PLVymJvguajohzWHXyCYsLz84AL0qk1Uxj&si=lIFzyGRArvg9V1cA" target="_blank" rel="noopener" class="about-link">
+        ดู Playlist วิธีใช้บน YouTube
+      </a>
+    </div>
+
+    <!-- Feedback -->
+    <div class="about-card">
+      <div class="about-card-title">💬 ส่ง Feedback</div>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSd2unoGXbwCYInaF_-2RUVUcnNai8-qelgLSvsLpww3yVP_8w/viewform" target="_blank" rel="noopener" class="about-link">
+        📝 Google Form
+      </a>
+      <a href="mailto:contact@horatad.com" class="about-link">
+        ✉️ Email: contact@horatad.com
+      </a>
+    </div>
+
+    <!-- Donate -->
+    <div class="about-card">
+      <div class="about-card-title">☕ สนับสนุนการพัฒนา</div>
+      <div class="donate-presets">
+        <button class="donate-btn donate-active" onclick="setDonateAmount(this,50)">50</button>
+        <button class="donate-btn" onclick="setDonateAmount(this,100)">100</button>
+        <button class="donate-btn" onclick="setDonateAmount(this,200)">200</button>
+        <button class="donate-btn" onclick="setDonateAmount(this,500)">500</button>
+        <button class="donate-btn" onclick="setDonateAmount(this,0)">กำหนดเอง</button>
+      </div>
+      <div id="donate-custom-row" class="donate-custom-row hidden">
+        <input id="donate-custom-input" type="number" placeholder="ระบุจำนวน (บาท)" min="1" max="100000">
+        <button onclick="applyDonateCustom()" class="donate-apply">ยืนยัน</button>
+      </div>
+      <div class="donate-qr-wrap">
+        <img id="donate-qr" alt="PromptPay QR" class="donate-qr">
+        <div class="donate-fallback hidden" id="donate-fallback">
+          <div>PromptPay: <strong>3102001951829</strong></div>
+          <div>ชื่อ: นายสิทธิเดช ประเสริฐรุ่งเรือง</div>
+          <div class="donate-fallback-note">โหลด QR ไม่สำเร็จ — พิมพ์เลข PromptPay ในแอปธนาคารแทนได้</div>
+        </div>
+      </div>
+      <div class="donate-info">
+        <div>นายสิทธิเดช ประเสริฐรุ่งเรือง</div>
+        <div class="donate-disclaimer">การบริจาคเป็นความสมัครใจเพื่อสนับสนุนการพัฒนา ไม่มีการคืนเงิน ไม่ถือเป็นการซื้อขายสินค้าหรือบริการ</div>
+      </div>
+    </div>
+
+    <div class="about-footer">Horatad โหราทาส V 2.1 · 2026</div>
+  </div>
+</div>
+
+<!-- ── Chart wrap (shared, moved by JS) ─────────────────── -->
+<div id="chart-wrap">
+  <div id="canvas-wrapper" style="background:#0d1117;border-radius:8px;padding:0.75rem">
+    <canvas id="chart-canvas" width="1000" height="1000" style="width:100%;height:auto;border-radius:6px;display:block"></canvas>
+    <div class="btn-chart-row" id="btn-chart-row">
+      <button id="btn-view"       onclick="toggleView()"           class="btn-sm">ดวงที่ 1</button>
+      <button id="btn-outer"      onclick="toggleOuter()"          class="btn-sm">ราศี</button>
+      <button id="btn-chart-type" onclick="toggleChartType()"      class="btn-sm">ราศี</button>
+      <button id="btn-transit"    onclick="toggleReportTransit()"  class="btn-sm">รายงานจร</button>
+    </div>
+    <div class="btn-share-row" id="btn-share-row">
+      <button id="btn-share" onclick="shareChart()" class="btn-share" disabled>
+        📷 บันทึกรูปแชร์
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Numpad overlay ────────────────────────────────────── -->
+<div id="numpad-backdrop" class="numpad-backdrop hidden" onclick="_numpadConfirm()"></div>
+<div id="numpad" class="numpad hidden">
+  <div class="numpad-label" id="numpad-label"></div>
+  <div class="numpad-display" id="numpad-display">—</div>
+  <div class="numpad-warning hidden" id="numpad-warning"></div>
+  <div class="numpad-grid">
+    <button class="numpad-key" onclick="_numpadKey('1')">1</button>
+    <button class="numpad-key" onclick="_numpadKey('2')">2</button>
+    <button class="numpad-key" onclick="_numpadKey('3')">3</button>
+    <button class="numpad-key" onclick="_numpadKey('4')">4</button>
+    <button class="numpad-key" onclick="_numpadKey('5')">5</button>
+    <button class="numpad-key" onclick="_numpadKey('6')">6</button>
+    <button class="numpad-key" onclick="_numpadKey('7')">7</button>
+    <button class="numpad-key" onclick="_numpadKey('8')">8</button>
+    <button class="numpad-key" onclick="_numpadKey('9')">9</button>
+    <button class="numpad-key numpad-bs" onclick="_numpadKey('ล้าง')">ล้าง</button>
+    <button class="numpad-key" onclick="_numpadKey('0')">0</button>
+    <button class="numpad-key numpad-ok" onclick="_numpadKey('✓')">✓</button>
+  </div>
+</div>
+
+<!-- ── Memory popup ──────────────────────────────────────── -->
+<div id="memory-backdrop" class="memory-backdrop hidden" onclick="closeMemory()"></div>
+<div id="memory-modal" class="memory-modal hidden">
+  <div class="memory-title">เลือกจากความทรงจำ</div>
+  <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ / จังหวัด..." autocomplete="off">
+  <div id="memory-list" class="memory-list"></div>
+  <div class="memory-actions">
+    <button onclick="exportMemory()" class="memory-action-btn">📤 Export</button>
+    <label class="memory-action-btn">
+      📥 Import
+      <input id="memory-import-input" type="file" accept=".json,application/json" onchange="importMemory(event)">
+    </label>
+    <button onclick="confirmClearMemory()" class="memory-action-btn memory-action-danger">🗑️ ล้าง</button>
+  </div>
+  <button onclick="closeMemory()" class="memory-close">ปิด</button>
+</div>
+
+<!-- ── Events popup ──────────────────────────────────────── -->
+<div id="event-backdrop" class="memory-backdrop hidden" onclick="closeEvents()"></div>
+<div id="event-modal" class="memory-modal hidden">
+  <div class="memory-title">เหตุการณ์ที่บันทึก</div>
+  <input id="event-search" class="memory-search" placeholder="ค้นหา..." autocomplete="off">
+  <div id="event-list" class="memory-list"></div>
+  <button onclick="closeEvents()" class="memory-close">ปิด</button>
+</div>
+
+<!-- ── Confirm dialog ─────────────────────────────────────── -->
+<div id="confirm-backdrop" class="confirm-backdrop hidden" onclick="closeConfirm()"></div>
+<div id="confirm-modal" class="confirm-modal hidden">
+  <div id="confirm-title" class="confirm-title">ยืนยัน</div>
+  <div id="confirm-message" class="confirm-message"></div>
+  <div class="confirm-actions">
+    <button onclick="closeConfirm()" class="confirm-cancel">ยกเลิก</button>
+    <button onclick="_confirmYes()" class="confirm-ok">ตกลง</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
