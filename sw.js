@@ -1,7 +1,7 @@
-// Version 2.1.9 | 2026-05-16
+// Version 2.2.0 | 2026-05-16
 // Service Worker — cache-first for same-origin static assets, network fallback.
 // Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
-const CACHE_NAME='horatad-v2.1.9';
+const CACHE_NAME='horatad-v2.2.0';
 const CORE_ASSETS=[
   './',
   './index.html',
@@ -12,8 +12,7 @@ const CORE_ASSETS=[
   './horatad_180x180.png',
   './horatad_192x192.png',
   './horatad_500x500.png',
-  './horatad_512x512.png',
-  './horatad_746x746.png'
+  './horatad_512x512.png'
 ];
 
 self.addEventListener('install',e=>{
