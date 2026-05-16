@@ -1,4 +1,4 @@
-// Version 2.2.4 | 2026-05-17
+// Version 2.2.5 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -112,6 +112,7 @@ const NAKSATRA_OFFSET=5;
 let _era='BE';
 let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _natal2=null;  // outer ring chart (state 5)
+let _outerStateSaved=0; // saved when ดวงนอก active
 let _transit=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
@@ -501,7 +502,14 @@ function deg2rad(d){return d*Math.PI/180}
 function toggleView(){
   const newMode=(_viewMode+1)%2;
   _viewMode=newMode;
-  if(_viewMode===1&&!_natal2&&_natal)_natal2={..._natal}; // ดวงนอก ครั้งแรก: copy natal
+  if(_viewMode===1){
+    if(!_natal2&&_natal)_natal2={..._natal}; // ดวงนอก ครั้งแรก: copy natal
+    _outerStateSaved=_outerState; // บันทึก state เดิม
+    _outerState=4;                // force ไม่แสดง overlay
+  }else{
+    _outerState=_outerStateSaved; // restore
+  }
+  document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
   document.getElementById('btn-view').textContent=VIEW_LABELS[_viewMode];
   _playBeep(700);
   _redraw();
