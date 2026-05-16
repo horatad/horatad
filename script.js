@@ -1,4 +1,4 @@
-// Version 2.2.0 | 2026-05-16
+// Version 2.2.1 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
