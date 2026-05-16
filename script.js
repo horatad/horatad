@@ -1,4 +1,4 @@
-// Version 2.2.2 | 2026-05-17
+// Version 2.2.3 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -488,29 +488,27 @@ const NATAL_COLOR_ASC='#ffd966',NATAL_COLOR_STAR='#ffffff',TRANSIT_RED='#f85149'
 const TRANSIT_SLOW=[10,8,7,5,3],TRANSIT_FAST=[9,6,4,2,1];
 const TRANSIT_LABEL={1:'1',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'0'};
 // V2.2: 6-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง 5=ดาววงนอก
-const OUTER_LABELS=['ชื่อราศี','ชื่อภพเรือน','แสดงดาวจร','ดาวจรช้า','ไม่แสดง','ดาววงนอก'];
+const OUTER_LABELS=['ชื่อราศี','ชื่อภพเรือน','แสดงดาวจร','ดาวจรช้า','ไม่แสดง'];
 const REPORT_TRANSIT_LABELS=['ดวงเดิม','ดาวจร'];
 const CHART_TYPE_LABELS=['ราศี','ตรียางค์','นวางค์'];
-const VIEW_LABELS=['ดวงที่ 1','ดวงที่ 2'];
+const VIEW_LABELS=['ดวงใน','ดวงนอก'];
 // [9] ดวงที่ 2 bg: purple matching btn-calc-2
 const BG_V1='#0d1117', BG_V2='#160b28';
 const OUTER_LABEL_V1='#c9d1d9';
 
 function deg2rad(d){return d*Math.PI/180}
 
-// [2] FIX toggle bug: guard _viewMode=1 when no transit data
 function toggleView(){
   const newMode=(_viewMode+1)%2;
-  if(newMode===1&&!_transit)return; // ดวงที่ 2 not yet calculated
   _viewMode=newMode;
+  if(_viewMode===1&&!_natal2&&_natal)_natal2={..._natal}; // ดวงนอก ครั้งแรก: copy natal
   document.getElementById('btn-view').textContent=VIEW_LABELS[_viewMode];
   _playBeep(700);
   _redraw();
   _updateShareButton();
 }
 function toggleOuter(){
-  _outerState=(_outerState+1)%6;
-  if(_outerState===5&&!_natal2&&_natal)_natal2={..._natal};
+  _outerState=(_outerState+1)%5;
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
   _playBeep(700);
   _redraw();
@@ -543,8 +541,8 @@ function toggleReportTransit(){
 function cycleMemory(dir){
   const mem=_loadJSON(MEM_KEY)||[];
   if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
-  // _outerState===5: cycle outer ring (_natal2) ไม่แตะ _natal
-  if(_outerState===5){
+  // _viewMode===1 (ดวงนอก): cycle outer ring (_natal2) ไม่แตะ _natal
+  if(_viewMode===1){
     const curKey=_natal2?`${_natal2.name}|${_natal2.d}/${_natal2.m}/${_natal2.y_be}`:'';
     const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
     let idx=mem.findIndex(m=>key(m)===curKey);
@@ -597,18 +595,16 @@ function cycleMemory(dir){
 }
 
 function _redraw(){
-  const isV2=_viewMode===1;
-  const active=isV2?_transit:_natal;
+  const isV2=_viewMode===1; // ดวงนอก mode
+  const active=_natal;
   if(!active)return;
   const{pos,vel,d,m,y_be,t,prov,gender='ชาย'}=active;
-  const displayName=isV2?(_transit?.name||'ดวงที่ 2'):(_natal?.name||'ไม่ระบุ');
-  // identity from active chart
+  const displayName=_natal?.name||'ไม่ระบุ';
   const[,ts_id]=getIdentity(pos);
-  // transit source: _transitDate (วันที่จร) takes priority over _transit (ดวงที่2)
   const transitSrc=_transitDate||_transit||null;
-  const tposForOuter=isV2?(_natal?.pos||null):(transitSrc?.pos||null);
+  // isV2: outer ring shows _natal2; otherwise shows transit overlay
+  const tposForOuter=isV2?(_natal2?.pos||null):(transitSrc?.pos||null);
   drawChart(pos,vel,ts_id,tposForOuter,pos,isV2);
-  // V2.1.8: _reportTransitShow=true → render transit table แทน natal table
   if(_reportTransitShow&&_transitDate&&_transitDate.vel){
     const td=_transitDate;
     document.getElementById('report').innerHTML=buildReport(
@@ -729,8 +725,8 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
     }
   }
   // _outerState===4: ไม่แสดง (nothing)
-  // _outerState===5: ดาววงนอก — _natal2.pos, เลขไทย, สีม่วง
-  if(_outerState===5&&_natal2&&_natal2.pos){
+  // isV2 (ดวงนอก): _natal2.pos, เลขไทย, สีม่วง
+  if(isV2&&_natal2&&_natal2.pos){
     const THAI_NUM=['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙','๑๐'];
     const n2pos=_chartTypeState===1?calcDrekkana(_natal2.pos):_chartTypeState===2?calcNavamsa(_natal2.pos):_natal2.pos;
     const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
@@ -887,7 +883,7 @@ function calculateBoth(){
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
 function _updateShareButton(){
-  const hasData=(_viewMode===1&&_transit)||(_viewMode===0&&_natal);
+  const hasData=(_viewMode===1&&_natal2)||(_viewMode===0&&_natal);
   const btnS=document.getElementById('btn-share');
   const btnSv=document.getElementById('btn-save');
   if(btnS)btnS.disabled=!hasData;
