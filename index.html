@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.1.9 | 2026-05-16 -->
+<!-- Version 2.2.0 | 2026-05-16 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -52,7 +52,7 @@ canvas{max-width:100%;height:auto}
         <div class="section-title">ดวงที่ 1</div>
         <div class="name-gender-row">
           <input id="name-1" placeholder="ชื่อ">
-          <button class="btn-mem" onclick="openMemory('1')" title="ความทรงจำ">🕐</button>
+          <button class="btn-mem" onclick="openMemory('1')" title="ความทรงจำ">🔍</button>
           <select id="gender1" class="gender-sel">
             <option value="ชาย">ชาย</option>
             <option value="หญิง">หญิง</option>
@@ -75,11 +75,11 @@ canvas{max-width:100%;height:auto}
       </div>
 
       <!-- ดวงที่ 2 -->
-      <div class="chart-section section-2">
+      <div class="chart-section section-2 hidden">
         <div class="section-title">ดวงที่ 2</div>
         <div class="name-gender-row">
           <input id="name-2" placeholder="ชื่อ">
-          <button class="btn-mem" onclick="openMemory('2')" title="ความทรงจำ">🕐</button>
+          <button class="btn-mem" onclick="openMemory('2')" title="ความทรงจำ">🔍</button>
           <select id="gender2" class="gender-sel">
             <option value="ชาย">ชาย</option>
             <option value="หญิง">หญิง</option>
@@ -106,7 +106,7 @@ canvas{max-width:100%;height:auto}
         <div class="section-title">วันที่จร</div>
         <div class="name-gender-row">
           <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)">
-          <button class="btn-mem" onclick="openEvents()" title="เหตุการณ์ที่บันทึก">📌</button>
+          <button class="btn-mem" onclick="openEvents()" title="เหตุการณ์ที่บันทึก">🔍</button>
         </div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="dt" type="number" min="1" max="31"></div>
@@ -139,7 +139,7 @@ canvas{max-width:100%;height:auto}
 <div id="tab-1" class="tab-content">
   <div class="result-layout">
     <div class="canvas-slot" id="canvas-slot">
-      <div id="canvas-placeholder" style="text-align:center;padding:2rem;color:#666;font-size:13px">กำลังคำนวณ...</div>
+      <div id="canvas-placeholder" style="text-align:center;padding:2rem;color:#666;font-size:13px">กรอกข้อมูลและกด ผูกดวง</div>
     </div>
     <div class="report-panel" id="report-panel">
       <div id="report" style="font-size:13px;line-height:1.55;overflow-x:auto"></div>
@@ -151,7 +151,7 @@ canvas{max-width:100%;height:auto}
 <div id="tab-2" class="tab-content hidden">
   <div class="about-container">
     <div class="about-card">
-      <img src="horatad_746x746.png" class="about-logo-big" alt="Horatad โหราทาส">
+      <img src="horatad_500x500.png" class="about-logo-big" alt="Horatad โหราทาส">
       <div class="about-header" style="justify-content:center;text-align:center">
         <div>
           <div class="about-title-en">Horatad</div>
@@ -223,6 +223,7 @@ canvas{max-width:100%;height:auto}
     <!-- Donate -->
     <div class="about-card">
       <div class="about-card-title">☕ สนับสนุนการพัฒนา</div>
+      <div style="font-size:13px;color:#444;margin-bottom:8px">สมทบทุนค่าไฟและค่าพัฒนาโปรแกรมตามกำลังศรัทธาครับผม</div>
       <div class="donate-presets">
         <button class="donate-btn donate-active" onclick="setDonateAmount(this,50)">50</button>
         <button class="donate-btn" onclick="setDonateAmount(this,100)">100</button>

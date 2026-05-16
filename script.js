@@ -1,4 +1,9 @@
-// Version 2.1.9 | 2026-05-16
+// Version 2.2.0 | 2026-05-16
+// Changes: [V2.2.0] Pass 1
+//   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
+//   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
+//   - Bug fix: canvas/report bg คงที่ — ลบ dynamic bg ใน _redraw + drawChart + share
+//   - Feature: prov sound — _playBeep เมื่อเลือกจังหวัดจาก dropdown
 // Changes: [V2.1.9]
 //   - Bug fix: pre-2484 warning shown only when buf.length===4 (full year)
 //   - Bug fix: lunar info refresh on transit toggle (auto-recalc transit on toggle ON)
@@ -488,7 +493,7 @@ const CHART_TYPE_LABELS=['ราศี','ตรียางค์','นวาง
 const VIEW_LABELS=['ดวงที่ 1','ดวงที่ 2'];
 // [9] ดวงที่ 2 bg: purple matching btn-calc-2
 const BG_V1='#0d1117', BG_V2='#160b28';
-const OUTER_LABEL_V1='#c9d1d9', OUTER_LABEL_V2='#c0b0e8';
+const OUTER_LABEL_V1='#c9d1d9';
 
 function deg2rad(d){return d*Math.PI/180}
 
@@ -577,12 +582,6 @@ function _redraw(){
   if(!active)return;
   const{pos,vel,d,m,y_be,t,prov,gender='ชาย'}=active;
   const displayName=isV2?(_transit?.name||'ดวงที่ 2'):(_natal?.name||'ไม่ระบุ');
-  // [9] bg colors
-  const bgColor=isV2?BG_V2:BG_V1;
-  const cw=document.getElementById('canvas-wrapper');
-  if(cw)cw.style.background=bgColor;
-  const rp=document.getElementById('report-panel');
-  if(rp)rp.style.background=isV2?'#f0ebff':'#ffffff';
   // identity from active chart
   const[,ts_id]=getIdentity(pos);
   // transit source: _transitDate (วันที่จร) takes priority over _transit (ดวงที่2)
@@ -611,8 +610,8 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
   const cv=document.getElementById('chart-canvas');
   const ctx=cv.getContext('2d');
   ctx.clearRect(0,0,1000,1000);
-  // [9] bg
-  ctx.fillStyle=isV2?BG_V2:BG_V1;
+  // bg
+  ctx.fillStyle=BG_V1;
   ctx.fillRect(0,0,1000,1000);
   // structure
   ctx.strokeStyle=LINE_COLOR;ctx.lineWidth=5;
@@ -680,7 +679,7 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
   }
   // outer ring — V2.1 5-state
   ctx.textAlign='center';ctx.textBaseline='middle';
-  const outerLabelColor=isV2?OUTER_LABEL_V2:OUTER_LABEL_V1;
+  const outerLabelColor=OUTER_LABEL_V1;
   if(_outerState===0){
     ctx.font='bold 30px Sarabun,sans-serif';ctx.fillStyle=outerLabelColor;
     for(let iz=0;iz<12;iz++){let rad=deg2rad(Z_REFS[iz]);ctx.fillText(Z_NAMES[iz],C+OUTER_R_LABEL*Math.cos(rad),C-OUTER_R_LABEL*Math.sin(rad));}
@@ -913,25 +912,12 @@ async function _generateShareImage(active){
   const c=document.createElement('canvas');
   c.width=SZ;c.height=SZ;
   const ctx=c.getContext('2d');
-  const isV2=_viewMode===1;
-  ctx.fillStyle=isV2?BG_V2:BG_V1;
+  ctx.fillStyle=BG_V1;
   ctx.fillRect(0,0,SZ,SZ);
   const chart=document.getElementById('chart-canvas');
   const chartSize=780;
   const chartX=(SZ-chartSize)/2;
   ctx.drawImage(chart,chartX,40,chartSize,chartSize);
-  // V2.1.8: logo overlay บน share image (200×200 มุมขวาบน, alpha 1.0 + brightness)
-  if(_logoImg.complete&&_logoImg.naturalWidth>0){
-    const lz=200,lx=SZ-lz-30,ly=30;
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(lx+lz/2,ly+lz/2,lz/2,0,Math.PI*2);
-    ctx.clip();
-    ctx.filter='brightness(1.25) saturate(1.15)';
-    ctx.drawImage(_logoImg,lx,ly,lz,lz);
-    ctx.filter='none';
-    ctx.restore();
-  }
   ctx.fillStyle='#ffffff';
   ctx.font='bold 32px Sarabun,sans-serif';
   ctx.textAlign='center';ctx.textBaseline='top';
@@ -1445,6 +1431,7 @@ function setupProvDropdown(inputId,listId){
     if(e.target.classList.contains('prov-item')){
       input.value=e.target.textContent;
       list.classList.remove('active');
+      _playBeep(700);
       e.preventDefault();
     }
   });
