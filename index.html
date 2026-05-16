@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.1.8 | 2026-05-16 -->
+<!-- Version 2.1.9 | 2026-05-16 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -151,15 +151,15 @@ canvas{max-width:100%;height:auto}
 <div id="tab-2" class="tab-content hidden">
   <div class="about-container">
     <div class="about-card">
-      <div class="about-header">
-        <img src="horatad_192x192.png" class="about-logo" alt="Horatad">
+      <img src="horatad_746x746.png" class="about-logo-big" alt="Horatad โหราทาส">
+      <div class="about-header" style="justify-content:center;text-align:center">
         <div>
           <div class="about-title-en">Horatad</div>
           <div class="about-title-th">โหราทาส</div>
           <div class="about-version">V 2.1</div>
         </div>
       </div>
-      <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
+      <div class="about-tagline" style="text-align:center">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
       <div class="about-features">
         <div class="about-feature">
           <div class="about-feature-icon">🔒</div>
@@ -183,6 +183,15 @@ canvas{max-width:100%;height:auto}
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- V2.1.9: Sound toggle -->
+    <div class="about-card">
+      <div class="about-card-title">🔊 เสียงเมื่อกดปุ่ม</div>
+      <label class="sound-toggle">
+        <input type="checkbox" id="sound-toggle" onchange="toggleSound(this.checked)">
+        <span>เปิดเสียง beep เมื่อกดปุ่มและคีย์บอร์ด</span>
+      </label>
     </div>
 
     <!-- PWA Install — แสดงเฉพาะเมื่อ Chrome พร้อม (beforeinstallprompt) -->
@@ -248,14 +257,19 @@ canvas{max-width:100%;height:auto}
   <div id="canvas-wrapper" style="background:#0d1117;border-radius:8px;padding:0.75rem">
     <canvas id="chart-canvas" width="1000" height="1000" style="width:100%;height:auto;border-radius:6px;display:block"></canvas>
     <div class="btn-chart-row" id="btn-chart-row">
-      <button id="btn-view"       onclick="toggleView()"           class="btn-sm">ดวงที่ 1</button>
+      <button id="btn-view-prev" onclick="cycleMemory(-1)" class="btn-sm btn-nav" title="ดวงก่อนหน้า">◀</button>
+      <button id="btn-view"       onclick="toggleView()"           class="btn-sm btn-view-center">ดวงที่ 1</button>
+      <button id="btn-view-next" onclick="cycleMemory(1)" class="btn-sm btn-nav" title="ดวงถัดไป">▶</button>
       <button id="btn-outer"      onclick="toggleOuter()"          class="btn-sm">ราศี</button>
       <button id="btn-chart-type" onclick="toggleChartType()"      class="btn-sm">ราศี</button>
       <button id="btn-transit"    onclick="toggleReportTransit()"  class="btn-sm">รายงานจร</button>
     </div>
     <div class="btn-share-row" id="btn-share-row">
+      <button id="btn-save" onclick="saveChart()" class="btn-share btn-save" disabled>
+        💾 บันทึก
+      </button>
       <button id="btn-share" onclick="shareChart()" class="btn-share" disabled>
-        📷 บันทึกรูปแชร์
+        📤 แชร์
       </button>
     </div>
   </div>
@@ -286,7 +300,10 @@ canvas{max-width:100%;height:auto}
 <!-- ── Memory popup ──────────────────────────────────────── -->
 <div id="memory-backdrop" class="memory-backdrop hidden" onclick="closeMemory()"></div>
 <div id="memory-modal" class="memory-modal hidden">
-  <div class="memory-title">เลือกจากความทรงจำ</div>
+  <div class="memory-header">
+    <div class="memory-title">เลือกจากความทรงจำ</div>
+    <button id="memory-sort-btn" class="memory-sort-btn" onclick="cycleMemorySort()">🕐 ล่าสุด</button>
+  </div>
   <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ / จังหวัด..." autocomplete="off">
   <div id="memory-list" class="memory-list"></div>
   <div class="memory-actions">
@@ -303,7 +320,10 @@ canvas{max-width:100%;height:auto}
 <!-- ── Events popup ──────────────────────────────────────── -->
 <div id="event-backdrop" class="memory-backdrop hidden" onclick="closeEvents()"></div>
 <div id="event-modal" class="memory-modal hidden">
-  <div class="memory-title">เหตุการณ์ที่บันทึก</div>
+  <div class="memory-header">
+    <div class="memory-title">เหตุการณ์ที่บันทึก</div>
+    <button id="event-sort-btn" class="memory-sort-btn" onclick="cycleEventSort()">🕐 ล่าสุด</button>
+  </div>
   <input id="event-search" class="memory-search" placeholder="ค้นหา..." autocomplete="off">
   <div id="event-list" class="memory-list"></div>
   <button onclick="closeEvents()" class="memory-close">ปิด</button>
@@ -319,6 +339,9 @@ canvas{max-width:100%;height:auto}
     <button onclick="_confirmYes()" class="confirm-ok">ตกลง</button>
   </div>
 </div>
+
+<!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
+<div id="toast" class="toast"></div>
 
 <script src="script.js"></script>
 </body>

@@ -1,4 +1,16 @@
-// Version 2.1.8 | 2026-05-16
+// Version 2.1.9 | 2026-05-16
+// Changes: [V2.1.9]
+//   - Bug fix: pre-2484 warning shown only when buf.length===4 (full year)
+//   - Bug fix: lunar info refresh on transit toggle (auto-recalc transit on toggle ON)
+//   - Bug fix: time input width mobile (CSS grid 1.3fr + min-width:0)
+//   - Feature: split save/share — saveChart() = download, shareChart() = Web Share API
+//   - Feature: keyboard sound — Web Audio beep, toggle in About (_soundEnabled)
+//   - Feature: numpad validate on commit — 3 strikes → revert to last valid value
+//   - Feature: memory cycle — ◀▶ buttons cycle through memory list (cycleMemory)
+//   - Feature: About logo 746 + hide H1 logo when About active (body.about-active)
+//   - Feature: memory list long-press delete (existing × button + touchstart 600ms)
+//   - Feature: memory + event sort — toggle 🕐 ล่าสุด / ก-ฮ / ฮ-ก (Thai locale)
+//   - Toast helper for inline feedback
 // Changes: [V2.1.8]
 //   - Labels: OUTER ['ชื่อราศี','ชื่อภพเรือน','แสดงดาวจร','ดาวจรช้า','ไม่แสดง'],
 //             REPORT_TRANSIT ['ดวงเดิม','ดาวจร'], CHART_TYPE ['ราศี','ตรียางค์','นวางค์']
@@ -109,6 +121,16 @@ let _donateInitialized=false;
 let _confirmCallback=null;
 let _deferredInstallPrompt=null; // V2.1 PWA install
 let _swRefreshing=false; // V2.1.5 prevent double reload on SW update
+// V2.1.9
+let _soundEnabled=false;
+let _audioCtx=null;
+let _memSort='recent'; // 'recent' | 'asc' | 'desc'
+let _evtSort='recent';
+let _numpadPrevValue='';
+let _numpadInvalidCount=0;
+let _toastTimer=null;
+let _memLongPressTimer=null;
+let _evtLongPressTimer=null;
 
 // ── Tab switching ─────────────────────────────────────────
 function switchTab(n){
@@ -124,6 +146,8 @@ function switchTab(n){
     // About tab — lazy init donate QR on first visit
     if(!_donateInitialized){_updateDonateQR(_donateAmount);_donateInitialized=true;}
   }
+  // V2.1.9: hide H1 logo when About active
+  document.body.classList.toggle('about-active',n===2);
   document.querySelectorAll('.tab-content').forEach((el,i)=>el.classList.toggle('hidden',i!==n));
   document.querySelectorAll('.tab-btn').forEach((el,i)=>el.classList.toggle('tab-active',i===n));
 }
@@ -182,6 +206,49 @@ function resetTransit(){
   _setField('dt',n.d);_setField('mt',n.m);_setField('yt',n.y);_setField('tt',n.t);
   _customLngT=null;
 }
+
+// ── V2.1.9: Sound (Web Audio beep) ────────────────────────
+const SOUND_KEY='horatad_sound_v1';
+function _initSound(){
+  const stored=localStorage.getItem(SOUND_KEY);
+  _soundEnabled=stored==='1';
+  const cb=document.getElementById('sound-toggle');
+  if(cb)cb.checked=_soundEnabled;
+}
+function toggleSound(on){
+  _soundEnabled=!!on;
+  try{localStorage.setItem(SOUND_KEY,_soundEnabled?'1':'0');}catch{}
+  if(_soundEnabled)_playBeep(800);
+}
+function _playBeep(freq){
+  if(!_soundEnabled)return;
+  try{
+    if(!_audioCtx)_audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(_audioCtx.state==='suspended')_audioCtx.resume();
+    const ac=_audioCtx;
+    const osc=ac.createOscillator();
+    const gain=ac.createGain();
+    osc.type='sine';
+    osc.frequency.value=freq||700;
+    gain.gain.setValueAtTime(0.08,ac.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.04);
+    osc.connect(gain);gain.connect(ac.destination);
+    osc.start();
+    osc.stop(ac.currentTime+0.05);
+  }catch{}
+}
+
+// ── V2.1.9: Toast ─────────────────────────────────────────
+function _showToast(msg,warn){
+  const t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.toggle('toast-warn',!!warn);
+  t.classList.add('toast-show');
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('toast-show'),2200);
+}
+
 // logo preload
 const _logoImg=new Image();
 _logoImg.src='horatad_500x500.png';
@@ -431,20 +498,24 @@ function toggleView(){
   if(newMode===1&&!_transit)return; // ดวงที่ 2 not yet calculated
   _viewMode=newMode;
   document.getElementById('btn-view').textContent=VIEW_LABELS[_viewMode];
+  _playBeep(700);
   _redraw();
   _updateShareButton();
 }
 function toggleOuter(){
   _outerState=(_outerState+1)%5;
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
+  _playBeep(700);
   _redraw();
 }
 function toggleChartType(){
   _chartTypeState=(_chartTypeState+1)%3;
   document.getElementById('btn-chart-type').textContent=CHART_TYPE_LABELS[_chartTypeState];
+  _playBeep(700);
   _redraw();
 }
 // V2.1: toggle transit section visibility in report (replaces toggleTransit)
+// V2.1.9: auto-recalc transit on toggle ON so lunar info matches latest inputs
 function toggleReportTransit(){
   _reportTransitShow=!_reportTransitShow;
   const btn=document.getElementById('btn-transit');
@@ -452,7 +523,52 @@ function toggleReportTransit(){
     btn.textContent=REPORT_TRANSIT_LABELS[_reportTransitShow?1:0];
     btn.classList.toggle('btn-active',_reportTransitShow);
   }
-  _redraw();
+  _playBeep(700);
+  if(_reportTransitShow){
+    calculateTransit();
+  }else{
+    _redraw();
+  }
+}
+
+// V2.1.9: cycle memory items into current viewMode slot
+// dir: -1=prev, +1=next
+function cycleMemory(dir){
+  const mem=_loadJSON(MEM_KEY)||[];
+  if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
+  const slot=_viewMode===1?'2':'1';
+  const curName=_viewMode===1?(_transit?.name||''):(_natal?.name||'');
+  const curDmy=_viewMode===1
+    ?(_transit?`${_transit.d}/${_transit.m}/${_transit.y_be}`:'')
+    :(_natal?`${_natal.d}/${_natal.m}/${_natal.y_be}`:'');
+  const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
+  const curKey=`${curName}|${curDmy}`;
+  let idx=mem.findIndex(m=>key(m)===curKey);
+  if(idx===-1)idx=dir>0?-1:mem.length;
+  const next=(idx+dir+mem.length*2)%mem.length;
+  const m=mem[next];
+  // load into current slot's input fields
+  const y_use=_era==='BE'?m.y_be:m.y_be-543;
+  if(slot==='1'){
+    _setField('name-1',m.name||'');
+    const g=document.getElementById('gender1');if(g)g.value=m.gender||'ชาย';
+    _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
+    document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
+    _customLng1=(typeof m.lng==='number')?m.lng:null;
+    _updateLngUI('1');
+    calculateChart1();
+  }else{
+    _setField('name-2',m.name||'');
+    const g=document.getElementById('gender2');if(g)g.value=m.gender||'ชาย';
+    _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.t);
+    document.getElementById('prov2').value=m.prov||'กรุงเทพมหานคร';
+    _customLng2=(typeof m.lng==='number')?m.lng:null;
+    _updateLngUI('2');
+    calculateChart2();
+  }
+  _playBeep(700);
+  _showToast(`${next+1}/${mem.length} · ${m.name||'—'}`);
+  _saveState();
 }
 
 function _redraw(){
@@ -719,6 +835,7 @@ function _updateLngUI(chartNum){
 // JS is single-thread → browser paints only after function returns → no flash.
 // calc 2 first then 1 so final _viewMode=0 (ดวง 1).
 function calculateBoth(){
+  _playBeep(900);
   calculateChart2();
   calculateChart1();
   // V1.8: persist + history
@@ -727,18 +844,16 @@ function calculateBoth(){
   if(_transit)_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
+// V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
 function _updateShareButton(){
-  const btn=document.getElementById('btn-share');
-  if(!btn)return;
   const hasData=(_viewMode===1&&_transit)||(_viewMode===0&&_natal);
-  btn.disabled=!hasData;
+  const btnS=document.getElementById('btn-share');
+  const btnSv=document.getElementById('btn-save');
+  if(btnS)btnS.disabled=!hasData;
+  if(btnSv)btnSv.disabled=!hasData;
 }
 
-async function shareChart(){
-  const active=_viewMode===1?_transit:_natal;
-  if(!active)return;
-  const blob=await _generateShareImage(active);
-  if(!blob)return;
+function _buildShareFilename(active){
   const now=new Date();
   const ts=now.getFullYear()+
     String(now.getMonth()+1).padStart(2,'0')+
@@ -746,7 +861,32 @@ async function shareChart(){
     String(now.getHours()).padStart(2,'0')+
     String(now.getMinutes()).padStart(2,'0')+
     String(now.getSeconds()).padStart(2,'0');
-  const filename=`horatad_${ts}.png`;
+  return `horatad_${ts}.png`;
+}
+
+async function saveChart(){
+  const active=_viewMode===1?_transit:_natal;
+  if(!active)return;
+  _playBeep(700);
+  const blob=await _generateShareImage(active);
+  if(!blob){_showToast('ไม่สามารถสร้างรูปได้',true);return;}
+  const filename=_buildShareFilename(active);
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=filename;
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  _showToast('บันทึกรูปแล้ว');
+}
+
+async function shareChart(){
+  const active=_viewMode===1?_transit:_natal;
+  if(!active)return;
+  _playBeep(700);
+  const blob=await _generateShareImage(active);
+  if(!blob){_showToast('ไม่สามารถสร้างรูปได้',true);return;}
+  const filename=_buildShareFilename(active);
   const file=new File([blob],filename,{type:'image/png'});
   if(navigator.canShare&&navigator.canShare({files:[file]})){
     try{
@@ -754,14 +894,17 @@ async function shareChart(){
       return;
     }catch(e){
       if(e.name==='AbortError')return;
+      // fall through to download fallback
     }
   }
+  // Fallback: download
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;a.download=filename;
   document.body.appendChild(a);a.click();
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
+  _showToast('เบราว์เซอร์ไม่รองรับแชร์ — บันทึกไฟล์แทน');
 }
 
 async function _generateShareImage(active){
@@ -823,6 +966,8 @@ function openLngPad(fieldId){
   }
   _numpadField={id:fieldId};
   _numpadBuf='';
+  _numpadPrevValue=(custom!==null)?String(custom):'';
+  _numpadInvalidCount=0;
   const label=chartNum==='t'?'จร':chartNum;
   document.getElementById('numpad-label').textContent=`ลองติจูด ดวงที่ ${label}  (เช่น 10050 = 100.50°)`;
   document.getElementById('numpad-display').textContent='—';
@@ -833,6 +978,9 @@ function _numpadOpen(id){
   _numpadField=document.getElementById(id);if(!_numpadField)return;
   const cfg=_NUMPAD_CFG[id]||{type:'int',min:1,max:9999,def:1,label:id};
   _numpadBuf='';
+  // V2.1.9: remember current value for revert on 3 invalid strikes
+  _numpadPrevValue=_numpadField.value||'';
+  _numpadInvalidCount=0;
   document.getElementById('numpad-label').textContent=cfg.label||id;
   document.getElementById('numpad-display').textContent='—';
   document.getElementById('numpad').classList.remove('hidden');
@@ -844,9 +992,9 @@ function _numpadKey(k){
   const isLng=(id==='lng1'||id==='lng2'||id==='lngt');
   const cfg=isLng?{type:'lng'}:(_NUMPAD_CFG[id]||{type:'int',min:1,max:9999,def:1});
   const mx=isLng?5:(cfg.type==='time'?4:String(cfg.max||9999).length);
-  if(k==='ล้าง'){_numpadBuf='';}
-  else if(k==='✓'){_numpadConfirm();return;}
-  else{if(_numpadBuf.length<mx)_numpadBuf+=k;}
+  if(k==='ล้าง'){_numpadBuf='';_playBeep(550);}
+  else if(k==='✓'){_playBeep(900);_numpadConfirm();return;}
+  else{if(_numpadBuf.length<mx){_numpadBuf+=k;_playBeep(700);}}
   let disp=_numpadBuf||'—';
   if(isLng){
     // [V1.9] left-to-right display "_ _ _ . _ _" matches user mental model
@@ -864,12 +1012,13 @@ function _numpadKey(k){
   document.getElementById('numpad-display').textContent=disp;
   _updatePre2484Warning();
 }
+// V2.1.9: validate buffer on confirm; revert to prev value after 3 invalid attempts
 function _numpadConfirm(){
   if(_numpadField&&_numpadBuf){
     const id=_numpadField.id||'';
     const isLng=(id==='lng1'||id==='lng2'||id==='lngt');
+    let invalid=false;
     if(isLng){
-      // [V1.9] left-to-right parse: padEnd(5,'0') so "100" → 100.00, "10050" → 100.50
       let s=_numpadBuf.padEnd(5,'0');
       let intPart=parseInt(s.slice(0,3))||0;
       let decPart=parseInt(s.slice(3,5))||0;
@@ -880,6 +1029,8 @@ function _numpadConfirm(){
         else _customLngT=lng;
         const cn=id==='lng1'?'1':id==='lng2'?'2':'t';
         _updateLngUI(cn);
+      }else{
+        invalid=true;
       }
     }else{
       const cfg=_NUMPAD_CFG[id]||{type:'int',min:1,max:9999,def:1};
@@ -888,8 +1039,38 @@ function _numpadConfirm(){
       if((id==='y1'||id==='y2'||id==='yt')&&buf.length===2){
         buf=(_era==='BE'?'25':'20')+buf;
       }
-      let n=parseInt(buf);if(!isNaN(n))n=Math.min(cfg.max,Math.max(cfg.min,n));else n=cfg.def;
-      _setField(id,String(n));
+      let n=parseInt(buf);
+      if(isNaN(n)||n<cfg.min||n>cfg.max){
+        invalid=true;
+      }else{
+        _setField(id,String(n));
+      }
+    }
+    if(invalid){
+      _numpadInvalidCount++;
+      _playBeep(380);
+      if(_numpadInvalidCount>=3){
+        // Revert to last valid value
+        if(isLng){
+          // clear custom lng (revert to province)
+          if(id==='lng1')_customLng1=null;
+          else if(id==='lng2')_customLng2=null;
+          else _customLngT=null;
+          const cn=id==='lng1'?'1':id==='lng2'?'2':'t';
+          _updateLngUI(cn);
+          _showToast(`ผิด 3 ครั้ง — ใช้ลองติจูดจังหวัด`,true);
+        }else{
+          _setField(id,_numpadPrevValue);
+          _showToast(`ผิด 3 ครั้ง — ใช้ค่าเดิม: ${_numpadPrevValue||'—'}`,true);
+        }
+      }else{
+        // Allow another attempt — don't close numpad
+        _showToast(`ค่าไม่ถูกต้อง (${_numpadInvalidCount}/3)`,true);
+        _numpadBuf='';
+        const dispEl=document.getElementById('numpad-display');
+        if(dispEl)dispEl.textContent=isLng?'_ _ _ . _ _':'—';
+        return; // KEEP numpad open
+      }
     }
   }
   _numpadBuf='';
@@ -945,8 +1126,25 @@ function _addMemory(entry){
 let _memSection='1';
 let _memCache=[];
 
+// V2.1.9: sort memory by current mode
+const _MEM_SORT_LABELS={'recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
+function cycleMemorySort(){
+  _memSort=_memSort==='recent'?'asc':_memSort==='asc'?'desc':'recent';
+  const btn=document.getElementById('memory-sort-btn');
+  if(btn)btn.textContent=_MEM_SORT_LABELS[_memSort];
+  _playBeep(700);
+  _renderMemory(document.getElementById('memory-search')?.value||'');
+}
+function _sortByMode(arr,mode){
+  if(mode==='recent')return arr.slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+  if(mode==='asc')return arr.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','th'));
+  if(mode==='desc')return arr.slice().sort((a,b)=>(b.name||'').localeCompare(a.name||'','th'));
+  return arr;
+}
+
 function _renderMemory(filter){
-  _memCache=_loadJSON(MEM_KEY)||[];
+  const raw=_loadJSON(MEM_KEY)||[];
+  _memCache=_sortByMode(raw,_memSort);
   const list=document.getElementById('memory-list');
   const f=(filter||'').trim().toLowerCase();
   const items=[];
@@ -1003,8 +1201,10 @@ function _pickMemory(i){
 function _confirmDeleteMemory(i){
   const m=_memCache[i];if(!m)return;
   _showConfirm('ลบรายการ',`ลบ "${m.name}" จากความทรงจำ?`,()=>{
-    const mem=_loadJSON(MEM_KEY)||[];
-    mem.splice(i,1);
+    // V2.1.9: key-based delete (safe after sort)
+    const key=v=>`${v.name}|${v.d}/${v.m}/${v.y_be}|${v.t}|${v.prov}`;
+    const mk=key(m);
+    const mem=(_loadJSON(MEM_KEY)||[]).filter(v=>key(v)!==mk);
     _saveJSON(MEM_KEY,mem);
     _renderMemory(document.getElementById('memory-search')?.value||'');
   });
@@ -1074,12 +1274,25 @@ function saveEvent(){
   alert(`บันทึกเหตุการณ์ "${name}" แล้ว`);
 }
 
+let _evtCache=[];
+
+// V2.1.9: event sort
+const _EVT_SORT_LABELS={'recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
+function cycleEventSort(){
+  _evtSort=_evtSort==='recent'?'asc':_evtSort==='asc'?'desc':'recent';
+  const btn=document.getElementById('event-sort-btn');
+  if(btn)btn.textContent=_EVT_SORT_LABELS[_evtSort];
+  _playBeep(700);
+  _renderEvents(document.getElementById('event-search')?.value||'');
+}
+
 function _renderEvents(filter){
-  const evs=_loadEvents();
+  const raw=_loadEvents();
+  _evtCache=_sortByMode(raw,_evtSort);
   const list=document.getElementById('event-list');
   const f=(filter||'').trim().toLowerCase();
   const items=[];
-  evs.forEach((ev,i)=>{
+  _evtCache.forEach((ev,i)=>{
     if(!f||(ev.name||'').toLowerCase().includes(f)){
       const y_ce=_beToce(ev.y_be,ev.m);
       items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(ev.name||'')}</div><div class="meta">${ev.d}/${ev.m}/${ev.y_be} (${y_ce})  ${ev.t}  ${_escHtml(ev.prov||'')}</div><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
@@ -1100,8 +1313,8 @@ function closeEvents(){
   document.getElementById('event-modal').classList.add('hidden');
 }
 function _pickEvent(i){
-  const evs=_loadEvents();
-  const ev=evs[i];if(!ev)return;
+  // V2.1.9: pick from sorted _evtCache
+  const ev=_evtCache[i];if(!ev)return;
   const y_use=_era==='BE'?ev.y_be:ev.y_be-543;
   _setField('dt',ev.d);_setField('mt',ev.m);_setField('yt',y_use);_setField('tt',ev.t);
   if(ev.prov)document.getElementById('provt').value=ev.prov;
@@ -1111,10 +1324,13 @@ function _pickEvent(i){
   calculateTransit();
 }
 function _deleteEvent(i){
-  const evs=_loadEvents();
-  const ev=evs[i];if(!ev)return;
+  const ev=_evtCache[i];if(!ev)return;
+  // V2.1.9: key-based delete (sort-safe)
+  const key=v=>`${v.name}|${v.d}/${v.m}/${v.y_be}|${v.t}|${v.prov}`;
+  const mk=key(ev);
   _showConfirm('ลบเหตุการณ์',`ลบ "${ev.name}"?`,()=>{
-    evs.splice(i,1);_saveEvents(evs);
+    const evs=_loadEvents().filter(v=>key(v)!==mk);
+    _saveEvents(evs);
     _renderEvents(document.getElementById('event-search')?.value||'');
   });
 }
@@ -1176,6 +1392,7 @@ function _confirmYes(){
 }
 
 // ── Pre-2484 warning (numpad year) ────────────────────────
+// V2.1.9: only show when buf is full 4-digit year (avoid flash during partial typing)
 function _updatePre2484Warning(){
   const warn=document.getElementById('numpad-warning');
   if(!warn)return;
@@ -1183,6 +1400,8 @@ function _updatePre2484Warning(){
   const id=_numpadField.id||_numpadField||'';
   const fid=typeof id==='string'?id:(id.id||'');
   if(!['y1','y2','yt'].includes(fid)){warn.classList.add('hidden');return;}
+  // V2.1.9: require full 4-digit buffer before evaluating
+  if(_numpadBuf.length<4){warn.classList.add('hidden');return;}
   const mId=fid==='y1'?'m1':fid==='y2'?'m2':'mt';
   const mVal=parseInt(document.getElementById(mId)?.value||'',10);
   const yVal=parseInt(_numpadBuf||'',10);
@@ -1238,8 +1457,12 @@ window.addEventListener('DOMContentLoaded',()=>{
   setupProvDropdown('prov2','prov-list-2');
   setupProvDropdown('provt','prov-list-t');
 
-  // memory list click delegation (pick or delete)
-  document.getElementById('memory-list').addEventListener('click',e=>{
+  // V2.1.9: init sound state
+  _initSound();
+
+  // memory list click + long-press delete delegation
+  const memList=document.getElementById('memory-list');
+  memList.addEventListener('click',e=>{
     if(e.target.classList.contains('memory-del')){
       e.stopPropagation();
       _confirmDeleteMemory(parseInt(e.target.dataset.i));
@@ -1248,14 +1471,25 @@ window.addEventListener('DOMContentLoaded',()=>{
     const it=e.target.closest('.memory-item');
     if(it)_pickMemory(parseInt(it.dataset.i));
   });
+  // Feature 10: long-press on memory-item → delete (mobile)
+  memList.addEventListener('touchstart',e=>{
+    const it=e.target.closest('.memory-item');
+    if(!it||e.target.classList.contains('memory-del'))return;
+    _memLongPressTimer=setTimeout(()=>{
+      _confirmDeleteMemory(parseInt(it.dataset.i));
+    },600);
+  },{passive:true});
+  memList.addEventListener('touchend',()=>{if(_memLongPressTimer){clearTimeout(_memLongPressTimer);_memLongPressTimer=null;}});
+  memList.addEventListener('touchmove',()=>{if(_memLongPressTimer){clearTimeout(_memLongPressTimer);_memLongPressTimer=null;}});
 
   // memory search
   document.getElementById('memory-search')?.addEventListener('input',e=>{
     _renderMemory(e.target.value);
   });
 
-  // event list click delegation (pick or delete)
-  document.getElementById('event-list')?.addEventListener('click',e=>{
+  // event list click + long-press delete delegation
+  const evList=document.getElementById('event-list');
+  evList?.addEventListener('click',e=>{
     if(e.target.classList.contains('memory-del')){
       e.stopPropagation();
       _deleteEvent(parseInt(e.target.dataset.i));
@@ -1264,6 +1498,15 @@ window.addEventListener('DOMContentLoaded',()=>{
     const it=e.target.closest('.memory-item');
     if(it)_pickEvent(parseInt(it.dataset.i));
   });
+  evList?.addEventListener('touchstart',e=>{
+    const it=e.target.closest('.memory-item');
+    if(!it||e.target.classList.contains('memory-del'))return;
+    _evtLongPressTimer=setTimeout(()=>{
+      _deleteEvent(parseInt(it.dataset.i));
+    },600);
+  },{passive:true});
+  evList?.addEventListener('touchend',()=>{if(_evtLongPressTimer){clearTimeout(_evtLongPressTimer);_evtLongPressTimer=null;}});
+  evList?.addEventListener('touchmove',()=>{if(_evtLongPressTimer){clearTimeout(_evtLongPressTimer);_evtLongPressTimer=null;}});
 
   // event search
   document.getElementById('event-search')?.addEventListener('input',e=>{
@@ -1306,6 +1549,12 @@ window.addEventListener('DOMContentLoaded',()=>{
     el.setAttribute('readonly','readonly');el.style.cursor='pointer';
     el.addEventListener('click',()=>_numpadOpen(id));
     el.addEventListener('focus',()=>_numpadOpen(id));
+  });
+
+  // V2.1.9: sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
+  ['btn-era'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.addEventListener('click',()=>_playBeep(700));
   });
 
   // mobile: scroll prov field to top on focus
