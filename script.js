@@ -1,4 +1,4 @@
-// Version 2.2.9 | 2026-05-17
+// Version 2.2.11 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -435,28 +435,25 @@ function buildCompareReport(n1,n2){
   const pos1=n1.pos,vel1=n1.vel||[],pos2=n2.pos,vel2=n2.vel||[];
   const asc1=Math.trunc(pos1[0]/1800),asc2=Math.trunc(pos2[0]/1800);
   const y_ce1=_beToce(n1.y_be,n1.m),y_ce2=_beToce(n2.y_be,n2.m);
-  const BG='background:#1a0d2e;padding:6px 8px;border-radius:8px;';
-  let h=`<div style="${BG}">`;
-  // Header
-  h+=`<div style="font-size:12px;color:#c9d1d9;margin-bottom:4px"><span style="color:#9b7fd4">วงใน</span>  ${_escHtml(n1.name||'—')}  ${n1.d}/${n1.m}/${n1.y_be}(${y_ce1})  ${n1.t}  ${_escHtml(n1.prov||'')}</div>`;
-  h+=`<div style="font-size:12px;color:#c9d1d9;margin-bottom:8px"><span style="color:#9b7fd4">วงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</div>`;
-  // Compare table
-  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;line-height:1.4">';
-  h+=`<tr style="color:#9b7fd4;font-size:11px"><td style="padding:1px 4px 3px 0">ดาว</td><td style="padding:1px 4px 3px 0">ราศีวงใน</td><td style="padding:1px 4px 3px 0">องศา</td><td style="padding:1px 8px 3px 0">ราศีวงนอก</td><td style="padding:1px 0 3px 0">องศา</td></tr>`;
+  const SEP='<tr><td colspan="5" style="padding:0"><hr style="border:none;border-top:0.5px solid #bbb;margin:3px 0"></td></tr>';
+  const CL='color:#888;font-size:0.9em';
+  let h='<table style="width:auto;margin:0;border-collapse:collapse;line-height:1.3;border-spacing:0">';
+  h+=SEP;
+  h+=`<tr><td colspan="5" style="padding:2px 0;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงใน</span>  ${_escHtml(n1.name||'—')}  ${n1.d}/${n1.m}/${n1.y_be}(${y_ce1})  ${n1.t}  ${_escHtml(n1.prov||'')}</td></tr>`;
+  h+=`<tr><td colspan="5" style="padding:2px 0 2px;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</td></tr>`;
+  h+=SEP;
+  h+=`<tr style="${CL}"><td style="padding:0 3px 0 0">ดาว</td><td colspan="2" style="padding:0 6px 0 0">ตำแหน่งดาวดวงใน</td><td colspan="2" style="padding:0">ตำแหน่งดาวดวงนอก</td></tr>`;
   for(let i=0;i<11;i++){
     const p1=pos1[i],p2=pos2[i];
     const s1=Z_NAMES[Math.trunc(p1/1800)],s2=Z_NAMES[Math.trunc(p2/1800)];
     const d1=Math.trunc((p1%1800)/60),m1=p1%60;
     const d2=Math.trunc((p2%1800)/60),m2=p2%60;
     const same=Math.trunc(p1/1800)===Math.trunc(p2/1800);
-    const hl=same?'color:#b8860b':'color:#c9d1d9';
-    h+=`<tr style="${hl}"><td style="padding:1px 4px 1px 0;white-space:nowrap;font-weight:500">${ST[i]}</td><td style="padding:1px 4px 1px 0;white-space:nowrap">${s1}</td><td style="padding:1px 4px 1px 0;white-space:nowrap;font-variant-numeric:tabular-nums">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:1px 8px 1px 0;white-space:nowrap">${s2}</td><td style="padding:1px 0 1px 0;white-space:nowrap;font-variant-numeric:tabular-nums">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
+    const tc=same?'color:#b8860b':'color:#222';
+    h+=`<tr style="${tc}"><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td style="padding:0 4px 0 0;white-space:nowrap">${s1}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 8px 0 0">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:0 4px 0 0;white-space:nowrap">${s2}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
   }
-  h+='</table>';
-  // Strength comparison
-  h+=`<hr style="border:none;border-top:0.5px solid #3d2060;margin:6px 0">`;
-  h+=`<div style="font-size:11px;color:#9b7fd4;margin-bottom:3px">ความแข็งแกร่ง</div>`;
-  h+='<table style="width:100%;border-collapse:collapse;font-size:12px;line-height:1.5">';
+  h+=SEP;
+  h+=`<tr><td style="${CL};padding:1px 3px 1px 0" colspan="5">ความแข็งแกร่ง</td></tr>`;
   let total1=0,total2=0;
   for(let i=1;i<=8;i++){
     const[sc1,lb1]=getStrength(pos1,vel1,i,asc1);
@@ -464,12 +461,13 @@ function buildCompareReport(n1,n2){
     total1+=sc1;total2+=sc2;
     const c1=sc1>=6?'#2ea043':sc1>=0?'#b8860b':'#f85149';
     const c2=sc2>=6?'#2ea043':sc2>=0?'#b8860b':'#f85149';
-    h+=`<tr><td style="padding:1px 4px 1px 0;white-space:nowrap;color:#c9d1d9;font-weight:500">${ST[i]}</td><td style="color:${c1};padding:1px 8px 1px 0">${lb1}</td><td style="color:${c2}">${lb2}</td></tr>`;
+    h+=`<tr><td style="padding:0 3px 0 0;white-space:nowrap;font-weight:500;color:#222">${ST[i]}</td><td colspan="2" style="color:${c1};padding:0 8px 0 0;white-space:nowrap">${lb1}</td><td colspan="2" style="color:${c2};white-space:nowrap">${lb2}</td></tr>`;
   }
   const tc1=total1>=15?'#2ea043':total1>=5?'#b8860b':'#f85149';
   const tc2=total2>=15?'#2ea043':total2>=5?'#b8860b':'#f85149';
-  h+=`<tr><td style="color:#9b7fd4;font-size:11px;padding-top:4px">รวม</td><td style="color:${tc1};font-weight:500;padding-top:4px">${(total1>=0?'+':'')+total1}</td><td style="color:${tc2};font-weight:500;padding-top:4px">${(total2>=0?'+':'')+total2}</td></tr>`;
-  h+='</table></div>';
+  h+=SEP;
+  h+=`<tr><td style="${CL};padding:1px 3px 0 0">คะแนนรวม</td><td colspan="2" style="color:${tc1};font-weight:500;padding:1px 8px 0 0">${(total1>=0?'+':'')+total1}</td><td colspan="2" style="color:${tc2};font-weight:500;padding:1px 0 0 0">${(total2>=0?'+':'')+total2}</td></tr>`;
+  h+='</table>';
   return h;
 }
 
@@ -545,8 +543,17 @@ function _applyViewMode(){
   const btnView=document.getElementById('btn-view');
   const btnOuter=document.getElementById('btn-outer');
   btnView.textContent=VIEW_LABELS[_viewMode];
-  if(isV2){btnView.classList.add('view-outer');btnOuter.classList.add('hidden');}
-  else{btnView.classList.remove('view-outer');btnOuter.classList.remove('hidden');}
+  if(isV2){
+    btnView.classList.add('view-outer');
+    btnOuter.classList.add('hidden');
+    document.getElementById('btn-view-prev').classList.add('view-outer');
+    document.getElementById('btn-view-next').classList.add('view-outer');
+  }else{
+    btnView.classList.remove('view-outer');
+    btnOuter.classList.remove('hidden');
+    document.getElementById('btn-view-prev').classList.remove('view-outer');
+    document.getElementById('btn-view-next').classList.remove('view-outer');
+  }
 }
 function toggleView(){
   _viewMode=(_viewMode+1)%2;
@@ -654,14 +661,18 @@ function _redraw(){
   // isV2: outer ring shows _natal2; otherwise shows transit overlay
   const tposForOuter=isV2?(_natal2?.pos||null):(transitSrc?.pos||null);
   drawChart(pos,vel,ts_id,tposForOuter,pos,isV2);
+  const rp=document.getElementById('report-panel');
   if(isV2&&_natal2&&_natal2.pos){
+    if(rp)rp.classList.add('compare-mode');
     document.getElementById('report').innerHTML=buildCompareReport(_natal,_natal2);
   }else if(_reportTransitShow&&_transitDate&&_transitDate.vel){
+    if(rp)rp.classList.remove('compare-mode');
     const td=_transitDate;
     document.getElementById('report').innerHTML=buildReport(
       'ดาวจร','',td.d,td.m,td.y_be,td.t,td.prov,td.pos,td.vel,null,isV2
     );
   }else{
+    if(rp)rp.classList.remove('compare-mode');
     document.getElementById('report').innerHTML=buildReport(
       displayName,gender,d,m,y_be,t,prov,pos,vel,transitSrc?.pos,isV2
     );
@@ -844,7 +855,7 @@ function calculateChart1(){
   _calc1Done=true;
   _updateShareButton();
   _applyInputColors('1','done');
-  _viewMode=0;document.getElementById('btn-view').textContent=VIEW_LABELS[0];
+  _viewMode=0;_applyViewMode();
   switchTab(1);_redraw();
 }
 
@@ -868,7 +879,7 @@ function calculateChart2(){
   _calc2Done=true;
   _updateShareButton();
   _applyInputColors('2','done');
-  _viewMode=1;document.getElementById('btn-view').textContent=VIEW_LABELS[1];
+  _viewMode=1;_applyViewMode();
   switchTab(1);_redraw();
 }
 
@@ -1508,7 +1519,7 @@ function startLongPress(action,btn){
     btn.classList.remove('pressing');
     if(action==='save')saveChart();
     else shareChart();
-  },3000);
+  },1500);
 }
 function cancelLongPress(){
   if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}

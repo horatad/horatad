@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.2.9 | 2026-05-17 -->
+<!-- Version 2.2.11 | 2026-05-17 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -257,11 +257,11 @@ canvas{max-width:100%;height:auto}
     </div>
     <div class="btn-share-row" id="btn-share-row">
       <button id="btn-save" class="btn-share btn-save" disabled
-        onpointerdown="startLongPress('save',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()">
+        onpointerdown="startLongPress('save',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()" oncontextmenu="return false" style="user-select:none;-webkit-user-select:none">
         💾 บันทึก
       </button>
       <button id="btn-share" class="btn-share" disabled
-        onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()">
+        onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()" oncontextmenu="return false" style="user-select:none;-webkit-user-select:none">
         📤 แชร์
       </button>
     </div>

@@ -1,4 +1,4 @@
-/* Version 2.2.9 | 2026-05-17 */
+/* Version 2.2.11 | 2026-05-17 */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
 h1{font-size:15px;font-weight:500;margin-bottom:0.5rem;color:#333;display:flex;align-items:center;gap:6px;flex-wrap:nowrap;min-width:0;overflow:hidden}
@@ -93,6 +93,7 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 }
 .canvas-slot{min-width:0}
 .report-panel{background:#fff;border-radius:10px;border:0.5px solid #ddd;padding:0.75rem;min-width:0;transition:background 0.3s}
+.report-panel.compare-mode{background:#f7f3ff;border-color:#d4c5f0}
 #report table{margin:0;width:auto;border-collapse:collapse}
 #report td{padding:3px 10px 3px 0;white-space:nowrap;text-align:left;font-size:13px}
 
@@ -108,6 +109,7 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 .btn-nav{flex:0 0 auto!important;width:28px!important;padding:0!important;background:#3d2b5b!important;font-size:14px!important}
 .btn-nav:hover{background:#5b3fa0!important}
 .btn-nav:disabled{background:#333!important;color:#666!important;cursor:not-allowed}
+.btn-nav.view-outer{background:#5b3fa0!important;animation:blink-outer 1s step-start infinite}
 .btn-view-center{flex:1.5!important}
 .btn-view-center.view-outer{background:#5b3fa0!important;animation:blink-outer 1s step-start infinite}
 @keyframes blink-outer{0%,100%{opacity:1}50%{opacity:0.45}}
