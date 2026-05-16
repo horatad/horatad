@@ -1,4 +1,4 @@
-// Version 2.2.5 | 2026-05-17
+// Version 2.2.6 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -516,6 +516,7 @@ function toggleView(){
   _updateShareButton();
 }
 function toggleOuter(){
+  if(_viewMode===1)return; // lock เมื่อ ดวงนอก active
   _outerState=(_outerState+1)%5;
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
   _playBeep(700);
