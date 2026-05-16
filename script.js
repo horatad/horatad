@@ -1,4 +1,4 @@
-// Version 2.2.3 | 2026-05-17
+// Version 2.2.4 | 2026-05-17
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -732,7 +732,7 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
     const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
     let groups=Array.from({length:12},()=>[]);
     for(let i of showIdx){let z=Math.trunc(n2pos[i]/1800);if(z>=0&&z<12)groups[z].push({lbl:THAI_NUM[i]||String(i),deg:n2pos[i]%1800});}
-    ctx.font='bold 44px Sarabun,sans-serif';
+    ctx.font='bold 52px Sarabun,sans-serif';
     const SLOT_GAP=38;
     for(let iz=0;iz<12;iz++){
       let its=groups[iz];if(!its.length)continue;
@@ -742,15 +742,15 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
       let pr=rad+Math.PI/2,px=Math.cos(pr),py=-Math.sin(pr);
       for(let k=0;k<its.length;k++){
         let off=(k-(its.length-1)/2)*SLOT_GAP;
-        ctx.fillStyle='#5b3fa0';ctx.fillText(its[k].lbl,cx0+px*off,cy0+py*off);
+        ctx.fillStyle='#9b7fd4';ctx.fillText(its[k].lbl,cx0+px*off,cy0+py*off);
       }
     }
   }
   // logo top-right on canvas (size 160, margin 0, circular clip, alpha 1.0 + brightness)
   if(_logoImg.complete&&_logoImg.naturalWidth>0){
     const ls=160;
-    const lx=1000-ls;
-    const ly=0;
+    const lx=1000-ls+8;
+    const ly=-8;
     ctx.save();
     ctx.beginPath();
     ctx.arc(lx+ls/2,ly+ls/2,ls/2,0,Math.PI*2);
