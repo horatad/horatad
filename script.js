@@ -1,4 +1,10 @@
-// Version 2.2.12 | 2026-05-17
+// Version 2.2.16 | 2026-05-17
+// Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
+// Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
+// Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
+// Changes: [V2.2.13] Adhikamasa fix: lunar month uses lunation count (not sun longitude)
+//   - เพิ่ม _h0OfCS, _totalLunations, _isAdhikamasa, _getLunarMonthFixed
+//   - buildLunarInfo: แสดง ๘/๘ ปีอธิกมาส, เดือน 1-12 ปีปกติ
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image ลบ logo overlay ซ้ำซ้อน (chart-canvas มี logo อยู่แล้ว)
 //   - Bug fix: outer label สี unified — ลบ OUTER_LABEL_V2 ใช้ OUTER_LABEL_V1 เสมอ
@@ -390,15 +396,104 @@ function toThaiNum(n){
   return String(n).replace(/[0-9]/g,d=>'๐๑๒๓๔๕๖๗๘๙'[d]);
 }
 function getWeekdayTH(d,m,y_ce){return WEEKDAYS_TH[new Date(y_ce,m-1,d).getDay()];}
+// getTithi: ยังคงไว้ใช้กับ pos ในส่วนอื่น (ไม่ใช้ใน buildLunarInfo แล้ว)
 function getTithi(pos){
   const raw=(pos[2]-pos[1]+21600)%21600,t=Math.floor(raw/720)+1;
   return t<=15?{side:'ขึ้น',day:t}:{side:'แรม',day:t-15};
 }
-function getLunarMonthNum(pos){return(Math.floor(pos[1]/1800)+4)%12+1;}
 function getNaksatraYear(y_be){return NAKSATRA_THAI[(y_be+NAKSATRA_OFFSET)%12];}
+// ── Lunar calendar — V2.2.15 ──────────────────────────────────────────────
+// ค่าคงที่ชุดเดียวกับ _core: 292207,800,703,20760,692,373,233051,650
+// ไม่แตะ Y_MON / engine / sp[] — engine ไม่กระทบ
+// CS = BE−1181 (CS epoch 638CE = BE1181)
+//
+// เดือนคี่ = เดือนขาด (29 วัน, ไม่มีแรม 15):  1,3,5,7,9,11
+// ยกเว้น: เดือน 7 ปีอธิกวาร → เดือนถ้วน (30 วัน, แรม 15 มีจริง)
+// อธิกมาส และ อธิกวาร เกิดพร้อมกันไม่ได้
+
+// ── avoman helpers (ชุดเดิมจาก V2.2.13/14) ──────────────────────────────
+function _h0OfCS(cs){return Math.ceil((cs*292207+373)/800);}
+function _totalLunations(h0){return Math.floor((h0*703+650)/20760);}
+
+// ── adhikamasa ──────────────────────────────────────────────────────────────
+function _isAdhikamasa(y_be){
+  const cs=y_be-1181,hS=_h0OfCS(cs),hE=_h0OfCS(cs+1);
+  return(_totalLunations(hE)-_totalLunations(hS))===13;
+}
+const _adhikamasaCache=new Map();
+function _isAdhikamasaCached(y_be){
+  if(!_adhikamasaCache.has(y_be))_adhikamasaCache.set(y_be,_isAdhikamasa(y_be));
+  return _adhikamasaCache.get(y_be);
+}
+
+// ── adhikavara lookup table (จาก myhora.com — ยืนยันรายปี) ─────────────────
+// เดือน 7 ปีเหล่านี้ = เดือนถ้วน (30 วัน, แรม 15 มีจริง)
+// ยืนยันแล้ว: 2567=อธิกวาร, 2563/2565/2568=ปกติวาร
+// ปีที่ยังไม่ได้ยืนยัน: ใส่ไว้ตาม pattern 57 ปี (11 อธิกวาร)
+// → เพิ่ม/ลบได้ทันทีเมื่อตรวจ myhora ปีนั้นๆ
+const _ADHIKAVARA_YEARS=new Set([
+  2567,                    // ✓ ยืนยันแล้ว (myhora: ปกติมาส อธิกวาร)
+  // ── ยังไม่ยืนยัน — ต้องตรวจ myhora ────────────────────────────────────
+  2560, 2570, 2573, 2575, 2578, 2581, 2583
+]);
+function _isAdhikavaraCached(y_be){
+  if(_isAdhikamasaCached(y_be))return false;   // mutual exclusion เสมอ
+  return _ADHIKAVARA_YEARS.has(y_be);
+}
+
+// ── lunar month (รองรับอธิกมาส) ────────────────────────────────────────────
+const _NORMAL_MONTHS=[5,6,7,8,9,10,11,12,1,2,3,4];
+function getLunarMonthNum(pos){return(Math.floor(pos[1]/1800)+4)%12+1;} // backward-compat
+function _getLunarMonthFixed(d,m,y_be){
+  const y_ce=_beToce(y_be,m);
+  const h0=get_j(d,m,y_ce)-233051;
+  const cs=Math.trunc((h0*800-373)/292207);
+  const L=_totalLunations(h0)-_totalLunations(_h0OfCS(cs));
+  if(!_isAdhikamasaCached(y_be))return _NORMAL_MONTHS[Math.min(Math.max(L,0),11)];
+  if(L<=2)return _NORMAL_MONTHS[L];
+  if(L===3)return 8;                        // เดือน 8 แรก
+  if(L===4)return 88;                       // เดือน 8 หลัง
+  return _NORMAL_MONTHS[Math.min(L-1,11)];
+}
+
+// ── getLunarDay: tithi + month รวมกัน (รองรับ hollow month) ─────────────
+// คืน {side:'ขึ้น'|'แรม', day:1-15, mon:1-12|88}
+// Hollow month rule:
+//   เดือนคี่ (1,3,5,7,9,11) = 29 วัน → dithi 29 ไม่มีในเดือนนั้น
+//     → วันนั้นจริงๆ คือ ขึ้น 1 เดือนถัดไป
+//   ยกเว้น เดือน 7 ปีอธิกวาร → 30 วัน → dithi 29 = แรม 15 ถูกต้อง
+function _getLunarDay(d,m,y_be){
+  const y_ce=_beToce(y_be,m);
+  const h0=get_j(d,m,y_ce)-233051;
+  // avoman ณ 06:00 (time_dec=0.25 → Math.trunc(0.25*703)=175)
+  const aw_mp=Math.trunc(h0*703+650+175);
+  const aw_ml=((aw_mp%20760)+20760)%20760;
+  const dithi=Math.trunc(aw_ml/692);          // 0–29
+  const mon=_getLunarMonthFixed(d,m,y_be);
+  // hollow month: เดือนคี่ ยกเว้น เดือน 7 ปีอธิกวาร
+  const monNum=mon===88?8:mon;                 // 88→8 เพื่อตรวจเลขคี่
+  const isHollow=(monNum%2===1)&&!(mon===7&&_isAdhikavaraCached(y_be));
+  if(dithi<=14)return{side:'ขึ้น',day:dithi+1,mon};
+  if(dithi<=28)return{side:'แรม',day:dithi-14,mon};
+  // dithi===29
+  if(!isHollow)return{side:'แรม',day:15,mon};  // เดือนถ้วน → แรม 15
+  // เดือนขาด dithi 29 → ขึ้น 1 เดือนถัดไป
+  const nextMon=_nextMonth(mon,y_be);
+  return{side:'ขึ้น',day:1,mon:nextMon};
+}
+// เดือนถัดไป (ใช้เฉพาะกรณี hollow month dithi=29)
+function _nextMonth(mon,y_be){
+  if(mon===7&&_isAdhikamasaCached(y_be))return 88; // 7→8แรก ถ้าปีอธิกมาส
+  if(mon===88)return 9;                             // 8หลัง→9
+  const idx=_NORMAL_MONTHS.indexOf(mon);
+  return _NORMAL_MONTHS[(idx+1)%12];
+}
+
+// ── buildLunarInfo — signature ไม่เปลี่ยน → call site ไม่ต้องแก้ ──────────
 function buildLunarInfo(d,m,y_be,y_ce,pos){
-  const ti=getTithi(pos);
-  return`วัน${getWeekdayTH(d,m,y_ce)} ${ti.side} ${toThaiNum(ti.day)} ค่ำเดือน ${toThaiNum(getLunarMonthNum(pos))} ปี${getNaksatraYear(y_be)}`;
+  const{side,day,mon}=_getLunarDay(d,m,y_be);
+  const monStr=mon===88?'๘/๘':toThaiNum(mon);
+  return`วัน${getWeekdayTH(d,m,y_ce)} ${side} ${toThaiNum(day)} ค่ำเดือน ${monStr} ปี${getNaksatraYear(y_be)}`;
 }
 
 // ── HTML escape (V2.1 XSS protection) ─────────────────────
