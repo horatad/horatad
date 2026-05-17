@@ -1,4 +1,4 @@
-// Version 2.2.18 | 2026-05-17
+// Version 2.2.19 | 2026-05-17
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
 // Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
 // Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
@@ -150,7 +150,6 @@ let _evtLongPressTimer=null;
 let _kbRules=KB_RULES;   // embedded KB
 let _kbVersion=KB_META.version;
 let _kbTotal=KB_META.total;
-let _interpLoading=false;
 
 // ── Tab switching ─────────────────────────────────────────
 function switchTab(n){
@@ -1701,7 +1700,6 @@ function _matchRules(natal,transit){
 }
 // ── V2.2.17: Interpretation Modal ───────────────────────
 function openInterpretation(){
-  if(_interpLoading)return;
   const active=(_viewMode===1&&_natal2)?_natal2:_natal;
   if(!active||!_kbRules)return;
   const backdrop=document.getElementById('interp-backdrop');
@@ -1710,32 +1708,32 @@ function openInterpretation(){
   const spinner=document.getElementById('interp-spinner');
   const copyBtn=document.getElementById('interp-copy-btn');
   if(!backdrop||!modal)return;
+  const matched=_matchRules(active,_transit);
+  // format rules — grouped by chapter_title
+  const groups={};
+  matched.forEach(r=>{
+    const grp=r.ct||'ทั่วไป';
+    if(!groups[grp])groups[grp]=[];
+    groups[grp].push(r);
+  });
+  let out=`ดวงชาตา: ${active.name}\nพบ ${matched.length} กฎที่ตรงกับดวง\n`;
+  if(_transit)out+=`(รวมดาวจร)\n`;
+  out+='\n';
+  Object.entries(groups).forEach(([grp,rules])=>{
+    out+=`── ${grp} ──\n`;
+    rules.forEach(r=>{out+=`• ${r.c}\n  → ${r.p}\n\n`;});
+  });
+  out=out.trim();
   backdrop.classList.remove('hidden');
   modal.classList.remove('hidden');
-  text.textContent='';
-  text.classList.add('hidden');
-  spinner.classList.remove('hidden');
-  copyBtn.disabled=true;
-  _interpLoading=true;
-  const matched=_matchRules(active,_transit);
-  _callAI(active,_transit,matched)
-    .then(result=>{
-      spinner.classList.add('hidden');
-      text.classList.remove('hidden');
-      text.textContent=result;
-      copyBtn.disabled=false;
-    })
-    .catch(err=>{
-      spinner.classList.add('hidden');
-      text.classList.remove('hidden');
-      text.textContent='เกิดข้อผิดพลาด: '+err.message;
-    })
-    .finally(()=>{_interpLoading=false;});
+  spinner.classList.add('hidden');
+  text.classList.remove('hidden');
+  text.textContent=out||'ไม่พบกฎที่ตรงกับดวงนี้';
+  copyBtn.disabled=!out;
 }
 function closeInterpretation(){
   document.getElementById('interp-backdrop')?.classList.add('hidden');
   document.getElementById('interp-modal')?.classList.add('hidden');
-  _interpLoading=false;
 }
 function _copyInterpretation(){
   const text=document.getElementById('interp-text')?.textContent||'';
@@ -1750,48 +1748,6 @@ function _copyInterpretation(){
       document.body.removeChild(ta);
       _showToast('คัดลอกคำทำนายแล้ว');
     });
-}
-async function _callAI(natal,transit,matched){
-  const PNAMES=['ลัคนา','อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์','ราหู','เกตุ','มฤตยู'];
-  const ZN=Z_NAMES;
-  const lagnaSign=Math.trunc(natal.pos[0]/1800);
-  const planetSummary=PNAMES.slice(1).map((pn,i)=>{
-    const pIdx=i===9?0:i+1;
-    const pSign=Math.trunc(natal.pos[pIdx]/1800);
-    const qual=getStandards(natal.pos,pIdx)||'ปกติ';
-    const d=((pSign-lagnaSign)+12)%12;
-    const asp=d===0?'กุมลัคนา':d===6?'เล็งลัคนา':d===2||d===10?'โยคลัคนา':d===4||d===8?'ตรีโกณลัคนา':'ไม่สัมพันธ์ลัคนา';
-    return `${pn}: ราศี${ZN[pSign]} ${qual} ${asp}`;
-  }).join('\n');
-  let transitSummary='';
-  if(transit){
-    transitSummary='\nดาวจร:\n'+PNAMES.slice(1).map((pn,i)=>{
-      const pIdx=i===9?0:i+1;
-      const pSign=Math.trunc(transit.pos[pIdx]/1800);
-      const d=((pSign-lagnaSign)+12)%12;
-      const asp=d===0?'กุมลัคนา':d===6?'เล็งลัคนา':d===2||d===10?'โยคลัคนา':d===4||d===8?'ตรีโกณลัคนา':'';
-      return asp?`${pn}จร: ราศี${ZN[pSign]} ${asp}`:'';
-    }).filter(Boolean).join('\n');
-  }
-  const rulesText=matched.map(r=>`• ${r.c} → ${r.p}`).join('\n');
-  const sys=`คุณเป็นโหรไทยผู้เชี่ยวชาญโหราศาสตร์ Suriyart
-ตีความดวงจากกฎที่ให้มาเท่านั้น ห้ามเพิ่มเติมนอกกฎ
-ตอบภาษาไทย กระชับ อ่านง่าย แบ่งเป็นหัวข้อ
-ถ้าข้อมูลไม่เพียงพอในหัวข้อใด บอกว่า "ข้อมูลไม่เพียงพอ"`;
-  const usr=`ดวงชาตา: ${natal.name} (${natal.gender})\nลัคนา: ราศี${ZN[lagnaSign]}\n\n${planetSummary}${transitSummary}\n\nกฎโหราศาสตร์:\n${rulesText}\n\nสรุปดวงชาตาแบ่งเป็น: นิสัย/บุคลิก · การเงิน · ความรัก/คู่ครอง · สุขภาพ`;
-  const resp=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:1000,
-      system:sys,
-      messages:[{role:'user',content:usr}]
-    })
-  });
-  const data=await resp.json();
-  if(data.content&&data.content[0])return data.content[0].text;
-  throw new Error(data.error?.message||'AI error');
 }
 function _renderQuickMemory(){
   const el=document.getElementById('quick-memory-chips');
