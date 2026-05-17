@@ -1,7 +1,10 @@
-// Version 2.2.23 | 2026-05-17
-// Changes: [V2.2.23] A+B+C: ลบเพศจาก memory list, JD+lat ใน record, sort by JD (default),
-//   sound toggle 6 levels (0=🔇..5=🔊), long-press name field 1s → ลบทั้ง record + toast
-// Changes: [V2.2.21] Adhikavara formula (engine.py kamma), about-lunar rewrite
+// Version 2.2.25 | 2026-05-17
+// Changes: [V2.2.25] Adhikavara: เปลี่ยนจาก lookup table เป็น formula
+//   (kamma<114||kamma>669) + override จากประกาศสงกรานต์ สำนักพระราชวัง
+//   ตรวจสอบ 2557–2569 (13 ปี): mismatch เดียว = 2568 (override=true)
+// Changes: [V2.2.24] D+E: ทำนายจาก _natal เสมอ, btn-outer sync รายงาน,
+//   long-press 1s, shutter sound max volume, QR JD|T|LAT ใน capture image
+// Changes: [V2.2.23] A+B+C: memory list, JD+lat, sort, sound 6 levels, long-press name
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
 // Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
 // Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
@@ -510,19 +513,25 @@ function _isAdhikamasaCached(y_be){
   return _adhikamasaCache.get(y_be);
 }
 
-// ── adhikavara lookup table (จาก myhora.com — ยืนยันรายปี) ─────────────────
-// เดือน 7 ปีเหล่านี้ = เดือนถ้วน (30 วัน, แรม 15 มีจริง)
-// ยืนยันแล้ว: 2567=อธิกวาร, 2563/2565/2568=ปกติวาร
-// ปีที่ยังไม่ได้ยืนยัน: ใส่ไว้ตาม pattern 57 ปี (11 อธิกวาร)
-// → เพิ่ม/ลบได้ทันทีเมื่อตรวจ myhora ปีนั้นๆ
-const _ADHIKAVARA_YEARS=new Set([
-  2567,                    // ✓ ยืนยันแล้ว (myhora: ปกติมาส อธิกวาร)
-  // ── ยังไม่ยืนยัน — ต้องตรวจ myhora ────────────────────────────────────
-  2560, 2570, 2573, 2575, 2578, 2581, 2583
+// ── adhikavara formula (derive จาก engine.py kp = กัมมัชพล) ─────────────────
+// kamma = 800 - ((CS×292207+373) mod 800)  เปลี่ยนปีละ -207 หรือ +593
+// AV condition: kamma < 114 OR kamma > 669  (244/800 = 30.5% ≈ 11/36 ปกติมาส)
+function _isAdhikavaraFormula(y_be){
+  const cs=y_be-1181;
+  const kamma=800-((cs*292207+373)%800);
+  return kamma<114||kamma>669;
+}
+// Source: ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง เท่านั้น
+// ตรวจสอบแล้ว 2557–2569 (13 ปี): mismatch เดียว = 2568
+// เพิ่ม entry เมื่อ formula ≠ official พร้อมระบุ CS + แหล่งอ้างอิง
+const _ADHIKAVARA_OVERRIDE=new Map([
+  [2568,true],  // CS 1387 — formula(kamma=518)=PV, official=AV
+                // ประกาศสงกรานต์ 2568: "อธิกวาร" (thaigov.go.th, prd.go.th)
 ]);
 function _isAdhikavaraCached(y_be){
-  if(_isAdhikamasaCached(y_be))return false;   // mutual exclusion เสมอ
-  return _ADHIKAVARA_YEARS.has(y_be);
+  if(_isAdhikamasaCached(y_be))return false;
+  if(_ADHIKAVARA_OVERRIDE.has(y_be))return _ADHIKAVARA_OVERRIDE.get(y_be);
+  return _isAdhikavaraFormula(y_be);
 }
 
 // ── lunar month (รองรับอธิกมาส) ────────────────────────────────────────────
@@ -1152,7 +1161,7 @@ function _buildShareFilename(active){
 async function saveChart(){
   const active=_viewMode===1?_transit:_natal;
   if(!active)return;
-  _playBeep(700);
+  _playShutter();
   const blob=await _generateShareImage(active);
   if(!blob){_showToast('ไม่สามารถสร้างรูปได้',true);return;}
   const filename=_buildShareFilename(active);
@@ -1168,7 +1177,7 @@ async function saveChart(){
 async function shareChart(){
   const active=_viewMode===1?_transit:_natal;
   if(!active)return;
-  _playBeep(700);
+  _playShutter();
   const blob=await _generateShareImage(active);
   if(!blob){_showToast('ไม่สามารถสร้างรูปได้',true);return;}
   const filename=_buildShareFilename(active);
@@ -1190,6 +1199,17 @@ async function shareChart(){
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
   _showToast('เบราว์เซอร์ไม่รองรับแชร์ — บันทึกไฟล์แทน');
+}
+
+// V2.2.24: load qrcode.js on-demand (not in CORE_ASSETS)
+async function _loadQRLib(){
+  if(window.QRCode)return;
+  await new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
 }
 
 async function _generateShareImage(active){
@@ -1223,6 +1243,21 @@ async function _generateShareImage(active){
   ctx.fillStyle='#c9d1d9';
   ctx.font='500 28px Sarabun,sans-serif';
   ctx.fillText(scoreLabel,SZ/2,1050);
+  // V2.2.24: QR code bottom-right — JD:xxxxx|T:HH:MM|LAT:xx.xx
+  try{
+    await _loadQRLib();
+    const jd=_calcJD(active.d,active.m,active.y_be);
+    const lat=(PROVINCES_LAT[active.prov||'']||13.75).toFixed(2);
+    const qrText=`JD:${jd}|T:${active.t}|LAT:${lat}`;
+    const qrDiv=document.createElement('div');
+    qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
+    document.body.appendChild(qrDiv);
+    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff'});
+    await new Promise(r=>setTimeout(r,80));
+    const qrCv=qrDiv.querySelector('canvas');
+    if(qrCv)ctx.drawImage(qrCv,SZ-126,SZ-126,110,110);
+    document.body.removeChild(qrDiv);
+  }catch(e){console.warn('[QR]',e);}
   return new Promise(resolve=>c.toBlob(resolve,'image/png',0.95));
 }
 
@@ -1704,15 +1739,33 @@ function _updatePre2484Warning(){
 }
 
 // ── PWA Install ───────────────────────────────────────────
-// Long-press 3s สำหรับ btn-save / btn-share
+// Long-press 1s สำหรับ btn-save / btn-share
 let _lpTimer=null;
+// V2.2.24: shutter sound max volume ไม่ขึ้นกับ _soundLevel
+function _playShutter(){
+  try{
+    if(!_audioCtx)_audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(_audioCtx.state==='suspended')_audioCtx.resume();
+    const ac=_audioCtx;
+    const dur=0.06;
+    const buf=ac.createBuffer(1,Math.ceil(ac.sampleRate*dur),ac.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(ac.sampleRate*0.008));
+    const src=ac.createBufferSource();
+    const gain=ac.createGain();
+    src.buffer=buf;
+    gain.gain.setValueAtTime(0.40,ac.currentTime);
+    src.connect(gain);gain.connect(ac.destination);
+    src.start();
+  }catch{}
+}
 function startLongPress(action,btn){
   btn.classList.add('btn-share-progress','pressing');
   _lpTimer=setTimeout(()=>{
     btn.classList.remove('pressing');
     if(action==='save')saveChart();
     else shareChart();
-  },1500);
+  },1000);
 }
 function cancelLongPress(){
   if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}
