@@ -1,4 +1,4 @@
-// Version 2.2.20 | 2026-05-17
+// Version 2.2.21 | 2026-05-17
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
 // Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
 // Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
@@ -1675,34 +1675,41 @@ function _matchRules(natal,transit){
     const pIdx=i===10?0:i;
     const pSign=Math.trunc(natal.pos[pIdx]/1800);
     const pQualRaw=getStandards(natal.pos,pIdx);
-    // split "/", remap, filter to valid QLABELS only
     const pQuals=pQualRaw
       ?pQualRaw.split('/').map(q=>QUAL_MAP[q]||q).filter(q=>QLABELS[q])
       :[];
-    // quality group จาก tb_standards.score
     const pScore=pQuals.length>0?Math.max(...pQuals.map(q=>SCORE_MAP[q]||0)):0;
-    const pIsBad=pScore<0;          // เสีย: ประเกษตร(-3), นิจ(-5)
-    const pIsNormal=pScore===0;     // ปกติ
-    const pIsGood=pScore>0;         // ดี/ดีรอง/ดีมาก ทุกระดับ
-    const pIsVeryGood=pScore>=4;    // ดีมาก: เกษตร(4), มหาจักร(4), อุจ(5)
+    const pIsBad=pScore<0;
+    const pIsNormal=pScore===0;
+    const pIsGood=pScore>0;
     const asp=aspSign(pSign);
     const hasAsp=asp!=='';
     _kbRules.forEach(r=>{
       const ts=(r.t||[]).join(' ');
       const rtags=r.t||[];
-      const hasP=ts.includes(pName);
-      if(!hasP)return;
+      if(!ts.includes(pName))return;
+      // ── Quality gate (AND) ──────────────────────────────────────────
+      // ตรวจ quality constraint ของ rule ก่อน
+      // ถ้าคุณภาพดาวไม่ตรง → ออกเลย ไม่ต้องดู aspect
+      const rBad=rtags.includes('เสีย');
+      const rGood=rtags.includes('ดี')||rtags.includes('ดีมาก')||rtags.includes('ดีรอง');
+      const rNormal=rtags.includes('ปกติ');
+      const rSpecific=rtags.filter(t=>QLABELS[t]);  // เกษตร/อุจ/นิจ/... exact
+      if(rBad&&!pIsBad)return;                        // rule ต้องการเสีย แต่ดาวไม่เสีย
+      if(rGood&&!pIsGood)return;                      // rule ต้องการดี แต่ดาวไม่ดี
+      if(rNormal&&!pIsNormal)return;                  // rule ต้องการปกติ แต่ดาวไม่ปกติ
+      if(rSpecific.length>0&&!rSpecific.some(q=>pQuals.includes(q)))return;
+      // ── Aspect match (หลัง quality gate ผ่าน) ──────────────────────
       const hasL=ts.includes('ลัคนา');
       const hasNL=ts.includes('ไม่สัมพันธ์ลัคนา');
-      if(hasAsp&&hasL&&!hasNL)addRule(r);
-      if(!hasAsp&&hasNL)addRule(r);
-      // specific quality match (exact array element — ป้องกัน เกษตร⊂ประเกษตร)
-      if(pQuals.some(q=>rtags.includes(q)))addRule(r);
-      // quality group match จาก tb_standards
-      if(pIsBad&&rtags.includes('เสีย'))addRule(r);
-      if(pIsGood&&rtags.includes('ดี'))addRule(r);
-      if(pIsVeryGood&&rtags.includes('ดีมาก'))addRule(r);
-      if(pIsNormal&&rtags.includes('ปกติ'))addRule(r);
+      if(hasL||hasNL){
+        // rule มี aspect constraint
+        if(hasAsp&&hasL&&!hasNL)addRule(r);
+        if(!hasAsp&&hasNL)addRule(r);
+      } else {
+        // rule ไม่มี aspect constraint → match ถ้า quality gate ผ่านแล้ว
+        addRule(r);
+      }
     });
   }
   // transit planet matching
