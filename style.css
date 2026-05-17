@@ -306,3 +306,5 @@ body.about-active .logo-h1{display:none}
 .interp-copy-btn:hover:not(:disabled){background:#7b5fc0}
 .interp-copy-btn:disabled{background:#444;color:#777;cursor:not-allowed}
 .about-kb-version{font-size:10px;color:#8b949e;margin-top:2px}
+.btn-kb-load{display:block;margin-top:6px;width:100%;padding:9px;background:#1a3a2a;color:#56d364;border:1px solid #2ea043;border-radius:8px;font-size:14px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer;font-weight:500;text-align:center;box-sizing:border-box}
+.btn-kb-load:hover{background:#1f4a33}

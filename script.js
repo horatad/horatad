@@ -1053,7 +1053,10 @@ function _updateShareButton(){
   const btnIn=document.getElementById('btn-interpret');
   if(btnS)btnS.disabled=!hasData;
   if(btnSv)btnSv.disabled=!hasData;
-  if(btnIn)btnIn.disabled=!hasData||!_kbRules;
+  if(btnIn){
+    if(!_kbRules){btnIn.classList.add('hidden');}
+    else{btnIn.classList.remove('hidden');btnIn.disabled=!hasData;}
+  }
 }
 
 function _buildShareFilename(active){
@@ -1647,18 +1650,60 @@ function hideLunarPage(){
 }
 // ── V2.2.17: KB Load ─────────────────────────────────────
 function _loadKB(){
+  const el=document.getElementById('kb-version-display');
+  // hourglass animation while loading
+  const _HG=['⏳','⌛'];
+  let _hgIdx=0;
+  const _hgTimer=setInterval(()=>{
+    if(el)el.textContent=_HG[_hgIdx%2]+' กำลังโหลด Knowledge Base...';
+    _hgIdx++;
+  },600);
+  if(el)el.textContent='⏳ กำลังโหลด Knowledge Base...';
+
   fetch('./kb.json')
-    .then(r=>r.json())
+    .then(r=>{
+      if(!r.ok)throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
     .then(data=>{
+      clearInterval(_hgTimer);
       _kbRules=data.rules||[];
       _kbVersion=data.version||'?';
       _kbTotal=data.total||_kbRules.length;
-      // update about page display
+      if(el)el.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
+      _updateShareButton();
+      _showToast(`KB v${_kbVersion} พร้อมทำงาน`);
+    })
+    .catch(err=>{
+      clearInterval(_hgTimer);
+      const msg=err.message||'ไม่พบไฟล์';
+      if(el)el.textContent=`⚠️ โหลด Knowledge Base ไม่สำเร็จ (${msg})`;
+      _showToast(`โหลด KB ไม่สำเร็จ: ${msg}`,true);
+      console.warn('kb.json load failed:',err);
+    });
+}
+function loadKBFromFile(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  event.target.value=''; // reset ให้โหลดไฟล์เดิมซ้ำได้
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.rules||!Array.isArray(data.rules))throw new Error('รูปแบบไม่ถูกต้อง');
+      _kbRules=data.rules;
+      _kbVersion=data.version||'?';
+      _kbTotal=data.total||_kbRules.length;
       const el=document.getElementById('kb-version-display');
       if(el)el.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
       _updateShareButton();
-    })
-    .catch(()=>{console.warn('kb.json load failed');});
+      _showToast(`KB v${_kbVersion} พร้อมทำงาน`);
+      switchTab(1);
+    }catch(err){
+      _showToast('ไฟล์ไม่ถูกต้อง: '+err.message,true);
+    }
+  };
+  reader.readAsText(file,'utf-8');
 }
 // ── V2.2.17: Rule Matching ───────────────────────────────
 function _matchRules(natal,transit){
