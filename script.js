@@ -1,4 +1,7 @@
-// Version 2.2.25 | 2026-05-17
+// Version 2.2.26 | 2026-05-17
+// Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
+//   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
+//   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
 // Changes: [V2.2.25] Adhikavara: เปลี่ยนจาก lookup table เป็น formula
 //   (kamma<114||kamma>669) + override จากประกาศสงกรานต์ สำนักพระราชวัง
 //   ตรวจสอบ 2557–2569 (13 ปี): mismatch เดียว = 2568 (override=true)
@@ -503,9 +506,16 @@ function _h0OfCS(cs){return Math.ceil((cs*292207+373)/800);}
 function _totalLunations(h0){return Math.floor((h0*703+650)/20760);}
 
 // ── adhikamasa ──────────────────────────────────────────────────────────────
+// [V2.2.26] เปลี่ยน formula จาก totalLunations diff → avoman threshold
+// avoman (aw_ml) ณ ต้น CS year = (hS×703+650) mod 20760
+// AM zone = 7/19 ของวงกลม ≈ 7648 avoman units (7 อธิกมาส ใน 19 ปี)
+// AM ถ้า aw_ml ∈ [0,3824) ∪ (16936,20760)
+// ตรวจสอบ 2557–2583 (27 ปี): 13/13 ✓ vs ประกาศสงกรานต์ สำนักพระราชวัง/มยุรา
 function _isAdhikamasa(y_be){
-  const cs=y_be-1181,hS=_h0OfCS(cs),hE=_h0OfCS(cs+1);
-  return(_totalLunations(hE)-_totalLunations(hS))===13;
+  const cs=y_be-1181;
+  const hS=_h0OfCS(cs);
+  const aw=(hS*703+650)%20760;
+  return aw<3824||aw>16936;
 }
 const _adhikamasaCache=new Map();
 function _isAdhikamasaCached(y_be){
