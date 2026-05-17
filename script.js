@@ -1629,6 +1629,14 @@ function hideContactPage(){
   document.getElementById('about-contact').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
 }
+function showLunarPage(){
+  document.getElementById('about-main').classList.add('hidden');
+  document.getElementById('about-lunar').classList.remove('hidden');
+}
+function hideLunarPage(){
+  document.getElementById('about-lunar').classList.add('hidden');
+  document.getElementById('about-main').classList.remove('hidden');
+}
 function _renderQuickMemory(){
   const el=document.getElementById('quick-memory-chips');
   if(!el)return;

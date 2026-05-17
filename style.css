@@ -280,3 +280,8 @@ body.about-active .logo-h1{display:none}
 @media(min-width:1200px){
   .result-layout{grid-template-columns:minmax(0,520px) 1fr}
 }
+.btn-lunar-page{margin-top:8px;width:100%;padding:9px;background:#1a4a6b;color:#fff;border:none;border-radius:8px;font-size:14px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer;font-weight:500}
+.btn-lunar-page:hover{background:#155a80}
+.about-lunar-text{font-size:13px;color:#444;line-height:1.6;margin-bottom:8px}
+.about-lunar-badge{display:inline-block;font-size:11px;background:#e6f4ec;color:#1a6b3c;border-radius:4px;padding:2px 8px;margin-bottom:4px;font-weight:500}
+.about-lunar-badge-warn{background:#fff8e1;color:#b8860b}
