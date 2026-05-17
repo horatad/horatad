@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.2.17 | 2026-05-17 -->
+<!-- Version 2.2.18 | 2026-05-17 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -166,16 +166,12 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 2.2.17</div>
+        <div class="about-version">V 2.2.18</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มระบบคำทำนาย AI</div>
-        <div id="kb-version-display" class="about-kb-version">Knowledge Base กำลังโหลด...</div>
+        <div id="kb-version-display" class="about-kb-version"></div>
       </div>
       <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
     </div>
-    <label class="btn-kb-load" title="โหลด kb.json จากเครื่อง">
-      📂 โหลด Knowledge Base
-      <input type="file" accept=".json,application/json" onchange="loadKBFromFile(event)" style="display:none">
-    </label>
     <div class="about-features-compact">
       <div class="about-feature-row">
         <span class="about-feature-icon">🔒</span>
@@ -312,7 +308,7 @@ canvas{max-width:100%;height:auto}
         onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()" oncontextmenu="return false" style="user-select:none;-webkit-user-select:none">
         📤 แชร์
       </button>
-      <button id="btn-interpret" class="btn-share btn-interpret hidden" disabled onclick="openInterpretation()">
+      <button id="btn-interpret" class="btn-share btn-interpret" disabled onclick="openInterpretation()">
         🔮 ทำนาย
       </button>
     </div>
