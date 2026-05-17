@@ -1,5 +1,7 @@
-// Version 2.2.22 | 2026-05-17
-// Changes: [V2.2.22] Adhikavara: เปลี่ยนจาก lookup table เป็น formula (kamma<114||kamma>669) + override table จากประกาศสงกรานต์ สำนักพระราชวัง
+// Version 2.2.23 | 2026-05-17
+// Changes: [V2.2.23] A+B+C: ลบเพศจาก memory list, JD+lat ใน record, sort by JD (default),
+//   sound toggle 6 levels (0=🔇..5=🔊), long-press name field 1s → ลบทั้ง record + toast
+// Changes: [V2.2.21] Adhikavara formula (engine.py kamma), about-lunar rewrite
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
 // Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
 // Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
@@ -93,6 +95,35 @@ const PROVINCES={
 "สุรินทร์":103.49,"หนองคาย":102.74,"หนองบัวลำภู":102.43,"อ่างทอง":100.45,
 "อุดรธานี":102.79,"อุทัยธานี":100.03,"อุตรดิตถ์":100.09,"อุบลราชธานี":104.85,"อำนาจเจริญ":104.63
 };
+// V2.2.23: ละติจูดโดยประมาณรายจังหวัด (อ้างอิง)
+const PROVINCES_LAT={
+"กรุงเทพมหานคร":13.75,"กระบี่":8.09,"กาญจนบุรี":14.02,"กาฬสินธุ์":16.43,
+"กำแพงเพชร":16.48,"ขอนแก่น":16.44,"จันทบุรี":12.60,"ฉะเชิงเทรา":13.69,
+"ชลบุรี":13.36,"ชัยนาท":15.19,"ชัยภูมิ":15.81,"ชุมพร":10.49,
+"เชียงราย":19.91,"เชียงใหม่":18.79,"ตรัง":7.56,"ตราด":12.24,
+"ตาก":16.88,"นครนายก":14.20,"นครปฐม":13.82,"นครพนม":17.39,
+"นครราชสีมา":14.98,"นครศรีธรรมราช":8.43,"นครสวรรค์":15.70,"นนทบุรี":13.86,
+"นราธิวาส":6.43,"น่าน":18.78,"บึงกาฬ":18.36,"บุรีรัมย์":14.99,
+"ปทุมธานี":14.02,"ประจวบคีรีขันธ์":11.81,"ปราจีนบุรี":14.05,"ปัตตานี":6.87,
+"พระนครศรีอยุธยา":14.37,"พะเยา":19.16,"พังงา":8.45,"พัทลุง":7.62,
+"พิจิตร":16.44,"พิษณุโลก":16.82,"เพชรบุรี":13.11,"เพชรบูรณ์":16.42,
+"แพร่":18.14,"ภูเก็ต":7.89,"มหาสารคาม":16.00,"มุกดาหาร":16.54,
+"แม่ฮ่องสอน":19.30,"ยโสธร":15.79,"ยะลา":6.54,"ร้อยเอ็ด":16.05,
+"ระนอง":9.96,"ระยอง":12.68,"ราชบุรี":13.54,"ลพบุรี":14.80,
+"ลำปาง":18.29,"ลำพูน":18.58,"เลย":17.49,"ศรีสะเกษ":15.12,
+"สกลนคร":17.16,"สงขลา":7.19,"สตูล":6.62,"สมุทรปราการ":13.60,
+"สมุทรสงคราม":13.41,"สมุทรสาคร":13.55,"สระแก้ว":13.82,"สระบุรี":14.53,
+"สิงห์บุรี":14.89,"สุโขทัย":17.01,"สุพรรณบุรี":14.47,"สุราษฎร์ธานี":9.13,
+"สุรินทร์":14.88,"หนองคาย":17.88,"หนองบัวลำภู":17.21,"อ่างทอง":14.59,
+"อุดรธานี":17.41,"อุทัยธานี":15.38,"อุตรดิตถ์":17.62,"อุบลราชธานี":15.25,"อำนาจเจริญ":15.87
+};
+// V2.2.23: Julian Day จาก d/m/y_BE — ตรงกับ engine.py get_j
+function _calcJD(d,m,y_be){
+  const y=y_be-543;
+  const yt=m>=3?y:y-1,mt=m>=3?m-3:m+9;
+  const y1=Math.trunc(30.6*mt+0.5);
+  return 365*yt+d+y1+Math.trunc(yt/4)-Math.trunc(yt/100)+Math.trunc(yt/400)+2;
+}
 const Z_NAMES=["เมษ","พฤษภ","มิถุน","กรกฎ","สิงห์","กันย์","ตุลย์","พิจิก","ธนู","มกร","กุมภ์","มีน"];
 const H_SHORT=["ตนุ","กดุมพ","สหัช","พันธุ","ปุตต","อริ","ปัตนิ","มรณ","ศุภ","กัมม","ลาภ","วินาศ"];
 const ST=["ล","๑","๒","๓","๔","๕","๖","๗","๘","๙","๐"];
@@ -138,9 +169,9 @@ let _confirmCallback=null;
 let _deferredInstallPrompt=null; // V2.1 PWA install
 let _swRefreshing=false; // V2.1.5 prevent double reload on SW update
 // V2.1.9
-let _soundEnabled=false;
+let _soundLevel=1; // 0=🔇 off, 1-5 = 🔈🔉🔊 scale
 let _audioCtx=null;
-let _memSort='recent'; // 'recent' | 'asc' | 'desc'
+let _memSort='jd_desc'; // 'jd_desc'|'jd_asc'|'recent'|'asc'|'desc'
 let _evtSort='recent';
 let _numpadPrevValue='';
 let _numpadInvalidCount=0;
@@ -230,28 +261,35 @@ function resetTransit(){
 
 // ── V2.1.9: Sound (Web Audio beep) ────────────────────────
 const SOUND_KEY='horatad_sound_v1';
+const SOUND_ICONS=['🔇','🔈','🔉','🔉','🔊','🔊'];
 function _initSound(){
   const stored=localStorage.getItem(SOUND_KEY);
-  _soundEnabled=stored==='1';
-  const cb=document.getElementById('sound-toggle');
-  if(cb)cb.checked=_soundEnabled;
+  const v=parseInt(stored,10);
+  _soundLevel=(!isNaN(v)&&v>=0&&v<=5)?v:1;
+  _updateSoundBtn();
 }
-function toggleSound(on){
-  _soundEnabled=!!on;
-  try{localStorage.setItem(SOUND_KEY,_soundEnabled?'1':'0');}catch{}
-  if(_soundEnabled)_playBeep(800);
+function _updateSoundBtn(){
+  const btn=document.getElementById('sound-btn');
+  if(btn)btn.textContent=SOUND_ICONS[_soundLevel]+' เสียง';
+}
+function cycleSoundLevel(){
+  _soundLevel=(_soundLevel+1)%6;
+  try{localStorage.setItem(SOUND_KEY,String(_soundLevel));}catch{}
+  _updateSoundBtn();
+  if(_soundLevel>0)_playBeep(800);
 }
 function _playBeep(freq){
-  if(!_soundEnabled)return;
+  if(_soundLevel===0)return;
   try{
     if(!_audioCtx)_audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     if(_audioCtx.state==='suspended')_audioCtx.resume();
     const ac=_audioCtx;
     const osc=ac.createOscillator();
     const gain=ac.createGain();
+    const g=_soundLevel*0.08;
     osc.type='sine';
     osc.frequency.value=freq||700;
-    gain.gain.setValueAtTime(0.08,ac.currentTime);
+    gain.gain.setValueAtTime(g,ac.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.04);
     osc.connect(gain);gain.connect(ac.destination);
     osc.start();
@@ -259,7 +297,44 @@ function _playBeep(freq){
   }catch{}
 }
 
-// ── V2.1.9: Toast ─────────────────────────────────────────
+// ── V2.2.23: Long-press name field → ลบทั้ง record ────────
+let _nameLpTimer=null;
+function _initLongPress(){
+  ['1','2'].forEach(sec=>{
+    const el=document.getElementById(`name-${sec}`);
+    if(!el)return;
+    el.addEventListener('pointerdown',()=>{
+      _nameLpTimer=setTimeout(()=>{
+        _nameLpTimer=null;
+        _clearSection(sec);
+        _showToast(`ล้างดวงที่ ${sec} แล้ว`);
+        if(navigator.vibrate)navigator.vibrate(80);
+        _playBeep(500);
+      },1000);
+    });
+    const cancel=()=>{if(_nameLpTimer){clearTimeout(_nameLpTimer);_nameLpTimer=null;}};
+    el.addEventListener('pointerup',cancel);
+    el.addEventListener('pointerleave',cancel);
+    el.addEventListener('pointermove',cancel);
+  });
+}
+function _clearSection(sec){
+  ['name','d','m','y','t'].forEach(f=>{
+    const id=f==='name'?`name-${sec}`:`${f}${sec}`;
+    const el=document.getElementById(id);
+    if(el)el.value='';
+  });
+  if(sec==='1'){
+    document.getElementById('prov1').value='กรุงเทพมหานคร';
+    document.getElementById('gender1').value='ชาย';
+    _customLng1=null;_applyInputColors('1','init');
+  }else{
+    document.getElementById('prov2').value='กรุงเทพมหานคร';
+    document.getElementById('gender2').value='ชาย';
+    _customLng2=null;_applyInputColors('2','init');
+  }
+}
+
 function _showToast(msg,warn){
   const t=document.getElementById('toast');
   if(!t)return;
@@ -435,26 +510,19 @@ function _isAdhikamasaCached(y_be){
   return _adhikamasaCache.get(y_be);
 }
 
-// ── adhikavara formula (derive จาก engine.py kp = กัมมัชพล) ──────────────
-// kamma = 800 - ((CS×292207+373) mod 800)  เปลี่ยนปีละ -207 หรือ +593
-// AV condition: kamma < 114 OR kamma > 669  (244/800 ≈ 30.5% ≈ 11/36 ปกติมาส)
-// Verified 2558–2568 vs ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง
-function _isAdhikavaraFormula(y_be){
-  const cs=y_be-1181;
-  const kamma=800-((cs*292207+373)%800);
-  return kamma<114||kamma>669;
-}
-
-// Source: ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง เท่านั้น
-// เพิ่ม entry เมื่อ formula ≠ official พร้อมระบุ CS + แหล่งอ้างอิง
-const _ADHIKAVARA_OVERRIDE=new Map([
-  [2568,true],  // CS 1387 — ประกาศสงกรานต์ 2568: "อธิกวาร" / formula (kamma=518) ผิด
+// ── adhikavara lookup table (จาก myhora.com — ยืนยันรายปี) ─────────────────
+// เดือน 7 ปีเหล่านี้ = เดือนถ้วน (30 วัน, แรม 15 มีจริง)
+// ยืนยันแล้ว: 2567=อธิกวาร, 2563/2565/2568=ปกติวาร
+// ปีที่ยังไม่ได้ยืนยัน: ใส่ไว้ตาม pattern 57 ปี (11 อธิกวาร)
+// → เพิ่ม/ลบได้ทันทีเมื่อตรวจ myhora ปีนั้นๆ
+const _ADHIKAVARA_YEARS=new Set([
+  2567,                    // ✓ ยืนยันแล้ว (myhora: ปกติมาส อธิกวาร)
+  // ── ยังไม่ยืนยัน — ต้องตรวจ myhora ────────────────────────────────────
+  2560, 2570, 2573, 2575, 2578, 2581, 2583
 ]);
-
 function _isAdhikavaraCached(y_be){
   if(_isAdhikamasaCached(y_be))return false;   // mutual exclusion เสมอ
-  if(_ADHIKAVARA_OVERRIDE.has(y_be))return _ADHIKAVARA_OVERRIDE.get(y_be);
-  return _isAdhikavaraFormula(y_be);
+  return _ADHIKAVARA_YEARS.has(y_be);
 }
 
 // ── lunar month (รองรับอธิกมาส) ────────────────────────────────────────────
@@ -553,7 +621,7 @@ function buildCompareReport(n1,n2){
   h+=`<tr><td colspan="5" style="padding:2px 0;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงใน</span>  ${_escHtml(n1.name||'—')}  ${n1.d}/${n1.m}/${n1.y_be}(${y_ce1})  ${n1.t}  ${_escHtml(n1.prov||'')}</td></tr>`;
   h+=`<tr><td colspan="5" style="padding:1px 0 2px;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</td></tr>`;
   h+=SEP;
-  h+=`<tr style="color:#888;font-size:0.9em"><td style="padding:0 3px 0 0">ดาว</td><td colspan="2" style="padding:0 6px 0 0">ตำแหน่งดาวดวงใน</td><td colspan="2" style="padding:0">ตำแหน่งดาวดวงนอก</td></tr>`;
+  h+=`<tr style="color:#888;font-size:0.9em"><td style="padding:0 3px 0 0">ดาว</td><td colspan="2" style="padding:0 4px 0 0">ตำแหน่งดาวดวงใน</td><td colspan="2" style="padding:0">ตำแหน่งดาวดวงนอก</td></tr>`;
   for(let i=0;i<11;i++){
     const p1=pos1[i],p2=pos2[i];
     const s1=Z_NAMES[Math.trunc(p1/1800)],s2=Z_NAMES[Math.trunc(p2/1800)];
@@ -561,7 +629,7 @@ function buildCompareReport(n1,n2){
     const d2=Math.trunc((p2%1800)/60),m2=p2%60;
     const same=Math.trunc(p1/1800)===Math.trunc(p2/1800);
     const tc=same?'color:#b8860b':'color:#222';
-    h+=`<tr style="${tc}"><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td style="padding:0 6px 0 0;white-space:nowrap">${s1}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 8px 0 0">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:0 6px 0 0;white-space:nowrap">${s2}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
+    h+=`<tr style="${tc}"><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td style="padding:0 4px 0 0;white-space:nowrap">${s1}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 4px 0 0">${String(d1).padStart(2,'0')}°${String(m1).padStart(2,'0')}'</td><td style="padding:0 4px 0 0;white-space:nowrap">${s2}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap">${String(d2).padStart(2,'0')}°${String(m2).padStart(2,'0')}'</td></tr>`;
   }
   h+=SEP;
   h+=`<tr><td ${CL} colspan="5">ความแข็งแกร่ง</td></tr>`;
@@ -1319,7 +1387,10 @@ function _addMemory(entry){
   const k=key(entry);
   const isDup=mem.some(m=>key(m)===k);
   mem=mem.filter(m=>key(m)!==k);
-  mem.unshift({...entry,savedAt:Date.now()});
+  mem.unshift({...entry,
+    jd:(entry.d&&entry.m&&entry.y_be)?_calcJD(entry.d,entry.m,entry.y_be):null,
+    lat:(typeof entry.lat==='number')?entry.lat:(PROVINCES_LAT[entry.prov||'']||13.75),
+    savedAt:Date.now()});
   _saveJSON(MEM_KEY,mem.slice(0,MEM_MAX));
   return isDup?'updated':'saved';
 }
@@ -1328,16 +1399,19 @@ function _addMemory(entry){
 let _memSection='1';
 let _memCache=[];
 
-// V2.1.9: sort memory by current mode
-const _MEM_SORT_LABELS={'recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
+// V2.2.23: sort memory by current mode (added jd_desc/jd_asc)
+const _MEM_SORT_LABELS={'jd_desc':'📅 ใหม่→เก่า','jd_asc':'📅 เก่า→ใหม่','recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
 function cycleMemorySort(){
-  _memSort=_memSort==='recent'?'asc':_memSort==='asc'?'desc':'recent';
+  const order=['jd_desc','jd_asc','recent','asc','desc'];
+  _memSort=order[(order.indexOf(_memSort)+1)%order.length];
   const btn=document.getElementById('memory-sort-btn');
   if(btn)btn.textContent=_MEM_SORT_LABELS[_memSort];
   _playBeep(700);
   _renderMemory(document.getElementById('memory-search')?.value||'');
 }
 function _sortByMode(arr,mode){
+  if(mode==='jd_desc')return arr.slice().sort((a,b)=>(b.jd||0)-(a.jd||0));
+  if(mode==='jd_asc')return arr.slice().sort((a,b)=>(a.jd||0)-(b.jd||0));
   if(mode==='recent')return arr.slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
   if(mode==='asc')return arr.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','th'));
   if(mode==='desc')return arr.slice().sort((a,b)=>(b.name||'').localeCompare(a.name||'','th'));
@@ -1353,7 +1427,7 @@ function _renderMemory(filter){
   _memCache.forEach((m,i)=>{
     if(!f||(m.name||'').toLowerCase().includes(f)||(m.prov||'').toLowerCase().includes(f)){
       const y_ce=_beToce(m.y_be,m.m);
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.gender||'')} ${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}  ${_escHtml(m.prov||'')}</div><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}  ${_escHtml(m.prov||'')}</div><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
     }
   });
   if(items.length===0){
@@ -1368,6 +1442,8 @@ function openMemory(section){
   document.querySelector('.memory-title').textContent=`เลือกสำหรับ ดวง ${section}`;
   const s=document.getElementById('memory-search');
   if(s)s.value='';
+  const btn=document.getElementById('memory-sort-btn');
+  if(btn)btn.textContent=_MEM_SORT_LABELS[_memSort];
   _renderMemory('');
   document.getElementById('memory-backdrop').classList.remove('hidden');
   document.getElementById('memory-modal').classList.remove('hidden');
@@ -1886,6 +1962,9 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // V2.1.9: init sound state
   _initSound();
+
+  // V2.2.23: long-press on name-1/name-2 → ลบทั้ง record
+  _initLongPress();
 
   // memory list click + long-press delete delegation
   const memList=document.getElementById('memory-list');

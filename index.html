@@ -132,10 +132,7 @@ canvas{max-width:100%;height:auto}
 
     <!-- Sound toggle + Quick memory -->
     <div class="quick-bar">
-      <label class="sound-toggle-inline">
-        <input type="checkbox" id="sound-toggle" onchange="toggleSound(this.checked)">
-        <span>🔊 เสียง</span>
-      </label>
+      <button class="sound-toggle-inline" id="sound-btn" onclick="cycleSoundLevel()">🔈 เสียง</button>
       <div id="quick-memory-chips" class="quick-memory-chips"></div>
     </div>
 
@@ -196,14 +193,14 @@ canvas{max-width:100%;height:auto}
       </div>
     </div>
     <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
-    <button class="btn-lunar-page" onclick="showLunarPage()">🌙 ที่มาสูตรวันจันทรคติ →</button>
+    <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
   </div>
 
   <!-- หน้า ที่มาสูตรวันจันทรคติ -->
   <div id="about-lunar" class="about-contact-page hidden">
     <div class="about-contact-header">
       <button class="btn-back-about" onclick="hideLunarPage()">← กลับ</button>
-      <span class="about-contact-title">วันจันทรคติในโปรแกรมนี้</span>
+      <span class="about-contact-title">การคำนวณวันจันทรคติ</span>
     </div>
     <div class="about-contact-body">
 
