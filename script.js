@@ -745,6 +745,9 @@ function toggleView(){
 function toggleOuter(){
   _outerState=(_outerState+1)%5;
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
+  // V2.2.23: sync รายงานตาม outerState — ถ้ากราฟิกแสดงดาวจร รายงานสลับตาม
+  const showTransit=_outerState===2||_outerState===3;
+  _reportTransitShow=showTransit;
   _playBeep(700);
   _redraw();
 }
@@ -1131,7 +1134,8 @@ function _updateShareButton(){
   const btnIn=document.getElementById('btn-interpret');
   if(btnS)btnS.disabled=!hasData;
   if(btnSv)btnSv.disabled=!hasData;
-  if(btnIn)btnIn.disabled=!hasData;
+  // V2.2.23: ทำนาย ใช้ _natal เสมอ — enable เมื่อมี natal ไม่ขึ้นกับ viewMode
+  if(btnIn)btnIn.disabled=!_natal;
 }
 
 function _buildShareFilename(active){
@@ -1840,7 +1844,8 @@ async function _callTyphoon(natal,transit,matched){
 }
 // ── V2.2.17: Interpretation Modal ───────────────────────
 async function openInterpretation(){
-  const active=(_viewMode===1&&_natal2)?_natal2:_natal;
+  // V2.2.23: ทำนายจากดวงวงใน (_natal) เสมอ ไม่ขึ้นกับ viewMode
+  const active=_natal;
   if(!active||!_kbRules)return;
   const backdrop=document.getElementById('interp-backdrop');
   const modal=document.getElementById('interp-modal');
