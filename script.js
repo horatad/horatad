@@ -1662,7 +1662,14 @@ function _matchRules(natal,transit){
   }
   function addRule(r){const k=r.c+r.ch;if(!seen.has(k)){seen.add(k);res.push(r);}}
   // natal planet matching
+  // QUAL_MAP: getStandards() return → name_th ใน KB tags (จาก tb_standards)
   const QUAL_MAP={'ประ':'ประเกษตร','มหาอุจ':'อุจ'};
+  // SCORE_MAP: จาก tb_standards.score
+  const SCORE_MAP={
+    'อุจ':5,'เกษตร':4,'มหาจักร':4,'ราชาโชค':3,
+    'อุจจาวิลาส':3,'อุจจาภิมุข':3,'จุลจักร':2,'เทวีโชค':2,
+    'ประเกษตร':-3,'นิจ':-5
+  };
   for(let i=1;i<=10;i++){
     const pName=PNAMES[i]||'มฤตยู';
     const pIdx=i===10?0:i;
@@ -1672,18 +1679,30 @@ function _matchRules(natal,transit){
     const pQuals=pQualRaw
       ?pQualRaw.split('/').map(q=>QUAL_MAP[q]||q).filter(q=>QLABELS[q])
       :[];
+    // quality group จาก tb_standards.score
+    const pScore=pQuals.length>0?Math.max(...pQuals.map(q=>SCORE_MAP[q]||0)):0;
+    const pIsBad=pScore<0;          // เสีย: ประเกษตร(-3), นิจ(-5)
+    const pIsNormal=pScore===0;     // ปกติ
+    const pIsGood=pScore>0;         // ดี/ดีรอง/ดีมาก ทุกระดับ
+    const pIsVeryGood=pScore>=4;    // ดีมาก: เกษตร(4), มหาจักร(4), อุจ(5)
     const asp=aspSign(pSign);
     const hasAsp=asp!=='';
     _kbRules.forEach(r=>{
       const ts=(r.t||[]).join(' ');
+      const rtags=r.t||[];
       const hasP=ts.includes(pName);
       if(!hasP)return;
       const hasL=ts.includes('ลัคนา');
       const hasNL=ts.includes('ไม่สัมพันธ์ลัคนา');
       if(hasAsp&&hasL&&!hasNL)addRule(r);
       if(!hasAsp&&hasNL)addRule(r);
-      // quality match: exact tag element match (ป้องกัน เกษตร substring ใน ประเกษตร)
-      if(pQuals.some(q=>(r.t||[]).includes(q)))addRule(r);
+      // specific quality match (exact array element — ป้องกัน เกษตร⊂ประเกษตร)
+      if(pQuals.some(q=>rtags.includes(q)))addRule(r);
+      // quality group match จาก tb_standards
+      if(pIsBad&&rtags.includes('เสีย'))addRule(r);
+      if(pIsGood&&rtags.includes('ดี'))addRule(r);
+      if(pIsVeryGood&&rtags.includes('ดีมาก'))addRule(r);
+      if(pIsNormal&&rtags.includes('ปกติ'))addRule(r);
     });
   }
   // transit planet matching
