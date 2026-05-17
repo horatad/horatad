@@ -1,4 +1,5 @@
-// Version 2.2.21 | 2026-05-17
+// Version 2.2.22 | 2026-05-17
+// Changes: [V2.2.22] Adhikavara: เปลี่ยนจาก lookup table เป็น formula (kamma<114||kamma>669) + override table จากประกาศสงกรานต์ สำนักพระราชวัง
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
 // Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
 // Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
@@ -434,19 +435,26 @@ function _isAdhikamasaCached(y_be){
   return _adhikamasaCache.get(y_be);
 }
 
-// ── adhikavara lookup table (จาก myhora.com — ยืนยันรายปี) ─────────────────
-// เดือน 7 ปีเหล่านี้ = เดือนถ้วน (30 วัน, แรม 15 มีจริง)
-// ยืนยันแล้ว: 2567=อธิกวาร, 2563/2565/2568=ปกติวาร
-// ปีที่ยังไม่ได้ยืนยัน: ใส่ไว้ตาม pattern 57 ปี (11 อธิกวาร)
-// → เพิ่ม/ลบได้ทันทีเมื่อตรวจ myhora ปีนั้นๆ
-const _ADHIKAVARA_YEARS=new Set([
-  2567,                    // ✓ ยืนยันแล้ว (myhora: ปกติมาส อธิกวาร)
-  // ── ยังไม่ยืนยัน — ต้องตรวจ myhora ────────────────────────────────────
-  2560, 2570, 2573, 2575, 2578, 2581, 2583
+// ── adhikavara formula (derive จาก engine.py kp = กัมมัชพล) ──────────────
+// kamma = 800 - ((CS×292207+373) mod 800)  เปลี่ยนปีละ -207 หรือ +593
+// AV condition: kamma < 114 OR kamma > 669  (244/800 ≈ 30.5% ≈ 11/36 ปกติมาส)
+// Verified 2558–2568 vs ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง
+function _isAdhikavaraFormula(y_be){
+  const cs=y_be-1181;
+  const kamma=800-((cs*292207+373)%800);
+  return kamma<114||kamma>669;
+}
+
+// Source: ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง เท่านั้น
+// เพิ่ม entry เมื่อ formula ≠ official พร้อมระบุ CS + แหล่งอ้างอิง
+const _ADHIKAVARA_OVERRIDE=new Map([
+  [2568,true],  // CS 1387 — ประกาศสงกรานต์ 2568: "อธิกวาร" / formula (kamma=518) ผิด
 ]);
+
 function _isAdhikavaraCached(y_be){
   if(_isAdhikamasaCached(y_be))return false;   // mutual exclusion เสมอ
-  return _ADHIKAVARA_YEARS.has(y_be);
+  if(_ADHIKAVARA_OVERRIDE.has(y_be))return _ADHIKAVARA_OVERRIDE.get(y_be);
+  return _isAdhikavaraFormula(y_be);
 }
 
 // ── lunar month (รองรับอธิกมาส) ────────────────────────────────────────────
