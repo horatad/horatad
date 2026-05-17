@@ -1,4 +1,4 @@
-// Version 2.2.16 | 2026-05-17
+// Version 2.2.17 | 2026-05-17
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
 // Changes: [V2.2.15] Adhikavara: เดือน 7 full/hollow, hollow month boundary fix
 // Changes: [V2.2.14] Tithi via avoman (not Y_MON/longitude): dawn ref 06:00, engine unchanged
@@ -143,6 +143,12 @@ let _numpadInvalidCount=0;
 let _toastTimer=null;
 let _memLongPressTimer=null;
 let _evtLongPressTimer=null;
+
+// ── V2.2.17: Interpretation (KB + AI) ────────────────────
+let _kbRules=null;       // loaded from kb.json
+let _kbVersion='—';      // KB version string
+let _kbTotal=0;          // KB total rules count
+let _interpLoading=false;
 
 // ── Tab switching ─────────────────────────────────────────
 function switchTab(n){
@@ -1044,8 +1050,10 @@ function _updateShareButton(){
   const hasData=(_viewMode===1&&_natal2)||(_viewMode===0&&_natal);
   const btnS=document.getElementById('btn-share');
   const btnSv=document.getElementById('btn-save');
+  const btnIn=document.getElementById('btn-interpret');
   if(btnS)btnS.disabled=!hasData;
   if(btnSv)btnSv.disabled=!hasData;
+  if(btnIn)btnIn.disabled=!hasData||!_kbRules;
 }
 
 function _buildShareFilename(active){
@@ -1637,6 +1645,167 @@ function hideLunarPage(){
   document.getElementById('about-lunar').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
 }
+// ── V2.2.17: KB Load ─────────────────────────────────────
+function _loadKB(){
+  fetch('./kb.json')
+    .then(r=>r.json())
+    .then(data=>{
+      _kbRules=data.rules||[];
+      _kbVersion=data.version||'?';
+      _kbTotal=data.total||_kbRules.length;
+      // update about page display
+      const el=document.getElementById('kb-version-display');
+      if(el)el.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
+      _updateShareButton();
+    })
+    .catch(()=>{console.warn('kb.json load failed');});
+}
+// ── V2.2.17: Rule Matching ───────────────────────────────
+function _matchRules(natal,transit){
+  if(!_kbRules||!natal)return[];
+  const lagnaSign=Math.trunc(natal.pos[0]/1800);
+  const seen=new Set(),res=[];
+  const PNAMES=['','อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์','ราหู','เกตุ','มฤตยู'];
+  const QLABELS={เกษตร:1,ประเกษตร:1,อุจ:1,อุจจาวิลาส:1,อุจจาภิมุข:1,มหาจักร:1,จุลจักร:1,ราชาโชค:1,เทวีโชค:1,นิจ:1};
+  function aspSign(planetSign){
+    const d=((planetSign-lagnaSign)+12)%12;
+    if(d===0)return'กุม';if(d===6)return'เล็ง';
+    if(d===2||d===10)return'โยค';if(d===4||d===8)return'ตรีโกณ';
+    return'';
+  }
+  function addRule(r){const k=r.c+r.ch;if(!seen.has(k)){seen.add(k);res.push(r);}}
+  // natal planet matching
+  for(let i=1;i<=10;i++){
+    const pName=PNAMES[i]||'มฤตยู';
+    const pIdx=i===10?0:i;
+    const pSign=Math.trunc(natal.pos[pIdx]/1800);
+    const pQual=getStandards(natal.pos,pIdx);
+    const asp=aspSign(pSign);
+    const hasAsp=asp!=='';
+    _kbRules.forEach(r=>{
+      const ts=(r.t||[]).join(' ');
+      const hasP=ts.includes(pName);
+      if(!hasP)return;
+      const hasL=ts.includes('ลัคนา');
+      const hasNL=ts.includes('ไม่สัมพันธ์ลัคนา');
+      if(hasAsp&&hasL&&!hasNL)addRule(r);
+      if(!hasAsp&&hasNL)addRule(r);
+      if(pQual&&ts.includes(pQual)&&Object.keys(QLABELS).some(q=>pQual.includes(q)))addRule(r);
+    });
+  }
+  // transit planet matching
+  const tSrc=transit||_transit;
+  if(tSrc){
+    for(let i=1;i<=10;i++){
+      const pName=PNAMES[i]||'มฤตยู';
+      const pIdx=i===10?0:i;
+      const pSign=Math.trunc(tSrc.pos[pIdx]/1800);
+      const asp=aspSign(pSign);
+      if(!asp)continue;
+      _kbRules.filter(r=>(r.t||[]).join(' ').includes('จร')&&(r.t||[]).join(' ').includes(pName))
+        .forEach(r=>addRule(r));
+    }
+  }
+  // foundation rules
+  _kbRules.filter(r=>r.pr===1&&['chapter_04','chapter_06','chapter_08','chapter_09','chapter_13'].includes(r.ch))
+    .slice(0,6).forEach(r=>addRule(r));
+  res.sort((a,b)=>a.pr-b.pr);
+  return res.slice(0,28);
+}
+// ── V2.2.17: Interpretation Modal ───────────────────────
+function openInterpretation(){
+  if(_interpLoading)return;
+  const active=(_viewMode===1&&_natal2)?_natal2:_natal;
+  if(!active||!_kbRules)return;
+  const backdrop=document.getElementById('interp-backdrop');
+  const modal=document.getElementById('interp-modal');
+  const text=document.getElementById('interp-text');
+  const spinner=document.getElementById('interp-spinner');
+  const copyBtn=document.getElementById('interp-copy-btn');
+  if(!backdrop||!modal)return;
+  backdrop.classList.remove('hidden');
+  modal.classList.remove('hidden');
+  text.textContent='';
+  text.classList.add('hidden');
+  spinner.classList.remove('hidden');
+  copyBtn.disabled=true;
+  _interpLoading=true;
+  const matched=_matchRules(active,_transit);
+  _callAI(active,_transit,matched)
+    .then(result=>{
+      spinner.classList.add('hidden');
+      text.classList.remove('hidden');
+      text.textContent=result;
+      copyBtn.disabled=false;
+    })
+    .catch(err=>{
+      spinner.classList.add('hidden');
+      text.classList.remove('hidden');
+      text.textContent='เกิดข้อผิดพลาด: '+err.message;
+    })
+    .finally(()=>{_interpLoading=false;});
+}
+function closeInterpretation(){
+  document.getElementById('interp-backdrop')?.classList.add('hidden');
+  document.getElementById('interp-modal')?.classList.add('hidden');
+  _interpLoading=false;
+}
+function _copyInterpretation(){
+  const text=document.getElementById('interp-text')?.textContent||'';
+  if(!text)return;
+  navigator.clipboard.writeText(text)
+    .then(()=>_showToast('คัดลอกคำทำนายแล้ว'))
+    .catch(()=>{
+      // fallback
+      const ta=document.createElement('textarea');
+      ta.value=text;document.body.appendChild(ta);
+      ta.select();document.execCommand('copy');
+      document.body.removeChild(ta);
+      _showToast('คัดลอกคำทำนายแล้ว');
+    });
+}
+async function _callAI(natal,transit,matched){
+  const PNAMES=['ลัคนา','อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์','ราหู','เกตุ','มฤตยู'];
+  const ZN=Z_NAMES;
+  const lagnaSign=Math.trunc(natal.pos[0]/1800);
+  const planetSummary=PNAMES.slice(1).map((pn,i)=>{
+    const pIdx=i===9?0:i+1;
+    const pSign=Math.trunc(natal.pos[pIdx]/1800);
+    const qual=getStandards(natal.pos,pIdx)||'ปกติ';
+    const d=((pSign-lagnaSign)+12)%12;
+    const asp=d===0?'กุมลัคนา':d===6?'เล็งลัคนา':d===2||d===10?'โยคลัคนา':d===4||d===8?'ตรีโกณลัคนา':'ไม่สัมพันธ์ลัคนา';
+    return `${pn}: ราศี${ZN[pSign]} ${qual} ${asp}`;
+  }).join('\n');
+  let transitSummary='';
+  if(transit){
+    transitSummary='\nดาวจร:\n'+PNAMES.slice(1).map((pn,i)=>{
+      const pIdx=i===9?0:i+1;
+      const pSign=Math.trunc(transit.pos[pIdx]/1800);
+      const d=((pSign-lagnaSign)+12)%12;
+      const asp=d===0?'กุมลัคนา':d===6?'เล็งลัคนา':d===2||d===10?'โยคลัคนา':d===4||d===8?'ตรีโกณลัคนา':'';
+      return asp?`${pn}จร: ราศี${ZN[pSign]} ${asp}`:'';
+    }).filter(Boolean).join('\n');
+  }
+  const rulesText=matched.map(r=>`• ${r.c} → ${r.p}`).join('\n');
+  const sys=`คุณเป็นโหรไทยผู้เชี่ยวชาญโหราศาสตร์ Suriyart
+ตีความดวงจากกฎที่ให้มาเท่านั้น ห้ามเพิ่มเติมนอกกฎ
+ตอบภาษาไทย กระชับ อ่านง่าย แบ่งเป็นหัวข้อ
+ถ้าข้อมูลไม่เพียงพอในหัวข้อใด บอกว่า "ข้อมูลไม่เพียงพอ"`;
+  const usr=`ดวงชาตา: ${natal.name} (${natal.gender})\nลัคนา: ราศี${ZN[lagnaSign]}\n\n${planetSummary}${transitSummary}\n\nกฎโหราศาสตร์:\n${rulesText}\n\nสรุปดวงชาตาแบ่งเป็น: นิสัย/บุคลิก · การเงิน · ความรัก/คู่ครอง · สุขภาพ`;
+  const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      system:sys,
+      messages:[{role:'user',content:usr}]
+    })
+  });
+  const data=await resp.json();
+  if(data.content&&data.content[0])return data.content[0].text;
+  throw new Error(data.error?.message||'AI error');
+}
 function _renderQuickMemory(){
   const el=document.getElementById('quick-memory-chips');
   if(!el)return;
@@ -1855,4 +2024,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   window.addEventListener('offline',_setOffline);
   window.addEventListener('online',_setOnline);
   if(!navigator.onLine)_setOffline();
+  // V2.2.17: load knowledge base
+  _loadKB();
 });

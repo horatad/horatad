@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.2.16 | 2026-05-17 -->
+<!-- Version 2.2.17 | 2026-05-17 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -166,8 +166,9 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 2.2.16</div>
-        <div class="about-update">อัปเดต 17 พ.ค. 2569 · ปรับปรุงวันจันทรคติ</div>
+        <div class="about-version">V 2.2.17</div>
+        <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มระบบคำทำนาย AI</div>
+        <div id="kb-version-display" class="about-kb-version">Knowledge Base กำลังโหลด...</div>
       </div>
       <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
     </div>
@@ -307,6 +308,9 @@ canvas{max-width:100%;height:auto}
         onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()" oncontextmenu="return false" style="user-select:none;-webkit-user-select:none">
         📤 แชร์
       </button>
+      <button id="btn-interpret" class="btn-share btn-interpret" disabled onclick="openInterpretation()">
+        🔮 ทำนาย
+      </button>
     </div>
   </div>
 </div>
@@ -373,6 +377,23 @@ canvas{max-width:100%;height:auto}
   <div class="confirm-actions">
     <button onclick="closeConfirm()" class="confirm-cancel">ยกเลิก</button>
     <button onclick="_confirmYes()" class="confirm-ok">ตกลง</button>
+  </div>
+</div>
+
+<!-- ── Interpretation modal (V2.2.17) ─────────────────── -->
+<div id="interp-backdrop" class="interp-backdrop hidden" onclick="closeInterpretation()"></div>
+<div id="interp-modal" class="interp-modal hidden">
+  <div class="interp-header">
+    <span class="interp-title">🔮 คำทำนาย</span>
+    <button class="interp-close" onclick="closeInterpretation()">✕</button>
+  </div>
+  <div id="interp-spinner" class="interp-spinner">
+    <div class="interp-spin-ring"></div>
+    <div class="interp-spin-label">AI กำลังวิเคราะห์ดวง...</div>
+  </div>
+  <div id="interp-text" class="interp-text hidden"></div>
+  <div class="interp-footer">
+    <button id="interp-copy-btn" class="interp-copy-btn" disabled onclick="_copyInterpretation()">📋 คัดลอกคำทำนาย</button>
   </div>
 </div>
 
