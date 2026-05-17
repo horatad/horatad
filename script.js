@@ -1662,11 +1662,16 @@ function _matchRules(natal,transit){
   }
   function addRule(r){const k=r.c+r.ch;if(!seen.has(k)){seen.add(k);res.push(r);}}
   // natal planet matching
+  const QUAL_MAP={'ประ':'ประเกษตร','มหาอุจ':'อุจ'};
   for(let i=1;i<=10;i++){
     const pName=PNAMES[i]||'มฤตยู';
     const pIdx=i===10?0:i;
     const pSign=Math.trunc(natal.pos[pIdx]/1800);
-    const pQual=getStandards(natal.pos,pIdx);
+    const pQualRaw=getStandards(natal.pos,pIdx);
+    // split "/", remap, filter to valid QLABELS only
+    const pQuals=pQualRaw
+      ?pQualRaw.split('/').map(q=>QUAL_MAP[q]||q).filter(q=>QLABELS[q])
+      :[];
     const asp=aspSign(pSign);
     const hasAsp=asp!=='';
     _kbRules.forEach(r=>{
@@ -1677,7 +1682,8 @@ function _matchRules(natal,transit){
       const hasNL=ts.includes('ไม่สัมพันธ์ลัคนา');
       if(hasAsp&&hasL&&!hasNL)addRule(r);
       if(!hasAsp&&hasNL)addRule(r);
-      if(pQual&&ts.includes(pQual)&&Object.keys(QLABELS).some(q=>pQual.includes(q)))addRule(r);
+      // quality match: exact tag element match (ป้องกัน เกษตร substring ใน ประเกษตร)
+      if(pQuals.some(q=>(r.t||[]).includes(q)))addRule(r);
     });
   }
   // transit planet matching
