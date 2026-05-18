@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.2.25 | 2026-05-17 -->
+<!-- Version 2.2.29 | 2026-05-19 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -72,7 +72,7 @@ canvas{max-width:100%;height:auto}
       <div class="chart-section section-1">
         <div class="section-title">ดวงที่ 1</div>
         <div class="name-gender-row">
-          <input id="name-1" placeholder="ชื่อ">
+          <input id="name-1" placeholder="ชื่อ" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
           <button class="btn-mem" onclick="openMemory('1')" title="ความทรงจำ">🔍</button>
           <select id="gender1" class="gender-sel">
             <option value="ชาย">ชาย</option>
@@ -84,7 +84,7 @@ canvas{max-width:100%;height:auto}
           <div><label>วัน</label><input id="d1" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="m1" type="number" min="1" max="12"></div>
           <div><label>ปี</label><input id="y1" type="number"></div>
-          <div><label>เวลา</label><input id="t1" type="time"></div>
+          <div><label>เวลา</label><input id="t1" type="text" placeholder="HH:MM" style="cursor:pointer"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -99,7 +99,7 @@ canvas{max-width:100%;height:auto}
       <div class="chart-section section-2 hidden">
         <div class="section-title">ดวงที่ 2</div>
         <div class="name-gender-row">
-          <input id="name-2" placeholder="ชื่อ">
+          <input id="name-2" placeholder="ชื่อ" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
           <button class="btn-mem" onclick="openMemory('2')" title="ความทรงจำ">🔍</button>
           <select id="gender2" class="gender-sel">
             <option value="ชาย">ชาย</option>
@@ -111,7 +111,7 @@ canvas{max-width:100%;height:auto}
           <div><label>วัน</label><input id="d2" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="m2" type="number" min="1" max="12"></div>
           <div><label>ปี</label><input id="y2" type="number"></div>
-          <div><label>เวลา</label><input id="t2" type="time"></div>
+          <div><label>เวลา</label><input id="t2" type="text" placeholder="HH:MM" style="cursor:pointer"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -126,14 +126,14 @@ canvas{max-width:100%;height:auto}
       <div class="chart-section section-transit">
         <div class="section-title">วันที่จร</div>
         <div class="name-gender-row">
-          <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)">
+          <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
           <button class="btn-mem" onclick="openEvents()" title="เหตุการณ์ที่บันทึก">🔍</button>
         </div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="dt" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="mt" type="number" min="1" max="12"></div>
           <div><label>ปี</label><input id="yt" type="number"></div>
-          <div><label>เวลา</label><input id="tt" type="time"></div>
+          <div><label>เวลา</label><input id="tt" type="text" placeholder="HH:MM" style="cursor:pointer"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">

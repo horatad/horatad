@@ -1,4 +1,7 @@
-// Version 2.2.26 | 2026-05-17
+// Version 2.2.29 | 2026-05-19
+// Changes: [V2.2.29] req1: autofill readonly trick (index.html); req3: QR payload JSON schema V1.3;
+//   req4+9: uid/lat/lng/fname/lname in _natal + crypto.randomUUID();
+//   req5: auto-save natal in calc1/calc2; req7+8: numpad covers time fields t1/t2/tt
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -1049,15 +1052,22 @@ function calculateChart1(){
   _setField('t1',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
   const provVal=document.getElementById('prov1').value||'กรุงเทพมหานคร';
   const lng=_customLng1!==null?_customLng1:(PROVINCES[provVal]||100.50);
+  const lat=PROVINCES_LAT[provVal]||13.75;
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
   const pos=get_data(d,m,y_ce,hr,mn,lng);
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _natal={name,gender,pos,vel,d,m,y_be,t,prov:provVal};
+  _natal={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng};
   _calc1Done=true;
   _updateShareButton();
   _applyInputColors('1','done');
+  // req5: auto-save natal
+  if(_natal.name&&!['ไม่ระบุ',''].includes(_natal.name.trim())){
+    const r=_addMemory({..._natal});
+    if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);
+    else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);
+  }
   _viewMode=0;_applyViewMode();
   switchTab(1);_redraw();
 }
@@ -1073,15 +1083,22 @@ function calculateChart2(){
   _setField('t2',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
   const provVal=document.getElementById('prov2').value||'กรุงเทพมหานคร';
   const lng=_customLng2!==null?_customLng2:(PROVINCES[provVal]||100.50);
+  const lat=PROVINCES_LAT[provVal]||13.75;
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
   const pos=get_data(d,m,y_ce,hr,mn,lng);
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _transit={name,gender,pos,vel,d,m,y_be,t,prov:provVal};
+  _transit={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng};
   _calc2Done=true;
   _updateShareButton();
   _applyInputColors('2','done');
+  // req5: auto-save transit
+  if(_transit.name&&!['ดวงที่ 2','ไม่ระบุ',''].includes(_transit.name.trim())){
+    const r=_addMemory({..._transit});
+    if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);
+    else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);
+  }
   _viewMode=1;_applyViewMode();
   switchTab(1);_redraw();
 }
@@ -1108,12 +1125,15 @@ const _NUMPAD_CFG={
   'd1':{type:'int',min:1,max:31,def:1,label:'วัน (1-31)'},
   'm1':{type:'int',min:1,max:12,def:1,label:'เดือน (1-12)'},
   'y1':{type:'int',min:1,max:9999,def:2509,label:'ปี ดวงที่ 1'},
+  't1':{type:'time',label:'เวลา ดวงที่ 1 (HHMM เช่น 0605)'},
   'd2':{type:'int',min:1,max:31,def:1,label:'วัน (1-31)'},
   'm2':{type:'int',min:1,max:12,def:1,label:'เดือน (1-12)'},
   'y2':{type:'int',min:1,max:9999,def:2569,label:'ปี ดวงที่ 2'},
+  't2':{type:'time',label:'เวลา ดวงที่ 2 (HHMM เช่น 0605)'},
   'dt':{type:'int',min:1,max:31,def:1,label:'วัน (1-31)'},
   'mt':{type:'int',min:1,max:12,def:1,label:'เดือน (1-12)'},
   'yt':{type:'int',min:1,max:9999,def:2569,label:'ปีวันจร'},
+  'tt':{type:'time',label:'เวลาจร (HHMM เช่น 0605)'},
 };
 // ── Longitude toggle UI ───────────────────────────────────
 function _updateLngUI(chartNum){
@@ -1142,8 +1162,7 @@ function calculateBoth(){
   calculateChart1();
   // V1.8: persist + history
   _saveState();
-  if(_natal){const r=_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1});if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);}
-  if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
+  // req5: auto-save moved to calculateChart1/calculateChart2
   _renderQuickMemory();
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
@@ -1255,12 +1274,22 @@ async function _generateShareImage(active){
   ctx.fillStyle='#c9d1d9';
   ctx.font='500 28px Sarabun,sans-serif';
   ctx.fillText(scoreLabel,SZ/2,1050);
-  // V2.2.24: QR code bottom-right — JD:xxxxx|T:HH:MM|LAT:xx.xx
+  // V2.2.29: QR payload JSON per Master Schema V1.3
   try{
     await _loadQRLib();
-    const jd=_calcJD(active.d,active.m,active.y_be);
-    const lat=(PROVINCES_LAT[active.prov||'']||13.75).toFixed(2);
-    const qrText=`JD:${jd}|T:${active.t}|LAT:${lat}`;
+    const jd=active.jd||_calcJD(active.d,active.m,active.y_be);
+    const qrPayload={
+      uid:active.uid||'',
+      jd,
+      t_local:active.t_local||active.t||'',
+      lat:active.lat||(PROVINCES_LAT[active.prov||'']||13.75),
+      lng:active.lng||(PROVINCES[active.prov||'']||100.50),
+      fname:active.fname||active.name||'',
+      lname:active.lname||'',
+      g:active.g||active.gender||'',
+      loc:active.loc||active.prov||''
+    };
+    const qrText=JSON.stringify(qrPayload);
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
@@ -1353,6 +1382,15 @@ function _numpadConfirm(){
       }
     }else{
       const cfg=_NUMPAD_CFG[id]||{type:'int',min:1,max:9999,def:1};
+      if(cfg.type==='time'){
+        // parse HHMM → HH:MM
+        const buf=_numpadBuf.padEnd(4,'0').slice(0,4);
+        const hr=parseInt(buf.slice(0,2));
+        const mn=parseInt(buf.slice(2,4));
+        if(!isNaN(hr)&&!isNaN(mn)&&hr>=0&&hr<=23&&mn>=0&&mn<=59){
+          _setField(id,String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
+        }else{invalid=true;}
+      }else{
       // [V1.9] year smart prefix: BE="25"+2 digits, CE="20"+2 digits
       let buf=_numpadBuf;
       if((id==='y1'||id==='y2'||id==='yt')&&buf.length===2){
@@ -1364,7 +1402,8 @@ function _numpadConfirm(){
       }else{
         _setField(id,String(n));
       }
-    }
+      } // close time/int if-else
+    } // close non-lng else
     if(invalid){
       _numpadInvalidCount++;
       _playBeep(380);
@@ -2119,8 +2158,8 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(el){el.addEventListener('input',_scheduleSave);el.addEventListener('change',_scheduleSave);}
   });
 
-  // attach numpad to numeric inputs only (time fields use native type=time)
-  ['d1','m1','y1','d2','m2','y2','dt','mt','yt'].forEach(id=>{
+  // attach numpad to numeric + time inputs (req8: time fields use custom numpad)
+  ['d1','m1','y1','t1','d2','m2','y2','t2','dt','mt','yt','tt'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
     el.setAttribute('readonly','readonly');el.style.cursor='pointer';
     el.addEventListener('click',()=>_numpadOpen(id));
