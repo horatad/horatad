@@ -159,6 +159,8 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 let _era='BE';
 let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _natal2=null;  // outer ring chart
+// V3 bridge: expose _natal ให้ ES module อ่านได้
+function getNatal(){return _natal;}
 let _transit=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง

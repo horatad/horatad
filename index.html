@@ -19,6 +19,25 @@
 .tab-content{display:block}
 #chart-wrap{width:100%}
 canvas{max-width:100%;height:auto}
+/* ── V3 Tab ─────────────────────────────────────────────── */
+#tab-3{padding:1rem;max-width:680px;margin:0 auto;}
+.v3-header{text-align:center;margin-bottom:1.2rem;}
+.v3-header-title{font-family:'Cinzel',serif;font-size:1.1rem;color:#b8860b;letter-spacing:.05em;}
+.v3-natal-info{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.85rem;color:#8b949e;}
+.v3-natal-name{color:#c9d1d9;font-size:.95rem;font-weight:700;}
+.v3-no-natal{text-align:center;color:#8b949e;padding:2rem 1rem;font-size:.9rem;}
+.v3-btn-predict{display:block;width:100%;padding:.8rem;background:#5b3fa0;color:#fff;border:none;border-radius:8px;font-family:'Sarabun',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:1rem;transition:background .2s;}
+.v3-btn-predict:hover{background:#7b5fc0;}
+.v3-btn-predict:disabled{background:#333;color:#555;cursor:not-allowed;}
+.v3-spinner{display:flex;flex-direction:column;align-items:center;gap:.75rem;padding:2rem;color:#8b949e;font-size:.9rem;}
+.v3-spin-ring{width:36px;height:36px;border:3px solid #2d2d4e;border-top-color:#b8860b;border-radius:50%;animation:v3spin 1s linear infinite;}
+@keyframes v3spin{to{transform:rotate(360deg)}}
+.v3-result{background:#0d1117;border:1px solid #2d2d4e;border-radius:8px;padding:1rem 1.2rem;font-size:.92rem;line-height:1.75;color:#c9d1d9;white-space:pre-wrap;margin-bottom:1rem;}
+.v3-result.fallback{border-color:#f85149;color:#aaa;}
+.v3-fallback-badge{font-size:.75rem;color:#f85149;margin-bottom:.5rem;}
+.v3-copy-btn{background:transparent;border:1px solid #2d2d4e;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:'Sarabun',sans-serif;}
+.v3-copy-btn:hover{border-color:#b8860b;color:#b8860b;}
+.v3-copy-btn:disabled{opacity:.4;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -35,6 +54,7 @@ canvas{max-width:100%;height:auto}
   <button id="tab-btn-0" class="tab-btn" onclick="switchTab(0)">🔭 กรอกข้อมูล</button>
   <button id="tab-btn-1" class="tab-btn tab-active" onclick="switchTab(1)">🖼️ กราฟิก + รายงาน</button>
   <button id="tab-btn-2" class="tab-btn" onclick="switchTab(2)">ℹ️ เกี่ยวกับ</button>
+  <button id="tab-btn-3" class="tab-btn" onclick="switchTab(3)">🔮 พยากรณ์</button>
 </div>
 
 <!-- ── TAB 0: Input ──────────────────────────────────────── -->
@@ -399,9 +419,44 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
+<!-- ── TAB 3: พยากรณ์ V3 ─────────────────────────────────── -->
+<div id="tab-3" class="tab-content hidden">
+  <div class="v3-header">
+    <div class="v3-header-title">🔮 พยากรณ์โหราศาสตร์ไทย · Horatad V3</div>
+  </div>
+
+  <!-- natal info bar -->
+  <div id="v3-natal-bar" class="v3-natal-info hidden">
+    ดวง: <span id="v3-natal-name" class="v3-natal-name"></span>
+    <span id="v3-natal-date" style="margin-left:.5rem;"></span>
+  </div>
+  <div id="v3-no-natal" class="v3-no-natal hidden">
+    กรุณาผูกดวงที่แท็บ "กรอกข้อมูล" ก่อน แล้วกลับมาพยากรณ์ที่นี่
+  </div>
+
+  <!-- predict button -->
+  <button id="v3-btn-predict" class="v3-btn-predict" disabled onclick="v3Predict()">
+    ✨ พยากรณ์พื้นดวง
+  </button>
+
+  <!-- spinner -->
+  <div id="v3-spinner" class="v3-spinner hidden">
+    <div class="v3-spin-ring"></div>
+    <div>AI กำลังวิเคราะห์ดวงชาตา...</div>
+  </div>
+
+  <!-- result -->
+  <div id="v3-result-wrap" class="hidden">
+    <div id="v3-fallback-badge" class="v3-fallback-badge hidden">⚠️ แสดงกฎดิบ (Typhoon API ไม่พร้อม)</div>
+    <div id="v3-result" class="v3-result"></div>
+    <button id="v3-copy-btn" class="v3-copy-btn" disabled onclick="v3Copy()">📋 คัดลอก</button>
+  </div>
+</div>
+
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
 <script src="script.js"></script>
+<script type="module" src="v3/v3tab.js"></script>
 </body>
 </html>
