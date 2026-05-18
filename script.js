@@ -1550,7 +1550,7 @@ function _renderMemory(filter){
   _memCache.forEach((m,i)=>{
     if(!f||(m.name||'').toLowerCase().includes(f)||(m.prov||'').toLowerCase().includes(f)){
       const y_ce=_beToce(m.y_be,m.m);
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}  ${_escHtml(m.prov||'')}</div><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}</div><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
     }
   });
   if(items.length===0){
@@ -2129,7 +2129,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(!it||e.target.classList.contains('memory-del'))return;
     _memLongPressTimer=setTimeout(()=>{
       _confirmDeleteMemory(parseInt(it.dataset.i));
-    },600);
+    },1200);
   },{passive:true});
   memList.addEventListener('touchend',()=>{if(_memLongPressTimer){clearTimeout(_memLongPressTimer);_memLongPressTimer=null;}});
   memList.addEventListener('touchmove',()=>{if(_memLongPressTimer){clearTimeout(_memLongPressTimer);_memLongPressTimer=null;}});
@@ -2155,7 +2155,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(!it||e.target.classList.contains('memory-del'))return;
     _evtLongPressTimer=setTimeout(()=>{
       _deleteEvent(parseInt(it.dataset.i));
-    },600);
+    },1200);
   },{passive:true});
   evList?.addEventListener('touchend',()=>{if(_evtLongPressTimer){clearTimeout(_evtLongPressTimer);_evtLongPressTimer=null;}});
   evList?.addEventListener('touchmove',()=>{if(_evtLongPressTimer){clearTimeout(_evtLongPressTimer);_evtLongPressTimer=null;}});
