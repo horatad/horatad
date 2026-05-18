@@ -330,7 +330,7 @@ canvas{max-width:100%;height:auto}
         onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()" oncontextmenu="return false" style="user-select:none;-webkit-user-select:none">
         📤 แชร์
       </button>
-      <button id="btn-interpret" class="btn-share btn-interpret" disabled onclick="openInterpretation()">
+      <button id="btn-interpret" class="btn-share btn-interpret" onclick="_v3DevPopup()">
         🔮 ทำนาย
       </button>
     </div>
@@ -465,55 +465,46 @@ canvas{max-width:100%;height:auto}
 <script src="script.js"></script>
 <script type="module" src="v3/v3tab.js"></script>
 
-<!-- V3 Access Control -->
-<div id="v3-pw-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:#1a1a2e;border:1px solid #5b3fa0;border-radius:12px;padding:2rem;text-align:center;min-width:260px;">
-    <div style="color:#b8860b;font-family:'Cinzel',serif;font-size:1.1rem;margin-bottom:1rem;">Horatad V3</div>
-    <input id="v3-pw-input" type="password" inputmode="numeric" maxlength="8"
-      style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #5b3fa0;background:#0d1117;color:#c9d1d9;font-size:1.2rem;text-align:center;letter-spacing:.3rem;"
-      placeholder="········">
-    <button onclick="_v3PwCheck()"
-      style="margin-top:1rem;width:100%;padding:.6rem;border-radius:8px;background:#5b3fa0;color:#fff;border:none;cursor:pointer;font-size:1rem;">
-      ยืนยัน
+<!-- V3 Dev Access Popup -->
+<div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#1a1a2e;border:1px solid #444;border-radius:14px;padding:2rem 1.5rem;text-align:center;min-width:280px;max-width:320px;">
+    <div style="font-size:2.5rem;margin-bottom:.5rem;">🧮</div>
+    <div style="color:#c9d1d9;font-size:1rem;font-weight:700;margin-bottom:.3rem;">ฟีเจอร์นี้อยู่ระหว่างการพัฒนา</div>
+    <div style="color:#8b949e;font-size:.8rem;margin-bottom:1.2rem;">กรุณากลับมาใหม่ในภายหลัง</div>
+    <input id="v3-dev-input" type="password" inputmode="numeric" maxlength="6"
+      style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #333;background:#0d1117;color:#0d1117;font-size:1.2rem;text-align:center;letter-spacing:.3rem;caret-color:transparent;"
+      placeholder="" autocomplete="off">
+    <button onclick="_v3DevClose()"
+      style="margin-top:1rem;width:100%;padding:.6rem;border-radius:8px;background:#333;color:#8b949e;border:none;cursor:pointer;font-size:.9rem;">
+      ปิด
     </button>
   </div>
 </div>
 
 <script>
-(function(){
-  const logo=document.querySelector('.logo-h1');
-  if(!logo)return;
-  let _lpt=null;
-  logo.addEventListener('pointerdown',()=>{
-    _lpt=setTimeout(()=>{
-      const ov=document.getElementById('v3-pw-overlay');
-      ov.style.display='flex';
-      setTimeout(()=>document.getElementById('v3-pw-input').focus(),100);
-    },5000);
-  });
-  logo.addEventListener('pointerup',()=>clearTimeout(_lpt));
-  logo.addEventListener('pointerleave',()=>clearTimeout(_lpt));
-  document.getElementById('v3-pw-overlay').addEventListener('click',function(e){
-    if(e.target===this){this.style.display='none';document.getElementById('v3-pw-input').value='';}
-  });
-  document.getElementById('v3-pw-input').addEventListener('keydown',e=>{
-    if(e.key==='Enter')_v3PwCheck();
-  });
-})();
-
-function _v3PwCheck(){
-  const val=document.getElementById('v3-pw-input').value;
-  if(val==='12345678'){
-    document.getElementById('v3-pw-overlay').style.display='none';
-    document.getElementById('v3-pw-input').value='';
-    const btn=document.getElementById('tab-btn-3');
-    btn.classList.remove('hidden');
-    if(typeof switchTab==='function')switchTab(3);
-  }else{
-    document.getElementById('v3-pw-input').value='';
-  }
+function _v3DevPopup(){
+  const ov=document.getElementById('v3-dev-overlay');
+  ov.style.display='flex';
+  document.getElementById('v3-dev-input').value='';
 }
-
+function _v3DevClose(){
+  document.getElementById('v3-dev-overlay').style.display='none';
+  document.getElementById('v3-dev-input').value='';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const ov=document.getElementById('v3-dev-overlay');
+  ov.addEventListener('click',function(e){
+    if(e.target===this)_v3DevClose();
+  });
+  document.getElementById('v3-dev-input').addEventListener('input',function(){
+    if(this.value==='424198'){
+      _v3DevClose();
+      const btn=document.getElementById('tab-btn-3');
+      if(btn)btn.classList.remove('hidden');
+      if(typeof switchTab==='function')switchTab(3);
+    }
+  });
+});
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
     window.location.reload();
