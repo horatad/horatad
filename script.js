@@ -1851,7 +1851,7 @@ function startLongPress(action,btn){
     btn.classList.remove('pressing');
     if(action==='save')saveChart();
     else shareChart();
-  },1000);
+  },500);
 }
 function cancelLongPress(){
   if(_lpTimer){clearTimeout(_lpTimer);_lpTimer=null;}
@@ -2237,8 +2237,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   _renderTagRow('1');
   _renderTagRow('2');
   // V2.2.18: KB version display
-  const _kbVerEl=document.getElementById('kb-version-display');
-  if(_kbVerEl)_kbVerEl.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
+  // kb-version-display removed in V2.2.29
 
   // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.1.5)
   if('serviceWorker' in navigator){
