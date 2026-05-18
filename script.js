@@ -158,6 +158,32 @@ const KB_RULES=[{"id":1000,"ch":"chapter_01","ct":"ความหมายข�
 const KB_META={"version":"2.0.0","total":342};
 const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
+// ── Tag System ────────────────────────────────────────────
+const DEFAULT_TAGS=['ครอบครัว','เพื่อน','ลูกค้า','VIP','คู่ครอง','ลูก','พ่อแม่','อื่นๆ'];
+let _tags1=[]; // selected tags for section 1
+let _tags2=[]; // selected tags for section 2
+
+function _renderTagRow(section){
+  const el=document.getElementById('tag-row-'+section);
+  if(!el)return;
+  const state=section==='1'?_tags1:_tags2;
+  el.innerHTML='';
+  DEFAULT_TAGS.forEach(tag=>{
+    const btn=document.createElement('button');
+    btn.className='tag-chip'+(state.includes(tag)?' active':'');
+    btn.textContent=tag;
+    btn.onclick=()=>{
+      const arr=section==='1'?_tags1:_tags2;
+      const idx=arr.indexOf(tag);
+      if(idx>=0)arr.splice(idx,1);else arr.push(tag);
+      if(section==='1')_tags1=[...arr];else _tags2=[...arr];
+      _renderTagRow(section);
+      _playBeep(700);
+    };
+    el.appendChild(btn);
+  });
+}
+
 // ── State ─────────────────────────────────────────────────
 let _era='BE';
 let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
@@ -841,6 +867,8 @@ function cycleMemory(dir){
     document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
     _customLng1=(typeof m.lng==='number')?m.lng:null;
     _updateLngUI('1');
+    _tags1=Array.isArray(m.tag)?[...m.tag]:[];
+    _renderTagRow('1');
     calculateChart1();
   }else{
     _setField('name-2',m.name||'');
@@ -849,6 +877,8 @@ function cycleMemory(dir){
     document.getElementById('prov2').value=m.prov||'กรุงเทพมหานคร';
     _customLng2=(typeof m.lng==='number')?m.lng:null;
     _updateLngUI('2');
+    _tags2=Array.isArray(m.tag)?[...m.tag]:[];
+    _renderTagRow('2');
     calculateChart2();
   }
   _playBeep(700);
@@ -1058,7 +1088,7 @@ function calculateChart1(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _natal={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng};
+  _natal={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng,tag:[..._tags1]};
   _calc1Done=true;
   _updateShareButton();
   _applyInputColors('1','done');
@@ -1089,7 +1119,7 @@ function calculateChart2(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _transit={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng};
+  _transit={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng,tag:[..._tags2]};
   _calc2Done=true;
   _updateShareButton();
   _applyInputColors('2','done');
@@ -1480,6 +1510,7 @@ function _addMemory(entry){
   mem.unshift({...entry,
     jd:(entry.d&&entry.m&&entry.y_be)?_calcJD(entry.d,entry.m,entry.y_be):null,
     lat:(typeof entry.lat==='number')?entry.lat:(PROVINCES_LAT[entry.prov||'']||13.75),
+    tag:Array.isArray(entry.tag)?entry.tag:[],
     savedAt:Date.now()});
   _saveJSON(MEM_KEY,mem.slice(0,MEM_MAX));
   return isDup?'updated':'saved';
@@ -1555,6 +1586,8 @@ function _pickMemory(i){
     _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
     document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
     _customLng1=(typeof m.lng==='number')?m.lng:null;
+    _tags1=Array.isArray(m.tag)?[...m.tag]:[];
+    _renderTagRow('1');
     _updateLngUI('1');_applyInputColors('1','init');
   }else{
     _setField('name-2',m.name||'');
@@ -1562,6 +1595,8 @@ function _pickMemory(i){
     _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.t);
     document.getElementById('prov2').value=m.prov||'กรุงเทพมหานคร';
     _customLng2=(typeof m.lng==='number')?m.lng:null;
+    _tags2=Array.isArray(m.tag)?[...m.tag]:[];
+    _renderTagRow('2');
     _updateLngUI('2');_applyInputColors('2','init');
   }
   closeMemory();
@@ -2199,6 +2234,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   _redraw();
   _updateShareButton();
   _renderQuickMemory();
+  _renderTagRow('1');
+  _renderTagRow('2');
   // V2.2.18: KB version display
   const _kbVerEl=document.getElementById('kb-version-display');
   if(_kbVerEl)_kbVerEl.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;

@@ -38,6 +38,12 @@ canvas{max-width:100%;height:auto}
 .v3-copy-btn{background:transparent;border:1px solid #2d2d4e;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:'Sarabun',sans-serif;}
 .v3-copy-btn:hover{border-color:#b8860b;color:#b8860b;}
 .v3-copy-btn:disabled{opacity:.4;cursor:not-allowed;}
+/* ── Tag Chip Selector ──────────────────────────────────── */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0 2px;}
+.tag-chip{padding:3px 10px;border-radius:20px;border:1px solid #3a3a5c;background:#1a1a2e;color:#8b949e;font-family:'Sarabun',sans-serif;font-size:.78rem;cursor:pointer;transition:all .15s;user-select:none;}
+.tag-chip.active{border-color:#b8860b;background:#2a1f00;color:#b8860b;}
+.tag-chip-add{border-style:dashed;color:#5b3fa0;border-color:#5b3fa0;}
+.tag-chip-add.active{border-color:#7b5fc0;background:#1a0f30;color:#c9a0ff;}
 </style>
 </head>
 <body>
@@ -80,6 +86,7 @@ canvas{max-width:100%;height:auto}
             <option value="เหตุการณ์">เหตุการณ์</option>
           </select>
         </div>
+        <div class="tag-row" id="tag-row-1"></div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="d1" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="m1" type="number" min="1" max="12"></div>
@@ -107,6 +114,7 @@ canvas{max-width:100%;height:auto}
             <option value="เหตุการณ์">เหตุการณ์</option>
           </select>
         </div>
+        <div class="tag-row" id="tag-row-2"></div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="d2" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="m2" type="number" min="1" max="12"></div>
