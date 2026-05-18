@@ -54,7 +54,7 @@ canvas{max-width:100%;height:auto}
   <button id="tab-btn-0" class="tab-btn" onclick="switchTab(0)">🔭 กรอกข้อมูล</button>
   <button id="tab-btn-1" class="tab-btn tab-active" onclick="switchTab(1)">🖼️ กราฟิก + รายงาน</button>
   <button id="tab-btn-2" class="tab-btn" onclick="switchTab(2)">ℹ️ เกี่ยวกับ</button>
-  <button id="tab-btn-3" class="tab-btn" onclick="switchTab(3)">🔮 พยากรณ์</button>
+  <button id="tab-btn-3" class="tab-btn hidden" onclick="switchTab(3)">🔮 พยากรณ์ V3.01 [18/05/26]</button>
 </div>
 
 <!-- ── TAB 0: Input ──────────────────────────────────────── -->
@@ -464,5 +464,61 @@ canvas{max-width:100%;height:auto}
 
 <script src="script.js"></script>
 <script type="module" src="v3/v3tab.js"></script>
+
+<!-- V3 Access Control -->
+<div id="v3-pw-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#1a1a2e;border:1px solid #5b3fa0;border-radius:12px;padding:2rem;text-align:center;min-width:260px;">
+    <div style="color:#b8860b;font-family:'Cinzel',serif;font-size:1.1rem;margin-bottom:1rem;">Horatad V3</div>
+    <input id="v3-pw-input" type="password" inputmode="numeric" maxlength="8"
+      style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #5b3fa0;background:#0d1117;color:#c9d1d9;font-size:1.2rem;text-align:center;letter-spacing:.3rem;"
+      placeholder="········">
+    <button onclick="_v3PwCheck()"
+      style="margin-top:1rem;width:100%;padding:.6rem;border-radius:8px;background:#5b3fa0;color:#fff;border:none;cursor:pointer;font-size:1rem;">
+      ยืนยัน
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const logo=document.querySelector('.logo-h1');
+  if(!logo)return;
+  let _lpt=null;
+  logo.addEventListener('pointerdown',()=>{
+    _lpt=setTimeout(()=>{
+      const ov=document.getElementById('v3-pw-overlay');
+      ov.style.display='flex';
+      setTimeout(()=>document.getElementById('v3-pw-input').focus(),100);
+    },5000);
+  });
+  logo.addEventListener('pointerup',()=>clearTimeout(_lpt));
+  logo.addEventListener('pointerleave',()=>clearTimeout(_lpt));
+  document.getElementById('v3-pw-overlay').addEventListener('click',function(e){
+    if(e.target===this){this.style.display='none';document.getElementById('v3-pw-input').value='';}
+  });
+  document.getElementById('v3-pw-input').addEventListener('keydown',e=>{
+    if(e.key==='Enter')_v3PwCheck();
+  });
+})();
+
+function _v3PwCheck(){
+  const val=document.getElementById('v3-pw-input').value;
+  if(val==='12345678'){
+    document.getElementById('v3-pw-overlay').style.display='none';
+    document.getElementById('v3-pw-input').value='';
+    const btn=document.getElementById('tab-btn-3');
+    btn.classList.remove('hidden');
+    if(typeof switchTab==='function')switchTab(3);
+  }else{
+    document.getElementById('v3-pw-input').value='';
+  }
+}
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    window.location.reload();
+  });
+}
+</script>
 </body>
 </html>
