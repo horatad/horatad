@@ -1,16 +1,11 @@
 # netlify.toml — horatad3.netlify.app
 # Version 3.0.0 | 2026-05-18
-# Root → /v3/ (V3 DEV build)
+# ไฟล์ V3 อยู่ที่ root ของ branch v3
 
 [build]
   publish = "."
 
-[[redirects]]
-  from = "/"
-  to   = "/v3/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/index.html"
-  to   = "/v3/index.html"
-  status = 301
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "application/javascript"
