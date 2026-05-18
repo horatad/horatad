@@ -1,0 +1,5 @@
+/sw.js
+  Cache-Control: no-store
+
+/v3/*
+  Cache-Control: no-store
