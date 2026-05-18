@@ -467,42 +467,71 @@ canvas{max-width:100%;height:auto}
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:#1a1a2e;border:1px solid #444;border-radius:14px;padding:2rem 1.5rem;text-align:center;min-width:280px;max-width:320px;">
-    <div style="font-size:2.5rem;margin-bottom:.5rem;">🧮</div>
-    <div style="color:#c9d1d9;font-size:1rem;font-weight:700;margin-bottom:.3rem;">ฟีเจอร์นี้อยู่ระหว่างการพัฒนา</div>
-    <div style="color:#8b949e;font-size:.8rem;margin-bottom:1.2rem;">กรุณากลับมาใหม่ในภายหลัง</div>
-    <input id="v3-dev-input" type="password" inputmode="numeric" maxlength="6"
-      style="width:100%;padding:.6rem;border-radius:8px;border:1px solid #333;background:#0d1117;color:#0d1117;font-size:1.2rem;text-align:center;letter-spacing:.3rem;caret-color:transparent;"
-      placeholder="" autocomplete="off">
-    <button onclick="_v3DevClose()"
-      style="margin-top:1rem;width:100%;padding:.6rem;border-radius:8px;background:#333;color:#8b949e;border:none;cursor:pointer;font-size:.9rem;">
-      ปิด
-    </button>
+  <div style="background:#1a1a2e;border:1px solid #333;border-radius:14px;padding:1.5rem;text-align:center;width:280px;">
+    <div style="font-size:2rem;margin-bottom:.4rem;">🧮</div>
+    <div style="color:#c9d1d9;font-size:.95rem;font-weight:700;margin-bottom:.2rem;">ฟีเจอร์นี้อยู่ระหว่างการพัฒนา</div>
+    <div style="color:#8b949e;font-size:.75rem;margin-bottom:1rem;">กรุณากลับมาใหม่ในภายหลัง</div>
+    <div id="v3-dev-display" style="background:#0d1117;border-radius:8px;padding:.5rem;font-size:1.4rem;letter-spacing:.4rem;color:#c9d1d9;margin-bottom:.75rem;min-height:2rem;">
+      &nbsp;
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;">
+      <button onclick="_v3NumPress('7')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">7</button>
+      <button onclick="_v3NumPress('8')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">8</button>
+      <button onclick="_v3NumPress('9')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">9</button>
+      <button onclick="_v3NumPress('4')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">4</button>
+      <button onclick="_v3NumPress('5')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">5</button>
+      <button onclick="_v3NumPress('6')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">6</button>
+      <button onclick="_v3NumPress('1')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">1</button>
+      <button onclick="_v3NumPress('2')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">2</button>
+      <button onclick="_v3NumPress('3')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">3</button>
+      <button onclick="_v3NumBack()" style="padding:.7rem;background:#2a2a3e;color:#8b949e;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">⌫</button>
+      <button onclick="_v3NumPress('0')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">0</button>
+      <button onclick="_v3DevClose()" style="padding:.7rem;background:#333;color:#8b949e;border:none;border-radius:8px;font-size:.85rem;cursor:pointer;">ปิด</button>
+    </div>
   </div>
 </div>
 
 <script>
 function _v3DevPopup(){
-  const ov=document.getElementById('v3-dev-overlay');
-  ov.style.display='flex';
-  document.getElementById('v3-dev-input').value='';
+  _v3Code='';
+  _v3UpdateDisplay();
+  document.getElementById('v3-dev-overlay').style.display='flex';
 }
 function _v3DevClose(){
   document.getElementById('v3-dev-overlay').style.display='none';
-  document.getElementById('v3-dev-input').value='';
+  _v3Code='';
+  _v3UpdateDisplay();
 }
+function _v3UpdateDisplay(){
+  const d=document.getElementById('v3-dev-display');
+  if(d)d.textContent=_v3Code?'●'.repeat(_v3Code.length):'\u00a0';
+}
+function _v3NumPress(n){
+  if(_v3Code.length>=6)return;
+  _v3Code+=n;
+  _v3UpdateDisplay();
+  if(_v3Code.length===6){
+    setTimeout(()=>{
+      if(_v3Code==='424198'){
+        _v3DevClose();
+        const btn=document.getElementById('tab-btn-3');
+        if(btn)btn.classList.remove('hidden');
+        if(typeof switchTab==='function')switchTab(3);
+      }else{
+        _v3Code='';
+        _v3UpdateDisplay();
+      }
+    },200);
+  }
+}
+function _v3NumBack(){
+  _v3Code=_v3Code.slice(0,-1);
+  _v3UpdateDisplay();
+}
+var _v3Code='';
 document.addEventListener('DOMContentLoaded',function(){
-  const ov=document.getElementById('v3-dev-overlay');
-  ov.addEventListener('click',function(e){
+  document.getElementById('v3-dev-overlay').addEventListener('click',function(e){
     if(e.target===this)_v3DevClose();
-  });
-  document.getElementById('v3-dev-input').addEventListener('input',function(){
-    if(this.value==='424198'){
-      _v3DevClose();
-      const btn=document.getElementById('tab-btn-3');
-      if(btn)btn.classList.remove('hidden');
-      if(typeof switchTab==='function')switchTab(3);
-    }
   });
 });
 if('serviceWorker' in navigator){
