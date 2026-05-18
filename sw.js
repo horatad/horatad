@@ -1,7 +1,7 @@
 // Version 2.2.26 | 2026-05-18
 // Service Worker — cache-first for same-origin static assets, network fallback.
 // Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
-const CACHE_NAME='horatad-v2.2.27';
+const CACHE_NAME='horatad-v2.2.28';
 const CORE_ASSETS=[
   './',
   './index.html',
