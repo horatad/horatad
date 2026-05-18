@@ -1,0 +1,16 @@
+# netlify.toml — horatad3.netlify.app
+# Version 3.0.0 | 2026-05-18
+# Root → /v3/ (V3 DEV build)
+
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/"
+  to   = "/v3/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/index.html"
+  to   = "/v3/index.html"
+  status = 301
