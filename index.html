@@ -434,20 +434,26 @@ canvas{max-width:100%;height:auto}
     กรุณาผูกดวงที่แท็บ "กรอกข้อมูล" ก่อน แล้วกลับมาพยากรณ์ที่นี่
   </div>
 
-  <!-- predict button -->
-  <button id="v3-btn-predict" class="v3-btn-predict" onclick="v3Predict()">
-    ✨ พยากรณ์พื้นดวง
-  </button>
+  <!-- predict buttons -->
+  <div style="display:flex;gap:.6rem;margin-bottom:1rem;">
+    <button id="v3-btn-local" class="v3-btn-predict" style="flex:1;background:#1a6b3c;font-size:.9rem;" onclick="v3Local()">
+      📋 ดูกฎที่ตรงดวง
+    </button>
+    <button id="v3-btn-typhoon" class="v3-btn-predict" style="flex:1;font-size:.9rem;" onclick="v3Typhoon()">
+      🤖 พยากรณ์โดย Typhoon
+    </button>
+  </div>
 
   <!-- spinner -->
   <div id="v3-spinner" class="v3-spinner hidden">
     <div class="v3-spin-ring"></div>
-    <div>AI กำลังวิเคราะห์ดวงชาตา...</div>
+    <div id="v3-spinner-label">กำลังประมวลผล...</div>
   </div>
 
   <!-- result -->
   <div id="v3-result-wrap" class="hidden">
     <div id="v3-fallback-badge" class="v3-fallback-badge hidden">⚠️ แสดงกฎดิบ (Typhoon API ไม่พร้อม)</div>
+    <div id="v3-source-label" style="font-size:.75rem;color:#8b949e;margin-bottom:.4rem;"></div>
     <div id="v3-result" class="v3-result"></div>
     <button id="v3-copy-btn" class="v3-copy-btn" disabled onclick="v3Copy()">📋 คัดลอก</button>
   </div>
