@@ -159,7 +159,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.41';
+const APP_VERSION='2.2.42';
 const BUILD_DATE=(()=>{
   try{
     const d=new Date(document.lastModified);
