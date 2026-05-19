@@ -2210,9 +2210,12 @@ window.addEventListener('DOMContentLoaded',()=>{
   const _kbVerEl=document.getElementById('kb-version-display');
   if(_kbVerEl)_kbVerEl.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
 
-  // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.1.5)
+  // PWA service worker register
+  // hadController: จำสถานะก่อน register — reload เฉพาะตอน SW update ไม่ใช่ first install
   if('serviceWorker' in navigator){
+    const hadController=!!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(!hadController)return;
       if(_swRefreshing)return;
       _swRefreshing=true;
       location.reload();

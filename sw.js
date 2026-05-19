@@ -1,7 +1,7 @@
-// Version 2.2.37 | 2026-05-19
-// Service Worker — P1: install fail correctly; P3a: skipWaiting ก่อน cache
-// !! SYNC: ต้องตรงกับ APP_VERSION ใน script.js ทุก deploy
-const CACHE_NAME='horatad-v2.2.37';
+// Version 2.2.39 | 2026-05-19
+// Service Worker — skipWaiting หลัง cache พร้อม, ไม่มี navigate reload
+// !! SYNC: ต้องตรงกับ version.json ทุก deploy
+const CACHE_NAME='horatad-v2.2.39';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
@@ -22,11 +22,11 @@ const CORE_ASSETS=[
 ];
 
 self.addEventListener('install',e=>{
-  self.skipWaiting(); // P3a: activate ทันที ไม่รอ cache เสร็จ
+  // skipWaiting หลัง addAll เสร็จ — cache พร้อมก่อน activate
   e.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache=>cache.addAll(CORE_ASSETS))
-    // P1: ไม่มี catch — addAll fail → install fail → browser ใช้ SW เก่าต่อ (ปลอดภัย)
+      .then(()=>self.skipWaiting())
   );
 });
 
@@ -37,10 +37,6 @@ self.addEventListener('activate',e=>{
         keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))
       ))
       .then(()=>self.clients.claim())
-      .then(()=>self.clients.matchAll({type:'window',includeUncontrolled:false}))
-      .then(clients=>Promise.all(
-        clients.map(c=>{try{return c.navigate(c.url);}catch{return Promise.resolve();}})
-      ))
       .catch(()=>{})
   );
 });
@@ -48,9 +44,7 @@ self.addEventListener('activate',e=>{
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
   const url=new URL(e.request.url);
-  // Bypass cross-origin (fonts.googleapis.com, promptpay.io, etc.)
   if(url.origin!==location.origin)return;
-  // Bypass version.json — ต้องได้จาก network เสมอ
   if(url.pathname.endsWith('/version.json'))return;
   e.respondWith(
     caches.match(e.request).then(cached=>{
