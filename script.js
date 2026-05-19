@@ -1284,16 +1284,17 @@ async function _generateShareImage(active){
   ctx.fillStyle='#c9d1d9';
   ctx.font='500 28px Sarabun,sans-serif';
   ctx.fillText(scoreLabel,SZ/2,1050);
-  // V2.2.24: QR code bottom-right — JD:xxxxx|T:HH:MM|LAT:xx.xx
+  // QR payload V1.4 — JSON, Error Correction H (ทนต่อ compress ผ่าน LINE)
   try{
     await _loadQRLib();
-    const jd=_calcJD(active.d,active.m,active.y_be);
-    const lat=(PROVINCES_LAT[active.prov||'']||13.75).toFixed(2);
-    const qrText=`JD:${jd}|T:${active.t}|LAT:${lat}`;
+    const jd=Math.trunc(active.jd||_calcJD(active.d,active.m,active.y_be));
+    const lng=active.lng||(PROVINCES[active.prov||'']||100.50);
+    const qrPayload={jd,t:active.t||'',lng,fn:(active.fn||active.name||'').slice(0,50)};
+    const qrText=JSON.stringify(qrPayload);
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='visibility:hidden;position:absolute;left:0;top:0;width:110px;height:110px;';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff'});
+    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
     await new Promise(r=>setTimeout(r,200));
     const qrCv=qrDiv.querySelector('canvas')||qrDiv.querySelector('img');
     if(qrCv)ctx.drawImage(qrCv,SZ-126,SZ-126,110,110);
