@@ -159,7 +159,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ?? App Version (Single Source of Truth) ?????????????????
 // req10: 鉆?鉆?鉊詮?鉆鉊葭鉊Ｒ葷鉊葭鉆?鉊詮? deploy ??bump CACHE_NAME 鉆? sw.js 鉆葦鉆?鉊??鉊?鉊抉腺
-const APP_VERSION='2.2.39';
+const APP_VERSION='2.2.40';
 const BUILD_DATE=(()=>{
   try{
     const d=new Date(document.lastModified);
@@ -2338,18 +2338,7 @@ window.addEventListener('DOMContentLoaded',()=>{
         .catch(()=>{});
     });
   }
-  // Option B: version.json check ??鉆腹鉆?鉊嗣?鉊?鉊晤? SW lifecycle 鉆鉊丞腺
-  (function _checkVersion(){
-    fetch('./version.json?t='+Date.now(),{cache:'no-store'})
-      .then(r=>r.json())
-      .then(({v})=>{
-        if(v&&v!==APP_VERSION&&!_swRefreshing){
-          _swRefreshing=true;
-          location.reload();
-        }
-      })
-      .catch(()=>{});
-  })();
+  // version check 鉊號鉊艇鉊葉鉊冢? ??SW lifecycle 鉊萵鉊?鉊耜腦 update 鉆?鉊?(V2.2.40)
   // PWA install prompt
   window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();

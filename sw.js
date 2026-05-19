@@ -1,7 +1,7 @@
 ﻿// Version 2.2.38 | 2026-05-19
 // Service Worker ??P1: install fail correctly; P3a: skipWaiting 鉊?鉊冢? cache
 // !! SYNC: 鉊?鉊冢?鉊腦鉊?鉊晤? APP_VERSION 鉆? script.js 鉊虜鉊?deploy
-const CACHE_NAME='horatad-v2.2.39';
+const CACHE_NAME='horatad-v2.2.40';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
