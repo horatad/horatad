@@ -1,8 +1,7 @@
-// Version 2.2.33 | 2026-05-19
-// Service Worker — permanent update: client.navigate() ใน activate
-// Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
+// Version 2.2.35 | 2026-05-19
+// Service Worker — selective delete + bypass version.json + client.navigate()
 // !! SYNC: ต้องตรงกับ APP_VERSION ใน script.js ทุก deploy
-const CACHE_NAME='horatad-v2.2.33';
+const CACHE_NAME='horatad-v2.2.35';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
@@ -51,6 +50,8 @@ self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
   // Bypass cross-origin (fonts.googleapis.com, promptpay.io, etc.)
   if(url.origin!==location.origin)return;
+  // Bypass version.json — ต้องได้จาก network เสมอ
+  if(url.pathname.endsWith('/version.json'))return;
   e.respondWith(
     caches.match(e.request).then(cached=>{
       if(cached)return cached;

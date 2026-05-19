@@ -1,7 +1,7 @@
-// Version 2.2.33 | 2026-05-19
-// Changes: [V2.2.33] SW permanent fix: client.navigate() ใน sw.js activate
-//   — reload จาก sw.js เอง ไม่ต้องพึ่ง script.js (break chicken-and-egg);
-//   SW register URL ใช้ ?v=APP_VERSION bust CDN cache ทุก deploy;
+// Version 2.2.35 | 2026-05-19
+// Changes: [V2.2.35] Option B: version.json check — fetch ทุก load เทียบ APP_VERSION → reload;
+//   revert nuclear clear → selective delete (offline safe);
+//   setInterval reg.update() ทุก 1 ชม. สำหรับ tab ค้างไว้;
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -160,7 +160,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.33';
+const APP_VERSION='2.2.35';
 const BUILD_DATE=(()=>{
   try{
     const d=new Date(document.lastModified);
@@ -2330,10 +2330,26 @@ window.addEventListener('DOMContentLoaded',()=>{
     window.addEventListener('load',()=>{
       // ?v=APP_VERSION bust CDN cache ทุก deploy — URL ต่าง = browser detect ทันที
       navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'})
-        .then(reg=>reg.update())
+        .then(reg=>{
+          reg.update();
+          // check SW update ทุก 1 ชั่วโมง — user ที่เปิด tab ค้างไว้
+          setInterval(()=>reg.update(),60*60*1000);
+        })
         .catch(()=>{});
     });
   }
+  // Option B: version.json check — ไม่ขึ้นกับ SW lifecycle เลย
+  (function _checkVersion(){
+    fetch('./version.json?t='+Date.now(),{cache:'no-store'})
+      .then(r=>r.json())
+      .then(({v})=>{
+        if(v&&v!==APP_VERSION&&!_swRefreshing){
+          _swRefreshing=true;
+          location.reload();
+        }
+      })
+      .catch(()=>{});
+  })();
   // PWA install prompt
   window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();
