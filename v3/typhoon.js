@@ -18,7 +18,8 @@ import {
 // ── Config ────────────────────────────────────────────────────────────────
 const TYPHOON_WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
 const TYPHOON_MODEL = 'typhoon-v2.5-30b-a3b-instruct';
-const MAX_TOKENS = 1200;
+const MAX_TOKENS = 2048;
+const TRUNCATION_NOTICE = '\n\n(คำพยากรณ์ถูกย่อให้สั้นลงเนื่องจากความยาวจำกัด)';
 const MAX_RULES = 28;
 const MIN_MANIFESTATION = 0.10; // ตาม tb_predictions threshold
 
@@ -200,6 +201,27 @@ ${rulesText}
   return{systemPrompt,userPrompt};
 }
 
+// ── Truncation handling ────────────────────────────────────────────────────
+
+/**
+ * _trimDanglingSentence(text)
+ * เมื่อ response ถูกตัดเพราะชน token limit ประโยคสุดท้ายมักไม่จบ
+ * ตัดกลับไปยังจุดจบประโยคล่าสุด (ขึ้นบรรทัดใหม่ หรือเครื่องหมายจบประโยค)
+ * ถ้าหาไม่เจอ คืนข้อความเดิม (ดีกว่าตัดทิ้งทั้งหมด)
+ */
+function _trimDanglingSentence(text){
+  const t=(text||'').trimEnd();
+  if(!t)return t;
+  let cut=-1;
+  for(let i=t.length-1;i>=0;i--){
+    const ch=t[i];
+    if(ch==='\n'||ch==='.'||ch==='!'||ch==='?'||ch==='…'||ch==='ฯ'){cut=i;break;}
+  }
+  // ต้องเหลือเนื้อหาพอสมควร ไม่งั้นเก็บข้อความเดิมไว้
+  if(cut>=0&&cut>=Math.floor(t.length*0.4))return t.slice(0,cut+1).trimEnd();
+  return t;
+}
+
 // ── API call ───────────────────────────────────────────────────────────────
 
 /**
@@ -255,11 +277,20 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
 
   // รองรับ OpenAI-compatible format
   if(data.choices&&data.choices[0]?.message?.content){
-    return data.choices[0].message.content.trim();
+    const choice=data.choices[0];
+    let out=choice.message.content.trim();
+    if(choice.finish_reason==='length'){
+      out=_trimDanglingSentence(out)+TRUNCATION_NOTICE;
+    }
+    return out;
   }
   // fallback format
   if(data.content&&data.content[0]?.text){
-    return data.content[0].text.trim();
+    let out=data.content[0].text.trim();
+    if(data.stop_reason==='max_tokens'){
+      out=_trimDanglingSentence(out)+TRUNCATION_NOTICE;
+    }
+    return out;
   }
 
   const msg=data.error?.message||JSON.stringify(data).slice(0,100);

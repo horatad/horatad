@@ -1907,6 +1907,18 @@ function _matchRules(natal,transit){
   return res.slice(0,28);
 }
 // ── V2.2.20: Typhoon AI Interpretation ──────────────────
+const _TYPHOON_TRUNC_NOTICE='\n\n(คำพยากรณ์ถูกย่อให้สั้นลงเนื่องจากความยาวจำกัด)';
+function _trimDanglingSentence(text){
+  const t=(text||'').trimEnd();
+  if(!t)return t;
+  let cut=-1;
+  for(let i=t.length-1;i>=0;i--){
+    const ch=t[i];
+    if(ch==='\n'||ch==='.'||ch==='!'||ch==='?'||ch==='…'||ch==='ฯ'){cut=i;break;}
+  }
+  if(cut>=0&&cut>=Math.floor(t.length*0.4))return t.slice(0,cut+1).trimEnd();
+  return t;
+}
 async function _callTyphoon(natal,transit,matched){
   const rulesText=matched.map(r=>`• ${r.c} → ${r.p}`).join('\n');
   const lagnaIdx=Math.trunc(natal.pos[0]/1800)+1;
@@ -1919,14 +1931,23 @@ async function _callTyphoon(natal,transit,matched){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       model:'typhoon-v2.5-30b-a3b-instruct',
-      max_tokens:1000,
+      max_tokens:2048,
       messages:[{role:'user',content:prompt}]
     })
   });
   if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
   const data=await resp.json();
-  if(data.choices&&data.choices[0])return data.choices[0].message.content;
-  if(data.content&&data.content[0])return data.content[0].text;
+  if(data.choices&&data.choices[0]){
+    const choice=data.choices[0];
+    let out=choice.message.content;
+    if(choice.finish_reason==='length')out=_trimDanglingSentence(out)+_TYPHOON_TRUNC_NOTICE;
+    return out;
+  }
+  if(data.content&&data.content[0]){
+    let out=data.content[0].text;
+    if(data.stop_reason==='max_tokens')out=_trimDanglingSentence(out)+_TYPHOON_TRUNC_NOTICE;
+    return out;
+  }
   throw new Error(data.error?.message||'Typhoon error');
 }
 // ── V2.2.17: Interpretation Modal ───────────────────────
