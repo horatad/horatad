@@ -1,6 +1,7 @@
-// Version 2.2.30 | 2026-05-19
-// Changes: [V2.2.30] DS-7: inputmode=none บน time fields t1/t2/tt;
-//   req13: global button sound delegation (_lastBeepAt debounce 50ms);
+// Version 2.2.31 | 2026-05-19
+// Changes: [V2.2.31] req14: custom tag localStorage (horatad_custom_tags);
+//   _renderTagRow รวม DEFAULT_TAGS + custom + [+ เพิ่ม] button;
+//   long-press 1200ms ลบ custom tag; add-tag-modal + Esc/Enter support;
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -159,30 +160,89 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.30';
+const APP_VERSION='2.2.31';
 const DEFAULT_TAGS=['ครอบครัว','เพื่อน','ลูกค้า','VIP','คู่ครอง','ลูก','พ่อแม่','อื่นๆ'];
+const CUSTOM_TAGS_KEY='horatad_custom_tags';
 let _tags1=[]; // selected tags for section 1
 let _tags2=[]; // selected tags for section 2
+
+function _loadCustomTags(){
+  try{return JSON.parse(localStorage.getItem(CUSTOM_TAGS_KEY))||[];}catch{return [];}
+}
+function _saveCustomTags(arr){
+  try{localStorage.setItem(CUSTOM_TAGS_KEY,JSON.stringify(arr));}catch{}
+}
+function _deleteCustomTag(tag){
+  const arr=_loadCustomTags().filter(t=>t!==tag);
+  _saveCustomTags(arr);
+  _tags1=_tags1.filter(t=>t!==tag);
+  _tags2=_tags2.filter(t=>t!==tag);
+  _renderTagRow('1');
+  _renderTagRow('2');
+}
+function _showAddTagModal(){
+  document.getElementById('add-tag-backdrop').classList.remove('hidden');
+  document.getElementById('add-tag-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('add-tag-input')?.focus(),80);
+}
+function closeAddTag(){
+  document.getElementById('add-tag-backdrop').classList.add('hidden');
+  document.getElementById('add-tag-modal').classList.add('hidden');
+  const inp=document.getElementById('add-tag-input');
+  if(inp)inp.value='';
+}
+function _confirmAddTag(){
+  const inp=document.getElementById('add-tag-input');
+  const name=(inp?.value||'').trim();
+  if(!name)return;
+  const customs=_loadCustomTags();
+  if(!DEFAULT_TAGS.includes(name)&&!customs.includes(name)){
+    customs.push(name);
+    _saveCustomTags(customs);
+    _renderTagRow('1');
+    _renderTagRow('2');
+    _playBeep(800);
+  }
+  closeAddTag();
+}
 
 function _renderTagRow(section){
   const el=document.getElementById('tag-row-'+section);
   if(!el)return;
   const state=section==='1'?_tags1:_tags2;
   el.innerHTML='';
-  DEFAULT_TAGS.forEach(tag=>{
+  const allTags=[...DEFAULT_TAGS,..._loadCustomTags()];
+  allTags.forEach(tag=>{
+    const isCustom=!DEFAULT_TAGS.includes(tag);
     const btn=document.createElement('button');
-    btn.className='tag-chip'+(state.includes(tag)?' active':'');
+    btn.className='tag-chip'+(state.includes(tag)?' active':'')+(isCustom?' tag-chip-custom':'');
     btn.textContent=tag;
     btn.onclick=()=>{
       const arr=section==='1'?_tags1:_tags2;
       const idx=arr.indexOf(tag);
       if(idx>=0)arr.splice(idx,1);else arr.push(tag);
       if(section==='1')_tags1=[...arr];else _tags2=[...arr];
-      _renderTagRow(section);
+      _renderTagRow('1');
+      _renderTagRow('2');
       _playBeep(700);
     };
+    // long-press delete — custom tags only
+    if(isCustom){
+      let _lp=null;
+      btn.addEventListener('touchstart',()=>{
+        _lp=setTimeout(()=>_showConfirm('ลบ tag',`ลบ "${tag}"?`,()=>_deleteCustomTag(tag)),1200);
+      },{passive:true});
+      btn.addEventListener('touchend',()=>{clearTimeout(_lp);_lp=null;});
+      btn.addEventListener('touchmove',()=>{clearTimeout(_lp);_lp=null;});
+    }
     el.appendChild(btn);
   });
+  // [+ เพิ่ม] button
+  const addBtn=document.createElement('button');
+  addBtn.className='tag-chip tag-chip-add';
+  addBtn.textContent='+ เพิ่ม';
+  addBtn.onclick=()=>_showAddTagModal();
+  el.appendChild(addBtn);
 }
 
 // ── State ─────────────────────────────────────────────────
@@ -2171,6 +2231,11 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(e.key==='Enter')applyDonateCustom();
   });
 
+  // req 14: add-tag-input Enter key
+  document.getElementById('add-tag-input')?.addEventListener('keydown',e=>{
+    if(e.key==='Enter')_confirmAddTag();
+  });
+
   // persist state on tab close
   window.addEventListener('beforeunload',_saveState);
 
@@ -2180,6 +2245,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       closeMemory();
       closeEvents();
       closeConfirm();
+      closeAddTag();
       document.getElementById('numpad').classList.add('hidden');
       document.getElementById('numpad-backdrop').classList.add('hidden');
       const warn=document.getElementById('numpad-warning');
