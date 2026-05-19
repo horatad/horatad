@@ -1156,17 +1156,7 @@ function calculateChart1(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _natal={
-    uid:crypto.randomUUID(),
-    fn:name,ln:'',g:gender,
-    jd:Math.trunc(_calcJD(d,_era==='BE'?_beToce(y,m):y>543?y-543:y,_era==='BE'?y:y+543)),
-    t,d,m,y_be,
-    lat,lng,prov:provVal,country:'TH',tz:'',dst:false,
-    pos,vel,
-    lagna:null,tanu_lagna:null,tanu_set:null,houses:[],
-    tag:[..._tags1],group:'',sector:'',trait:'',note:'',
-    fname:name,lname:'',name,gender,loc:provVal,t_local:t
-  };
+  _natal={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng,tag:[..._tags1]};
   _calc1Done=true;
   _updateShareButton();
   _applyInputColors('1','done');
@@ -1197,17 +1187,7 @@ function calculateChart2(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _transit={
-    uid:crypto.randomUUID(),
-    fn:name,ln:'',g:gender,
-    jd:Math.trunc(_calcJD(d,_era==='BE'?_beToce(y,m):y>543?y-543:y,_era==='BE'?y:y+543)),
-    t,d,m,y_be,
-    lat,lng,prov:provVal,country:'TH',tz:'',dst:false,
-    pos,vel,
-    lagna:null,tanu_lagna:null,tanu_set:null,houses:[],
-    tag:[..._tags2],group:'',sector:'',trait:'',note:'',
-    fname:name,lname:'',name,gender,loc:provVal,t_local:t
-  };
+  _transit={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng,tag:[..._tags2]};
   _calc2Done=true;
   _updateShareButton();
   _applyInputColors('2','done');
@@ -1392,21 +1372,28 @@ async function _generateShareImage(active){
   ctx.fillStyle='#c9d1d9';
   ctx.font='500 28px Sarabun,sans-serif';
   ctx.fillText(scoreLabel,SZ/2,1050);
-  // QR payload Master Schema V1.4 — jd/t/lng/fn only
+  // V2.2.29: QR payload JSON per Master Schema V1.3
   try{
     await _loadQRLib();
+    const jd=active.jd||_calcJD(active.d,active.m,active.y_be);
     const qrPayload={
-      jd:Math.trunc(active.jd||_calcJD(active.d,active.m,active.y_be)),
-      t:active.t_local||active.t||'ไม่ทราบ',
+      uid:active.uid||'',
+      jd,
+      t_local:active.t_local||active.t||'',
+      lat:active.lat||(PROVINCES_LAT[active.prov||'']||13.75),
       lng:active.lng||(PROVINCES[active.prov||'']||100.50),
-      fn:(active.fname||active.name||'ไม่ระบุ').slice(0,50)
+      fname:active.fname||active.name||'',
+      lname:active.lname||'',
+      g:active.g||active.gender||'',
+      loc:active.loc||active.prov||''
     };
     const qrText=JSON.stringify(qrPayload);
     const qrDiv=document.createElement('div');
+    // visibility:hidden แทน off-screen — browser ยัง rasterize canvas ได้
     qrDiv.style.cssText='visibility:hidden;position:absolute;left:0;top:0;width:110px;height:110px;';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
-    await new Promise(r=>setTimeout(r,200));
+    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff'});
+    await new Promise(r=>setTimeout(r,200)); // เพิ่มจาก 80 → 200ms
     const qrCv=qrDiv.querySelector('canvas')||qrDiv.querySelector('img');
     if(qrCv)ctx.drawImage(qrCv,SZ-126,SZ-126,110,110);
     document.body.removeChild(qrDiv);
@@ -2313,10 +2300,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // restore saved state; if none reset to today
   const restored=_applyState(_loadJSON(STATE_KEY));
-  if(!restored){
-    resetChart1();resetChart2();
-    _setField('name-1','ตัวอย่าง');
-  }
+  if(!restored){resetChart1();resetChart2();}
   resetTransit();
   _applyEraStyle();
   switchTab(1);

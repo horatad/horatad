@@ -1,7 +1,7 @@
-// Version 2.2.38 | 2026-05-19
-// Service Worker ??P1: install fail correctly; P3a: skipWaiting ??????? cache
-// !! SYNC: ???????????????????? APP_VERSION ???? script.js ????謚??deploy
-const CACHE_NAME='horatad-v2.2.45';
+// Version 2.2.37 | 2026-05-19
+// Service Worker — P1: install fail correctly; P3a: skipWaiting ก่อน cache
+// !! SYNC: ต้องตรงกับ APP_VERSION ใน script.js ทุก deploy
+const CACHE_NAME='horatad-v2.2.37';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
@@ -22,11 +22,11 @@ const CORE_ASSETS=[
 ];
 
 self.addEventListener('install',e=>{
-  self.skipWaiting(); // P3a: activate ??????雓???????撖??蹓橘??cache ??怏????????
+  self.skipWaiting(); // P3a: activate ทันที ไม่รอ cache เสร็จ
   e.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache=>cache.addAll(CORE_ASSETS))
-    // P1: ????撖??蹓橘???catch ??addAll fail ??install fail ??browser ??????SW ??怏???????????(???????????????
+    // P1: ไม่มี catch — addAll fail → install fail → browser ใช้ SW เก่าต่อ (ปลอดภัย)
   );
 });
 
@@ -50,7 +50,7 @@ self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
   // Bypass cross-origin (fonts.googleapis.com, promptpay.io, etc.)
   if(url.origin!==location.origin)return;
-  // Bypass version.json ????????????????????? network ??怏????撖??
+  // Bypass version.json — ต้องได้จาก network เสมอ
   if(url.pathname.endsWith('/version.json'))return;
   e.respondWith(
     caches.match(e.request).then(cached=>{
