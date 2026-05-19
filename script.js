@@ -1,7 +1,6 @@
-// Version 2.2.35 | 2026-05-19
-// Changes: [V2.2.35] Option B: version.json check — fetch ทุก load เทียบ APP_VERSION → reload;
-//   revert nuclear clear → selective delete (offline safe);
-//   setInterval reg.update() ทุก 1 ชม. สำหรับ tab ค้างไว้;
+// Version 2.2.36 | 2026-05-19
+// Changes: [V2.2.36] SW P1: install fail correctly — ลบ catch() เงียบ;
+//   SW P3a: skipWaiting ก่อน cache chain — activate ไม่รอ cache;
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -160,7 +159,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.35';
+const APP_VERSION='2.2.36';
 const BUILD_DATE=(()=>{
   try{
     const d=new Date(document.lastModified);
