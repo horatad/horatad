@@ -1,7 +1,7 @@
-// Version 2.2.36 | 2026-05-19
+// Version 2.2.37 | 2026-05-19
 // Service Worker — P1: install fail correctly; P3a: skipWaiting ก่อน cache
 // !! SYNC: ต้องตรงกับ APP_VERSION ใน script.js ทุก deploy
-const CACHE_NAME='horatad-v2.2.36';
+const CACHE_NAME='horatad-v2.2.37';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',

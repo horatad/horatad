@@ -1,6 +1,6 @@
-// Version 2.2.36 | 2026-05-19
-// Changes: [V2.2.36] SW P1: install fail correctly — ลบ catch() เงียบ;
-//   SW P3a: skipWaiting ก่อน cache chain — activate ไม่รอ cache;
+// Version 2.2.37 | 2026-05-19
+// Changes: [V2.2.37] QR fix: visibility:hidden แทน position:fixed off-screen;
+//   timeout 80→200ms; fallback querySelector img;
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -159,7 +159,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.36';
+const APP_VERSION='2.2.37';
 const BUILD_DATE=(()=>{
   try{
     const d=new Date(document.lastModified);
@@ -1389,11 +1389,12 @@ async function _generateShareImage(active){
     };
     const qrText=JSON.stringify(qrPayload);
     const qrDiv=document.createElement('div');
-    qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
+    // visibility:hidden แทน off-screen — browser ยัง rasterize canvas ได้
+    qrDiv.style.cssText='visibility:hidden;position:absolute;left:0;top:0;width:110px;height:110px;';
     document.body.appendChild(qrDiv);
     new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff'});
-    await new Promise(r=>setTimeout(r,80));
-    const qrCv=qrDiv.querySelector('canvas');
+    await new Promise(r=>setTimeout(r,200)); // เพิ่มจาก 80 → 200ms
+    const qrCv=qrDiv.querySelector('canvas')||qrDiv.querySelector('img');
     if(qrCv)ctx.drawImage(qrCv,SZ-126,SZ-126,110,110);
     document.body.removeChild(qrDiv);
   }catch(e){console.warn('[QR]',e);}
