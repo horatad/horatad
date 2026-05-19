@@ -45,6 +45,10 @@ canvas{max-width:100%;height:auto}
 .tag-chip.active{border-color:#b8860b;background:#2a1f00;color:#b8860b;}
 .tag-chip-add{border-style:dashed;color:#5b3fa0;border-color:#5b3fa0;}
 .tag-chip-add.active{border-color:#7b5fc0;background:#1a0f30;color:#c9a0ff;}
+.tag-chip-custom{border-color:#2a4a3a;color:#7ab89a;}
+.tag-chip-custom.active{border-color:#1a6b3c;background:#0a2a1a;color:#4ade80;}
+.add-tag-input{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #3a3a5c;background:#0d1117;color:#c9d1d9;font-family:'Sarabun',sans-serif;font-size:.95rem;margin:10px 0;box-sizing:border-box;outline:none;}
+.add-tag-input:focus{border-color:#5b3fa0;}
 </style>
 </head>
 <body>
@@ -73,6 +77,7 @@ canvas{max-width:100%;height:auto}
       <div class="era-row">
         <button id="btn-era" onclick="toggleEra()" class="btn-era">พ.ศ.</button>
         <button onclick="calculateBoth()" class="btn-calc-main">ผูกดวง</button>
+        <button class="sound-toggle-inline" id="sound-btn" onclick="cycleSoundLevel()">🔈 เสียง</button>
       </div>
 
       <!-- ดวงที่ 1 -->
@@ -161,7 +166,6 @@ canvas{max-width:100%;height:auto}
 
     <!-- Sound toggle + Quick memory -->
     <div class="quick-bar">
-      <button class="sound-toggle-inline" id="sound-btn" onclick="cycleSoundLevel()">🔈 เสียง</button>
       <div id="quick-memory-chips" class="quick-memory-chips"></div>
     </div>
 
@@ -385,6 +389,18 @@ canvas{max-width:100%;height:auto}
   <div class="confirm-actions">
     <button onclick="closeConfirm()" class="confirm-cancel">ยกเลิก</button>
     <button onclick="_confirmYes()" class="confirm-ok">ตกลง</button>
+  </div>
+</div>
+
+<!-- ── Add Custom Tag Modal (req 14) ──────────────────── -->
+<div id="add-tag-backdrop" class="confirm-backdrop hidden" onclick="closeAddTag()"></div>
+<div id="add-tag-modal" class="confirm-modal hidden">
+  <div class="confirm-title">เพิ่ม Tag ใหม่</div>
+  <input id="add-tag-input" type="text" class="add-tag-input" placeholder="ชื่อ tag... (max 20 ตัว)" maxlength="20" autocomplete="off">
+  <div style="font-size:.75rem;color:#8b949e;margin-bottom:4px;">กดค้าง custom tag เพื่อลบ</div>
+  <div class="confirm-actions">
+    <button onclick="closeAddTag()" class="confirm-cancel">ยกเลิก</button>
+    <button onclick="_confirmAddTag()" class="confirm-ok">+ เพิ่ม</button>
   </div>
 </div>
 
