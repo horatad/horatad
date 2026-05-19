@@ -197,6 +197,7 @@ canvas{max-width:100%;height:auto}
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
         <div class="about-version" data-version></div>
+        <div class="about-build-date" data-build></div>
       </div>
       <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
     </div>
@@ -514,15 +515,24 @@ function _v3NumPress(n){
   _v3UpdateDisplay();
   if(_v3Code.length===6){
     setTimeout(()=>{
-      if(_v3Code==='424198'){
-        _v3DevClose();
-        const btn=document.getElementById('tab-btn-3');
-        if(btn)btn.classList.remove('hidden');
-        if(typeof switchTab==='function')switchTab(3);
-      }else{
+      fetch('/api/auth',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({pin:_v3Code})
+      }).then(r=>{
+        if(r.ok){
+          _v3DevClose();
+          const btn=document.getElementById('tab-btn-3');
+          if(btn)btn.classList.remove('hidden');
+          if(typeof switchTab==='function')switchTab(3);
+        }else{
+          _v3Code='';
+          _v3UpdateDisplay();
+        }
+      }).catch(()=>{
         _v3Code='';
         _v3UpdateDisplay();
-      }
+      });
     },200);
   }
 }
