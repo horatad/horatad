@@ -1,7 +1,7 @@
-// Version 2.2.38 | 2026-05-19
-// Service Worker ??P1: install fail correctly; P3a: skipWaiting ??????? cache
-// !! SYNC: ???????????????????? APP_VERSION ???? script.js ????謚??deploy
-const CACHE_NAME='horatad-v2.2.45';
+// Version 2.2.28 | 2026-05-18
+// Service Worker — cache-first for same-origin static assets, network fallback.
+// Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
+const CACHE_NAME='horatad-v2.2.28';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
@@ -22,11 +22,11 @@ const CORE_ASSETS=[
 ];
 
 self.addEventListener('install',e=>{
-  self.skipWaiting(); // P3a: activate ??????雓???????撖??蹓橘??cache ??怏????????
   e.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache=>cache.addAll(CORE_ASSETS))
-    // P1: ????撖??蹓橘???catch ??addAll fail ??install fail ??browser ??????SW ??怏???????????(???????????????
+      .then(()=>self.skipWaiting())
+      .catch(()=>{})
   );
 });
 
@@ -37,11 +37,6 @@ self.addEventListener('activate',e=>{
         keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))
       ))
       .then(()=>self.clients.claim())
-      .then(()=>self.clients.matchAll({type:'window',includeUncontrolled:false}))
-      .then(clients=>Promise.all(
-        clients.map(c=>{try{return c.navigate(c.url);}catch{return Promise.resolve();}})
-      ))
-      .catch(()=>{})
   );
 });
 
@@ -50,8 +45,6 @@ self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
   // Bypass cross-origin (fonts.googleapis.com, promptpay.io, etc.)
   if(url.origin!==location.origin)return;
-  // Bypass version.json ????????????????????? network ??怏????撖??
-  if(url.pathname.endsWith('/version.json'))return;
   e.respondWith(
     caches.match(e.request).then(cached=>{
       if(cached)return cached;
