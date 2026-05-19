@@ -1,7 +1,7 @@
-// Version 2.2.31 | 2026-05-19
-// Changes: [V2.2.31] req14: custom tag localStorage (horatad_custom_tags);
-//   _renderTagRow รวม DEFAULT_TAGS + custom + [+ เพิ่ม] button;
-//   long-press 1200ms ลบ custom tag; add-tag-modal + Esc/Enter support;
+// Version 2.2.33 | 2026-05-19
+// Changes: [V2.2.33] SW permanent fix: client.navigate() ใน sw.js activate
+//   — reload จาก sw.js เอง ไม่ต้องพึ่ง script.js (break chicken-and-egg);
+//   SW register URL ใช้ ?v=APP_VERSION bust CDN cache ทุก deploy;
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -160,7 +160,13 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.31';
+const APP_VERSION='2.2.33';
+const BUILD_DATE=(()=>{
+  try{
+    const d=new Date(document.lastModified);
+    return d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+  }catch{return '';}
+})();
 const DEFAULT_TAGS=['ครอบครัว','เพื่อน','ลูกค้า','VIP','คู่ครอง','ลูก','พ่อแม่','อื่นๆ'];
 const CUSTOM_TAGS_KEY='horatad_custom_tags';
 let _tags1=[]; // selected tags for section 1
@@ -2307,6 +2313,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   // req10: inject APP_VERSION ทุก [data-version]
   document.querySelectorAll('[data-version]')
     .forEach(el=>el.textContent='V '+APP_VERSION);
+  document.querySelectorAll('[data-build]')
+    .forEach(el=>el.textContent=BUILD_DATE);
   _renderTagRow('1');
   _renderTagRow('2');
   // V2.2.18: KB version display
@@ -2320,7 +2328,10 @@ window.addEventListener('DOMContentLoaded',()=>{
       location.reload();
     });
     window.addEventListener('load',()=>{
-      navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
+      // ?v=APP_VERSION bust CDN cache ทุก deploy — URL ต่าง = browser detect ทันที
+      navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'})
+        .then(reg=>reg.update())
+        .catch(()=>{});
     });
   }
   // PWA install prompt

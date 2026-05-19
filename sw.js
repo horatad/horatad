@@ -1,8 +1,8 @@
-// Version 2.2.31 | 2026-05-19
-// Service Worker — cache-first for same-origin static assets, network fallback.
+// Version 2.2.33 | 2026-05-19
+// Service Worker — permanent update: client.navigate() ใน activate
 // Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
 // !! SYNC: ต้องตรงกับ APP_VERSION ใน script.js ทุก deploy
-const CACHE_NAME='horatad-v2.2.31';
+const CACHE_NAME='horatad-v2.2.33';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
@@ -38,6 +38,11 @@ self.addEventListener('activate',e=>{
         keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))
       ))
       .then(()=>self.clients.claim())
+      .then(()=>self.clients.matchAll({type:'window',includeUncontrolled:false}))
+      .then(clients=>Promise.all(
+        clients.map(c=>{try{return c.navigate(c.url);}catch{return Promise.resolve();}})
+      ))
+      .catch(()=>{})
   );
 });
 
