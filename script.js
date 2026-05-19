@@ -1,7 +1,6 @@
-// Version 2.2.29 | 2026-05-19
-// Changes: [V2.2.29] req1: autofill readonly trick (index.html); req3: QR payload JSON schema V1.3;
-//   req4+9: uid/lat/lng/fname/lname in _natal + crypto.randomUUID();
-//   req5: auto-save natal in calc1/calc2; req7+8: numpad covers time fields t1/t2/tt
+// Version 2.2.30 | 2026-05-19
+// Changes: [V2.2.30] DS-7: inputmode=none บน time fields t1/t2/tt;
+//   req13: global button sound delegation (_lastBeepAt debounce 50ms);
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -160,7 +159,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── App Version (Single Source of Truth) ─────────────────
 // req10: แก้จุดเดียวนี้ทุก deploy — bump CACHE_NAME ใน sw.js ให้ตรงด้วย
-const APP_VERSION='2.2.29';
+const APP_VERSION='2.2.30';
 const DEFAULT_TAGS=['ครอบครัว','เพื่อน','ลูกค้า','VIP','คู่ครอง','ลูก','พ่อแม่','อื่นๆ'];
 let _tags1=[]; // selected tags for section 1
 let _tags2=[]; // selected tags for section 2
@@ -317,8 +316,10 @@ function cycleSoundLevel(){
   _updateSoundBtn();
   if(_soundLevel>0)_playBeep(800);
 }
+let _lastBeepAt=0;
 function _playBeep(freq){
   if(_soundLevel===0)return;
+  _lastBeepAt=Date.now();
   try{
     if(!_audioCtx)_audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     if(_audioCtx.state==='suspended')_audioCtx.resume();
@@ -2198,15 +2199,16 @@ window.addEventListener('DOMContentLoaded',()=>{
   // attach numpad to numeric + time inputs (req8: time fields use custom numpad)
   ['d1','m1','y1','t1','d2','m2','y2','t2','dt','mt','yt','tt'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;
-    el.setAttribute('readonly','readonly');el.style.cursor='pointer';
+    el.setAttribute('readonly','readonly');el.setAttribute('inputmode','none');el.style.cursor='pointer';
     el.addEventListener('click',()=>_numpadOpen(id));
     el.addEventListener('focus',()=>_numpadOpen(id));
   });
 
-  // V2.1.9: sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
-  ['btn-era'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.addEventListener('click',()=>_playBeep(700));
+  // req 13: sound delegation — ทุก BUTTON ที่ยังไม่มี _playBeep ใน handler
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest('button');
+    if(!btn||btn.disabled)return;
+    if(Date.now()-_lastBeepAt>50)_playBeep(600);
   });
 
   // mobile: scroll prov field to top on focus
