@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version 2.2.25 | 2026-05-17 -->
+<!-- Version 2.2.38 | 2026-05-19 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,7 @@
 <title>Horatad โหราทาส</title>
 <meta name="description" content="เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์">
 <meta name="theme-color" content="#b8860b">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="horatad_128x128.png">
 <link rel="apple-touch-icon" href="horatad_180x180.png">
@@ -38,6 +39,16 @@ canvas{max-width:100%;height:auto}
 .v3-copy-btn{background:transparent;border:1px solid #2d2d4e;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:'Sarabun',sans-serif;}
 .v3-copy-btn:hover{border-color:#b8860b;color:#b8860b;}
 .v3-copy-btn:disabled{opacity:.4;cursor:not-allowed;}
+/* ── Tag Chip Selector ──────────────────────────────────── */
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;padding:6px 0 2px;}
+.tag-chip{padding:3px 10px;border-radius:20px;border:1px solid #3a3a5c;background:#1a1a2e;color:#8b949e;font-family:'Sarabun',sans-serif;font-size:.78rem;cursor:pointer;transition:all .15s;user-select:none;}
+.tag-chip.active{border-color:#b8860b;background:#2a1f00;color:#b8860b;}
+.tag-chip-add{border-style:dashed;color:#5b3fa0;border-color:#5b3fa0;}
+.tag-chip-add.active{border-color:#7b5fc0;background:#1a0f30;color:#c9a0ff;}
+.tag-chip-custom{border-color:#2a4a3a;color:#7ab89a;}
+.tag-chip-custom.active{border-color:#1a6b3c;background:#0a2a1a;color:#4ade80;}
+.add-tag-input{width:100%;padding:8px 10px;border-radius:8px;border:1px solid #3a3a5c;background:#0d1117;color:#c9d1d9;font-family:'Sarabun',sans-serif;font-size:.95rem;margin:10px 0;box-sizing:border-box;outline:none;}
+.add-tag-input:focus{border-color:#5b3fa0;}
 </style>
 </head>
 <body>
@@ -46,7 +57,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 2.2.21</span>
+  <span class="brand-ver" data-version></span>
 </h1>
 
 <!-- Tab nav -->
@@ -54,7 +65,7 @@ canvas{max-width:100%;height:auto}
   <button id="tab-btn-0" class="tab-btn" onclick="switchTab(0)">🔭 กรอกข้อมูล</button>
   <button id="tab-btn-1" class="tab-btn tab-active" onclick="switchTab(1)">🖼️ กราฟิก + รายงาน</button>
   <button id="tab-btn-2" class="tab-btn" onclick="switchTab(2)">ℹ️ เกี่ยวกับ</button>
-  <button id="tab-btn-3" class="tab-btn" onclick="switchTab(3)">🔮 พยากรณ์</button>
+  <button id="tab-btn-3" class="tab-btn hidden" onclick="switchTab(3)">🔮 พยากรณ์ V3.01 [18/05/26]</button>
 </div>
 
 <!-- ── TAB 0: Input ──────────────────────────────────────── -->
@@ -66,13 +77,14 @@ canvas{max-width:100%;height:auto}
       <div class="era-row">
         <button id="btn-era" onclick="toggleEra()" class="btn-era">พ.ศ.</button>
         <button onclick="calculateBoth()" class="btn-calc-main">ผูกดวง</button>
+        <button class="sound-toggle-inline" id="sound-btn" onclick="cycleSoundLevel()">🔈 เสียง</button>
       </div>
 
       <!-- ดวงที่ 1 -->
       <div class="chart-section section-1">
         <div class="section-title">ดวงที่ 1</div>
         <div class="name-gender-row">
-          <input id="name-1" placeholder="ชื่อ">
+          <input id="name-1" placeholder="ชื่อ" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
           <button class="btn-mem" onclick="openMemory('1')" title="ความทรงจำ">🔍</button>
           <select id="gender1" class="gender-sel">
             <option value="ชาย">ชาย</option>
@@ -80,11 +92,12 @@ canvas{max-width:100%;height:auto}
             <option value="เหตุการณ์">เหตุการณ์</option>
           </select>
         </div>
+        <div class="tag-row" id="tag-row-1"></div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="d1" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="m1" type="number" min="1" max="12"></div>
           <div><label>ปี</label><input id="y1" type="number"></div>
-          <div><label>เวลา</label><input id="t1" type="time"></div>
+          <div><label>เวลา</label><input id="t1" type="text" placeholder="HH:MM" style="cursor:pointer"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -99,7 +112,7 @@ canvas{max-width:100%;height:auto}
       <div class="chart-section section-2 hidden">
         <div class="section-title">ดวงที่ 2</div>
         <div class="name-gender-row">
-          <input id="name-2" placeholder="ชื่อ">
+          <input id="name-2" placeholder="ชื่อ" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
           <button class="btn-mem" onclick="openMemory('2')" title="ความทรงจำ">🔍</button>
           <select id="gender2" class="gender-sel">
             <option value="ชาย">ชาย</option>
@@ -107,11 +120,12 @@ canvas{max-width:100%;height:auto}
             <option value="เหตุการณ์">เหตุการณ์</option>
           </select>
         </div>
+        <div class="tag-row" id="tag-row-2"></div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="d2" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="m2" type="number" min="1" max="12"></div>
           <div><label>ปี</label><input id="y2" type="number"></div>
-          <div><label>เวลา</label><input id="t2" type="time"></div>
+          <div><label>เวลา</label><input id="t2" type="text" placeholder="HH:MM" style="cursor:pointer"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -126,14 +140,14 @@ canvas{max-width:100%;height:auto}
       <div class="chart-section section-transit">
         <div class="section-title">วันที่จร</div>
         <div class="name-gender-row">
-          <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)">
+          <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
           <button class="btn-mem" onclick="openEvents()" title="เหตุการณ์ที่บันทึก">🔍</button>
         </div>
         <div class="form-row-dmy">
           <div><label>วัน</label><input id="dt" type="number" min="1" max="31"></div>
           <div><label>เดือน</label><input id="mt" type="number" min="1" max="12"></div>
           <div><label>ปี</label><input id="yt" type="number"></div>
-          <div><label>เวลา</label><input id="tt" type="time"></div>
+          <div><label>เวลา</label><input id="tt" type="text" placeholder="HH:MM" style="cursor:pointer"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -152,7 +166,6 @@ canvas{max-width:100%;height:auto}
 
     <!-- Sound toggle + Quick memory -->
     <div class="quick-bar">
-      <button class="sound-toggle-inline" id="sound-btn" onclick="cycleSoundLevel()">🔈 เสียง</button>
       <div id="quick-memory-chips" class="quick-memory-chips"></div>
     </div>
 
@@ -183,9 +196,8 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 2.2.26</div>
-        <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
-        <div id="kb-version-display" class="about-kb-version"></div>
+        <div class="about-version" data-version></div>
+        <div class="about-build-date" data-build></div>
       </div>
       <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์</div>
     </div>
@@ -225,32 +237,11 @@ canvas{max-width:100%;height:auto}
     <div class="about-contact-body">
 
       <div class="about-card">
-        <div class="about-card-title">📜 ที่มาและข้อจำกัดของสูตร</div>
-
-        <div class="about-card-title" style="font-size:0.85em;margin-top:0.8em;">✨ จุดเด่น</div>
-        <div class="about-lunar-text">
-          <strong>แม่นยำตามตำราโบราณ:</strong> คำนวณด้วยสูตรคัมภีร์สุริยายาตรดั้งเดิม (ฐานมหายุค 800 ปี / 292,207 วัน) ซึ่งเป็นมาตรฐานโหราศาสตร์ไทยสืบทอดมาตั้งแต่สมัยสุโขทัย
-        </div>
-        <div class="about-lunar-text">
-          <strong>สูตรคณิตศาสตร์แท้:</strong> คำนวณหรคุณและเกณฑ์อวมาน (เพิ่มวันละ 11 หน่วย ฐานตัวหาร 703) ตรงตามระบบครูบาอาจารย์ ปีอธิกวารและอธิกมาสตรวจสอบกับ <strong>ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง</strong> ทุกปี
-        </div>
-
-        <div class="about-card-title" style="font-size:0.85em;margin-top:0.8em;">⚠️ ข้อจำกัดที่ควรรู้</div>
-        <div class="about-lunar-text">
-          <strong>อิงสูตร ไม่ได้อิงตาเห็น:</strong> คำนวณตำแหน่งดาวเฉลี่ยทางคณิตศาสตร์ ไม่ใช่การมองดวงจันทร์จริงบนท้องฟ้า
-        </div>
-        <div class="about-lunar-text">
-          <strong>อาจเยื้องกับวันพระราชการ:</strong> ระบบสุริยายาตรอาจให้ผลต่างจากระบบ "ปักขคณนา" ที่ทางราชการใช้ ทำให้วันข้างขึ้นข้างแรมอาจเยื้องไป 0–1 วัน ในบางปี
-
-        </div>
-
-        <div class="about-card-title" style="font-size:0.85em;margin-top:0.8em;">💡 คำแนะนำสำหรับผู้ใช้</div>
-        <div class="about-lunar-text">
-          <strong>ใช้เพื่อการผูกดวง:</strong> เหมาะสำหรับพยากรณ์และศึกษาโหราศาสตร์ไทยตามเกณฑ์มาตรฐานโบราณ
-        </div>
-        <div class="about-lunar-text">
-          <strong>วันสำคัญให้ดูประกาศรัฐ:</strong> หากต้องการตรวจวันพระหรือวันหยุดราชการที่ถูกต้องแน่นอน ให้ยึดตามปฏิทินหลวง (สำนักพระราชวัง) หรือประกาศของกรมการศาสนา
-        </div>
+        <div class="about-card-title">📜 ที่มาของสูตร</div>
+        <div class="about-lunar-text">โหราทาสคำนวณวันจันทรคติด้วย<strong>สูตรคัมภีร์สุริยยาตร</strong> ระบบโหราศาสตร์ไทยดั้งเดิมที่สืบทอดมาตั้งแต่สมัยสุโขทัย อิงฐานมหายุค 800 ปี เท่ากับ 292,207 วัน</div>
+        <div class="about-lunar-text">หัวใจของระบบคือ<strong>หรคุณ</strong> (จำนวนวันสะสมนับจากต้นมหายุค) และ<strong>อวมาน</strong> (เศษเกณฑ์จันทร์) ที่เพิ่มขึ้นวันละ 11 หน่วย บนฐานตัวหาร 703 — สูตรนี้ใช้กำหนดเดือนเต็ม (30 วัน) และเดือนขาด (29 วัน) รวมถึงปีอธิกวารและอธิกมาสอย่างแม่นยำ</div>
+        <div class="about-lunar-text">ผลการคำนวณปีอธิกวาร-อธิกมาสได้รับการตรวจสอบเทียบกับ<strong>ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง</strong> ย้อนหลัง 13 ปี (พ.ศ. 2557–2569) พบความคลาดเคลื่อนเพียง 1 ปี ซึ่งใช้ค่า override จากประกาศทางการ</div>
+        <div class="about-lunar-text">ระบบนี้เหมาะสำหรับ<strong>การผูกดวงและพยากรณ์โหราศาสตร์ไทย</strong> ไม่ใช่ปฏิทินราชการ — วันข้างขึ้นข้างแรมอาจต่างจากระบบปักขคณนาที่ทางราชการใช้ได้ 0–1 วันในบางปี</div>
       </div>
 
       <div class="about-card">
@@ -330,7 +321,7 @@ canvas{max-width:100%;height:auto}
         onpointerdown="startLongPress('share',this)" onpointerup="cancelLongPress()" onpointerleave="cancelLongPress()" oncontextmenu="return false" style="user-select:none;-webkit-user-select:none">
         📤 แชร์
       </button>
-      <button id="btn-interpret" class="btn-share btn-interpret" disabled onclick="openInterpretation()">
+      <button id="btn-interpret" class="btn-share btn-interpret" onclick="_v3DevPopup()">
         🔮 ทำนาย
       </button>
     </div>
@@ -402,6 +393,18 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
+<!-- ── Add Custom Tag Modal (req 14) ──────────────────── -->
+<div id="add-tag-backdrop" class="confirm-backdrop hidden" onclick="closeAddTag()"></div>
+<div id="add-tag-modal" class="confirm-modal hidden">
+  <div class="confirm-title">เพิ่ม Tag ใหม่</div>
+  <input id="add-tag-input" type="text" class="add-tag-input" placeholder="ชื่อ tag... (max 20 ตัว)" maxlength="20" autocomplete="off">
+  <div style="font-size:.75rem;color:#8b949e;margin-bottom:4px;">กดค้าง custom tag เพื่อลบ</div>
+  <div class="confirm-actions">
+    <button onclick="closeAddTag()" class="confirm-cancel">ยกเลิก</button>
+    <button onclick="_confirmAddTag()" class="confirm-ok">+ เพิ่ม</button>
+  </div>
+</div>
+
 <!-- ── Interpretation modal (V2.2.17) ─────────────────── -->
 <div id="interp-backdrop" class="interp-backdrop hidden" onclick="closeInterpretation()"></div>
 <div id="interp-modal" class="interp-modal hidden">
@@ -464,5 +467,90 @@ canvas{max-width:100%;height:auto}
 
 <script src="script.js"></script>
 <script type="module" src="v3/v3tab.js"></script>
+
+<!-- V3 Dev Access Popup -->
+<div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#1a1a2e;border:1px solid #333;border-radius:14px;padding:1.5rem;text-align:center;width:280px;">
+    <div style="font-size:2rem;margin-bottom:.4rem;">🧮</div>
+    <div style="color:#c9d1d9;font-size:.95rem;font-weight:700;margin-bottom:.2rem;">ฟีเจอร์นี้อยู่ระหว่างการพัฒนา</div>
+    <div style="color:#8b949e;font-size:.75rem;margin-bottom:1rem;">กรุณากลับมาใหม่ในภายหลัง</div>
+    <div id="v3-dev-display" style="background:#0d1117;border-radius:8px;padding:.5rem;font-size:1.4rem;letter-spacing:.4rem;color:#c9d1d9;margin-bottom:.75rem;min-height:2rem;">
+      &nbsp;
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;">
+      <button onclick="_v3NumPress('7')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">7</button>
+      <button onclick="_v3NumPress('8')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">8</button>
+      <button onclick="_v3NumPress('9')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">9</button>
+      <button onclick="_v3NumPress('4')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">4</button>
+      <button onclick="_v3NumPress('5')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">5</button>
+      <button onclick="_v3NumPress('6')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">6</button>
+      <button onclick="_v3NumPress('1')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">1</button>
+      <button onclick="_v3NumPress('2')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">2</button>
+      <button onclick="_v3NumPress('3')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">3</button>
+      <button onclick="_v3NumBack()" style="padding:.7rem;background:#2a2a3e;color:#8b949e;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">⌫</button>
+      <button onclick="_v3NumPress('0')" style="padding:.7rem;background:#2a2a3e;color:#c9d1d9;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">0</button>
+      <button onclick="_v3DevClose()" style="padding:.7rem;background:#333;color:#8b949e;border:none;border-radius:8px;font-size:.85rem;cursor:pointer;">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function _v3DevPopup(){
+  _v3Code='';
+  _v3UpdateDisplay();
+  document.getElementById('v3-dev-overlay').style.display='flex';
+}
+function _v3DevClose(){
+  document.getElementById('v3-dev-overlay').style.display='none';
+  _v3Code='';
+  _v3UpdateDisplay();
+}
+function _v3UpdateDisplay(){
+  const d=document.getElementById('v3-dev-display');
+  if(d)d.textContent=_v3Code?'●'.repeat(_v3Code.length):'\u00a0';
+}
+function _v3NumPress(n){
+  if(_v3Code.length>=6)return;
+  _v3Code+=n;
+  _v3UpdateDisplay();
+  if(_v3Code.length===6){
+    setTimeout(()=>{
+      fetch('/api/auth',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({pin:_v3Code})
+      }).then(r=>{
+        if(r.ok){
+          _v3DevClose();
+          const btn=document.getElementById('tab-btn-3');
+          if(btn)btn.classList.remove('hidden');
+          if(typeof switchTab==='function')switchTab(3);
+        }else{
+          _v3Code='';
+          _v3UpdateDisplay();
+        }
+      }).catch(()=>{
+        _v3Code='';
+        _v3UpdateDisplay();
+      });
+    },200);
+  }
+}
+function _v3NumBack(){
+  _v3Code=_v3Code.slice(0,-1);
+  _v3UpdateDisplay();
+}
+var _v3Code='';
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('v3-dev-overlay').addEventListener('click',function(e){
+    if(e.target===this)_v3DevClose();
+  });
+});
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    window.location.reload();
+  });
+}
+</script>
 </body>
 </html>
