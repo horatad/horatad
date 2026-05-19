@@ -18,8 +18,7 @@
 //   - buildLunarInfo: 鉆葵鉊? 鉆?鉆?鉊葭鉊冢?鉊毯?鉊﹤葡鉊? 鉆鉊虞鉊冢? 1-12 鉊葭鉊?鉊葩
 // Changes: [V2.2.0] Pass 1
 //   - Bug fix: share image 鉊丞? logo overlay 鉊?鉊喪?鉆葉鉊?(chart-canvas 鉊﹤葭 logo 鉊冢腺鉊嫩?鉆艇鉆葷)
-//   - Bug fix: outer label 鉊芹葭 unified ??鉊丞? OUTER_LABEL_V2 鉆?鉆?OUTER_LABEL_V1 鉆鉊芹腹鉊?
-//   - Bug fix: canvas/report bg 鉊?鉊葭鉆???鉊丞? dynamic bg 鉆? _redraw + drawChart + share
+//   - Bug fix: outer label 鉊芹葭 unified ??鉊丞? OUTER_LABEL_V2 鉆?鉆?OUTER_LABEL_V1 鉆鉊芹腹鉊?//   - Bug fix: canvas/report bg 鉊?鉊葭鉆???鉊丞? dynamic bg 鉆? _redraw + drawChart + share
 //   - Feature: prov sound ??_playBeep 鉆鉊﹤虞鉆葉鉆鉊丞虞鉊冢?鉊萵鉊葦鉊抉萵鉊?鉊耜? dropdown
 // Changes: [V2.1.9]
 //   - Bug fix: pre-2484 warning shown only when buf.length===4 (full year)
@@ -39,14 +38,12 @@
 //   - calculateTransit: 鉆鉊葩鉆腹 vel calc (mirror calculateChart1) ??_transitDate.vel
 //   - _redraw: branch _reportTransitShow=true ??render transit table 鉆?鉊?natal table
 //   - buildReport: aspect "鉊葡鉊抉?鉊?葵鉊晤腹鉊萵鉊?鉆?鉊? 鉆葵鉊?鉆鉊芹腹鉊冢?鉊﹤虞鉆葉鉊﹤葭 tpos (鉊丞? _reportTransitShow guard)
-//   - Share image: 鉊丞?鉆鉊芹?鉊?鉊冢?鉊?/鉊丞?鉊耜?鉊虞鉆葉, 鉊丞? logo+brand footer, 鉆鉊葩鉆腹 logo overlay 200?200 鉊葷鉊耜?鉊?
-//   - Mobile UI: H1 brand layout, tab nav font/padding (style.css)
+//   - Share image: 鉊丞?鉆鉊芹?鉊?鉊冢?鉊?/鉊丞?鉊耜?鉊虞鉆葉, 鉊丞? logo+brand footer, 鉆鉊葩鉆腹 logo overlay 200?200 鉊葷鉊耜?鉊?//   - Mobile UI: H1 brand layout, tab nav font/padding (style.css)
 //   - Button heights: btn-share 36??2, btn-sm 22??8 (style.css)
 // Changes: [V2.1.7] logo size 160 (was 240) ??鉆腹鉆?鉊晤? ring 480 + label "鉊﹤葭鉊?;
 //          鉊?葡鉊兒葭 font 30px (was 36px) ??鉆鉊?鉊耜?鉊晤?鉊?鉆鉊?虞鉊冢?
 // Changes: [V2.1.6] logo: source horatad_500x500.png (solid black bg, gold lines only),
-//          alpha 1.0 (was 0.70), ctx.filter 'brightness(1.25) saturate(1.15)' ??
-//          鉆鉊芹?鉊?鉊冢?鉊芹葷鉆葡鉊?鉊冢葩鉆腹鉊芹葭鉊葆鉆? 鉆鉊?鉊?鉊徇腹鉊獅葉鉊?鉊?鉊獅?鉊?鉊耜葷
+//          alpha 1.0 (was 0.70), ctx.filter 'brightness(1.25) saturate(1.15)' ??//          鉆鉊芹?鉊?鉊冢?鉊芹葷鉆葡鉊?鉊冢葩鉆腹鉊芹葭鉊葆鉆? 鉆鉊?鉊?鉊徇腹鉊獅葉鉊?鉊?鉊獅?鉊?鉊耜葷
 // Changes: [V2.1.5] sw.js CACHE_NAME bump to v2.1.5;
 //          script.js controllerchange listener ??auto-reload 鉆鉊﹤虞鉆葉 SW 鉆葦鉊﹤? activate
 //          (user 鉆鉊?鉊耜?鉊?鉊葉鉊?鉊徇腹鉆葉鉊晤?鉆?鉊﹤萵鉊葩 鉆腹鉆?鉆葉鉊?hard refresh 鉆鉊冢?);
@@ -81,7 +78,6 @@
 //          startup viewMode=0, section-transit+btn-cust ids, _updateLngUI
 //          [8]transit arabic 44px [9]鉊葷鉊?鉊菽?2 bg purple [10]report no [鉊葷鉊?鉊菽?N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]鉊葡鉊抉?鉊?葵鉊晤腹鉊萵鉊?鉆?鉊?
-
 const PROVINCES={
 "鉊腦鉊詮?鉆鉊?鉊﹤葦鉊耜?鉊腦":100.50,"鉊腦鉊啤?鉊菽?":98.91,"鉊葡鉊?鉊?鉊詮腦鉊?:99.53,"鉊葡鉊眇葵鉊毯?鉊虜鉆?:103.51,
 "鉊董鉆?鉊?鉊?鉊?:99.52,"鉊葉鉊?鉊?鉊?:102.83,"鉊萵鉊?鉊虜鉊?葭":102.10,"鉊萼鉆鉊葩鉊?鉊腦鉊?:101.07,
@@ -159,7 +155,7 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ?? App Version (Single Source of Truth) ?????????????????
 // req10: 鉆?鉆?鉊詮?鉆鉊葭鉊Ｒ葷鉊葭鉆?鉊詮? deploy ??bump CACHE_NAME 鉆? sw.js 鉆葦鉆?鉊??鉊?鉊抉腺
-const APP_VERSION='2.2.44';
+const APP_VERSION='2.2.45';
 const BUILD_DATE=(()=>{
   try{
     const d=new Date(document.lastModified);
@@ -254,12 +250,10 @@ function _renderTagRow(section){
 let _era='BE';
 let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _natal2=null;  // outer ring chart
-// V3 bridge: expose _natal 鉆葦鉆?ES module 鉊冢?鉊耜?鉆?鉆?
-function getNatal(){return _natal;}
+// V3 bridge: expose _natal 鉆葦鉆?ES module 鉊冢?鉊耜?鉆?鉆?function getNatal(){return _natal;}
 let _transit=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=鉊葷鉊?鉊菽?1, 1=鉊葷鉊?鉊菽?2
-// V2.1: 5-state 0=鉊?葡鉊兒葭 1=鉊? 2=鉊腦鉊萵鉆?鉊徇腹鉊?3=鉊腦鉊?鉊?4=鉆腹鉆?鉊芹?鉊?
-let _outerState=0;
+// V2.1: 5-state 0=鉊?葡鉊兒葭 1=鉊? 2=鉊腦鉊萵鉆?鉊徇腹鉊?3=鉊腦鉊?鉊?4=鉆腹鉆?鉊芹?鉊?let _outerState=0;
 let _chartTypeState=0; // 0=鉊?葡鉊兒葭 1=鉊腦鉊菽腺鉊耜?鉊? 2=鉊葷鉊耜?鉊?
 let _reportTransitShow=false; // V2.1 toggle transit section in report
 let _activeTab=1;
@@ -599,7 +593,6 @@ function getNaksatraYear(y_be){return NAKSATRA_THAI[(y_be+NAKSATRA_OFFSET)%12];}
 // 鉆鉊虞鉊冢?鉊葭鉆?= 鉆鉊虞鉊冢?鉊葡鉊?(29 鉊抉萵鉊? 鉆腹鉆腹鉊菽?鉊?腹 15):  1,3,5,7,9,11
 // 鉊Ｒ?鉆鉊抉?鉊? 鉆鉊虞鉊冢? 7 鉊葭鉊冢?鉊毯?鉊抉葡鉊???鉆鉊虞鉊冢?鉊?鉊抉? (30 鉊抉萵鉊? 鉆腦鉊?15 鉊﹤葭鉊腦鉊毯?)
 // 鉊冢?鉊毯?鉊﹤葡鉊?鉆艇鉊?鉊冢?鉊毯?鉊抉葡鉊?鉆鉊葩鉊?鉊??鉊冢腹鉊萵鉊?鉊﹤?鉆?鉆?
-
 // ?? avoman helpers (鉊虜鉊?鉊葩鉊﹤?鉊耜? V2.2.13/14) ??????????????????????????????
 function _h0OfCS(cs){return Math.ceil((cs*292207+373)/800);}
 function _totalLunations(h0){return Math.floor((h0*703+650)/20760);}
@@ -609,8 +602,7 @@ function _totalLunations(h0){return Math.floor((h0*703+650)/20760);}
 // avoman (aw_ml) 鉊?鉊?鉊?CS year = (hS?703+650) mod 20760
 // AM zone = 7/19 鉊葉鉊葷鉊?鉊丞腹 ??7648 avoman units (7 鉊冢?鉊毯?鉊﹤葡鉊?鉆? 19 鉊葭)
 // AM 鉊?鉊?aw_ml ??[0,3824) ??(16936,20760)
-// 鉊腦鉊抉?鉊芹葉鉊?2557??583 (27 鉊葭): 13/13 ??vs 鉊腦鉊啤?鉊耜落鉊芹?鉊腦鉊耜?鉊? 鉊芹董鉊萵鉊?鉊?萼鉊?葡鉊葷鉊晤?/鉊﹤腺鉊詮腦鉊?
-function _isAdhikamasa(y_be){
+// 鉊腦鉊抉?鉊芹葉鉊?2557??583 (27 鉊葭): 13/13 ??vs 鉊腦鉊啤?鉊耜落鉊芹?鉊腦鉊耜?鉊? 鉊芹董鉊萵鉊?鉊?萼鉊?葡鉊葷鉊晤?/鉊﹤腺鉊詮腦鉊?function _isAdhikamasa(y_be){
   const cs=y_be-1181;
   const hS=_h0OfCS(cs);
   const aw=(hS*703+650)%20760;
@@ -630,8 +622,7 @@ function _isAdhikavaraFormula(y_be){
   const kamma=800-((cs*292207+373)%800);
   return kamma<114||kamma>669;
 }
-// Source: 鉊腦鉊啤?鉊耜落鉊芹?鉊腦鉊耜?鉊? 鉊?鉊耜腺鉆葦鉊??鉊?葡鉊徇腹鉊? 鉊芹董鉊萵鉊?鉊?萼鉊?葡鉊葷鉊晤? 鉆鉊?鉊耜?鉊晤?鉊?
-// 鉊腦鉊抉?鉊芹葉鉊?鉊丞?鉊?2557??569 (13 鉊葭): mismatch 鉆鉊葭鉊Ｒ葷 = 2568
+// Source: 鉊腦鉊啤?鉊耜落鉊芹?鉊腦鉊耜?鉊? 鉊?鉊耜腺鉆葦鉊??鉊?葡鉊徇腹鉊? 鉊芹董鉊萵鉊?鉊?萼鉊?葡鉊葷鉊晤? 鉆鉊?鉊耜?鉊晤?鉊?// 鉊腦鉊抉?鉊芹葉鉊?鉊丞?鉊?2557??569 (13 鉊葭): mismatch 鉆鉊葭鉊Ｒ葷 = 2568
 // 鉆鉊葩鉆腹 entry 鉆鉊﹤虞鉆葉 formula ??official 鉊腦鉆葉鉊﹤腦鉊啤?鉊?CS + 鉆葦鉊丞?鉊葉鉆葡鉊葉鉊毯?
 const _ADHIKAVARA_OVERRIDE=new Map([
   [2568,true],  // CS 1387 ??formula(kamma=518)=PV, official=AV
@@ -653,8 +644,7 @@ function _getLunarMonthFixed(d,m,y_be){
   const L=_totalLunations(h0)-_totalLunations(_h0OfCS(cs));
   if(!_isAdhikamasaCached(y_be))return _NORMAL_MONTHS[Math.min(Math.max(L,0),11)];
   if(L<=2)return _NORMAL_MONTHS[L];
-  if(L===3)return 8;                        // 鉆鉊虞鉊冢? 8 鉆腦鉊?
-  if(L===4)return 88;                       // 鉆鉊虞鉊冢? 8 鉊徇艇鉊晤?
+  if(L===3)return 8;                        // 鉆鉊虞鉊冢? 8 鉆腦鉊?  if(L===4)return 88;                       // 鉆鉊虞鉊冢? 8 鉊徇艇鉊晤?
   return _NORMAL_MONTHS[Math.min(L-1,11)];
 }
 
@@ -662,9 +652,7 @@ function _getLunarMonthFixed(d,m,y_be){
 // 鉊虞鉊?{side:'鉊葆鉆?'|'鉆腦鉊?, day:1-15, mon:1-12|88}
 // Hollow month rule:
 //   鉆鉊虞鉊冢?鉊葭鉆?(1,3,5,7,9,11) = 29 鉊抉萵鉊???dithi 29 鉆腹鉆腹鉊菽?鉊?鉊虞鉊冢?鉊萵鉆?
-//     ??鉊抉萵鉊?鉊晤?鉊?鉊?葩鉊? 鉊虞鉊?鉊葆鉆? 1 鉆鉊虞鉊冢?鉊萵鉊?鉊?
-//   鉊Ｒ?鉆鉊抉?鉊?鉆鉊虞鉊冢? 7 鉊葭鉊冢?鉊毯?鉊抉葡鉊???30 鉊抉萵鉊???dithi 29 = 鉆腦鉊?15 鉊號鉊?鉆葉鉊?
-function _getLunarDay(d,m,y_be){
+//     ??鉊抉萵鉊?鉊晤?鉊?鉊?葩鉊? 鉊虞鉊?鉊葆鉆? 1 鉆鉊虞鉊冢?鉊萵鉊?鉊?//   鉊Ｒ?鉆鉊抉?鉊?鉆鉊虞鉊冢? 7 鉊葭鉊冢?鉊毯?鉊抉葡鉊???30 鉊抉萵鉊???dithi 29 = 鉆腦鉊?15 鉊號鉊?鉆葉鉊?function _getLunarDay(d,m,y_be){
   const y_ce=_beToce(y_be,m);
   const h0=get_j(d,m,y_ce)-233051;
   // avoman 鉊?06:00 (time_dec=0.25 ??Math.trunc(0.25*703)=175)
@@ -672,15 +660,12 @@ function _getLunarDay(d,m,y_be){
   const aw_ml=((aw_mp%20760)+20760)%20760;
   const dithi=Math.trunc(aw_ml/692);          // 0??9
   const mon=_getLunarMonthFixed(d,m,y_be);
-  // hollow month: 鉆鉊虞鉊冢?鉊葭鉆?鉊Ｒ?鉆鉊抉?鉊?鉆鉊虞鉊冢? 7 鉊葭鉊冢?鉊毯?鉊抉葡鉊?
-  const monNum=mon===88?8:mon;                 // 88?? 鉆鉊虞鉆葉鉊腦鉊抉?鉆鉊丞?鉊葭鉆?
-  const isHollow=(monNum%2===1)&&!(mon===7&&_isAdhikavaraCached(y_be));
+  // hollow month: 鉆鉊虞鉊冢?鉊葭鉆?鉊Ｒ?鉆鉊抉?鉊?鉆鉊虞鉊冢? 7 鉊葭鉊冢?鉊毯?鉊抉葡鉊?  const monNum=mon===88?8:mon;                 // 88?? 鉆鉊虞鉆葉鉊腦鉊抉?鉆鉊丞?鉊葭鉆?  const isHollow=(monNum%2===1)&&!(mon===7&&_isAdhikavaraCached(y_be));
   if(dithi<=14)return{side:'鉊葆鉆?',day:dithi+1,mon};
   if(dithi<=28)return{side:'鉆腦鉊?,day:dithi-14,mon};
   // dithi===29
   if(!isHollow)return{side:'鉆腦鉊?,day:15,mon};  // 鉆鉊虞鉊冢?鉊?鉊抉? ??鉆腦鉊?15
-  // 鉆鉊虞鉊冢?鉊葡鉊?dithi 29 ??鉊葆鉆? 1 鉆鉊虞鉊冢?鉊萵鉊?鉊?
-  const nextMon=_nextMonth(mon,y_be);
+  // 鉆鉊虞鉊冢?鉊葡鉊?dithi 29 ??鉊葆鉆? 1 鉆鉊虞鉊冢?鉊萵鉊?鉊?  const nextMon=_nextMonth(mon,y_be);
   return{side:'鉊葆鉆?',day:1,mon:nextMon};
 }
 // 鉆鉊虞鉊冢?鉊萵鉊?鉊?(鉆?鉆?鉊?鉊耜萼鉊腦鉊葭 hollow month dithi=29)
@@ -727,8 +712,7 @@ function aspectTransit(tpos,ns){
   return res.length?res.join(' '):'??;
 }
 
-// [12][15] buildReport: no [鉊葷鉊?鉊菽?N] label; transit for both views; 鉊葡鉊抉?鉊?葵鉊晤腹鉊萵鉊?鉆?鉊?
-function buildCompareReport(n1,n2){
+// [12][15] buildReport: no [鉊葷鉊?鉊菽?N] label; transit for both views; 鉊葡鉊抉?鉊?葵鉊晤腹鉊萵鉊?鉆?鉊?function buildCompareReport(n1,n2){
   const pos1=n1.pos,vel1=n1.vel||[],pos2=n2.pos,vel2=n2.vel||[];
   const asc1=Math.trunc(pos1[0]/1800),asc2=Math.trunc(pos2[0]/1800);
   const y_ce1=_beToce(n1.y_be,n1.m),y_ce2=_beToce(n2.y_be,n2.m);
@@ -863,8 +847,7 @@ function toggleView(){
 function toggleOuter(){
   _outerState=(_outerState+1)%5;
   document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
-  // V2.2.23: sync 鉊?葡鉊Ｒ?鉊耜?鉊葡鉊?outerState ??鉊?鉊耜?鉊?葡鉊葩鉊?鉊芹?鉊?鉊耜葷鉊腦 鉊?葡鉊Ｒ?鉊耜?鉊芹艇鉊晤?鉊葡鉊?
-  const showTransit=_outerState===2||_outerState===3;
+  // V2.2.23: sync 鉊?葡鉊Ｒ?鉊耜?鉊葡鉊?outerState ??鉊?鉊耜?鉊?葡鉊葩鉊?鉊芹?鉊?鉊耜葷鉊腦 鉊?葡鉊Ｒ?鉊耜?鉊芹艇鉊晤?鉊葡鉊?  const showTransit=_outerState===2||_outerState===3;
   _reportTransitShow=showTransit;
   _playBeep(700);
   _redraw();
@@ -1063,8 +1046,7 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
   ctx.textAlign='center';ctx.textBaseline='middle';
   const outerLabelColor=OUTER_LABEL_V1;
   if(isV2&&_natal2&&_natal2.pos){
-    // 鉊葷鉊?鉊冢?: 鉆鉊丞?鉆?鉊?_natal2 鉆鉊?鉊耜?鉊晤?鉊???鉆腹鉆?鉊芹?鉊?_outerState 鉆?鉆?
-    const THAI_NUM=['鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?'];
+    // 鉊葷鉊?鉊冢?: 鉆鉊丞?鉆?鉊?_natal2 鉆鉊?鉊耜?鉊晤?鉊???鉆腹鉆?鉊芹?鉊?_outerState 鉆?鉆?    const THAI_NUM=['鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?,'鉆?'];
     const n2pos=_chartTypeState===1?calcDrekkana(_natal2.pos):_chartTypeState===2?calcNavamsa(_natal2.pos):_natal2.pos;
     const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
     let groups=Array.from({length:12},()=>[]);
@@ -1156,17 +1138,7 @@ function calculateChart1(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _natal={
-    uid:crypto.randomUUID(),
-    fn:name,ln:'',g:gender,
-    jd:Math.trunc(_calcJD(d,_era==='BE'?_beToce(y,m):y>543?y-543:y,_era==='BE'?y:y+543)),
-    t,d,m,y_be,
-    lat,lng,prov:provVal,country:'TH',tz:'',dst:false,
-    pos,vel,
-    lagna:null,tanu_lagna:null,tanu_set:null,houses:[],
-    tag:[..._tags1],group:'',sector:'',trait:'',note:'',
-    fname:name,lname:'',name,gender,loc:provVal,t_local:t
-  };
+  _natal={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng,tag:[..._tags1]};
   _calc1Done=true;
   _updateShareButton();
   _applyInputColors('1','done');
@@ -1197,17 +1169,7 @@ function calculateChart2(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  _transit={
-    uid:crypto.randomUUID(),
-    fn:name,ln:'',g:gender,
-    jd:Math.trunc(_calcJD(d,_era==='BE'?_beToce(y,m):y>543?y-543:y,_era==='BE'?y:y+543)),
-    t,d,m,y_be,
-    lat,lng,prov:provVal,country:'TH',tz:'',dst:false,
-    pos,vel,
-    lagna:null,tanu_lagna:null,tanu_set:null,houses:[],
-    tag:[..._tags2],group:'',sector:'',trait:'',note:'',
-    fname:name,lname:'',name,gender,loc:provVal,t_local:t
-  };
+  _transit={uid:crypto.randomUUID(),fname:name,lname:'',g:gender,loc:provVal,t_local:t,name,gender,pos,vel,d,m,y_be,t,prov:provVal,lat,lng,tag:[..._tags2]};
   _calc2Done=true;
   _updateShareButton();
   _applyInputColors('2','done');
@@ -1392,21 +1354,27 @@ async function _generateShareImage(active){
   ctx.fillStyle='#c9d1d9';
   ctx.font='500 28px Sarabun,sans-serif';
   ctx.fillText(scoreLabel,SZ/2,1050);
-  // QR payload Master Schema V1.4 ??jd/t/lng/fn only
+  // V2.2.29: QR payload JSON per Master Schema V1.3
   try{
     await _loadQRLib();
+    const jd=active.jd||_calcJD(active.d,active.m,active.y_be);
     const qrPayload={
-      jd:Math.trunc(active.jd||_calcJD(active.d,active.m,active.y_be)),
-      t:active.t_local||active.t||'鉆腹鉆?鉊?葡鉊?,
+      uid:active.uid||'',
+      jd,
+      t_local:active.t_local||active.t||'',
+      lat:active.lat||(PROVINCES_LAT[active.prov||'']||13.75),
       lng:active.lng||(PROVINCES[active.prov||'']||100.50),
-      fn:(active.fname||active.name||'鉆腹鉆腦鉊啤?鉊?).slice(0,50)
+      fname:active.fname||active.name||'',
+      lname:active.lname||'',
+      g:active.g||active.gender||'',
+      loc:active.loc||active.prov||''
     };
     const qrText=JSON.stringify(qrPayload);
     const qrDiv=document.createElement('div');
-    qrDiv.style.cssText='visibility:hidden;position:absolute;left:0;top:0;width:110px;height:110px;';
+    // visibility:hidden 鉆?鉊?off-screen ??browser 鉊Ｒ萵鉊?rasterize canvas 鉆?鉆?    qrDiv.style.cssText='visibility:hidden;position:absolute;left:0;top:0;width:110px;height:110px;';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.H});
-    await new Promise(r=>setTimeout(r,200));
+    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff'});
+    await new Promise(r=>setTimeout(r,200)); // 鉆鉊葩鉆腹鉊葡鉊?80 ??200ms
     const qrCv=qrDiv.querySelector('canvas')||qrDiv.querySelector('img');
     if(qrCv)ctx.drawImage(qrCv,SZ-126,SZ-126,110,110);
     document.body.removeChild(qrDiv);
@@ -2004,10 +1972,7 @@ function _matchRules(natal,transit){
       const rGood=rtags.includes('鉊葭')||rtags.includes('鉊葭鉊﹤葡鉊?)||rtags.includes('鉊葭鉊?葉鉊?);
       const rNormal=rtags.includes('鉊?鉊葩');
       const rSpecific=rtags.filter(t=>QLABELS[t]);  // 鉆鉊萱鉊腦/鉊冢虜鉊?鉊葩鉊?... exact
-      if(rBad&&!pIsBad)return;                        // rule 鉊?鉊冢?鉊葡鉊??鉊芹葭鉊?鉆?鉆?鉊耜葷鉆腹鉆?鉊芹葭鉊?
-      if(rGood&&!pIsGood)return;                      // rule 鉊?鉊冢?鉊葡鉊??鉊?鉆?鉆?鉊耜葷鉆腹鉆?鉊?
-      if(rNormal&&!pIsNormal)return;                  // rule 鉊?鉊冢?鉊葡鉊??鉊?鉊?鉆?鉆?鉊耜葷鉆腹鉆?鉊?鉊?
-      if(rSpecific.length>0&&!rSpecific.some(q=>pQuals.includes(q)))return;
+      if(rBad&&!pIsBad)return;                        // rule 鉊?鉊冢?鉊葡鉊??鉊芹葭鉊?鉆?鉆?鉊耜葷鉆腹鉆?鉊芹葭鉊?      if(rGood&&!pIsGood)return;                      // rule 鉊?鉊冢?鉊葡鉊??鉊?鉆?鉆?鉊耜葷鉆腹鉆?鉊?      if(rNormal&&!pIsNormal)return;                  // rule 鉊?鉊冢?鉊葡鉊??鉊?鉊?鉆?鉆?鉊耜葷鉆腹鉆?鉊?鉊?      if(rSpecific.length>0&&!rSpecific.some(q=>pQuals.includes(q)))return;
       // ?? Aspect match (鉊徇艇鉊晤? quality gate 鉊?鉊耜?) ??????????????????????
       const hasL=ts.includes('鉊丞萵鉊?鉊?);
       const hasNL=ts.includes('鉆腹鉆葵鉊晤腹鉊萵鉊?鉆艇鉊晤?鉊葡');
@@ -2313,10 +2278,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // restore saved state; if none reset to today
   const restored=_applyState(_loadJSON(STATE_KEY));
-  if(!restored){
-    resetChart1();resetChart2();
-    _setField('name-1','鉊萵鉊抉葉鉊Ｒ?鉊耜?');
-  }
+  if(!restored){resetChart1();resetChart2();}
   resetTransit();
   _applyEraStyle();
   switchTab(1);
@@ -2344,12 +2306,10 @@ window.addEventListener('DOMContentLoaded',()=>{
       location.reload();
     });
     window.addEventListener('load',()=>{
-      // ?v=APP_VERSION bust CDN cache 鉊虜鉊?deploy ??URL 鉊?鉊耜? = browser detect 鉊萵鉊?鉊?
-      navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'})
+      // ?v=APP_VERSION bust CDN cache 鉊虜鉊?deploy ??URL 鉊?鉊耜? = browser detect 鉊萵鉊?鉊?      navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'})
         .then(reg=>{
           reg.update();
-          // check SW update 鉊虜鉊?1 鉊萵鉆葷鉆腹鉊???user 鉊葭鉆?鉊葩鉊?tab 鉊?鉊耜?鉆葷鉆?
-          setInterval(()=>reg.update(),60*60*1000);
+          // check SW update 鉊虜鉊?1 鉊萵鉆葷鉆腹鉊???user 鉊葭鉆?鉊葩鉊?tab 鉊?鉊耜?鉆葷鉆?          setInterval(()=>reg.update(),60*60*1000);
         })
         .catch(()=>{});
     });
