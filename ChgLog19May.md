@@ -3,6 +3,11 @@
 
 ---
 
+## [V3.3] — 2026-05-19
+- SYSTEM_INSTRUCTION V3.3: เพิ่ม FILE IDENTITY HEADER
+- VERSION GATE: ปฏิเสธถ้า version ไม่ตรงกันระหว่างไฟล์
+- CHANGELOG RULE: auto-update ทุกครั้งที่ deploy จริง
+
 ## [V2.2.38] — 2026-05-19
 - Security: ย้าย password validation ออกจาก index.html
 - แทนด้วย fetch('/api/auth') → Cloudflare Worker horatad-auth
