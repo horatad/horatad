@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.1.2
-// Version 3.1.2 | 2026-05-20
+// HORATAD:SCRIPT:3.1.3
+// Version 3.1.3 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.1.2';
+const APP_VERSION='3.1.3';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2099,6 +2099,9 @@ function _updateMainMenuState(){
   const evSlots=_v3LoadEventSlots();
   const ei=document.getElementById('main-menu-event-info');
   if(ei)ei.textContent=`${evSlots.length}/10 ›`;
+  const db1=_v3LoadDB1();
+  const di=document.getElementById('main-menu-db1-info');
+  if(di)di.textContent=`${db1.length} ›`;
 }
 function _openMainMenu(){
   _updateMainMenuState();
@@ -2330,6 +2333,71 @@ function _submitCreateEvent(){
   _renderTagRow('1');
   _updateLinkedEventsDisplay();
   _showToast(`บันทึก "${name}"${linkedNatal?' (🔗 '+linkedNatal.name+')':''}`);
+}
+
+// ── DB1 Browser (Phase 9) ────────────────────────────────
+function _openDB1Popup(){
+  _closeMainMenu();
+  document.getElementById('db1-search').value='';
+  _renderDB1List();
+  document.getElementById('db1-backdrop').classList.remove('hidden');
+  document.getElementById('db1-modal').classList.remove('hidden');
+}
+function _closeDB1Popup(){
+  document.getElementById('db1-backdrop').classList.add('hidden');
+  document.getElementById('db1-modal').classList.add('hidden');
+}
+function _renderDB1List(){
+  const q=(document.getElementById('db1-search')?.value||'').trim().toLowerCase();
+  const db=_v3LoadDB1();
+  const filtered=q?db.filter(r=>(r.name||'').toLowerCase().includes(q)):db;
+  const list=document.getElementById('db1-list');
+  const cnt=document.getElementById('db1-count');
+  if(!list)return;
+  if(cnt)cnt.textContent=`${db.length} รายการ`;
+  if(!filtered.length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">'+(q?'ไม่พบ "'+_escHtml(q)+'"':'ยังไม่มีดวงใน DB')+'</div>';
+    return;
+  }
+  list.innerHTML=filtered.map(r=>{
+    const evCount=(r.linkedEvents||[]).length;
+    const badge=evCount?`<span style="font-size:10px;color:#c9b8f0;margin-left:4px">🔗${evCount}</span>`:'';
+    return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="_db1Load('${r.uid}')">
+        <div class="memory-name">${_escHtml(r.name||'—')}${badge}</div>
+        <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''} · ${_escHtml(r.prov||'')}</div>
+      </div>
+      <button onclick="_db1Delete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+    </div>`;
+  }).join('');
+}
+function _db1Load(uid){
+  const r=_v3FindDB1(uid);
+  if(!r)return;
+  const lng=(typeof r.lng==='number')?r.lng:(PROVINCES[r.prov||'']||100.50);
+  const y_ce=_beToce(r.y_be,r.m);
+  const[hr,mn]=(r.t||'00:00').split(':').map(Number);
+  const pos=r.pos||get_data(r.d,r.m,y_ce,hr,mn,lng);
+  const pos2=get_data(r.d,r.m,y_ce,hr+24,mn,lng);
+  const vel=r.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
+  natal1={...r,pos,vel};
+  _calc1Done=true;
+  _viewMode=0;
+  _applyViewMode();
+  _redraw();
+  _updateNavHeader();
+  _updateLinkedEventsDisplay();
+  _closeDB1Popup();
+  _showToast(`โหลด "${r.name||'—'}" แล้ว`);
+}
+function _db1Delete(uid){
+  const r=_v3FindDB1(uid);
+  if(!r)return;
+  _showConfirm('ลบดวง',`ลบ "${r.name||'—'}" ออกจาก DB?`,()=>{
+    _v3RemoveDB1(uid);
+    _renderDB1List();
+    _updateMainMenuState();
+  });
 }
 
 // ── Export / Import DB (Phase 8) ─────────────────────────

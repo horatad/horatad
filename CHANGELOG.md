@@ -4,6 +4,15 @@
 
 ---
 
+## [3.1.3] — 2026-05-20
+### Added
+- `_openDB1Popup()` / `_closeDB1Popup()` / `_renderDB1List()`: popup แสดง DB1 ทั้งหมด (Phase 9)
+- ค้นหาชื่อ real-time ใน DB1 popup (input filter)
+- `_db1Load(uid)`: โหลด record จาก DB1 เป็น natal1 ทันที (ไม่ต้องกรอกฟอร์มใหม่)
+- `_db1Delete(uid)`: ลบ record ออกจาก DB1 (มี confirm dialog)
+- badge 🔗N ใน list แสดงจำนวน linkedEvents ของแต่ละ record
+- ⚙️ menu row "🗂️ ดาวดวง" + count badge (N ›) อัปเดต real-time
+
 ## [3.1.2] — 2026-05-20
 ### Added
 - `_exportDB()`: ดาวน์โหลด DB1 + event slots เป็น JSON (Phase 8)
