@@ -3,6 +3,14 @@
 
 ---
 
+## [V2.2.35] — 2026-05-20
+- Security: V3 PIN validation ย้ายไป Cloudflare Worker `horatad-auth` (Phase 2.5 of V2.2.42 restore)
+- ลบ hardcoded `'424198'` จาก `index.html:526`
+- แทนด้วย `fetch('/api/auth',{method:'POST',body:{pin:code}})` → 200 = unlock V3 tab
+- SECRET_PIN เก็บใน Worker Env (Encrypted) ฝั่ง Cloudflare เท่านั้น
+- ไม่มี password ใน source code ทุกไฟล์แล้ว ✓
+- Worker Route ที่ตั้งไว้: `horatad.com/api/auth` → `horatad-auth` (user confirmed ตั้งฝั่ง CF แล้ว)
+
 ## [V2.2.34] — 2026-05-20
 - Tag rows 4 ต่อดวง + add-tag modal + auto-save groups (Phase 2.4 of V2.2.42 restore)
 - DEFAULT_TAGS: `ตัวอย่าง / เพื่อน / ครอบครัว / ลูกค้า`

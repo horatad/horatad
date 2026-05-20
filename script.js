@@ -1,5 +1,9 @@
-// HORATAD:SCRIPT:2.2.34
-// Version 2.2.34 | 2026-05-20
+// HORATAD:SCRIPT:2.2.35
+// Version 2.2.35 | 2026-05-20
+// Changes: [V2.2.35] Security: PIN validation ย้ายไป Cloudflare Worker horatad-auth:
+//   - ลบ hardcoded '424198' จาก index.html (line 526)
+//   - แทนด้วย fetch POST /api/auth {pin:code} → 200 OK = unlock V3 tab
+//   - SECRET_PIN เก็บใน Worker Env (Encrypted) ฝั่ง Cloudflare เท่านั้น
 // Changes: [V2.2.34] Tag rows 4/chart + add-tag modal + auto-save groups (V2.2.42 restore):
 //   - DEFAULT_TAGS=['ตัวอย่าง','เพื่อน','ครอบครัว','ลูกค้า'] + custom tags (CUSTOM_TAGS_KEY)
 //   - Max 4 groups per chart (MAX_GROUPS_PER_CHART)
@@ -116,7 +120,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.34';
+const APP_VERSION='2.2.35';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,

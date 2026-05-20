@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:2.2.34 -->
-<!-- Version 2.2.34 | 2026-05-20 -->
+<!-- HORATAD:INDEX:2.2.35 -->
+<!-- Version 2.2.35 | 2026-05-20 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.2.34">
+<link rel="stylesheet" href="style.css?v=2.2.35">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -47,7 +47,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 2.2.34</span>
+  <span class="brand-ver">V 2.2.35</span>
 </h1>
 
 <!-- Tab nav -->
@@ -194,7 +194,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 2.2.34</div>
+        <div class="about-version">V 2.2.35</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -473,8 +473,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=2.2.34"></script>
-<script type="module" src="v3/v3tab.js?v=2.2.34"></script>
+<script src="script.js?v=2.2.35"></script>
+<script type="module" src="v3/v3tab.js?v=2.2.35"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
@@ -522,17 +522,22 @@ function _v3NumPress(n){
   _v3Code+=n;
   _v3UpdateDisplay();
   if(_v3Code.length===6){
-    setTimeout(()=>{
-      if(_v3Code==='424198'){
-        _v3DevClose();
-        const btn=document.getElementById('tab-btn-3');
-        if(btn)btn.classList.remove('hidden');
-        if(typeof switchTab==='function')switchTab(3);
-      }else{
-        _v3Code='';
-        _v3UpdateDisplay();
-      }
-    },200);
+    const code=_v3Code;
+    setTimeout(function(){
+      fetch('/api/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:code})})
+        .then(function(r){return r.ok;})
+        .catch(function(){return false;})
+        .then(function(ok){
+          if(ok){
+            _v3DevClose();
+            var btn=document.getElementById('tab-btn-3');
+            if(btn)btn.classList.remove('hidden');
+            if(typeof switchTab==='function')switchTab(3);
+          }
+          _v3Code='';
+          _v3UpdateDisplay();
+        });
+    },150);
   }
 }
 function _v3NumBack(){
@@ -552,7 +557,7 @@ if('serviceWorker' in navigator){
 }
 </script>
 
-<!-- V2.2.34: Add-tag modal -->
+<!-- V2.2.35: Add-tag modal -->
 <div id="add-tag-modal" class="hidden" onclick="if(event.target===this)_closeAddTagModal()">
   <div class="add-tag-modal-content">
     <div class="add-tag-modal-title">เพิ่ม Tag ใหม่</div>
