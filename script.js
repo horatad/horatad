@@ -1,12 +1,14 @@
-// HORATAD:SCRIPT:3.2.2
-// Version 3.2.2 | 2026-05-20
-// Changes: [V3.2.2] feat: Phase 12 Group UI — สร้าง/แก้ไข/ลบ group + เพิ่มสมาชิก
-//   - Group popup (⚙️ → 👥 กลุ่ม): list + detail view, สร้างกลุ่ม, ลบ, เพิ่ม/เอาออกสมาชิก
-//   - Natal Picker popup: เลือกดวงจาก DB1 เพื่อเพิ่มเข้ากลุ่ม (exclude existing members)
-//   - DB1 browser แยก type: tab filter ดวง/บุคคล/เหตุการณ์/กลุ่ม
+// HORATAD:SCRIPT:3.2.3
+// Version 3.2.3 | 2026-05-20
+// Changes: [V3.2.3] feat: Phase 13 Transit Strip — ควบคุมดวงจรใต้แผนผัง
+//   - transit-strip ใน canvas-wrapper: toggle จร, date inputs, events dropdown, คำนวณจร
+//   - _tsCalc(): คำนวณ _transitDate จาก strip inputs → redraw
+//   - _tsEventSelect(): เลือก event → โหลดวันที่ event → คำนวณ auto
+//   - _updateTransitStrip(): update strip state + events dropdown เมื่อ redraw
+//   (Phase 12 ดู V3.2.2)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.2.2';
+const APP_VERSION='3.2.3';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1004,6 +1006,7 @@ function _redraw(){
   }
   _updateNavHeader();
   _updateLinkedEventsDisplay();
+  _updateTransitStrip();
 }
 
 // Varga
@@ -1198,7 +1201,7 @@ function _calcChart(num){
     tag:[],group:'',sector:'',trait:'',note:'',
     name,gender
   };
-  if(num==='1'){natal1=_v3UpsertDB1(chart);_calc1Done=true;_viewMode=0;}
+  if(num==='1'){natal1=_v3UpsertDB1(chart);_calc1Done=true;_viewMode=0;_tsInited=false;}
   else{
     // clear edit mode ถ้า user กด ผูกดวง 2 แทนที่จะกด 1 ขณะอยู่ใน edit mode
     if(_editingUid){_editingUid=null;_hideEditingIndicator();}
@@ -2411,6 +2414,7 @@ function _db1Load(uid){
   natal1={...r,pos,vel};
   _calc1Done=true;
   _viewMode=0;
+  _tsInited=false;
   _applyViewMode();
   _redraw();
   _closeDB1Popup();
@@ -2457,6 +2461,79 @@ function _showEditingIndicator(name){
 }
 function _hideEditingIndicator(){
   document.getElementById('editing-indicator')?.classList.add('hidden');
+}
+
+// ── Transit Strip (Phase 13) ─────────────────────────────
+let _tsInited=false; // ป้องกัน reset ค่า date ทุกครั้งที่ redraw
+
+function _updateTransitStrip(){
+  const strip=document.getElementById('transit-strip');
+  if(!strip)return;
+  if(!natal1){strip.classList.add('hidden');_tsInited=false;return;}
+  strip.classList.remove('hidden');
+  const toggle=document.getElementById('ts-toggle');
+  if(toggle){
+    toggle.textContent=_reportTransitShow?'จร แสดง':'จร ซ่อน';
+    toggle.classList.toggle('active',_reportTransitShow);
+  }
+  if(!_tsInited){
+    const n=_nowStr();
+    const tsD=document.getElementById('ts-d');
+    if(tsD&&!tsD.value){
+      tsD.value=n.d;
+      const tsM=document.getElementById('ts-m');if(tsM)tsM.value=n.m;
+      const tsY=document.getElementById('ts-y');if(tsY)tsY.value=n.y;
+      const tsT=document.getElementById('ts-t');if(tsT)tsT.value=n.t;
+    }
+    _tsInited=true;
+  }
+  const sel=document.getElementById('ts-event');
+  if(!sel)return;
+  const events=natal1.uid?_dbEvents(natal1.uid):[];
+  const prev=sel.value;
+  sel.innerHTML='<option value="">— เหตุการณ์ —</option>'+
+    events.map(e=>`<option value="${e.uid}">${_escHtml(e.name||'ไม่ระบุ')} · ${e.d}/${e.m}/${e.y_be}</option>`).join('');
+  if(prev)sel.value=prev;
+}
+function _tsToggle(){
+  toggleReportTransit();
+  const toggle=document.getElementById('ts-toggle');
+  if(toggle){
+    toggle.textContent=_reportTransitShow?'จร แสดง':'จร ซ่อน';
+    toggle.classList.toggle('active',_reportTransitShow);
+  }
+}
+function _tsEventSelect(uid){
+  if(!uid)return;
+  const ev=_dbFind(uid);
+  if(!ev)return;
+  const tsD=document.getElementById('ts-d');if(tsD)tsD.value=ev.d||'';
+  const tsM=document.getElementById('ts-m');if(tsM)tsM.value=ev.m||'';
+  const tsY=document.getElementById('ts-y');if(tsY)tsY.value=ev.y_be||'';
+  const tsT=document.getElementById('ts-t');if(tsT)tsT.value=ev.t||'12:00';
+  _tsCalc();
+}
+function _tsCalc(){
+  const d=parseInt(document.getElementById('ts-d')?.value)||1;
+  const m=parseInt(document.getElementById('ts-m')?.value)||1;
+  const yInput=parseInt(document.getElementById('ts-y')?.value)||(_era==='BE'?2569:2026);
+  const tStr=document.getElementById('ts-t')?.value||'12:00';
+  const[hr,mn]=tStr.split(':').map(Number);
+  const y_ce=_era==='BE'?_beToce(yInput,m):yInput;
+  const y_be=_era==='BE'?yInput:yInput+543;
+  const prov=(natal1?.prov)||'กรุงเทพมหานคร';
+  const lng=PROVINCES[prov]||100.50;
+  const pos=get_data(d,m,y_ce,hr,mn,lng);
+  const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
+  const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
+  _transitDate={pos,vel,d,m,y_be,t:tStr,prov};
+  if(!_reportTransitShow){
+    toggleReportTransit();
+    const toggle=document.getElementById('ts-toggle');
+    if(toggle){toggle.textContent='จร แสดง';toggle.classList.add('active');}
+  }
+  _redraw();
+  _showToast(`ดวงจร ${d}/${m}/${y_be}`);
 }
 
 // ── Group popup (Phase 12) ───────────────────────────────

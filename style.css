@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.2.2 */
+/* HORATAD:STYLE:3.2.3 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -372,3 +372,12 @@ body.about-active .logo-h1{display:none}
 .db1-tab{flex:1;padding:5px 2px;background:#2d333b;color:#8b949e;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap}
 .db1-tab:hover{background:#3d444c;color:#c9d1d9}
 .db1-tab.active{background:#1a3c6b;color:#79c0ff}
+.transit-strip{display:flex;align-items:center;gap:4px;padding:5px 0 0;flex-wrap:wrap;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.ts-toggle{background:#2d333b;color:#8b949e;border:1px solid #30363d;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap}
+.ts-toggle.active{background:#1a3c6b;color:#79c0ff;border-color:#388bfd}
+.ts-num{width:34px;text-align:center;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:4px;padding:3px 2px;font-size:11px;font-family:inherit}
+.ts-year{width:50px}
+.ts-time{background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:4px;padding:3px 4px;font-size:11px;font-family:inherit;width:72px}
+.ts-event{background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:4px;padding:3px 4px;font-size:11px;font-family:inherit;flex:1;min-width:80px;max-width:160px}
+.ts-calc{background:#1a3c6b;color:#79c0ff;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap}
+.ts-calc:hover{background:#2d4a7b}
