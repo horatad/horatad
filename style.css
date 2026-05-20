@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.0.2 */
+/* HORATAD:STYLE:3.0.3 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -354,5 +354,16 @@ body.about-active .logo-h1{display:none}
 .main-menu-title{font-size:14px;font-weight:600;color:#c9d1d9;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
 .main-menu-close{background:none;border:none;color:#8b949e;font-size:18px;cursor:pointer;padding:0 4px;line-height:1}
 .main-menu-close:hover{color:#c9d1d9}
-.main-menu-body{padding:12px 14px 16px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
-.main-menu-placeholder{font-size:13px;color:#8b949e;text-align:center;padding:20px 0}
+.main-menu-body{padding:8px 14px 14px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.main-menu-section{display:flex;flex-direction:column}
+.main-menu-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #30363d;gap:8px}
+.main-menu-row:last-child{border-bottom:none}
+.main-menu-row-label{font-size:13px;color:#c9d1d9}
+.main-menu-toggle{background:#3d444c;border:1px solid #555;color:#c9d1d9;padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap}
+.main-menu-toggle:hover{background:#444c56}
+.main-menu-toggle.active{background:#1a6b3c;border-color:#2ea043;color:#56d364}
+.main-menu-info-badge{font-size:12px;color:#8b949e;white-space:nowrap}
+.main-menu-row-link{cursor:pointer}
+.main-menu-row-link:hover .main-menu-info-badge{color:#c9d1d9}
+.main-menu-create-btn{display:block;width:100%;padding:9px;background:#1a3a2a;color:#56d364;border:1px solid #2ea043;border-radius:8px;font-size:14px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer;font-weight:500;text-align:center;box-sizing:border-box;margin-top:8px}
+.main-menu-create-btn:hover{background:#1f4a33}

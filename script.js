@@ -1,5 +1,10 @@
-// HORATAD:SCRIPT:3.0.2
-// Version 3.0.2 | 2026-05-20
+// HORATAD:SCRIPT:3.0.3
+// Version 3.0.3 | 2026-05-20
+// Changes: [V3.0.3] Phase 1B step 3 — main menu content + สมพงศ์ slot popup:
+//   - ⚙️ menu แสดง 3 รายการ: มุมมอง (toggle ดวงใน/นอก), เหตุการณ์จร (toggle), สมพงศ์ (N/10)
+//   - เพิ่ม _updateMainMenuState(), _toggleViewFromMenu(), _toggleTransitFromMenu()
+//   - สมพงศ์ popup: แสดง buffer slots, load/delete/new — _openSompongPopup()/_renderSompongList()
+//   - ESC ปิด sompong popup ด้วย
 // Changes: [V3.0.2] Phase 1B step 2 — chart-nav-header strip + ⚙️ main menu skeleton:
 //   - เพิ่ม #chart-nav-header (◀ name·date ▶ ⚙️) แสดงเหนือ canvas เมื่อมีดวง
 //   - ซ่อน #btn-chart-row (ถูกแทนที่ด้วย header strip — DOM elements ยังอยู่)
@@ -187,7 +192,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.2';
+const APP_VERSION='3.0.3';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2192,13 +2197,96 @@ function _updateNavHeader(){
 }
 
 // ── Main menu popup (Phase 1B Step 2) ─────────────────────
+function _updateMainMenuState(){
+  const vb=document.getElementById('main-menu-view-btn');
+  if(vb)vb.textContent=VIEW_LABELS[_viewMode];
+  const tb=document.getElementById('main-menu-transit-btn');
+  if(tb){
+    tb.textContent=_reportTransitShow?'แสดง':'ซ่อน';
+    tb.classList.toggle('active',_reportTransitShow);
+  }
+  const slots=_v3LoadBuffer();
+  const si=document.getElementById('main-menu-sompong-info');
+  if(si)si.textContent=`${slots.length}/10 ›`;
+}
 function _openMainMenu(){
+  _updateMainMenuState();
   document.getElementById('main-menu-backdrop').classList.remove('hidden');
   document.getElementById('main-menu-modal').classList.remove('hidden');
 }
 function _closeMainMenu(){
   document.getElementById('main-menu-backdrop').classList.add('hidden');
   document.getElementById('main-menu-modal').classList.add('hidden');
+}
+function _toggleViewFromMenu(){
+  toggleView();
+  _updateMainMenuState();
+}
+function _toggleTransitFromMenu(){
+  toggleReportTransit();
+  _updateMainMenuState();
+}
+
+// ── Sompong popup (Phase 1B Step 3) ───────────────────────
+function _openSompongPopup(){
+  _closeMainMenu();
+  _renderSompongList();
+  document.getElementById('sompong-backdrop').classList.remove('hidden');
+  document.getElementById('sompong-modal').classList.remove('hidden');
+}
+function _closeSompongPopup(){
+  document.getElementById('sompong-backdrop').classList.add('hidden');
+  document.getElementById('sompong-modal').classList.add('hidden');
+}
+function _renderSompongList(){
+  const slots=_v3LoadBuffer();
+  const list=document.getElementById('sompong-list');
+  const cnt=document.getElementById('sompong-count');
+  if(!list)return;
+  if(cnt)cnt.textContent=`${slots.length}/10`;
+  if(!slots.length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีดวงใน buffer</div>';
+    return;
+  }
+  list.innerHTML=slots.map((s,i)=>`
+    <div class="memory-item" style="display:flex;align-items:center;gap:6px">
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="_sompongLoad(${i})">
+        <div class="memory-name">${s.name||'—'}</div>
+        <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}</div>
+      </div>
+      <button onclick="_sompongDelete(${i})" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+    </div>
+  `).join('');
+}
+function _sompongLoad(idx){
+  const slots=_v3LoadBuffer();
+  const s=slots[idx];
+  if(!s)return;
+  const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+  const y_ce=_beToce(s.y_be,s.m);
+  const[hr,mn]=(s.t||'00:00').split(':').map(Number);
+  const pos=get_data(s.d,s.m,y_ce,hr,mn,lng);
+  _natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+  _viewMode=1;
+  _applyViewMode();
+  _redraw();
+  _closeSompongPopup();
+  _showToast(`โหลดสมพงศ์ ${s.name||'—'} แล้ว`);
+}
+function _sompongDelete(idx){
+  const slots=_v3LoadBuffer();
+  const name=slots[idx]?.name||'—';
+  _showConfirm('ลบออกจาก buffer',`ลบ "${name}"?`,()=>{
+    slots.splice(idx,1);
+    _v3SaveBuffer(slots);
+    _renderSompongList();
+    _updateMainMenuState();
+  });
+}
+function _sompongNew(){
+  _closeSompongPopup();
+  switchTab(0);
+  _showToast('กรอกดวงที่ 2 — หลังผูกดวงจะปรากฏใน buffer');
 }
 
 // ── Pre-2484 warning (numpad year) ────────────────────────
@@ -2585,6 +2673,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       closeEvents();
       closeConfirm();
       _closeMainMenu();
+      _closeSompongPopup();
       document.getElementById('numpad').classList.add('hidden');
       document.getElementById('numpad-backdrop').classList.add('hidden');
       const warn=document.getElementById('numpad-warning');
