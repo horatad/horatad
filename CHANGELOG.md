@@ -4,6 +4,17 @@
 
 ---
 
+## [3.2.1] — 2026-05-20
+### Added
+- นำเข้าดวงจากรูป: ปุ่ม "📷 เลือกรูปดวง" ใน QR import modal → อ่าน QR จากรูปอัตโนมัติ
+  (BarcodeDetector native < 5ms + jsQR fallback universal)
+- H2 QR format: HMAC-SHA256 (8 hex) ยืนยัน QR มาจาก Horatad
+  H1 เก่า → รับได้พร้อม warning / H2 HMAC ผิด → reject
+- 💾 บันทึก บนมือถือ → Web Share API (เลือก "บันทึกรูปภาพ" → Photos โดยตรง ไม่มี folder picker)
+### Changed
+- _copyShareURL: ออก H2 แทน H1
+- URL param ?h=: รองรับ H1 + H2 พร้อม async HMAC verify
+
 ## [3.2.0] — 2026-05-20
 ### Changed (Breaking — DB Architecture)
 - รวม DB1/DB2/BUFFER/EVENT_SLOTS → unified `horatad_db_v4` (localStorage key เดียว)

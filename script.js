@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.2.0
-// Version 3.2.0 | 2026-05-20
+// HORATAD:SCRIPT:3.2.1
+// Version 3.2.1 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.2.0';
+const APP_VERSION='3.2.1';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1306,6 +1306,13 @@ async function saveChart(){
   const blob=await _generateShareImage(active);
   if(!blob){_showToast('ไม่สามารถสร้างรูปได้',true);return;}
   const filename=_buildShareFilename(active);
+  const file=new File([blob],filename,{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file],title:'ดวงชะตา Horatad'});
+      return;
+    }catch(e){if(e.name==='AbortError')return;}
+  }
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;a.download=filename;
@@ -1340,6 +1347,18 @@ async function shareChart(){
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
   _showToast('เบราว์เซอร์ไม่รองรับแชร์ — บันทึกไฟล์แทน');
+}
+
+// ── H2 QR signing (HMAC-SHA256, L2 security) ─────────────
+const H2_SECRET='HTD-H2-2026-K1';
+async function _hmac8(data){
+  const enc=new TextEncoder();
+  const key=await crypto.subtle.importKey('raw',enc.encode(H2_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+  const sig=await crypto.subtle.sign('HMAC',key,enc.encode(data));
+  return Array.from(new Uint8Array(sig)).slice(0,4).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function _verifyH2(dataStr,hmac){
+  try{return(await _hmac8(dataStr))===hmac;}catch{return false;}
 }
 
 // V2.2.24: load qrcode.js on-demand (not in CORE_ASSETS)
@@ -1402,11 +1421,11 @@ async function _generateShareImage(active){
     const jd=Math.trunc(_calcJD(active.d,active.m,active.y_be));
     const lng=(typeof active.lng==='number'?active.lng:100.50).toFixed(2);
     const lat=(typeof active.lat==='number'?active.lat:(PROVINCES_LAT[active.prov||'']||13.75)).toFixed(2);
-    const g=(active.gender||'').charAt(0).toUpperCase()||'?';
+    const g=(active.gender||'').charAt(0)||'?';
     const nm=(active.name||'').slice(0,20);
-    // V3.0.9: embed URL → สแกน QR → browser เปิด app → ?h= auto-import
-    const h1=`H1|${jd}|${active.t||''}|${lat}|${lng}|${g}|${nm}`;
-    const qrText=`https://horatad.github.io/horatad/?h=${h1}`;
+    const dataStr=`${jd}|${active.t||''}|${lat}|${lng}|${g}|${nm}`;
+    const hmac=await _hmac8(dataStr);
+    const qrText=`https://horatad.github.io/horatad/?h=H2|${hmac}|${dataStr}`;
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
@@ -2474,23 +2493,26 @@ function _latLngToProv(lat,lng){
 }
 function _parseH1Payload(raw){
   const s=(raw||'').trim();
-  // รองรับ plain "H1|..." และ URL "?h=H1|..."
   let payload=s;
   if(s.includes('?')){
     try{const u=new URL(s.startsWith('http')?s:'https://x/?'+s.split('?')[1]);payload=u.searchParams.get('h')||s;}catch{}
   }
   const parts=payload.split('|');
-  if(parts.length<7||parts[0]!=='H1')return null;
-  const jd=parseInt(parts[1],10);
+  let ver='H1',hmac=null,dp;
+  if(parts[0]==='H2'&&parts.length>=8){ver='H2';hmac=parts[1];dp=parts.slice(2);}
+  else if(parts[0]==='H1'&&parts.length>=7){ver='H1';dp=parts.slice(1);}
+  else return null;
+  const jd=parseInt(dp[0],10);
   if(!jd||isNaN(jd))return null;
   const{d,m,y_ce}=_jdToGregorian(jd);
-  const lat=parseFloat(parts[3]),lng=parseFloat(parts[4]);
+  const lat=parseFloat(dp[2]),lng=parseFloat(dp[3]);
   if(isNaN(lat)||isNaN(lng))return null;
   const prov=_latLngToProv(lat,lng);
   const gMap={'ช':'ชาย','ห':'หญิง','เ':'เหตุการณ์'};
-  const gender=gMap[parts[5]]||'ชาย';
-  const name=(parts[6]||'').trim().slice(0,20)||'ไม่ระบุ';
-  return{name,gender,d,m,y_be:y_ce+543,t:parts[2]||'00:00',lat,lng,prov};
+  const gender=gMap[dp[4]]||'ชาย';
+  const name=(dp[5]||'').trim().slice(0,20)||'ไม่ระบุ';
+  return{name,gender,d,m,y_be:y_ce+543,t:dp[1]||'00:00',lat,lng,prov,
+    _ver:ver,_hmac:hmac,_dataStr:dp.join('|')};
 }
 function _fillFormFromImport(data){
   if(!data)return false;
@@ -2514,36 +2536,86 @@ function _copyImportUrl(){
   const lat=(typeof natal1.lat==='number'?natal1.lat:(PROVINCES_LAT[natal1.prov||'']||13.75)).toFixed(2);
   const g=(natal1.gender||'').charAt(0)||'?';
   const nm=(natal1.name||'').slice(0,20);
-  const url=`https://horatad.github.io/horatad/?h=H1|${jd}|${natal1.t||''}|${lat}|${lng}|${g}|${nm}`;
-  navigator.clipboard.writeText(url).then(()=>{
-    _showToast('คัดลอก URL แล้ว — วางใน chat/browser เพื่อนำเข้า');
-  }).catch(()=>{
-    _showToast('คัดลอกไม่ได้ — ใช้ share image QR แทน',true);
+  const dataStr=`${jd}|${natal1.t||''}|${lat}|${lng}|${g}|${nm}`;
+  _hmac8(dataStr).then(hmac=>{
+    const url=`https://horatad.github.io/horatad/?h=H2|${hmac}|${dataStr}`;
+    navigator.clipboard.writeText(url).then(()=>{
+      _showToast('คัดลอก URL แล้ว — วางใน chat/browser เพื่อนำเข้า');
+    }).catch(()=>{_showToast('คัดลอกไม่ได้ — ใช้ share image QR แทน',true);});
   });
 }
 function _openQRImportPopup(){
   _closeMainMenu();
   const ta=document.getElementById('qr-import-textarea');
   if(ta)ta.value='';
+  const fi=document.getElementById('qr-import-file');
+  if(fi)fi.value='';
   document.getElementById('qr-import-backdrop').classList.remove('hidden');
   document.getElementById('qr-import-modal').classList.remove('hidden');
-  setTimeout(()=>{if(ta)ta.focus();},60);
 }
 function _closeQRImportPopup(){
   document.getElementById('qr-import-backdrop').classList.add('hidden');
   document.getElementById('qr-import-modal').classList.add('hidden');
 }
-function _doQRImport(){
-  const ta=document.getElementById('qr-import-textarea');
-  const text=(ta&&ta.value||'').trim();
-  if(!text){_showToast('วาง payload QR ก่อน',true);return;}
+async function _doQRImportFromText(text){
   const data=_parseH1Payload(text);
-  if(!data){_showToast('รูปแบบไม่ถูกต้อง (ต้องเริ่มด้วย H1|...)',true);return;}
+  if(!data){_showToast('ไม่พบข้อมูลดวง (QR ไม่ถูกต้อง)',true);return;}
+  if(data._ver==='H2'){
+    const ok=await _verifyH2(data._dataStr,data._hmac);
+    if(!ok){_showToast('⚠️ QR ไม่ผ่านการตรวจสอบ — ปฏิเสธ',true);return;}
+  }else{
+    _showToast('⚠️ QR รุ่นเก่า — รับไว้แต่ไม่ได้ยืนยัน');
+  }
   _closeQRImportPopup();
   _fillFormFromImport(data);
   switchTab(0);
   calculateChart1();
-  _showToast(`นำเข้า "${data.name}" สำเร็จ`);
+  if(data._ver==='H2')_showToast(`นำเข้า "${data.name}" สำเร็จ ✓`);
+}
+async function _doQRImport(){
+  const ta=document.getElementById('qr-import-textarea');
+  const text=(ta&&ta.value||'').trim();
+  if(!text){_showToast('วาง payload QR ก่อน',true);return;}
+  await _doQRImportFromText(text);
+}
+async function _loadJsQR(){
+  if(window.jsQR)return;
+  await new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';
+    s.onload=res;s.onerror=()=>rej(new Error('jsQR load failed'));
+    document.head.appendChild(s);
+  });
+}
+async function _importFromImageFile(file){
+  if(!file)return;
+  _showToast('กำลังอ่าน QR...');
+  let qrText=null;
+  if('BarcodeDetector' in window){
+    try{
+      const det=new BarcodeDetector({formats:['qr_code']});
+      const bmp=await createImageBitmap(file);
+      const codes=await det.detect(bmp);
+      bmp.close();
+      if(codes.length>0)qrText=codes[0].rawValue;
+    }catch(e){console.warn('[BD]',e);}
+  }
+  if(!qrText){
+    try{
+      await _loadJsQR();
+      const img=await createImageBitmap(file);
+      const MAX=1500;
+      let w=img.width,h=img.height;
+      if(w>MAX||h>MAX){const sc=MAX/Math.max(w,h);w=Math.round(w*sc);h=Math.round(h*sc);}
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      const x=c.getContext('2d');x.drawImage(img,0,0,w,h);img.close();
+      const id=x.getImageData(0,0,w,h);
+      const code=window.jsQR(id.data,id.width,id.height);
+      if(code)qrText=code.data;
+    }catch(e){console.warn('[jsQR]',e);}
+  }
+  if(!qrText){_showToast('ไม่พบ QR ในรูปภาพ',true);return;}
+  await _doQRImportFromText(qrText);
 }
 
 // ── Pre-2484 warning (numpad year) ────────────────────────
@@ -3006,15 +3078,21 @@ window.addEventListener('DOMContentLoaded',()=>{
   _renderTagRow('1');
   _renderTagRow('2');
 
-  // V3.0.8: URL param auto-import ?h=H1|...
-  const _urlH=new URLSearchParams(location.search).get('h');
-  if(_urlH){
+  // V3.0.8+H2: URL param auto-import ?h=H1|... or H2|...
+  (async()=>{
+    const _urlH=new URLSearchParams(location.search).get('h');
+    if(!_urlH)return;
     const _importData=_parseH1Payload(_urlH);
-    if(_importData&&_fillFormFromImport(_importData)){
+    if(!_importData)return;
+    if(_importData._ver==='H2'){
+      const ok=await _verifyH2(_importData._dataStr,_importData._hmac);
+      if(!ok){_showToast('⚠️ QR ไม่ผ่านการตรวจสอบ',true);return;}
+    }
+    if(_fillFormFromImport(_importData)){
       calculateChart1();
       _showToast(`นำเข้าจาก QR: "${_importData.name}"`);
     }
-  }
+  })();
 
   // PWA service worker register (V3.1.6 — ตัวเลือก A: reload จุดเดียว ป้องกันกระพริบ)
   // version.json mismatch → บังคับ SW update → รอ controllerchange → reload ครั้งเดียว
