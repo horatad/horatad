@@ -3,6 +3,18 @@
 
 ---
 
+## [V2.2.34] — 2026-05-20
+- Tag rows 4 ต่อดวง + add-tag modal + auto-save groups (Phase 2.4 of V2.2.42 restore)
+- DEFAULT_TAGS: `ตัวอย่าง / เพื่อน / ครอบครัว / ลูกค้า`
+- Custom tags เก็บใน `localStorage.horatad_custom_tags` (max 32 รายการ)
+- Max 4 groups ต่อดวง (`MAX_GROUPS_PER_CHART`)
+- Click chip → toggle active state (สีเทา → สีม่วง `#5b3fa0` + ตัวหนาขาว) + auto-save เข้า DB
+- ปุ่ม "+ เพิ่ม" สีเขียว `#2ea043` dashed border → เปิด modal ใส่ชื่อ tag ใหม่ (max 20 chars)
+- index.html: `#tag-row-1`, `#tag-row-2`, `#add-tag-modal` + `#add-tag-input`
+- CSS: `.tag-chip`, `.tag-chip.tag-active`, `.tag-chip-add`, modal styles
+- Init + calculateBoth: `_loadTagsForCurrentChart` → `_renderTagRow` ทั้ง 2 sections
+- clearForm: reset chart tags
+
 ## [V2.2.33] — 2026-05-20
 - Clear form button 🗑️ + DB indicator 📌 (Phase 2.3 of V2.2.42 restore)
 - `clearForm(section)` — ล้าง name/gender/d/m/y/t/prov + reset custom lng + เรียก `_updateDbIndicator`

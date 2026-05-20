@@ -1,5 +1,13 @@
-// HORATAD:SCRIPT:2.2.33
-// Version 2.2.33 | 2026-05-20
+// HORATAD:SCRIPT:2.2.34
+// Version 2.2.34 | 2026-05-20
+// Changes: [V2.2.34] Tag rows 4/chart + add-tag modal + auto-save groups (V2.2.42 restore):
+//   - DEFAULT_TAGS=['ตัวอย่าง','เพื่อน','ครอบครัว','ลูกค้า'] + custom tags (CUSTOM_TAGS_KEY)
+//   - Max 4 groups per chart (MAX_GROUPS_PER_CHART)
+//   - _renderTagRow(section), _toggleTag, _saveTagsToMemory, _openAddTagModal, _submitAddTag
+//   - กด tag → toggle + auto-save groups เข้า MEM_KEY entry
+//   - "เพิ่ม" modal → custom tag (max 20 chars) → save to CUSTOM_TAGS_KEY + auto-toggle
+//   - Init: load saved groups จาก DB + render
+//   - clearForm: reset chart tags ด้วย
 // Changes: [V2.2.33] Clear form button 🗑️ + DB indicator 📌 (V2.2.42 restore):
 //   - clearForm(section) — ล้างฟอร์ม section 1/2 + reset custom lng
 //   - _updateDbIndicator(section) — show 📌 ถ้า name+d+m+y+t+prov ตรง record ใน DB
@@ -108,7 +116,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.33';
+const APP_VERSION='2.2.34';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -411,6 +419,7 @@ function clearForm(section){
   if(s==='1')_customLng1=null;else if(s==='2')_customLng2=null;
   _updateLngUI(s);
   _updateDbIndicator(s);
+  if(typeof _chartTags!=='undefined'){_chartTags[s]=[];if(typeof _renderTagRow==='function')_renderTagRow(s);}
 }
 function _updateDbIndicator(section){
   const s=String(section);
@@ -435,6 +444,112 @@ function _wireDbIndicatorListeners(){
       if(el)el.addEventListener('input',()=>_updateDbIndicator(s));
     });
   });
+}
+
+// V2.2.34: tag groups (4 per chart) + custom tags + auto-save to DB
+const DEFAULT_TAGS=['ตัวอย่าง','เพื่อน','ครอบครัว','ลูกค้า'];
+const CUSTOM_TAGS_KEY='horatad_custom_tags';
+const MAX_GROUPS_PER_CHART=4;
+let _chartTags={'1':[],'2':[]};
+let _addTagSection=null;
+function _loadCustomTags(){return _loadJSON(CUSTOM_TAGS_KEY)||[];}
+function _saveCustomTags(arr){_saveJSON(CUSTOM_TAGS_KEY,arr.slice(0,32));}
+function _allTags(){
+  const custom=_loadCustomTags();
+  const merged=DEFAULT_TAGS.slice();
+  custom.forEach(t=>{if(!merged.includes(t))merged.push(t);});
+  return merged;
+}
+function _renderTagRow(section){
+  const row=document.getElementById('tag-row-'+section);
+  if(!row)return;
+  row.innerHTML='';
+  const tags=_allTags();
+  const active=_chartTags[section]||[];
+  tags.forEach(name=>{
+    const chip=document.createElement('span');
+    chip.className='tag-chip'+(active.includes(name)?' tag-active':'');
+    chip.textContent=name;
+    chip.addEventListener('click',()=>_toggleTag(section,name));
+    row.appendChild(chip);
+  });
+  const addBtn=document.createElement('span');
+  addBtn.className='tag-chip-add';
+  addBtn.textContent='+ เพิ่ม';
+  addBtn.addEventListener('click',()=>_openAddTagModal(section));
+  row.appendChild(addBtn);
+}
+function _toggleTag(section,name){
+  const arr=_chartTags[section]||(_chartTags[section]=[]);
+  const idx=arr.indexOf(name);
+  if(idx>=0){arr.splice(idx,1);}
+  else{
+    if(arr.length>=MAX_GROUPS_PER_CHART){_showToast(`เลือกได้สูงสุด ${MAX_GROUPS_PER_CHART} กลุ่ม/dวง`,true);return;}
+    arr.push(name);
+  }
+  _renderTagRow(section);
+  _saveTagsToMemory(section);
+}
+function _saveTagsToMemory(section){
+  const s=String(section);
+  const name=(document.getElementById('name-'+s)||{}).value||'';
+  const d=(document.getElementById('d'+s)||{}).value||'';
+  const m=(document.getElementById('m'+s)||{}).value||'';
+  const y=(document.getElementById('y'+s)||{}).value||'';
+  const t=(document.getElementById('t'+s)||{}).value||'';
+  const p=(document.getElementById('prov'+s)||{}).value||'';
+  if(!name||!d||!m||!y||!t||!p)return;
+  const key=`${name}|${d}/${m}/${y}|${t}|${p}`;
+  const mem=_loadJSON(MEM_KEY)||[];
+  const i=mem.findIndex(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
+  if(i<0)return;
+  mem[i].groups=(_chartTags[s]||[]).slice();
+  mem[i].savedAt=Date.now();
+  _saveJSON(MEM_KEY,mem);
+}
+function _openAddTagModal(section){
+  _addTagSection=String(section);
+  const modal=document.getElementById('add-tag-modal');
+  const input=document.getElementById('add-tag-input');
+  if(input){input.value='';setTimeout(()=>input.focus(),50);}
+  if(modal)modal.classList.remove('hidden');
+}
+function _closeAddTagModal(){
+  const modal=document.getElementById('add-tag-modal');
+  if(modal)modal.classList.add('hidden');
+  _addTagSection=null;
+}
+function _submitAddTag(){
+  const input=document.getElementById('add-tag-input');
+  const name=(input&&input.value||'').trim().slice(0,20);
+  if(!name){_showToast('ใส่ชื่อ tag ก่อน',true);return;}
+  const custom=_loadCustomTags();
+  if(_allTags().includes(name)){
+    // already exists — เลือก tag นั้นแทน
+    if(_addTagSection&&!(_chartTags[_addTagSection]||[]).includes(name)){
+      _toggleTag(_addTagSection,name);
+    }
+  }else{
+    custom.push(name);
+    _saveCustomTags(custom);
+    if(_addTagSection){_toggleTag(_addTagSection,name);}
+  }
+  _closeAddTagModal();
+  if(_addTagSection)_renderTagRow(_addTagSection);
+}
+function _loadTagsForCurrentChart(section){
+  const s=String(section);
+  const name=(document.getElementById('name-'+s)||{}).value||'';
+  const d=(document.getElementById('d'+s)||{}).value||'';
+  const m=(document.getElementById('m'+s)||{}).value||'';
+  const y=(document.getElementById('y'+s)||{}).value||'';
+  const t=(document.getElementById('t'+s)||{}).value||'';
+  const p=(document.getElementById('prov'+s)||{}).value||'';
+  if(!name||!d||!m||!y||!t||!p){_chartTags[s]=[];return;}
+  const key=`${name}|${d}/${m}/${y}|${t}|${p}`;
+  const mem=_loadJSON(MEM_KEY)||[];
+  const rec=mem.find(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
+  _chartTags[s]=(rec&&Array.isArray(rec.groups))?rec.groups.slice():[];
 }
 
 // logo preload
@@ -1252,6 +1367,7 @@ function calculateBoth(){
   if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
+  if(typeof _loadTagsForCurrentChart==='function'){_loadTagsForCurrentChart('1');_loadTagsForCurrentChart('2');_renderTagRow('1');_renderTagRow('2');}
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
@@ -2296,6 +2412,12 @@ window.addEventListener('DOMContentLoaded',()=>{
   _wireDbIndicatorListeners();
   _updateDbIndicator('1');
   _updateDbIndicator('2');
+
+  // V2.2.34: render tag rows + load saved groups from DB
+  _loadTagsForCurrentChart('1');
+  _loadTagsForCurrentChart('2');
+  _renderTagRow('1');
+  _renderTagRow('2');
 
   // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.31)
   if('serviceWorker' in navigator){
