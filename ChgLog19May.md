@@ -3,6 +3,15 @@
 
 ---
 
+## [V2.2.31] — 2026-05-20
+- Share image layout overhaul (Phase 2 of V2.2.42 restore)
+- QR ย้ายจาก bottom-right ไป bottom-left ที่ `(28, 820)` size `125×125` ECC Level H
+- iOS Safari fix: qrcodejs สร้าง `<img>` ไม่ใช่ `<canvas>` → wait `img.onload` + fallback 1s
+- Right column right-aligned 4 บรรทัด: name (32px bold) / date / time / prov (22px muted)
+- Score: center 64px top-aligned `y=835` (ขอบบนระดับเดียวกับชื่อบรรทัดแรก) — เปลี่ยนจาก `88px y=940` center
+- scoreLabel: center `y=905` 22px gray (ใต้ score)
+- horatad.com: center `y=933` 13px Cinzel `#888` (ระดับเดียวกับ prov line)
+
 ## [V2.2.30] — 2026-05-20
 - **Compliance** ตาม SYSTEM_INSTRUCTION V3.4 + BEST_PRACTICES (จาก crash recovery — V2.2.27→V2.2.42 หายจาก main)
 - เพิ่ม `const APP_VERSION='2.2.30'` ใน script.js

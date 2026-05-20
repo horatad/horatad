@@ -1,5 +1,10 @@
-// HORATAD:SCRIPT:2.2.30
-// Version 2.2.30 | 2026-05-20
+// HORATAD:SCRIPT:2.2.31
+// Version 2.2.31 | 2026-05-20
+// Changes: [V2.2.31] Share image layout overhaul (V2.2.42 spec):
+//   - QR bottom-left (28, 820, 125×125, ECC H), iOS img onload race fix
+//   - Right column right-aligned 4 lines: name / date / time / prov
+//   - Score center 64px top-aligned y=835 (edge level กับ name first line)
+//   - scoreLabel center y=905 22px, horatad.com center y=933 13px Cinzel
 // Changes: [V2.2.30] Compliance per SYSTEM_INSTRUCTION V3.4 + BEST_PRACTICES:
 //   - Add HORATAD:SCRIPT identity header
 //   - Add const APP_VERSION='2.2.30'
@@ -92,7 +97,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.30';
+const APP_VERSION='2.2.31';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -1264,42 +1269,64 @@ async function _generateShareImage(active){
   const ctx=c.getContext('2d');
   ctx.fillStyle=BG_V1;
   ctx.fillRect(0,0,SZ,SZ);
+  // chart top — bottom y=820
   const chart=document.getElementById('chart-canvas');
   const chartSize=780;
   const chartX=(SZ-chartSize)/2;
   ctx.drawImage(chart,chartX,40,chartSize,chartSize);
+  const y_ce=_beToce(active.y_be,active.m);
+  // Right column — 4 lines, right-aligned x=SZ-30
+  const INFO_X=SZ-30;
+  ctx.textAlign='right';ctx.textBaseline='top';
   ctx.fillStyle='#ffffff';
   ctx.font='bold 32px Sarabun,sans-serif';
-  ctx.textAlign='center';ctx.textBaseline='top';
-  ctx.fillText((active.name||'').slice(0,20),SZ/2,845);
+  ctx.fillText((active.name||'').slice(0,20),INFO_X,835);
   ctx.fillStyle='#8b949e';
   ctx.font='400 22px Sarabun,sans-serif';
-  const y_ce=_beToce(active.y_be,active.m);
-  ctx.fillText(`${active.d}/${active.m}/${active.y_be} (${y_ce}) ${active.t} ${active.prov}`,SZ/2,888);
+  ctx.fillText(`${active.d}/${active.m}/${active.y_be} (${y_ce})`,INFO_X,875);
+  ctx.fillText(active.t||'',INFO_X,901);
+  ctx.fillText(active.prov||'',INFO_X,927);
+  // Score center top-aligned at y=835 (edge level with name first line)
   const asc=Math.trunc(active.pos[0]/1800);
   let total=0;
   for(let i=1;i<=8;i++)total+=getStrength(active.pos,active.vel,i,asc)[0];
   const scoreColor=total>=5?'#2ea043':total>=-5?'#b8860b':'#f85149';
   const scoreLabel=total>=15?'ดวงชะตาแข็งแกร่งโดยรวม 🌟':total>=5?'ดวงชะตาระดับปานกลาง ⭐':total>=-5?'ดวงชะตาที่ต้องระวัง ⚠️':'ดวงชะตาที่อ่อนแอ ❌';
+  ctx.textAlign='center';
   ctx.fillStyle=scoreColor;
-  ctx.font='bold 88px Sarabun,sans-serif';
-  ctx.fillText((total>=0?'+':'')+total,SZ/2,940);
+  ctx.font='bold 64px Sarabun,sans-serif';
+  ctx.fillText((total>=0?'+':'')+total,SZ/2,835);
+  // scoreLabel center under score
   ctx.fillStyle='#c9d1d9';
-  ctx.font='500 28px Sarabun,sans-serif';
-  ctx.fillText(scoreLabel,SZ/2,1050);
-  // V2.2.24: QR code bottom-right — JD:xxxxx|T:HH:MM|LAT:xx.xx
+  ctx.font='500 22px Sarabun,sans-serif';
+  ctx.fillText(scoreLabel,SZ/2,905);
+  // horatad.com center, smaller, level with prov line
+  ctx.fillStyle='#888888';
+  ctx.font='500 13px Cinzel,serif';
+  ctx.fillText('horatad.com',SZ/2,933);
+  // QR bottom-left — (28, 820), 125×125, bottom y=945
   try{
     await _loadQRLib();
-    const jd=_calcJD(active.d,active.m,active.y_be);
+    const jd=Math.trunc(_calcJD(active.d,active.m,active.y_be));
     const lat=(PROVINCES_LAT[active.prov||'']||13.75).toFixed(2);
     const qrText=`JD:${jd}|T:${active.t}|LAT:${lat}`;
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:125,height:125,colorDark:'#000000',colorLight:'#ffffff'});
-    await new Promise(r=>setTimeout(r,80));
-    const qrCv=qrDiv.querySelector('canvas');
-    if(qrCv)ctx.drawImage(qrCv,SZ-141,SZ-141,125,125);
+    new QRCode(qrDiv,{text:qrText,width:125,height:125,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.H:undefined});
+    // iOS Safari: qrcodejs creates <img> not <canvas> — wait for onload
+    await new Promise(res=>{
+      const img=qrDiv.querySelector('img');
+      if(img){
+        if(img.complete&&img.naturalWidth>0)return res();
+        img.onload=res;img.onerror=res;
+        setTimeout(res,1000);
+      }else{
+        setTimeout(res,200);
+      }
+    });
+    const qrEl=qrDiv.querySelector('canvas')||qrDiv.querySelector('img');
+    if(qrEl)ctx.drawImage(qrEl,28,820,125,125);
     document.body.removeChild(qrDiv);
   }catch(e){console.warn('[QR]',e);}
   return new Promise(resolve=>c.toBlob(resolve,'image/png',0.95));
@@ -2199,7 +2226,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   const _kbVerEl=document.getElementById('kb-version-display');
   if(_kbVerEl)_kbVerEl.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
 
-  // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.30)
+  // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.31)
   if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',()=>{
       if(_swRefreshing)return;
