@@ -1,5 +1,11 @@
-// HORATAD:SCRIPT:2.2.32
-// Version 2.2.32 | 2026-05-20
+// HORATAD:SCRIPT:2.2.33
+// Version 2.2.33 | 2026-05-20
+// Changes: [V2.2.33] Clear form button 🗑️ + DB indicator 📌 (V2.2.42 restore):
+//   - clearForm(section) — ล้างฟอร์ม section 1/2 + reset custom lng
+//   - _updateDbIndicator(section) — show 📌 ถ้า name+d+m+y+t+prov ตรง record ใน DB
+//   - _wireDbIndicatorListeners — input event ทุก field auto-update indicator
+//   - section-title-row: title + 📌 + 🗑️ ใน index.html ทั้ง 2 sections
+//   - call _updateDbIndicator หลัง calculateBoth (เพิ่งบันทึกลง DB)
 // Changes: [V2.2.32] Alert popup ค้างกระพริบ (V2.2.42 restore):
 //   - showAlert(msg,type) / closeAlert() helpers (top-level, globally available)
 //   - tap-backdrop-to-close, popup ไม่ปิดเอง
@@ -102,7 +108,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.32';
+const APP_VERSION='2.2.33';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -394,6 +400,41 @@ function showAlert(msg,type){
 function closeAlert(){
   const ov=document.getElementById('_alertOverlay');
   if(ov)ov.remove();
+}
+
+// V2.2.33: clearForm(section) + _updateDbIndicator(section)
+function clearForm(section){
+  const s=String(section);
+  const ids=[`name-${s}`,`d${s}`,`m${s}`,`y${s}`,`t${s}`,`prov${s}`];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='prov'+s?'กรุงเทพมหานคร':'');});
+  const g=document.getElementById('gender'+s);if(g)g.value='ชาย';
+  if(s==='1')_customLng1=null;else if(s==='2')_customLng2=null;
+  _updateLngUI(s);
+  _updateDbIndicator(s);
+}
+function _updateDbIndicator(section){
+  const s=String(section);
+  const indicator=document.getElementById('db-indicator-'+s);
+  if(!indicator)return;
+  const name=(document.getElementById('name-'+s)||{}).value||'';
+  const d=(document.getElementById('d'+s)||{}).value||'';
+  const m=(document.getElementById('m'+s)||{}).value||'';
+  const y=(document.getElementById('y'+s)||{}).value||'';
+  const t=(document.getElementById('t'+s)||{}).value||'';
+  const p=(document.getElementById('prov'+s)||{}).value||'';
+  if(!name||!d||!m||!y||!t||!p){indicator.classList.add('hidden');return;}
+  const mem=_loadJSON(MEM_KEY)||[];
+  const k=`${name}|${d}/${m}/${y}|${t}|${p}`;
+  const found=mem.some(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===k);
+  indicator.classList.toggle('hidden',!found);
+}
+function _wireDbIndicatorListeners(){
+  ['1','2'].forEach(s=>{
+    ['name-'+s,'d'+s,'m'+s,'y'+s,'t'+s,'prov'+s].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.addEventListener('input',()=>_updateDbIndicator(s));
+    });
+  });
 }
 
 // logo preload
@@ -1210,6 +1251,7 @@ function calculateBoth(){
   if(_natal){const r=_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1});if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);}
   if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
   _renderQuickMemory();
+  if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
@@ -2249,6 +2291,11 @@ window.addEventListener('DOMContentLoaded',()=>{
   // V2.2.18: KB version display
   const _kbVerEl=document.getElementById('kb-version-display');
   if(_kbVerEl)_kbVerEl.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
+
+  // V2.2.33: wire DB indicator listeners + initial check
+  _wireDbIndicatorListeners();
+  _updateDbIndicator('1');
+  _updateDbIndicator('2');
 
   // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.31)
   if('serviceWorker' in navigator){

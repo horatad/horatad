@@ -3,6 +3,15 @@
 
 ---
 
+## [V2.2.33] — 2026-05-20
+- Clear form button 🗑️ + DB indicator 📌 (Phase 2.3 of V2.2.42 restore)
+- `clearForm(section)` — ล้าง name/gender/d/m/y/t/prov + reset custom lng + เรียก `_updateDbIndicator`
+- `_updateDbIndicator(section)` — toggle `.hidden` ที่ `#db-indicator-{1,2}` ถ้า name+d+m+y+t+prov ตรง record ใน `MEM_KEY`
+- `_wireDbIndicatorListeners` — input event ทุก field → auto-update indicator
+- index.html: เพิ่ม `.section-title-row` พร้อม `📌 + 🗑️` ทั้ง 2 sections
+- CSS: `.section-title-row`, `.btn-clear-form` (red outline), `.db-indicator`
+- calculateBoth: เรียก `_updateDbIndicator` หลัง `_addMemory` (record เพิ่งบันทึก → ต้อง refresh)
+
 ## [V2.2.32] — 2026-05-20
 - Alert popup ค้างกระพริบ (Phase 2.2 of V2.2.42 restore)
 - `showAlert(msg, type)` + `closeAlert()` helpers — globally available
