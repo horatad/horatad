@@ -1,5 +1,9 @@
-// HORATAD:SCRIPT:2.2.38
-// Version 2.2.38 | 2026-05-20
+// HORATAD:SCRIPT:2.2.39
+// Version 2.2.39 | 2026-05-20
+// Changes: [V2.2.39] V3 tab fixes:
+//   - expose window.APP_VERSION ให้ v3tab.js (ES module) ใช้สร้าง cache-bust query
+//     สำหรับ kb.json — เดิม fetch './v3/kb.json' ไม่มี query → SW cache key
+//     ไม่ตรงกับ './v3/kb.json?v=VER' ใน CORE_ASSETS → offline ปุ่มพยากรณ์ fail
 // Changes: [V2.2.38] Feature (req 20):
 //   - ปุ่ม ✏️ แก้ไขใน memory list — แตะแล้วโหลด record กลับเข้าฟอร์มของ section
 //     ที่กำลังเลือก (เหมือนแตะรายการ) + ตั้งสถานะ "กำลังแก้ไข" key เดิม
@@ -139,7 +143,10 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.38';
+const APP_VERSION='2.2.39';
+// V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
+// script ไม่อยู่บน window อัตโนมัติ
+window.APP_VERSION=APP_VERSION;
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,

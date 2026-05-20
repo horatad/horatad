@@ -1,13 +1,17 @@
-// Version 3.0.3 | 2026-05-18
+// Version 3.0.4 | 2026-05-20
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
+// V3.0.4 (sync app V2.2.39):
+//   - toast "กำลังโหลด..." ย้ายไปหลัง guard (_v3Running + _getNatal) → ไม่ขึ้นซ้อน
+//     ตอน user ยังไม่ผูกดวง
+//   - KB_PATH ใส่ ?v=APP_VERSION ให้ตรงกับ SW CORE_ASSETS key → offline ทำงาน
 
 import { get_lagna } from './engine.js';
 import { build_natal_payload } from './interpretation.js';
 import { match_rules, render_fallback, send_to_typhoon } from './typhoon.js';
 
 // ── Config ────────────────────────────────────────────────
-const KB_PATH = './v3/kb.json';
+const KB_PATH = './v3/kb.json?v=' + (window.APP_VERSION || '0');
 
 // ── State ─────────────────────────────────────────────────
 let _v3KbRules = null;
@@ -77,10 +81,10 @@ function _getNatal() {
 
 // ── Button 1: ดูกฎ local ────────────────────────────────────
 async function v3Local() {
-  _showToastV3('กำลังโหลดกฎ...');
   if (_v3Running) return;
   const natal = _getNatal();
   if (!natal) return;
+  _showToastV3('กำลังโหลดกฎ...');
 
   _v3Running = true;
   _el('v3-btn-local').disabled = true;
@@ -108,10 +112,10 @@ async function v3Local() {
 
 // ── Button 2: Typhoon AI ─────────────────────────────────────
 async function v3Typhoon() {
-  _showToastV3('กำลังส่งข้อมูลไป Typhoon...');
   if (_v3Running) return;
   const natal = _getNatal();
   if (!natal) return;
+  _showToastV3('กำลังส่งข้อมูลไป Typhoon...');
 
   _v3Running = true;
   _el('v3-btn-typhoon').disabled = true;
