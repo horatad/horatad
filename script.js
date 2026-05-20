@@ -1,5 +1,11 @@
-// HORATAD:SCRIPT:2.2.36
-// Version 2.2.36 | 2026-05-20
+// HORATAD:SCRIPT:2.2.37
+// Version 2.2.37 | 2026-05-20
+// Changes: [V2.2.37] Bug fix:
+//   - 📌 DB indicator ไม่อัปเดตเมื่อกด numpad commit (d/m/y/lng) — _setField ใช้
+//     .value= ตรงๆ ไม่ trigger 'input' event. แก้: เรียก _updateDbIndicator(section)
+//     ท้าย _numpadConfirm ตาม id suffix ('1'/'2')
+//   - เพิ่ม 'change' listener ใน _wireDbIndicatorListeners — native <input type="time">
+//     บน iOS Safari บางครั้ง fire เฉพาะ change ไม่ใช่ input
 // Changes: [V2.2.36] Bug fix + UX:
 //   - Bug fix: ลบ duplicate controllerchange listener ใน index.html (ไม่มี _swRefreshing
 //     guard) — เป็นต้นเหตุจอกระพริบนานช่วงรันโปรแกรมรุ่นใหม่ (reload loop เมื่อ SW
@@ -126,7 +132,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.36';
+const APP_VERSION='2.2.37';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -448,10 +454,13 @@ function _updateDbIndicator(section){
   indicator.classList.toggle('hidden',!found);
 }
 function _wireDbIndicatorListeners(){
+  // V2.2.37: ฟัง 'change' ด้วย — native time picker (iOS Safari) ยิง change อย่างเดียว
   ['1','2'].forEach(s=>{
     ['name-'+s,'d'+s,'m'+s,'y'+s,'t'+s,'prov'+s].forEach(id=>{
       const el=document.getElementById(id);
-      if(el)el.addEventListener('input',()=>_updateDbIndicator(s));
+      if(!el)return;
+      el.addEventListener('input',()=>_updateDbIndicator(s));
+      el.addEventListener('change',()=>_updateDbIndicator(s));
     });
   });
 }
@@ -1641,6 +1650,14 @@ function _numpadConfirm(){
         if(dispEl)dispEl.textContent=isLng?'_ _ _ . _ _':'—';
         return; // KEEP numpad open
       }
+    }
+  }
+  // V2.2.37: numpad commit (d/m/y/lng) ไม่ fire 'input' event → ปลุก DB indicator เอง
+  if(_numpadField){
+    const cid=_numpadField.id||'';
+    const sec=cid.slice(-1);
+    if((sec==='1'||sec==='2')&&typeof _updateDbIndicator==='function'){
+      _updateDbIndicator(sec);
     }
   }
   _numpadBuf='';

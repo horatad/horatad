@@ -3,6 +3,15 @@
 
 ---
 
+## [V2.2.37] — 2026-05-20
+- Bug fix: 📌 DB indicator ไม่อัปเดตเมื่อกด numpad commit (d/m/y/lng) — `_setField` ตั้ง `.value=` ตรง ไม่ trigger `input` event
+- แก้: `_numpadConfirm` เรียก `_updateDbIndicator(section)` ตาม id suffix (`'1'`/`'2'`) ก่อนปิด numpad
+- เพิ่ม `change` listener ใน `_wireDbIndicatorListeners` — native `<input type="time">` บน iOS Safari บางครั้ง fire เฉพาะ change
+
+## [V2.2.36] — 2026-05-20
+- Feature: ปุ่ม `✕ ออกจากพยากรณ์` บน TAB 3 (`v3-header`) — `_v3Exit()` ซ่อน `tab-btn-3` + สลับไป tab 1
+- Bug fix: ลบ duplicate `controllerchange` listener ใน `index.html` (ไม่มี `_swRefreshing` guard) — เป็นต้นเหตุจอกระพริบนานช่วง SW activate (reload loop)
+
 ## [V2.2.35] — 2026-05-20
 - Security: V3 PIN validation ย้ายไป Cloudflare Worker `horatad-auth` (Phase 2.5 of V2.2.42 restore)
 - ลบ hardcoded `'424198'` จาก `index.html:526`
