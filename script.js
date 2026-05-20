@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.1.0
-// Version 3.1.0 | 2026-05-20
+// HORATAD:SCRIPT:3.1.1
+// Version 3.1.1 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.1.0';
+const APP_VERSION='3.1.1';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -969,7 +969,10 @@ function _updateLinkedEventsDisplay(){
   const el=document.getElementById('report-linked-events');
   if(!el)return;
   if(!natal1?.name){el.style.display='none';return;}
-  const evs=_v3LoadEventSlots().filter(s=>s.linkedNatalName===natal1.name);
+  const evs=_v3LoadEventSlots().filter(s=>
+    (natal1.uid&&s.linkedNatalUid===natal1.uid)||
+    (!s.linkedNatalUid&&s.linkedNatalName===natal1.name)
+  );
   if(!evs.length){el.style.display='none';return;}
   el.style.display='block';
   el.innerHTML='🔗 เหตุการณ์: '+evs.map(s=>`<span style="margin-right:8px;cursor:pointer;color:#a0aec0" onclick="_openEventSlotsPopup()" title="${s.d}/${s.m}/${s.y_be} · ${s.t}">${_escHtml(s.name||'—')}</span>`).join('');
@@ -1197,7 +1200,7 @@ function _calcChart(num){
     tag:[],group:'',sector:'',trait:'',note:'',
     name,gender
   };
-  if(num==='1'){natal1=chart;_calc1Done=true;_viewMode=0;}
+  if(num==='1'){natal1=_v3UpsertDB1(chart);_calc1Done=true;_viewMode=0;}
   else{
     _chart2=chart;_calc2Done=true;_viewMode=1;
     // Step 4: set natal2 ทันที + auto-save to buffer ถ้าไม่ซ้ำ
@@ -1638,6 +1641,26 @@ function _v3AddDB1(rec){
 }
 function _v3FindDB1(uid){return _v3LoadDB1().find(r=>r.uid===uid)||null;}
 function _v3RemoveDB1(uid){_v3SaveDB1(_v3LoadDB1().filter(r=>r.uid!==uid));}
+// Phase 6: content-based upsert (key=name|d/m/y_be|t) — เก็บ uid+links เดิมถ้ามีแล้ว
+function _v3UpsertDB1(rec){
+  const db=_v3LoadDB1();
+  const key=r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}`;
+  const i=db.findIndex(r=>key(r)===key(rec));
+  if(i>=0){
+    rec=Object.assign({},rec,{
+      uid:db[i].uid,
+      linkedEvents:db[i].linkedEvents||[],
+      linkedNatal:db[i].linkedNatal||null,
+      savedAt:Date.now()
+    });
+    db[i]=rec;
+  }else{
+    rec={...rec,savedAt:Date.now()};
+    db.unshift(rec);
+  }
+  _v3SaveDB1(db);
+  return rec;
+}
 
 // V3 storage — DB2 (events)
 function _v3LoadDB2(){return _loadJSON(DB2_KEY)||[];}
@@ -2243,6 +2266,70 @@ function _eventSlotSaveCurrent(){
   _updateMainMenuState();
   _renderTagRow('1');
   _showToast(`บันทึก "${rec.name}"${natal1?' (🔗 '+natal1.name+')':''}`);
+}
+
+// ── Event Create form (Phase 7) ──────────────────────────
+function _openCreateEventModal(){
+  _closeEventSlotsPopup();
+  // pre-fill date: ใช้ _chart2 ถ้ามี, ไม่งั้นวันนี้
+  const now=new Date();
+  const src=_chart2||null;
+  _setField('ev-name','');
+  _setField('ev-d',src?src.d:now.getDate());
+  _setField('ev-m',src?src.m:now.getMonth()+1);
+  _setField('ev-y',src?src.y_be:now.getFullYear()+543);
+  _setField('ev-t',src?src.t:(String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')));
+  _populateNatalLinkSelect();
+  document.getElementById('event-create-backdrop').classList.remove('hidden');
+  document.getElementById('event-create-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('ev-name')?.focus(),60);
+}
+function _closeCreateEventModal(){
+  document.getElementById('event-create-backdrop').classList.add('hidden');
+  document.getElementById('event-create-modal').classList.add('hidden');
+}
+function _populateNatalLinkSelect(){
+  const sel=document.getElementById('ev-natal-link');
+  if(!sel)return;
+  const db=_v3LoadDB1().slice(0,20);
+  sel.innerHTML='<option value="">— ไม่เชื่อม —</option>'+
+    db.map(r=>`<option value="${r.uid}"${natal1&&r.uid===natal1.uid?' selected':''}>${_escHtml(r.name||'—')} · ${r.d}/${r.m}/${r.y_be}</option>`).join('');
+}
+function _submitCreateEvent(){
+  const name=(document.getElementById('ev-name')?.value||'').trim().slice(0,20);
+  if(!name){_showToast('ใส่ชื่อเหตุการณ์ก่อน',true);return;}
+  const d=parseInt(document.getElementById('ev-d')?.value||'',10)||1;
+  const m=parseInt(document.getElementById('ev-m')?.value||'',10)||1;
+  const y_be=parseInt(document.getElementById('ev-y')?.value||'',10)||2568;
+  const t=(document.getElementById('ev-t')?.value||'00:00');
+  const natalUid=document.getElementById('ev-natal-link')?.value||'';
+  const y_ce=_beToce(y_be,m);
+  const[hr,mn]=t.split(':').map(Number);
+  const pos=get_data(d,m,y_ce,hr,mn,100.50);
+  const pos2=get_data(d,m,y_ce,hr+24,mn,100.50);
+  const vel=pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
+  const linkedNatal=natalUid?_v3FindDB1(natalUid):null;
+  const rec={
+    uid:crypto.randomUUID(),name,gender:'เหตุการณ์',
+    d,m,y_be,t,prov:'กรุงเทพมหานคร',lat:13.75,lng:100.50,
+    pos,vel,savedAt:Date.now(),
+    linkedNatalName:linkedNatal?.name||null,
+    linkedNatalUid:natalUid||null
+  };
+  // bidirectional link
+  if(linkedNatal){
+    if(!Array.isArray(linkedNatal.linkedEvents))linkedNatal.linkedEvents=[];
+    if(!linkedNatal.linkedEvents.includes(rec.uid))linkedNatal.linkedEvents.push(rec.uid);
+    _v3AddDB1(linkedNatal);
+  }
+  const slots=_v3LoadEventSlots();
+  slots.unshift(rec);
+  _v3SaveEventSlots(slots);
+  _closeCreateEventModal();
+  _updateMainMenuState();
+  _renderTagRow('1');
+  _updateLinkedEventsDisplay();
+  _showToast(`บันทึก "${name}"${linkedNatal?' (🔗 '+linkedNatal.name+')':''}`);
 }
 
 // ── QR Import (Phase 4) ──────────────────────────────────

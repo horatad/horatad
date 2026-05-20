@@ -4,6 +4,16 @@
 
 ---
 
+## [3.1.1] — 2026-05-20
+### Added
+- `_v3UpsertDB1(rec)`: content-based upsert DB1 (key=name|d/m/y_be|t) — เก็บ uid+linkedEvents เดิมถ้าผูกดวงซ้ำ (Phase 6)
+- `calculateChart1` → auto-upsert natal1 ลง DB1 ทุกครั้ง — uid persistent ข้าม session
+- `_updateLinkedEventsDisplay` match ด้วย uid (primary) + name fallback (compat)
+- event-create-modal: form สร้างเหตุการณ์ใหม่ (ชื่อ + วัน/เดือน/ปี/เวลา + เชื่อมกับดวง) (Phase 7)
+- `_openCreateEventModal()`, `_closeCreateEventModal()`, `_populateNatalLinkSelect()`, `_submitCreateEvent()`
+- bidirectional link: event.linkedNatalUid ↔ natal.linkedEvents[] บันทึกพร้อมกัน
+- "+ สร้างใหม่" button ใน event-slots-modal → เปิด event-create-modal
+
 ## [3.1.0] — 2026-05-20
 ### Added
 - `_copyImportUrl()`: สร้าง import URL จาก natal1 → copy ไปคลิปบอร์ด

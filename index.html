@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.1.0 -->
-<!-- Version 3.1.0 | 2026-05-20 -->
+<!-- HORATAD:INDEX:3.1.1 -->
+<!-- Version 3.1.1 | 2026-05-20 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.1.0">
+<link rel="stylesheet" href="style.css?v=3.1.1">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -50,7 +50,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.1.0</span>
+  <span class="brand-ver">V 3.1.1</span>
 </h1>
 
 <!-- Tab nav -->
@@ -198,7 +198,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.1.0</div>
+        <div class="about-version">V 3.1.1</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -327,7 +327,7 @@ canvas{max-width:100%;height:auto}
 <!-- ── Chart wrap (shared, moved by JS) ─────────────────── -->
 <div id="chart-wrap">
   <div id="canvas-wrapper" style="background:#0d1117;border-radius:8px;padding:0.75rem">
-    <!-- V3.1.0: chart-nav-header strip — แสดงเหนือ canvas แทน btn-chart-row -->
+    <!-- V3.1.1: chart-nav-header strip — แสดงเหนือ canvas แทน btn-chart-row -->
     <div id="chart-nav-header" class="chart-nav-header hidden">
       <button class="chart-nav-btn" onclick="cycleMemory(-1)" title="ดวงก่อนหน้า">◀</button>
       <div id="chart-nav-info" class="chart-nav-info">—</div>
@@ -424,7 +424,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<!-- ── Main menu popup (V3.1.0 Phase 1B Step 2) ────────── -->
+<!-- ── Main menu popup (V3.1.1 Phase 1B Step 2) ────────── -->
 <div id="main-menu-backdrop" class="main-menu-backdrop hidden" onclick="_closeMainMenu()"></div>
 <div id="main-menu-modal" class="main-menu-modal hidden">
   <div class="main-menu-header">
@@ -461,7 +461,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<!-- ── Sompong popup (V3.1.0 Phase 1B Step 3) ──────────── -->
+<!-- ── Sompong popup (V3.1.1 Phase 1B Step 3) ──────────── -->
 <div id="sompong-backdrop" class="memory-backdrop hidden" onclick="_closeSompongPopup()"></div>
 <div id="sompong-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -473,7 +473,7 @@ canvas{max-width:100%;height:auto}
   <button onclick="_closeSompongPopup()" class="memory-close">ปิด</button>
 </div>
 
-<!-- ── QR Import popup (V3.1.0 Phase 4) ─────────────────── -->
+<!-- ── QR Import popup (V3.1.1 Phase 4) ─────────────────── -->
 <div id="qr-import-backdrop" class="memory-backdrop hidden" onclick="_closeQRImportPopup()"></div>
 <div id="qr-import-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -491,7 +491,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<!-- ── Event Slots popup (V3.1.0 Phase 2) ───────────────── -->
+<!-- ── Event Slots popup (V3.1.1 Phase 2) ───────────────── -->
 <div id="event-slots-backdrop" class="memory-backdrop hidden" onclick="_closeEventSlotsPopup()"></div>
 <div id="event-slots-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -499,8 +499,48 @@ canvas{max-width:100%;height:auto}
     <span id="event-slots-count" style="font-size:11px;color:#8b949e">0/10</span>
   </div>
   <div id="event-slots-list" class="memory-list"></div>
-  <button class="main-menu-create-btn" onclick="_eventSlotSaveCurrent()">+ บันทึกดวง 2 เป็นเหตุการณ์</button>
+  <div style="display:flex;gap:6px">
+    <button class="main-menu-create-btn" style="flex:1" onclick="_eventSlotSaveCurrent()">+ บันทึกดวง 2</button>
+    <button class="main-menu-create-btn" style="flex:1;border-color:#5b3fa0;color:#c9b8f0" onclick="_openCreateEventModal()">+ สร้างใหม่</button>
+  </div>
   <button onclick="_closeEventSlotsPopup()" class="memory-close">ปิด</button>
+</div>
+
+<!-- ── Event Create modal (V3.1.1 Phase 7) ──────────────── -->
+<div id="event-create-backdrop" class="memory-backdrop hidden" onclick="_closeCreateEventModal()"></div>
+<div id="event-create-modal" class="memory-modal hidden">
+  <div class="memory-header">
+    <div class="memory-title">สร้างเหตุการณ์</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:2px 0 10px">
+    <input id="ev-name" maxlength="20" placeholder="ชื่อเหตุการณ์ (สูงสุด 20 ตัว)"
+      style="background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:8px;font-size:13px;font-family:inherit;width:100%;box-sizing:border-box">
+    <div style="display:flex;gap:6px">
+      <div style="flex:1"><label style="font-size:11px;color:#8b949e">วัน</label>
+        <input id="ev-d" type="number" min="1" max="31"
+          style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box"></div>
+      <div style="flex:1"><label style="font-size:11px;color:#8b949e">เดือน</label>
+        <input id="ev-m" type="number" min="1" max="12"
+          style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box"></div>
+      <div style="flex:1.4"><label style="font-size:11px;color:#8b949e">ปี พ.ศ.</label>
+        <input id="ev-y" type="number"
+          style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box"></div>
+      <div style="flex:1.4"><label style="font-size:11px;color:#8b949e">เวลา</label>
+        <input id="ev-t" type="time"
+          style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box"></div>
+    </div>
+    <div>
+      <label style="font-size:11px;color:#8b949e">เชื่อมกับดวง</label>
+      <select id="ev-natal-link"
+        style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:7px;font-size:13px;box-sizing:border-box;margin-top:2px">
+        <option value="">— ไม่เชื่อม —</option>
+      </select>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button onclick="_submitCreateEvent()" style="flex:1;background:#1a6b3c;color:#fff;border:none;border-radius:6px;padding:10px;font-size:14px;cursor:pointer;font-family:inherit">บันทึก</button>
+    <button onclick="_closeCreateEventModal()" class="memory-close" style="flex:0;margin:0">ปิด</button>
+  </div>
 </div>
 
 <!-- ── Interpretation modal (V2.2.17) ─────────────────── -->
@@ -564,8 +604,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.1.0"></script>
-<script type="module" src="v3/v3tab.js?v=3.1.0"></script>
+<script src="script.js?v=3.1.1"></script>
+<script type="module" src="v3/v3tab.js?v=3.1.1"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
