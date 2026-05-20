@@ -1,5 +1,10 @@
-// HORATAD:SCRIPT:2.2.42
-// Version 2.2.42 | 2026-05-20
+// HORATAD:SCRIPT:2.2.43
+// Version 2.2.43 | 2026-05-20
+// Changes: [V2.2.43] QR payload — เก็บ lat/lng แทนชื่อจังหวัด:
+//   - PROV string ภาษาไทย กิน ~40 bytes (3 bytes/char × 13 ตัว) เปลือง space
+//   - เปลี่ยนเป็น LAT|LNG (~12 bytes รวม) — ประหยัด ~28 bytes/QR
+//   - scan-side: reverse lookup ใน PROVINCES_LAT หาชื่อจังหวัดใกล้สุด (ภายหลัง)
+//   - Payload ใหม่: "H1|JD|T|LAT|LNG|G|NAME" — ลด overflow risk แม้ชื่อยาว
 // Changes: [V2.2.42] Bug fix:
 //   - QR overflow "code length overflow (1060>976)" — Thai UTF-8 (3 bytes/char)
 //     ในชื่อ+จังหวัด ทำ payload โตเกิน ECC H ที่ qrcodejs encode ได้
@@ -157,7 +162,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.42';
+const APP_VERSION='2.2.43';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1518,10 +1523,12 @@ async function _generateShareImage(active){
     await _loadQRLib();
     const jd=Math.trunc(_calcJD(active.d,active.m,active.y_be));
     const lng=(typeof active.lng==='number'?active.lng:100.50).toFixed(2);
+    const lat=(typeof active.lat==='number'?active.lat:(PROVINCES_LAT[active.prov||'']||13.75)).toFixed(2);
     const g=(active.gender||'').charAt(0).toUpperCase()||'?';
     const nm=(active.name||'').slice(0,20);
-    // V2.2.41: payload H1 — JD ref + T/PROV/LNG/G/NAME (no d/m/y — JD reverse on scan)
-    const qrText=`H1|${jd}|${active.t||''}|${active.prov||''}|${lng}|${g}|${nm}`;
+    // V2.2.43: payload H1 — JD|T|LAT|LNG|G|NAME (เลิกเก็บ PROV string — ใหญ่+เปลือง,
+    //   scan-side reverse จาก lat lookup ใน PROVINCES_LAT แทน)
+    const qrText=`H1|${jd}|${active.t||''}|${lat}|${lng}|${g}|${nm}`;
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
