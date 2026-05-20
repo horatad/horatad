@@ -1,4 +1,11 @@
-// Version 2.2.29 | 2026-05-20
+// HORATAD:SCRIPT:2.2.30
+// Version 2.2.30 | 2026-05-20
+// Changes: [V2.2.30] Compliance per SYSTEM_INSTRUCTION V3.4 + BEST_PRACTICES:
+//   - Add HORATAD:SCRIPT identity header
+//   - Add const APP_VERSION='2.2.30'
+//   - SW register: ./sw.js?v=APP_VERSION + updateViaCache:'none' + reg.update() + 1hr poll
+//   - version.json fetch check → reload ถ้า server version != APP_VERSION
+//   - bump version display ใน index.html ให้ตรงกับ APP_VERSION
 // Changes: [V2.2.29] Share image polish + filename:
 //   - filename: ตัด `horatad_` prefix → JD_T_LAT.png
 //   - share name: ตัด gender prefix, slice 20 chars
@@ -84,6 +91,8 @@
 //          startup viewMode=0, section-transit+btn-cust ids, _updateLngUI
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
+
+const APP_VERSION='2.2.30';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -2190,7 +2199,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   const _kbVerEl=document.getElementById('kb-version-display');
   if(_kbVerEl)_kbVerEl.textContent=`Knowledge Base v${_kbVersion} · ${_kbTotal} กฎ`;
 
-  // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.1.5)
+  // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.30)
   if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',()=>{
       if(_swRefreshing)return;
@@ -2198,8 +2207,23 @@ window.addEventListener('DOMContentLoaded',()=>{
       location.reload();
     });
     window.addEventListener('load',()=>{
-      navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
+      navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'})
+        .then(reg=>{
+          if(reg)reg.update().catch(()=>{});
+          setInterval(()=>{if(reg)reg.update().catch(()=>{});},60*60*1000);
+        })
+        .catch(()=>{});
     });
+    // version.json check — ถ้า server version ≠ APP_VERSION → reload
+    fetch('./version.json?t='+Date.now(),{cache:'no-store'})
+      .then(r=>r.ok?r.json():null)
+      .then(j=>{
+        if(j&&j.v&&j.v!==APP_VERSION){
+          console.log('[version] mismatch:',APP_VERSION,'→',j.v,'reload');
+          location.reload();
+        }
+      })
+      .catch(()=>{});
   }
   // PWA install prompt
   window.addEventListener('beforeinstallprompt',e=>{

@@ -1,7 +1,9 @@
-// Version 2.2.29 | 2026-05-20
+// HORATAD:SW:2.2.30
+// Version 2.2.30 | 2026-05-20
 // Service Worker — cache-first for same-origin static assets, network fallback.
 // Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
-const CACHE_NAME='horatad-v2.2.29';
+// version.json bypass cache → ต้อง network สด เพื่อ version check
+const CACHE_NAME='horatad-v2.2.30';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',
@@ -45,6 +47,8 @@ self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
   // Bypass cross-origin (fonts.googleapis.com, promptpay.io, etc.)
   if(url.origin!==location.origin)return;
+  // Bypass version.json — ต้องสดเสมอ ไม่งั้น version check จะ false negative
+  if(url.pathname.endsWith('/version.json'))return;
   e.respondWith(
     caches.match(e.request).then(cached=>{
       if(cached)return cached;

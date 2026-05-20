@@ -3,6 +3,23 @@
 
 ---
 
+## [V2.2.30] — 2026-05-20
+- **Compliance** ตาม SYSTEM_INSTRUCTION V3.4 + BEST_PRACTICES (จาก crash recovery — V2.2.27→V2.2.42 หายจาก main)
+- เพิ่ม `const APP_VERSION='2.2.30'` ใน script.js
+- เพิ่ม `version.json` `{"v":"2.2.30"}` ที่ root
+- เพิ่ม `HORATAD:*` identity header ทุกไฟล์ (script/sw/index/style)
+- SW register: `./sw.js?v=APP_VERSION` + `updateViaCache:'none'` + `reg.update()` + 1hr poll
+- version.json fetch check ทุก load → `location.reload()` ถ้า server v ≠ APP_VERSION
+- sw.js fetch handler bypass `version.json` (ต้องสดเสมอ)
+- bump version display ใน index.html: brand-ver `V 2.2.21`→`V 2.2.30`, about-version `V 2.2.26`→`V 2.2.30`
+- bump cachebust query ทั้ง style.css + script.js + v3/v3tab.js → `?v=2.2.30`
+
+## [V2.2.29] — 2026-05-20
+- filename: ตัด `horatad_` prefix → `${jd}_${t}_${lat}.png`
+- share name: ตัด gender prefix + slice 20 chars
+- share QR: 110 → 125 (resilience +15% ต่อ JPEG re-encode)
+- chart logo: 160 → 180
+
 ## [V2.2.42] — 2026-05-19
 - Share image layout ใหม่: QR ซ้าย (x=28,y=835,110×110), info ขวา 4 บรรทัด right-aligned, คะแนนกลาง y=958, horatad.com y=1060
 - Filename มาตรฐาน: `horatad_<JD>_<HHMM>_<lat>.png` (Julian Day + เวลา + ละติจูด)
