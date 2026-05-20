@@ -1,8 +1,13 @@
-// HORATAD:SCRIPT:3.0.4
-// Version 3.0.4 | 2026-05-20
+// HORATAD:SCRIPT:3.0.5
+// Version 3.0.5 | 2026-05-20
+// Changes: [V3.0.5] Phase 1B step 5 — rename vars สำหรับ semantic clarity:
+//   - _natal  → natal1  (primary natal chart)
+//   - _natal2 → natal2  (outer ring / compare chart)
+//   - _transit → _chart2 (raw chart from form 2 — feeds natal2, ใช้ใน interp/memory)
+//   - getNatal() ยังคงชื่อเดิม (v3tab.js ES module เรียกใช้)
 // Changes: [V3.0.4] Phase 1B step 4 — mode-aware navigator + buffer auto-save:
 //   - cycleMemory(): viewMode=0 → cycle MEM_KEY (ดวงใน), viewMode=1 → cycle buffer (สมพงศ์)
-//   - calculateChart2() → auto-save to buffer ถ้าไม่ซ้ำ + set _natal2 ทันที
+//   - calculateChart2() → auto-save to buffer ถ้าไม่ซ้ำ + set natal2 ทันที
 //   - _updateNavHeader(): viewMode=1 → แสดง "[นอก] name·date (i/N buffer)"
 // Changes: [V3.0.3] Phase 1B step 3 — main menu content + สมพงศ์ slot popup:
 //   - ⚙️ menu แสดง 3 รายการ: มุมมอง (toggle ดวงใน/นอก), เหตุการณ์จร (toggle), สมพงศ์ (N/10)
@@ -121,7 +126,7 @@
 // Changes: [V2.2.25] Adhikavara: เปลี่ยนจาก lookup table เป็น formula
 //   (kamma<114||kamma>669) + override จากประกาศสงกรานต์ สำนักพระราชวัง
 //   ตรวจสอบ 2557–2569 (13 ปี): mismatch เดียว = 2568 (override=true)
-// Changes: [V2.2.24] D+E: ทำนายจาก _natal เสมอ, btn-outer sync รายงาน,
+// Changes: [V2.2.24] D+E: ทำนายจาก natal1 เสมอ, btn-outer sync รายงาน,
 //   long-press 1s, shutter sound max volume, QR JD|T|LAT ใน capture image
 // Changes: [V2.2.23] A+B+C: memory list, JD+lat, sort, sound 6 levels, long-press name
 // Changes: [V2.2.16] Adhikavara: เปลี่ยนจาก formula เป็น lookup table จาก myhora
@@ -196,7 +201,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.4';
+const APP_VERSION='3.0.5';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -278,11 +283,11 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 
 // ── State ─────────────────────────────────────────────────
 let _era='BE';
-let _natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
-let _natal2=null;  // outer ring chart
-// V3 bridge: expose _natal ให้ ES module อ่านได้
-function getNatal(){return _natal;}
-let _transit=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
+let natal1=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
+let natal2=null;  // outer ring chart
+// V3 bridge: expose natal1 ให้ ES module อ่านได้
+function getNatal(){return natal1;}
+let _chart2=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
 let _outerState=0;
@@ -985,7 +990,7 @@ function buildReport(name,gender,d,m,y_be,t,prov,pos,vel,tpos,isView2){
   h2+=`<tr><td ${CL}>ดาวคู่</td><td>${analyzePairs(pos)}</td></tr>`;
   // V2.1.8: aspect บรรทัด "ดาวจรสัมพันธ์ ณ" แสดงเสมอเมื่อมี tpos
   if(tpos&&tpos!==pos){
-    const td2=_transitDate||_transit;
+    const td2=_transitDate||_chart2;
     const td_str=td2?`${td2.d}/${td2.m}/${td2.y_be}(${_beToce(td2.y_be,td2.m)})  ${td2.t}`:'—';
     // [15] "ดาวจรสัมพันธ์ ณ"
     h2+=`<tr><td colspan="2" style="color:#888;font-size:0.85em;padding-top:4px">ดาวจรสัมพันธ์ ณ ${td_str}</td></tr>`;
@@ -1042,7 +1047,7 @@ function _applyViewMode(){
 }
 function toggleView(){
   _viewMode=(_viewMode+1)%2;
-  if(_viewMode===1&&!_natal2&&_natal)_natal2={..._natal};
+  if(_viewMode===1&&!natal2&&natal1)natal2={...natal1};
   _applyViewMode();
   _playBeep(700);
   _redraw();
@@ -1084,10 +1089,10 @@ function toggleReportTransit(){
 // dir: -1=prev, +1=next
 function cycleMemory(dir){
   if(_viewMode===1){
-    // ดวงนอก: cycle buffer (horatad_buffer_v3) → update _natal2
+    // ดวงนอก: cycle buffer (horatad_buffer_v3) → update natal2
     const buf=_v3LoadBuffer();
     if(!buf.length){_showToast('ยังไม่มีดวงใน buffer — กรอกดวงที่ 2 เพื่อเพิ่ม');return;}
-    const curKey=_natal2?`${_natal2.name}|${_natal2.d}/${_natal2.m}/${_natal2.y_be}`:'';
+    const curKey=natal2?`${natal2.name}|${natal2.d}/${natal2.m}/${natal2.y_be}`:'';
     const key=s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`;
     let idx=buf.findIndex(s=>key(s)===curKey);
     if(idx===-1)idx=dir>0?-1:buf.length;
@@ -1098,7 +1103,7 @@ function cycleMemory(dir){
     const y_ce=_beToce(y_be,s.m);
     const[hr,mn2]=(s.t||'00:00').split(':').map(Number);
     const pos=get_data(s.d,s.m,y_ce,hr,mn2,lng);
-    _natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+    natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
     _playBeep(700);
     _showToast(`สมพงศ์ ${next+1}/${buf.length} · ${s.name||'—'}`);
     _redraw();
@@ -1107,7 +1112,7 @@ function cycleMemory(dir){
   // ดวงใน: cycle MEM_KEY → load to chart 1
   const mem=_loadJSON(MEM_KEY)||[];
   if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
-  const curKey=`${_natal?.name||''}|${_natal?.d||''}/${_natal?.m||''}/${_natal?.y_be||''}`;
+  const curKey=`${natal1?.name||''}|${natal1?.d||''}/${natal1?.m||''}/${natal1?.y_be||''}`;
   const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
   let idx=mem.findIndex(m=>key(m)===curKey);
   if(idx===-1)idx=dir>0?-1:mem.length;
@@ -1127,19 +1132,19 @@ function cycleMemory(dir){
 
 function _redraw(){
   const isV2=_viewMode===1; // ดวงนอก mode
-  const active=_natal;
+  const active=natal1;
   if(!active)return;
   const{pos,vel,d,m,y_be,t,prov,gender='ชาย'}=active;
-  const displayName=_natal?.name||'ไม่ระบุ';
+  const displayName=natal1?.name||'ไม่ระบุ';
   const[,ts_id]=getIdentity(pos);
-  const transitSrc=_transitDate||_transit||null;
-  // isV2: outer ring shows _natal2; otherwise shows transit overlay
-  const tposForOuter=isV2?(_natal2?.pos||null):(transitSrc?.pos||null);
+  const transitSrc=_transitDate||_chart2||null;
+  // isV2: outer ring shows natal2; otherwise shows transit overlay
+  const tposForOuter=isV2?(natal2?.pos||null):(transitSrc?.pos||null);
   drawChart(pos,vel,ts_id,tposForOuter,pos,isV2);
   const rp=document.getElementById('report-panel');
-  if(isV2&&_natal2&&_natal2.pos){
+  if(isV2&&natal2&&natal2.pos){
     if(rp)rp.classList.add('compare-mode');
-    document.getElementById('report').innerHTML=buildCompareReport(_natal,_natal2);
+    document.getElementById('report').innerHTML=buildCompareReport(natal1,natal2);
   }else if(_reportTransitShow&&_transitDate&&_transitDate.vel){
     if(rp)rp.classList.remove('compare-mode');
     const td=_transitDate;
@@ -1234,10 +1239,10 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
   // outer ring — กฎ: isV2 override _outerState (mutual exclusion)
   ctx.textAlign='center';ctx.textBaseline='middle';
   const outerLabelColor=OUTER_LABEL_V1;
-  if(isV2&&_natal2&&_natal2.pos){
-    // ดวงนอก: เลขไทย _natal2 เท่านั้น — ไม่แสดง _outerState ใดๆ
+  if(isV2&&natal2&&natal2.pos){
+    // ดวงนอก: เลขไทย natal2 เท่านั้น — ไม่แสดง _outerState ใดๆ
     const THAI_NUM=['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙','๑๐'];
-    const n2pos=_chartTypeState===1?calcDrekkana(_natal2.pos):_chartTypeState===2?calcNavamsa(_natal2.pos):_natal2.pos;
+    const n2pos=_chartTypeState===1?calcDrekkana(natal2.pos):_chartTypeState===2?calcNavamsa(natal2.pos):natal2.pos;
     const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
     let groups=Array.from({length:12},()=>[]);
     for(let i of showIdx){let z=Math.trunc(n2pos[i]/1800);if(z>=0&&z<12)groups[z].push({lbl:THAI_NUM[i]||String(i),deg:n2pos[i]%1800});}
@@ -1347,11 +1352,11 @@ function _calcChart(num){
     tag:[],group:'',sector:'',trait:'',note:'',
     name,gender
   };
-  if(num==='1'){_natal=chart;_calc1Done=true;_viewMode=0;}
+  if(num==='1'){natal1=chart;_calc1Done=true;_viewMode=0;}
   else{
-    _transit=chart;_calc2Done=true;_viewMode=1;
-    // Step 4: set _natal2 ทันที + auto-save to buffer ถ้าไม่ซ้ำ
-    _natal2={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
+    _chart2=chart;_calc2Done=true;_viewMode=1;
+    // Step 4: set natal2 ทันที + auto-save to buffer ถ้าไม่ซ้ำ
+    natal2={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
     const _buf=_v3LoadBuffer();
     const _bkey=`${chart.name}|${chart.d}/${chart.m}/${chart.y_be}`;
     if(!_buf.some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===_bkey)){
@@ -1426,8 +1431,8 @@ function calculateBoth(){
   // V2.2.38: pass replaceKey ถ้ากำลังแก้ไข section นั้น → ลบ entry เดิมแม้ key เปลี่ยน
   const _rk1=_editingMemSection==='1'?_editingMemKey:null;
   const _rk2=_editingMemSection==='2'?_editingMemKey:null;
-  if(_natal){const r=_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);}
-  if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
+  if(natal1){const r=_addMemory({name:natal1.name,gender:natal1.gender,d:natal1.d,m:natal1.m,y_be:natal1.y_be,t:natal1.t,prov:natal1.prov,lng:_customLng1},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal1.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal1.name} แล้ว`);}
+  if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
   _editingMemKey=null;_editingMemSection=null;
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
@@ -1436,14 +1441,14 @@ function calculateBoth(){
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
 function _updateShareButton(){
-  const hasData=(_viewMode===1&&_natal2)||(_viewMode===0&&_natal);
+  const hasData=(_viewMode===1&&natal2)||(_viewMode===0&&natal1);
   const btnS=document.getElementById('btn-share');
   const btnSv=document.getElementById('btn-save');
   const btnIn=document.getElementById('btn-interpret');
   if(btnS)btnS.disabled=!hasData;
   if(btnSv)btnSv.disabled=!hasData;
-  // V2.2.23: ทำนาย ใช้ _natal เสมอ — enable เมื่อมี natal ไม่ขึ้นกับ viewMode
-  if(btnIn)btnIn.disabled=!_natal;
+  // V2.2.23: ทำนาย ใช้ natal1 เสมอ — enable เมื่อมี natal ไม่ขึ้นกับ viewMode
+  if(btnIn)btnIn.disabled=!natal1;
 }
 
 function _buildShareFilename(active){
@@ -1454,7 +1459,7 @@ function _buildShareFilename(active){
 }
 
 async function saveChart(){
-  const active=_viewMode===1?_transit:_natal;
+  const active=_viewMode===1?_chart2:natal1;
   if(!active)return;
   _playShutter();
   const blob=await _generateShareImage(active);
@@ -1470,7 +1475,7 @@ async function saveChart(){
 }
 
 async function shareChart(){
-  const active=_viewMode===1?_transit:_natal;
+  const active=_viewMode===1?_chart2:natal1;
   if(!active)return;
   _playShutter();
   const blob=await _generateShareImage(active);
@@ -2182,13 +2187,13 @@ function _updateNavHeader(){
   const hdr=document.getElementById('chart-nav-header');
   const info=document.getElementById('chart-nav-info');
   if(!hdr||!info)return;
-  if(!_natal){hdr.classList.add('hidden');return;}
+  if(!natal1){hdr.classList.add('hidden');return;}
   hdr.classList.remove('hidden');
-  if(_viewMode===1&&_natal2){
-    // ดวงนอก: แสดง _natal2 + ตำแหน่งใน buffer
+  if(_viewMode===1&&natal2){
+    // ดวงนอก: แสดง natal2 + ตำแหน่งใน buffer
     const buf=_v3LoadBuffer();
-    const name=_natal2.name||'ไม่ระบุ';
-    const d=_natal2.d,m=_natal2.m,y=_natal2.y_be;
+    const name=natal2.name||'ไม่ระบุ';
+    const d=natal2.d,m=natal2.m,y=natal2.y_be;
     let posStr='';
     if(buf.length>1){
       const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
@@ -2197,10 +2202,10 @@ function _updateNavHeader(){
     }
     info.textContent=`[นอก] ${name} · ${d}/${m}/${y}${posStr}`;
   }else{
-    // ดวงใน: แสดง _natal + ตำแหน่งใน mem
+    // ดวงใน: แสดง natal1 + ตำแหน่งใน mem
     const mem=_loadJSON(MEM_KEY)||[];
-    const name=_natal.name||'ไม่ระบุ';
-    const d=_natal.d,m=_natal.m,y=_natal.y_be;
+    const name=natal1.name||'ไม่ระบุ';
+    const d=natal1.d,m=natal1.m,y=natal1.y_be;
     let posStr='';
     if(mem.length>1){
       const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
@@ -2281,7 +2286,7 @@ function _sompongLoad(idx){
   const y_ce=_beToce(s.y_be,s.m);
   const[hr,mn]=(s.t||'00:00').split(':').map(Number);
   const pos=get_data(s.d,s.m,y_ce,hr,mn,lng);
-  _natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+  natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
   _viewMode=1;
   _applyViewMode();
   _redraw();
@@ -2442,7 +2447,7 @@ function _matchRules(natal,transit){
     });
   }
   // transit planet matching
-  const tSrc=transit||_transit;
+  const tSrc=transit||_chart2;
   if(tSrc){
     for(let i=1;i<=10;i++){
       const pName=PNAMES[i]||'มฤตยู';
@@ -2466,7 +2471,7 @@ async function _callTyphoon(natal,transit,matched){
   const lagnaIdx=Math.trunc(natal.pos[0]/1800)+1;
   const RNAMES=['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
   const natalInfo=`ลัคนา: ราศี${RNAMES[lagnaIdx-1]||lagnaIdx}`;
-  const hasTransit=transit||_transit;
+  const hasTransit=transit||_chart2;
   const prompt=`คุณเป็นโหรไทยผู้เชี่ยวชาญโหราศาสตร์ไทย กรุณาอ่านกฎพยากรณ์ต่อไปนี้แล้วเรียบเรียงเป็นคำทำนายที่อ่านง่าย เป็นภาษาไทย สั้นกระชับ ไม่เกิน 300 คำ ไม่ต้องระบุหมายเลขดาว\n\nดวงชาตา: ${natal.name}\n${natalInfo}${hasTransit?'\n(มีดวงจร)':''}\n\nกฎที่ตรงกับดวง:\n${rulesText}`;
   const resp=await fetch(WORKER_URL,{
     method:'POST',
@@ -2485,8 +2490,8 @@ async function _callTyphoon(natal,transit,matched){
 }
 // ── V2.2.17: Interpretation Modal ───────────────────────
 async function openInterpretation(){
-  // V2.2.23: ทำนายจากดวงวงใน (_natal) เสมอ ไม่ขึ้นกับ viewMode
-  const active=_natal;
+  // V2.2.23: ทำนายจากดวงวงใน (natal1) เสมอ ไม่ขึ้นกับ viewMode
+  const active=natal1;
   if(!active||!_kbRules)return;
   const backdrop=document.getElementById('interp-backdrop');
   const modal=document.getElementById('interp-modal');
@@ -2501,10 +2506,10 @@ async function openInterpretation(){
   text.classList.add('hidden');
   text.textContent='';
   copyBtn.disabled=true;
-  const matched=_matchRules(active,_transit);
+  const matched=_matchRules(active,_chart2);
   let out='';
   try{
-    out=await _callTyphoon(active,_transit,matched);
+    out=await _callTyphoon(active,_chart2,matched);
   }catch(e){
     console.warn('[Typhoon]',e);
     // fallback: show matched rules grouped by chapter
@@ -2515,7 +2520,7 @@ async function openInterpretation(){
       groups[grp].push(r);
     });
     let fb=`ดวงชาตา: ${active.name}\nพบ ${matched.length} กฎที่ตรงกับดวง\n`;
-    if(_transit)fb+=`(รวมดาวจร)\n`;
+    if(_chart2)fb+=`(รวมดาวจร)\n`;
     fb+='\n';
     Object.entries(groups).forEach(([grp,rules])=>{
       fb+=`── ${grp} ──\n`;
