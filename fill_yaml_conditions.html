@@ -187,7 +187,9 @@ function loadFile(input) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      allRules = JSON.parse(e.target.result);
+      const parsed = JSON.parse(e.target.result);
+      // รองรับทั้ง flat array และ wrapped {_stats, rules} หรือ {rules}
+      allRules = Array.isArray(parsed) ? parsed : (parsed.rules || []);
       applyFilter();
       addLog(`โหลด ${allRules.length} rules สำเร็จ`, 'info');
     } catch(err) {
