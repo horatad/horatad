@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:2.2.35 -->
-<!-- Version 2.2.35 | 2026-05-20 -->
+<!-- HORATAD:INDEX:2.2.36 -->
+<!-- Version 2.2.36 | 2026-05-20 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.2.35">
+<link rel="stylesheet" href="style.css?v=2.2.36">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -22,8 +22,11 @@
 canvas{max-width:100%;height:auto}
 /* ── V3 Tab ─────────────────────────────────────────────── */
 #tab-3{padding:1rem;max-width:680px;margin:0 auto;}
-.v3-header{text-align:center;margin-bottom:1.2rem;}
+.v3-header{position:relative;text-align:center;margin-bottom:1.2rem;}
 .v3-header-title{font-family:'Cinzel',serif;font-size:1.1rem;color:#b8860b;letter-spacing:.05em;}
+.v3-btn-exit{position:absolute;top:0;right:0;background:transparent;border:1px solid #5b3fa0;color:#8b949e;padding:.3rem .7rem;border-radius:6px;font-family:'Sarabun',sans-serif;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.v3-btn-exit:hover{border-color:#f85149;color:#f85149;}
+@media(max-width:480px){.v3-btn-exit{position:static;display:inline-block;margin-top:.4rem;}}
 .v3-natal-info{background:#1a1a2e;border:1px solid #2d2d4e;border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.85rem;color:#8b949e;}
 .v3-natal-name{color:#c9d1d9;font-size:.95rem;font-weight:700;}
 .v3-no-natal{text-align:center;color:#8b949e;padding:2rem 1rem;font-size:.9rem;}
@@ -47,7 +50,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 2.2.35</span>
+  <span class="brand-ver">V 2.2.36</span>
 </h1>
 
 <!-- Tab nav -->
@@ -194,7 +197,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 2.2.35</div>
+        <div class="about-version">V 2.2.36</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -434,6 +437,7 @@ canvas{max-width:100%;height:auto}
 <div id="tab-3" class="tab-content hidden">
   <div class="v3-header">
     <div class="v3-header-title">🔮 พยากรณ์โหราศาสตร์ไทย · Horatad V3</div>
+    <button id="v3-btn-exit" class="v3-btn-exit" onclick="_v3Exit()">✕ ออกจากพยากรณ์</button>
   </div>
 
   <!-- natal info bar -->
@@ -473,8 +477,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=2.2.35"></script>
-<script type="module" src="v3/v3tab.js?v=2.2.35"></script>
+<script src="script.js?v=2.2.36"></script>
+<script type="module" src="v3/v3tab.js?v=2.2.36"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
@@ -544,17 +548,20 @@ function _v3NumBack(){
   _v3Code=_v3Code.slice(0,-1);
   _v3UpdateDisplay();
 }
+// V2.2.36: exit prediction tab — ซ่อนปุ่ม tab + กลับไปแท็บกราฟิก
+function _v3Exit(){
+  var btn=document.getElementById('tab-btn-3');
+  if(btn)btn.classList.add('hidden');
+  if(typeof switchTab==='function')switchTab(1);
+}
 var _v3Code='';
 document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('v3-dev-overlay').addEventListener('click',function(e){
     if(e.target===this)_v3DevClose();
   });
 });
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    window.location.reload();
-  });
-}
+// V2.2.36: ลบ duplicate controllerchange listener — มี _swRefreshing guard ใน script.js
+//          ที่ทำงาน อยู่แล้ว. listener ซ้ำที่นี่ทำให้ reload loop → จอกระพริบยาว
 </script>
 
 <!-- V2.2.35: Add-tag modal -->

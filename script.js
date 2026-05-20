@@ -1,5 +1,11 @@
-// HORATAD:SCRIPT:2.2.35
-// Version 2.2.35 | 2026-05-20
+// HORATAD:SCRIPT:2.2.36
+// Version 2.2.36 | 2026-05-20
+// Changes: [V2.2.36] Bug fix + UX:
+//   - Bug fix: ลบ duplicate controllerchange listener ใน index.html (ไม่มี _swRefreshing
+//     guard) — เป็นต้นเหตุจอกระพริบนานช่วงรันโปรแกรมรุ่นใหม่ (reload loop เมื่อ SW
+//     activate). คงเหลือ listener ใน script.js ซึ่ง guard อยู่แล้ว
+//   - Feature: ปุ่ม "✕ ออกจากพยากรณ์" บน TAB 3 (v3-header) → _v3Exit() ซ่อนปุ่ม
+//     tab-btn-3 + สลับไป tab 1 (เลิกใช้งานหน้าพยากรณ์)
 // Changes: [V2.2.35] Security: PIN validation ย้ายไป Cloudflare Worker horatad-auth:
 //   - ลบ hardcoded '424198' จาก index.html (line 526)
 //   - แทนด้วย fetch POST /api/auth {pin:code} → 200 OK = unlock V3 tab
@@ -120,7 +126,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.35';
+const APP_VERSION='2.2.36';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
