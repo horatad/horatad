@@ -1,9 +1,10 @@
-// HORATAD:SCRIPT:3.2.5
-// Version 3.2.5 | 2026-05-20
+// HORATAD:SCRIPT:3.2.6
+// Version 3.2.6 | 2026-05-20
+// Changes: [V3.2.6] feat: ปรัชญาการพัฒนา (Simple/Friendly/UX/Fast) — CLAUDE.md + About page
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.2.5';
+const APP_VERSION='3.2.6';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

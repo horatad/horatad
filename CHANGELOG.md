@@ -4,6 +4,12 @@
 
 ---
 
+## [3.2.6] — 2026-05-20
+### Added
+- ปรัชญาการพัฒนา (Development Philosophy): Simple / Friendly / UX / Fast
+  - เพิ่มใน CLAUDE.md เป็น long-term dev guideline พร้อม checklist ก่อน commit
+  - แสดงใน About page — section "ปรัชญาการพัฒนา" ด้านล่าง feature list
+
 ## [3.2.5] — 2026-05-20
 ### Fixed
 - PWA offline: เพิ่ม `horatad_746x746.png` ใน CORE_ASSETS → หน้า About แสดงรูปได้ offline

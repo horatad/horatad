@@ -5,6 +5,42 @@
 
 ---
 
+## 🧭 ปรัชญาการพัฒนา (Development Philosophy)
+
+ทุก feature / fix / UX ต้องยึด 4 หลักนี้ **พร้อมกัน** ไม่ใช่แค่บางข้อ:
+
+### Simple — เรียบง่าย
+- ทุก feature อธิบายได้ใน 1 ประโยค — ถ้าไม่ได้ ให้ทบทวนใหม่
+- ลบดีกว่าเพิ่ม — feature ที่ไม่มีคนใช้คือ complexity ฟรี
+- ถ้า UI ต้องการคำอธิบาย → redesign ก่อน เขียน instruction ทีหลัง
+- code: อ่านแล้วเข้าใจทันที ไม่ต้องคิดนาน
+
+### Friendly — เป็นมิตร
+- error/toast ภาษาคน ไม่ใช่ technical code ("บันทึกไม่ได้" ไม่ใช่ "localStorage quota exceeded")
+- ทุก action ที่ user ทำต้องมี feedback ทันที (toast, spinner, highlight)
+- ไม่ถามซ้ำ ไม่ขัดจังหวะ ไม่ block workflow
+- อย่าทำให้ user รู้สึกผิด — confirm dialog ใช้คำกลางๆ ไม่ข่มขู่
+
+### User Experience — ประสบการณ์ผู้ใช้
+- คิด flow ก่อน code เสมอ: "user ทำอะไร → เกิดอะไร → ต้องการอะไรต่อ"
+- mobile-first — path หลักต้องทำงานได้บนหน้าจอเล็กด้วยมือเดียว
+- ไม่มี dead end — ทุก error มีทางออกหรือ fallback
+- state ต้องคงที่: refresh ไม่หาย, กลับมาใช้ต่อได้ทันที
+
+### Fast — รวดเร็ว
+- ไม่มี loading ที่รอเกิน 300ms โดยไม่มี feedback
+- offline-first — feature หลักทำงานได้โดยไม่ต้องมี network
+- ไม่ re-render โดยไม่จำเป็น ไม่ block main thread
+- bundle size เล็ก — อย่าเพิ่ม dependency โดยไม่จำเป็น
+
+### ใช้งานจริง — checklist ก่อน commit
+> - [ ] Simple: อธิบาย feature นี้ได้ใน 1 ประโยคไหม?
+> - [ ] Friendly: user เจอ error → รู้ว่าทำอะไรต่อไหม?
+> - [ ] UX: ทดสอบ flow บน mobile (หรือ note ใน handoff ว่าต้องทดสอบ)
+> - [ ] Fast: มี unnecessary network call / re-render ไหม?
+
+---
+
 ## 🤖 AUTONOMY MODE — ทำเอง ไม่ถาม
 
 User ไม่อยากเฝ้า — ทุก session ทำตามนี้
