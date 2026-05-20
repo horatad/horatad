@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horatad — Fill YAML Conditions</title>
+<style>
+:root {
+  --gold:#b8860b; --purple:#5b3fa0; --green:#1a6b3c; --red:#f85149;
+  --bg:#0d1117; --bg2:#161b22; --bg3:#21262d; --border:#30363d;
+  --text:#c9d1d9; --muted:#8b949e;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:'Sarabun',sans-serif; font-size:14px; }
+header {
+  background:linear-gradient(135deg,#0d1117,#1a0f2e);
+  border-bottom:1px solid var(--gold); padding:12px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+header h1 { color:var(--gold); font-size:18px; letter-spacing:2px; }
+header .sub { color:var(--muted); font-size:12px; }
+.toolbar {
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  padding:10px 20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+button {
+  padding:6px 14px; border:none; border-radius:6px; cursor:pointer;
+  font-family:'Sarabun',sans-serif; font-size:13px; font-weight:600;
+}
+.btn-run  { background:#1a6b3c; color:#fff; }
+.btn-run:disabled { background:#333; color:#666; cursor:not-allowed; }
+.btn-dl   { background:var(--purple); color:#fff; }
+.btn-dl:disabled { background:#333; color:#666; cursor:not-allowed; }
+.btn-stop { background:var(--red); color:#fff; }
+.section  { padding:16px 20px; background:var(--bg2); border-bottom:1px solid var(--border); }
+.progress-bar-outer {
+  background:var(--bg3); border-radius:4px; height:8px; margin:8px 0; overflow:hidden;
+}
+.progress-bar-inner {
+  background:var(--green); height:8px; border-radius:4px; width:0%;
+  transition:width .3s ease;
+}
+.status-text { color:var(--muted); font-size:13px; }
+.log-wrap { padding:16px 20px; max-height:280px; overflow-y:auto; }
+.log-item {
+  padding:4px 8px; margin-bottom:4px; border-radius:4px;
+  font-size:12px; font-family:monospace; border-left:3px solid transparent;
+}
+.log-ok   { border-color:var(--green); background:rgba(26,107,60,.1); color:#7ee787; }
+.log-err  { border-color:var(--red);   background:rgba(248,81,73,.1);  color:#f85149; }
+.log-info { border-color:var(--gold);  background:rgba(184,134,11,.1); color:#d4a017; }
+.result-wrap { padding:20px; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { background:var(--bg3); padding:8px; text-align:left; border:1px solid var(--border); color:var(--gold); }
+td { padding:6px 8px; border:1px solid var(--border); vertical-align:top; }
+tr:hover td { background:var(--bg2); }
+.tag-ok  { background:rgba(26,107,60,.3); color:#7ee787; padding:2px 6px; border-radius:3px; font-size:11px; }
+.tag-skip{ background:rgba(184,134,11,.2); color:#d4a017; padding:2px 6px; border-radius:3px; font-size:11px; }
+.cond-row{ background:var(--bg3); padding:3px 6px; border-radius:3px; margin:2px 0; font-size:11px; }
+input[type=file] {
+  background:var(--bg3); color:var(--text); border:1px solid var(--border);
+  border-radius:6px; padding:4px 8px; font-size:13px;
+}
+select {
+  background:var(--bg3); color:var(--text); border:1px solid var(--border);
+  border-radius:4px; padding:2px 6px;
+}
+label { color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Fill YAML Conditions</h1>
+    <div class="sub">ให้ Typhoon เติม conditions[] ใน kb_yaml_import.json ที่ยังว่าง</div>
+  </div>
+  <div style="color:var(--muted);font-size:12px;" id="stat-header">ยังไม่โหลดไฟล์</div>
+</header>
+
+<div class="section">
+  <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+    <div>
+      <label>โหลดไฟล์ kb_yaml_import.json:</label><br>
+      <input type="file" id="file-input" accept=".json" onchange="loadFile(this)">
+    </div>
+    <div>
+      <label>กรองประเภท:</label><br>
+      <select id="sel-type" onchange="applyFilter()">
+        <option value="empty">เฉพาะ conditions ว่าง (แนะนำ)</option>
+        <option value="all">ทุก rule</option>
+        <option value="TRUE_RULE">TRUE_RULE เท่านั้น</option>
+        <option value="TRANSIT_RULE">TRANSIT_RULE เท่านั้น</option>
+      </select>
+    </div>
+    <div>
+      <label>batch ละ:</label><br>
+      <select id="sel-batch">
+        <option value="5">5 rules</option>
+        <option value="8" selected>8 rules</option>
+        <option value="12">12 rules</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="btn-run"  id="btn-run"  onclick="runFill()" disabled>▶ เริ่ม Fill</button>
+  <button class="btn-stop" id="btn-stop" onclick="stopFill()" style="display:none">⏹ หยุด</button>
+  <button class="btn-dl"   id="btn-dl"   onclick="downloadMerged()" disabled>⬇ Download merged JSON</button>
+  <label style="margin-left:auto;">หยุดที่ batch:</label>
+  <input type="number" id="inp-stop" value="999" min="1" max="999"
+    style="width:60px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:2px 6px;">
+</div>
+
+<div class="section">
+  <div class="progress-bar-outer"><div class="progress-bar-inner" id="prog"></div></div>
+  <div class="status-text" id="status">โหลดไฟล์ก่อน</div>
+</div>
+
+<div class="log-wrap" id="log"></div>
+
+<div class="result-wrap" id="result-wrap" style="display:none">
+  <h3 style="color:var(--gold);margin-bottom:12px;">ผลลัพธ์ที่ได้</h3>
+  <table id="result-table">
+    <thead><tr>
+      <th>id</th><th>ch</th><th>rule_type</th><th>condition_raw</th>
+      <th>conditions ที่ได้</th><th>สถานะ</th>
+    </tr></thead>
+    <tbody id="result-body"></tbody>
+  </table>
+</div>
+
+<script>
+const WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
+const MODEL      = 'typhoon-v2.5-30b-a3b-instruct';
+
+const SYSTEM_PROMPT = `คุณคือระบบสกัด structured conditions จากข้อความโหราศาสตร์สุริยยาตร์ไทย
+
+planet_id schema:
+0=มฤตยู, 1=อาทิตย์, 2=จันทร์, 3=อังคาร, 4=พุธ, 5=พฤหัส, 6=ศุกร์, 7=เสาร์, 8=ราหู, 9=เกตุ
+
+quality_required values (เลือกค่าที่ตรงที่สุด หรือ "ANY" ถ้าไม่ระบุ):
+อุจ, อุจจาวิลาส, อุจจาภิมุข, มหาจักร, จุลจักร, ราชาโชค, เทวีโชค, เกษตร, ประเกษตร, นิจ, ดี, เสีย, ANY
+
+lagna_aspect_req values:
+กุมลัคนา = กุม/อยู่ในราศีลัคนา
+เล็งลัคนา = เล็งตรงข้าม 180°
+ตรีโกณลัคนา = สัมพันธ์ 120°
+โยคลัคนา = สัมพันธ์ 60° หรือ 120°
+สัมพันธ์ลัคนา = สัมพันธ์ทุกรูปแบบ (ไม่ระบุชนิด)
+ไม่สัมพันธ์ลัคนา = ไม่มีความสัมพันธ์กับลัคนา
+ANY = ไม่ระบุ
+
+กฎ:
+- ถ้าเงื่อนไขระบุหลายดาว ให้สร้าง condition หนึ่งรายการต่อหนึ่งดาว
+- required:true = ต้องครบ, required:false = ไม่บังคับ (ใช้เมื่อ "หรือ" ปรากฏ)
+- ถ้า condition text ไม่มีดาวเฉพาะ (เช่น "ดวงชาตาเข้มแข็ง") ให้ส่ง conditions:[]
+- ถ้ามีหลายดาวที่ต้องการ aspect ลัคนาเหมือนกัน ให้ระบุทุกดาว
+- ดาวจร (transit) ให้สร้าง condition ปกติ เพราะระบบจะแยกจาก rule_type=TRANSIT_RULE
+
+ตอบเป็น JSON array เท่านั้น ห้ามมีข้อความอื่น:
+[
+  {
+    "id": <rule_id>,
+    "conditions": [
+      {"planet_id":"3","quality_required":"ANY","lagna_aspect_req":"สัมพันธ์ลัคนา","required":true}
+    ]
+  }
+]`;
+
+// ────────────────────────────────────────────────────────────────
+// State
+// ────────────────────────────────────────────────────────────────
+let allRules    = [];   // ทั้งหมดจากไฟล์
+let targetRules = [];   // subset ที่จะ process
+let fillResults = {};   // {id: conditions[]}
+let aborted     = false;
+
+// ────────────────────────────────────────────────────────────────
+// File loading
+// ────────────────────────────────────────────────────────────────
+function loadFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      allRules = JSON.parse(e.target.result);
+      applyFilter();
+      addLog(`โหลด ${allRules.length} rules สำเร็จ`, 'info');
+    } catch(err) {
+      addLog(`JSON parse error: ${err.message}`, 'err');
+    }
+  };
+  reader.readAsText(f);
+}
+
+function applyFilter() {
+  const mode = document.getElementById('sel-type').value;
+  if      (mode === 'empty')       targetRules = allRules.filter(r => !r.conditions || r.conditions.length === 0);
+  else if (mode === 'all')         targetRules = [...allRules];
+  else if (mode === 'TRUE_RULE')   targetRules = allRules.filter(r => r.rule_type === 'TRUE_RULE' && (!r.conditions || r.conditions.length === 0));
+  else if (mode === 'TRANSIT_RULE')targetRules = allRules.filter(r => r.rule_type === 'TRANSIT_RULE' && (!r.conditions || r.conditions.length === 0));
+
+  const total = targetRules.length;
+  document.getElementById('stat-header').textContent = `${allRules.length} rules ทั้งหมด | จะ fill: ${total}`;
+  document.getElementById('status').textContent = `พร้อม fill ${total} rules`;
+  document.getElementById('btn-run').disabled = (total === 0);
+  document.getElementById('btn-dl').disabled  = true;
+  fillResults = {};
+}
+
+// ────────────────────────────────────────────────────────────────
+// Typhoon call
+// ────────────────────────────────────────────────────────────────
+async function sendBatch(batch) {
+  const userPrompt = 'สกัด conditions จาก rules ต่อไปนี้:\n\n' +
+    batch.map(r =>
+      `ID ${r.id} [${r.rule_type}]\ncondition: ${r.condition_raw || r.c || ''}\nprediction: ${r.p}`
+    ).join('\n---\n');
+
+  const resp = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 1200,
+      stream: false,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user',   content: userPrompt },
+      ],
+    }),
+  });
+
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${await resp.text()}`);
+  const data = await resp.json();
+  const text = data.choices?.[0]?.message?.content ?? '';
+
+  // หา JSON array ใน response
+  const m = text.match(/\[\s*\{[\s\S]*\}\s*\]/);
+  if (!m) throw new Error(`parse failed: ${text.slice(0,120)}`);
+  return JSON.parse(m[0]);
+}
+
+// ────────────────────────────────────────────────────────────────
+// Main loop
+// ────────────────────────────────────────────────────────────────
+async function runFill() {
+  if (!targetRules.length) return;
+  aborted = false;
+  fillResults = {};
+
+  document.getElementById('btn-run').disabled = true;
+  document.getElementById('btn-stop').style.display = '';
+  document.getElementById('btn-dl').disabled = true;
+  document.getElementById('result-wrap').style.display = 'none';
+  document.getElementById('result-body').innerHTML = '';
+  document.getElementById('log').innerHTML = '';
+
+  const batchSize = parseInt(document.getElementById('sel-batch').value);
+  const stopAt    = parseInt(document.getElementById('inp-stop').value) || 999;
+  const total     = targetRules.length;
+  const totalBatches = Math.ceil(total / batchSize);
+  const errors    = [];
+
+  addLog(`เริ่ม fill ${total} rules | ${totalBatches} batches | batch ละ ${batchSize}`, 'info');
+
+  for (let i = 0; i < total && !aborted; i += batchSize) {
+    const batchNum = Math.floor(i / batchSize) + 1;
+    if (batchNum > stopAt) { addLog(`หยุดที่ batch ${stopAt}`, 'info'); break; }
+
+    const batch = targetRules.slice(i, i + batchSize);
+    document.getElementById('status').textContent =
+      `batch ${batchNum}/${totalBatches} — rule ${i+1}–${Math.min(i+batchSize,total)}/${total}`;
+    document.getElementById('prog').style.width = `${Math.round(100*i/total)}%`;
+
+    try {
+      const extracted = await sendBatch(batch);
+      let filled = 0;
+      for (const item of extracted) {
+        if (item.id && Array.isArray(item.conditions)) {
+          fillResults[item.id] = item.conditions;
+          filled++;
+        }
+      }
+      const skipped = batch.length - filled;
+      addLog(`✓ batch ${batchNum}: ${filled} filled${skipped ? `, ${skipped} ข้าม` : ''}`, 'ok');
+      renderRows(batch, extracted);
+    } catch(err) {
+      errors.push({ batch: batchNum, error: err.message });
+      addLog(`✗ batch ${batchNum}: ${err.message}`, 'err');
+    }
+
+    // delay ป้องกัน rate limit
+    if (i + batchSize < total && !aborted) await new Promise(r => setTimeout(r, 600));
+  }
+
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('btn-run').disabled  = false;
+  document.getElementById('btn-stop').style.display = 'none';
+  document.getElementById('btn-dl').disabled   = false;
+  document.getElementById('result-wrap').style.display = '';
+
+  const filled = Object.keys(fillResults).length;
+  document.getElementById('status').textContent =
+    `เสร็จ — ${filled}/${total} rules ได้ conditions | ${errors.length} batches error`;
+  addLog(`สรุป: ${filled} filled, ${errors.length} errors`, filled > 0 ? 'ok' : 'err');
+}
+
+function stopFill() {
+  aborted = true;
+  document.getElementById('btn-stop').style.display = 'none';
+  document.getElementById('btn-run').disabled = false;
+}
+
+// ────────────────────────────────────────────────────────────────
+// UI helpers
+// ────────────────────────────────────────────────────────────────
+function renderRows(batch, extracted) {
+  const tbody  = document.getElementById('result-body');
+  const byId   = {};
+  for (const e of extracted) byId[e.id] = e;
+
+  for (const r of batch) {
+    const e   = byId[r.id];
+    const ok  = e && Array.isArray(e.conditions) && e.conditions.length > 0;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${r.id}</td>
+      <td>${r.ch}</td>
+      <td style="font-size:11px;color:var(--muted)">${r.rule_type||''}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+          title="${esc(r.condition_raw||r.c||'')}">${esc((r.condition_raw||r.c||'').slice(0,60))}</td>
+      <td>${ok
+        ? e.conditions.map(c=>`<div class="cond-row">p${c.planet_id} ${c.quality_required} ${c.lagna_aspect_req}</div>`).join('')
+        : '<span style="color:var(--muted);font-size:11px">—</span>'}</td>
+      <td>${ok
+        ? `<span class="tag-ok">✓ ${e.conditions.length} conds</span>`
+        : `<span class="tag-skip">ข้าม</span>`}</td>`;
+    tbody.appendChild(row);
+  }
+}
+
+function addLog(msg, type='info') {
+  const div = document.createElement('div');
+  div.className = `log-item log-${type}`;
+  div.textContent = `[${new Date().toLocaleTimeString('th')}] ${msg}`;
+  const log = document.getElementById('log');
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ────────────────────────────────────────────────────────────────
+// Download — merge fillResults กลับเข้า allRules
+// ────────────────────────────────────────────────────────────────
+function downloadMerged() {
+  const merged = allRules.map(r => {
+    if (fillResults[r.id] !== undefined) {
+      return { ...r, conditions: fillResults[r.id] };
+    }
+    return r;
+  });
+
+  const filled   = Object.keys(fillResults).length;
+  const withCond = merged.filter(r => r.conditions && r.conditions.length > 0).length;
+  const stats = {
+    total: merged.length,
+    filled_this_session: filled,
+    total_with_conditions: withCond,
+    generated_at: new Date().toISOString(),
+  };
+
+  const blob = new Blob(
+    [JSON.stringify({ _stats: stats, rules: merged }, null, 2)],
+    { type: 'application/json' }
+  );
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `kb_yaml_filled_${Date.now()}.json`;
+  a.click();
+  addLog(`ดาวน์โหลด merged JSON (${withCond}/${merged.length} มี conditions)`, 'info');
+}
+</script>
+</body>
+</html>
