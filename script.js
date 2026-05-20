@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.1.6
-// Version 3.1.6 | 2026-05-20
+// HORATAD:SCRIPT:3.1.7
+// Version 3.1.7 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.1.6';
+const APP_VERSION='3.1.7';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -993,12 +993,6 @@ function _redraw(){
   if(isV2&&natal2&&natal2.pos){
     if(rp)rp.classList.add('compare-mode');
     document.getElementById('report').innerHTML=buildCompareReport(natal1,natal2);
-  }else if(_reportTransitShow&&_transitDate&&_transitDate.vel){
-    if(rp)rp.classList.remove('compare-mode');
-    const td=_transitDate;
-    document.getElementById('report').innerHTML=buildReport(
-      'ดาวจร','',td.d,td.m,td.y_be,td.t,td.prov,td.pos,td.vel,null,isV2
-    );
   }else{
     if(rp)rp.classList.remove('compare-mode');
     document.getElementById('report').innerHTML=buildReport(
@@ -1203,6 +1197,8 @@ function _calcChart(num){
   };
   if(num==='1'){natal1=_v3UpsertDB1(chart);_calc1Done=true;_viewMode=0;}
   else{
+    // clear edit mode ถ้า user กด ผูกดวง 2 แทนที่จะกด 1 ขณะอยู่ใน edit mode
+    if(_editingUid){_editingUid=null;_hideEditingIndicator();}
     _chart2=chart;_calc2Done=true;_viewMode=1;
     // Step 4: set natal2 ทันที + auto-save to buffer ถ้าไม่ซ้ำ
     natal2={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
@@ -2284,6 +2280,7 @@ function _eventSlotSaveCurrent(){
 // ── Event Create form (Phase 7) ──────────────────────────
 function _openCreateEventModal(){
   _closeEventSlotsPopup();
+  if(!natal1?.pos){_showToast('ผูกดวงที่ 1 ก่อน เพื่อเชื่อมเหตุการณ์ได้',true);}
   // pre-fill date: ใช้ _chart2 ถ้ามี, ไม่งั้นวันนี้
   const now=new Date();
   const src=_chart2||null;
@@ -2396,8 +2393,6 @@ function _db1Load(uid){
   _viewMode=0;
   _applyViewMode();
   _redraw();
-  _updateNavHeader();
-  _updateLinkedEventsDisplay();
   _closeDB1Popup();
   _showToast(`โหลด "${r.name||'—'}" แล้ว`);
 }
@@ -2500,7 +2495,11 @@ function _importDB(input){
         }
         _v3SaveEventSlots(slots);
       }
-      const msg=`นำเข้าสำเร็จ: ดวง +${addedDb1}, เหตุการณ์ +${addedEv}`;
+      // ตรวจ orphan links (eventSlots ชี้ไป uid ที่ไม่มีใน DB1)
+      const db1After=_v3LoadDB1();
+      const orphans=_v3LoadEventSlots().filter(s=>s.linkedNatalUid&&!db1After.find(r=>r.uid===s.linkedNatalUid)).length;
+      const orphanNote=orphans?` · ⚠️ เหตุการณ์ ${orphans} รายการ link กับดวงที่ไม่ได้นำเข้า`:'';
+      const msg=`นำเข้าสำเร็จ: ดวง +${addedDb1}, เหตุการณ์ +${addedEv}${orphanNote}`;
       document.getElementById('import-result').textContent=msg;
       _updateMainMenuState();
       _showToast(msg);

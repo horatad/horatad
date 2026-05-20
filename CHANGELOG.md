@@ -4,6 +4,14 @@
 
 ---
 
+## [3.1.7] — 2026-05-20
+### Fixed (logic flow audit)
+- report transit: เมื่อเปิดดวงจร แสดง natal1 + "ดาวจรสัมพันธ์ ณ" แทนดาวจรล้วนๆ
+- `_editingUid` ค้าง: clear edit mode อัตโนมัติเมื่อกด ผูกดวง 2 ขณะอยู่ใน edit mode
+- `_openCreateEventModal`: แจ้ง toast ถ้า natal1 ยังไม่ได้ผูกดวง (แต่ยังเปิด modal ได้)
+- `_db1Load`: ลบ `_updateLinkedEventsDisplay()` ซ้ำ (เรียกผ่าน `_redraw` แล้ว)
+- `_importDB`: แสดง warning เมื่อ eventSlots มี linkedNatalUid ที่ไม่อยู่ใน DB1
+
 ## [3.1.6] — 2026-05-20
 ### Fixed
 - จอกระพริบ/reload ซ้ำ: รวม trigger เป็นจุดเดียว (ตัวเลือก A)
