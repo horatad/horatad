@@ -1,5 +1,11 @@
-// HORATAD:SCRIPT:3.0.5
-// Version 3.0.5 | 2026-05-20
+// HORATAD:SCRIPT:3.0.6
+// Version 3.0.6 | 2026-05-20
+// Changes: [V3.0.6] Phase 2 — Event panel (เหตุการณ์ slots popup):
+//   - เพิ่ม "เหตุการณ์" row ใน ⚙️ menu — แสดง N/10 count
+//   - event-slots-modal popup: แสดง slot list, load/delete
+//   - _eventSlotSaveCurrent(): บันทึก _chart2 → EVENT_SLOTS_KEY + link natal1
+//   - _eventSlotLoad(idx): โหลด event → natal2 + switchTo viewMode=1
+//   - รายการ linked events ใน report panel (TAB 1)
 // Changes: [V3.0.5] Phase 1B step 5 — rename vars สำหรับ semantic clarity:
 //   - _natal  → natal1  (primary natal chart)
 //   - _natal2 → natal2  (outer ring / compare chart)
@@ -201,7 +207,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.5';
+const APP_VERSION='3.0.6';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1130,6 +1136,15 @@ function cycleMemory(dir){
   _saveState();
 }
 
+function _updateLinkedEventsDisplay(){
+  const el=document.getElementById('report-linked-events');
+  if(!el)return;
+  if(!natal1?.name){el.style.display='none';return;}
+  const evs=_v3LoadEventSlots().filter(s=>s.linkedNatalName===natal1.name);
+  if(!evs.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML='🔗 เหตุการณ์: '+evs.map(s=>`<span style="margin-right:8px;cursor:pointer;color:#a0aec0" onclick="_openEventSlotsPopup()" title="${s.d}/${s.m}/${s.y_be} · ${s.t}">${_escHtml(s.name||'—')}</span>`).join('');
+}
 function _redraw(){
   const isV2=_viewMode===1; // ดวงนอก mode
   const active=natal1;
@@ -1158,6 +1173,7 @@ function _redraw(){
     );
   }
   _updateNavHeader();
+  _updateLinkedEventsDisplay();
 }
 
 // Varga
@@ -2225,9 +2241,12 @@ function _updateMainMenuState(){
     tb.textContent=_reportTransitShow?'แสดง':'ซ่อน';
     tb.classList.toggle('active',_reportTransitShow);
   }
-  const slots=_v3LoadBuffer();
+  const buf=_v3LoadBuffer();
   const si=document.getElementById('main-menu-sompong-info');
-  if(si)si.textContent=`${slots.length}/10 ›`;
+  if(si)si.textContent=`${buf.length}/10 ›`;
+  const evSlots=_v3LoadEventSlots();
+  const ei=document.getElementById('main-menu-event-info');
+  if(ei)ei.textContent=`${evSlots.length}/10 ›`;
 }
 function _openMainMenu(){
   _updateMainMenuState();
@@ -2307,6 +2326,92 @@ function _sompongNew(){
   _closeSompongPopup();
   switchTab(0);
   _showToast('กรอกดวงที่ 2 — หลังผูกดวงจะปรากฏใน buffer');
+}
+
+// ── Event Slots popup (Phase 2) ──────────────────────────
+function _openEventSlotsPopup(){
+  _closeMainMenu();
+  _renderEventSlotsList();
+  document.getElementById('event-slots-backdrop').classList.remove('hidden');
+  document.getElementById('event-slots-modal').classList.remove('hidden');
+}
+function _closeEventSlotsPopup(){
+  document.getElementById('event-slots-backdrop').classList.add('hidden');
+  document.getElementById('event-slots-modal').classList.add('hidden');
+}
+function _renderEventSlotsList(){
+  const slots=_v3LoadEventSlots();
+  const list=document.getElementById('event-slots-list');
+  const cnt=document.getElementById('event-slots-count');
+  if(!list)return;
+  if(cnt)cnt.textContent=`${slots.length}/10`;
+  if(!slots.length){
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีเหตุการณ์ใน slots<br><small>กด "+ บันทึกดวง 2" หลังผูกดวงที่ 2</small></div>';
+    return;
+  }
+  list.innerHTML=slots.map((s,i)=>`
+    <div class="memory-item" style="display:flex;align-items:center;gap:6px">
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="_eventSlotLoad(${i})">
+        <div class="memory-name">${s.name||'—'}</div>
+        <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}${s.linkedNatalName?' · 🔗 '+s.linkedNatalName:''}</div>
+      </div>
+      <button onclick="_eventSlotDelete(${i})" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+    </div>
+  `).join('');
+}
+function _eventSlotLoad(idx){
+  const slots=_v3LoadEventSlots();
+  const s=slots[idx];
+  if(!s)return;
+  const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+  const y_ce=_beToce(s.y_be,s.m);
+  const[hr,mn]=(s.t||'00:00').split(':').map(Number);
+  const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn,lng);
+  const pos2=get_data(s.d,s.m,y_ce,hr+24,mn,lng);
+  const vel=s.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
+  natal2={name:s.name,gender:s.gender||'ชาย',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+  _viewMode=1;
+  _applyViewMode();
+  _redraw();
+  _closeEventSlotsPopup();
+  _showToast(`โหลดเหตุการณ์ "${s.name||'—'}" แล้ว`);
+}
+function _eventSlotDelete(idx){
+  const slots=_v3LoadEventSlots();
+  const name=slots[idx]?.name||'—';
+  _showConfirm('ลบเหตุการณ์',`ลบ "${name}"?`,()=>{
+    slots.splice(idx,1);
+    _v3SaveEventSlots(slots);
+    _renderEventSlotsList();
+    _updateMainMenuState();
+  });
+}
+function _eventSlotSaveCurrent(){
+  if(!_calc2Done||!_chart2){
+    _showToast('กรุณาผูกดวงที่ 2 ก่อน');
+    return;
+  }
+  const slots=_v3LoadEventSlots();
+  const key=`${_chart2.name}|${_chart2.d}/${_chart2.m}/${_chart2.y_be}`;
+  if(slots.some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===key)){
+    _showToast('เหตุการณ์นี้มีใน slots แล้ว');
+    return;
+  }
+  const rec={
+    uid:_chart2.uid||crypto.randomUUID(),
+    name:_chart2.name,gender:_chart2.gender,
+    d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,
+    prov:_chart2.prov,lat:_chart2.lat,lng:_chart2.lng,
+    pos:_chart2.pos,vel:_chart2.vel,
+    savedAt:Date.now(),
+    linkedNatalName:natal1?.name||null,
+    linkedNatalUid:natal1?.uid||null
+  };
+  slots.unshift(rec);
+  _v3SaveEventSlots(slots);
+  _renderEventSlotsList();
+  _updateMainMenuState();
+  _showToast(`บันทึก "${rec.name}"${natal1?' (🔗 '+natal1.name+')':''}`);
 }
 
 // ── Pre-2484 warning (numpad year) ────────────────────────
