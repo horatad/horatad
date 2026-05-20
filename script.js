@@ -1,5 +1,13 @@
-// HORATAD:SCRIPT:3.0.0
-// Version 3.0.0 | 2026-05-20
+// HORATAD:SCRIPT:3.0.1
+// Version 3.0.1 | 2026-05-20
+// Changes: [V3.0.1] Phase 1B step 1 — visual cleanup (no JS logic change):
+//   - Hide section-transit ใน TAB 0 (วันที่จร input) — Phase 1B จะย้ายเป็น popup
+//   - Hide TAB 1 buttons: btn-view (toggle ดวงใน/นอก), btn-outer (ราศี outer ring),
+//     btn-chart-type (ตรียางค์/นวางค์), btn-transit (รายงานจร) — Phase 1B จะย้ายเข้า ⚙️ menu
+//   - ◀▶ navigator คงไว้ (cycle DB1 ใน _viewMode=0)
+//   - ไม่แตะ JS internals — DOM elements ยังอยู่, ฟังก์ชัน toggleView/Outer/etc คงอยู่
+//     แต่ user เข้าไม่ถึงผ่าน UI → app stay default state (_viewMode=0, _outerState=0)
+//   - Safe rollback ถ้า regression: revert HTML อย่างเดียว
 // Changes: [V3.0.0] Schema migration + storage layer (Phase 1A — foundation, no UI yet):
 //   - Add uniform schema (uid, name, gender, d/m/y/t, prov, lat, lng, jd, pos, vel,
 //     savedAt, linkedEvents, linkedNatal) สำหรับ natal1/natal2/buffer/event
@@ -172,7 +180,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.0';
+const APP_VERSION='3.0.1';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

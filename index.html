@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.0.0 -->
-<!-- Version 3.0.0 | 2026-05-20 -->
+<!-- HORATAD:INDEX:3.0.1 -->
+<!-- Version 3.0.1 | 2026-05-20 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.0.0">
+<link rel="stylesheet" href="style.css?v=3.0.1">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -50,7 +50,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.0.0</span>
+  <span class="brand-ver">V 3.0.1</span>
 </h1>
 
 <!-- Tab nav -->
@@ -136,8 +136,8 @@ canvas{max-width:100%;height:auto}
         <div class="tag-row" id="tag-row-2"></div>
       </div><!-- /section-2 -->
 
-      <!-- วันที่จร -->
-      <div class="chart-section section-transit">
+      <!-- วันที่จร (V3.0.1: hidden — Phase 1B will move to popup in TAB 1) -->
+      <div class="chart-section section-transit hidden">
         <div class="section-title">วันที่จร</div>
         <div class="name-gender-row">
           <input id="name-event" placeholder="ชื่อเหตุการณ์ (ถ้าต้องการบันทึก)">
@@ -197,7 +197,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.0.0</div>
+        <div class="about-version">V 3.0.1</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -329,11 +329,11 @@ canvas{max-width:100%;height:auto}
     <canvas id="chart-canvas" width="1000" height="1000" style="width:100%;height:auto;border-radius:6px;display:block"></canvas>
     <div class="btn-chart-row" id="btn-chart-row">
       <button id="btn-view-prev" onclick="cycleMemory(-1)" class="btn-sm btn-nav" title="ดวงก่อนหน้า">◀</button>
-      <button id="btn-view"       onclick="toggleView()"           class="btn-sm btn-view-center">ดวงที่ 1</button>
+      <button id="btn-view"       onclick="toggleView()"           class="btn-sm btn-view-center hidden">ดวงที่ 1</button>
       <button id="btn-view-next" onclick="cycleMemory(1)" class="btn-sm btn-nav" title="ดวงถัดไป">▶</button>
-      <button id="btn-outer"      onclick="toggleOuter()"          class="btn-sm">ราศี</button>
-      <button id="btn-chart-type" onclick="toggleChartType()"      class="btn-sm">ราศี</button>
-      <button id="btn-transit"    onclick="toggleReportTransit()"  class="btn-sm">รายงานจร</button>
+      <button id="btn-outer"      onclick="toggleOuter()"          class="btn-sm hidden">ราศี</button>
+      <button id="btn-chart-type" onclick="toggleChartType()"      class="btn-sm hidden">ราศี</button>
+      <button id="btn-transit"    onclick="toggleReportTransit()"  class="btn-sm hidden">รายงานจร</button>
     </div>
     <div class="btn-share-row" id="btn-share-row">
       <button id="btn-save" class="btn-share btn-save" disabled
@@ -477,8 +477,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.0.0"></script>
-<script type="module" src="v3/v3tab.js?v=3.0.0"></script>
+<script src="script.js?v=3.0.1"></script>
+<script type="module" src="v3/v3tab.js?v=3.0.1"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
