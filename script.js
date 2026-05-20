@@ -1,5 +1,8 @@
-// HORATAD:SCRIPT:3.0.9
-// Version 3.0.9 | 2026-05-20
+// HORATAD:SCRIPT:3.1.0
+// Version 3.1.0 | 2026-05-20
+// Changes: [V3.1.0] Phase 5b — คัดลอก URL นำเข้า:
+//   - _copyImportUrl(): สร้าง import URL จาก natal1 → copy ไปคลิปบอร์ด
+//   - "📋 คัดลอก URL" row ใน ⚙️ menu (แชร์ลิงก์นำเข้าผ่าน LINE/chat แทน QR)
 // Changes: [V3.0.9] Phase 5 — QR ฝัง URL:
 //   - qrText เปลี่ยนจาก plain "H1|..." → "https://horatad.github.io/horatad/?h=H1|..."
 //   - สแกน QR → browser เปิด app → URL param ?h= → auto-import ทันที (ไม่ต้อง paste)
@@ -225,7 +228,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.9';
+const APP_VERSION='3.1.0';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2526,6 +2529,21 @@ function _fillFormFromImport(data){
   _setField('prov1',data.prov);
   _customLng1=data.lng;
   return true;
+}
+function _copyImportUrl(){
+  if(!natal1?.pos){_showToast('ผูกดวงก่อน',true);return;}
+  _closeMainMenu();
+  const jd=Math.trunc(_calcJD(natal1.d,natal1.m,natal1.y_be));
+  const lng=(typeof natal1.lng==='number'?natal1.lng:100.50).toFixed(2);
+  const lat=(typeof natal1.lat==='number'?natal1.lat:(PROVINCES_LAT[natal1.prov||'']||13.75)).toFixed(2);
+  const g=(natal1.gender||'').charAt(0)||'?';
+  const nm=(natal1.name||'').slice(0,20);
+  const url=`https://horatad.github.io/horatad/?h=H1|${jd}|${natal1.t||''}|${lat}|${lng}|${g}|${nm}`;
+  navigator.clipboard.writeText(url).then(()=>{
+    _showToast('คัดลอก URL แล้ว — วางใน chat/browser เพื่อนำเข้า');
+  }).catch(()=>{
+    _showToast('คัดลอกไม่ได้ — ใช้ share image QR แทน',true);
+  });
 }
 function _openQRImportPopup(){
   _closeMainMenu();
