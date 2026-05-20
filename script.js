@@ -1,5 +1,9 @@
-// HORATAD:SCRIPT:3.0.3
-// Version 3.0.3 | 2026-05-20
+// HORATAD:SCRIPT:3.0.4
+// Version 3.0.4 | 2026-05-20
+// Changes: [V3.0.4] Phase 1B step 4 — mode-aware navigator + buffer auto-save:
+//   - cycleMemory(): viewMode=0 → cycle MEM_KEY (ดวงใน), viewMode=1 → cycle buffer (สมพงศ์)
+//   - calculateChart2() → auto-save to buffer ถ้าไม่ซ้ำ + set _natal2 ทันที
+//   - _updateNavHeader(): viewMode=1 → แสดง "[นอก] name·date (i/N buffer)"
 // Changes: [V3.0.3] Phase 1B step 3 — main menu content + สมพงศ์ slot popup:
 //   - ⚙️ menu แสดง 3 รายการ: มุมมอง (toggle ดวงใน/นอก), เหตุการณ์จร (toggle), สมพงศ์ (N/10)
 //   - เพิ่ม _updateMainMenuState(), _toggleViewFromMenu(), _toggleTransitFromMenu()
@@ -192,7 +196,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.3';
+const APP_VERSION='3.0.4';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1079,58 +1083,45 @@ function toggleReportTransit(){
 // V2.1.9: cycle memory items into current viewMode slot
 // dir: -1=prev, +1=next
 function cycleMemory(dir){
-  const mem=_loadJSON(MEM_KEY)||[];
-  if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
-  // _viewMode===1 (ดวงนอก): cycle outer ring (_natal2) ไม่แตะ _natal
   if(_viewMode===1){
+    // ดวงนอก: cycle buffer (horatad_buffer_v3) → update _natal2
+    const buf=_v3LoadBuffer();
+    if(!buf.length){_showToast('ยังไม่มีดวงใน buffer — กรอกดวงที่ 2 เพื่อเพิ่ม');return;}
     const curKey=_natal2?`${_natal2.name}|${_natal2.d}/${_natal2.m}/${_natal2.y_be}`:'';
-    const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
-    let idx=mem.findIndex(m=>key(m)===curKey);
-    if(idx===-1)idx=dir>0?-1:mem.length;
-    const next=(idx+dir+mem.length*2)%mem.length;
-    const m=mem[next];
-    const y_be=m.y_be||0;
-    const lng=(typeof m.lng==='number')?m.lng:(PROVINCES[m.prov||'']||100.50);
-    const y_ce=_beToce(y_be,m.m);
-    const[hr,mn2]=(m.t||'00:00').split(':').map(Number);
-    const pos=get_data(m.d,m.m,y_ce,hr,mn2,lng);
-    _natal2={name:m.name,gender:m.gender||'ชาย',pos,vel:[],d:m.d,m:m.m,y_be,t:m.t,prov:m.prov||'กรุงเทพมหานคร'};
+    const key=s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`;
+    let idx=buf.findIndex(s=>key(s)===curKey);
+    if(idx===-1)idx=dir>0?-1:buf.length;
+    const next=(idx+dir+buf.length*2)%buf.length;
+    const s=buf[next];
+    const y_be=s.y_be||0;
+    const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+    const y_ce=_beToce(y_be,s.m);
+    const[hr,mn2]=(s.t||'00:00').split(':').map(Number);
+    const pos=get_data(s.d,s.m,y_ce,hr,mn2,lng);
+    _natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
     _playBeep(700);
-    _showToast(`วงนอก ${next+1}/${mem.length} · ${m.name||'—'}`);
+    _showToast(`สมพงศ์ ${next+1}/${buf.length} · ${s.name||'—'}`);
     _redraw();
     return;
   }
-  const slot=_viewMode===1?'2':'1';
-  const curName=_viewMode===1?(_transit?.name||''):(_natal?.name||'');
-  const curDmy=_viewMode===1
-    ?(_transit?`${_transit.d}/${_transit.m}/${_transit.y_be}`:'')
-    :(_natal?`${_natal.d}/${_natal.m}/${_natal.y_be}`:'');
+  // ดวงใน: cycle MEM_KEY → load to chart 1
+  const mem=_loadJSON(MEM_KEY)||[];
+  if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
+  const curKey=`${_natal?.name||''}|${_natal?.d||''}/${_natal?.m||''}/${_natal?.y_be||''}`;
   const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
-  const curKey=`${curName}|${curDmy}`;
   let idx=mem.findIndex(m=>key(m)===curKey);
   if(idx===-1)idx=dir>0?-1:mem.length;
   const next=(idx+dir+mem.length*2)%mem.length;
   const m=mem[next];
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
-  if(slot==='1'){
-    _setField('name-1',m.name||'');
-    const g=document.getElementById('gender1');if(g)g.value=m.gender||'ชาย';
-    _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
-    document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
-    _customLng1=(typeof m.lng==='number')?m.lng:null;
-    _updateLngUI('1');
-    calculateChart1();
-  }else{
-    _setField('name-2',m.name||'');
-    const g=document.getElementById('gender2');if(g)g.value=m.gender||'ชาย';
-    _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.t);
-    document.getElementById('prov2').value=m.prov||'กรุงเทพมหานคร';
-    _customLng2=(typeof m.lng==='number')?m.lng:null;
-    _updateLngUI('2');
-    calculateChart2();
-  }
+  _setField('name-1',m.name||'');
+  const g=document.getElementById('gender1');if(g)g.value=m.gender||'ชาย';
+  _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
+  document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
+  _customLng1=(typeof m.lng==='number')?m.lng:null;
+  _updateLngUI('1');
+  calculateChart1();
   _playBeep(700);
-  _showToast(`${next+1}/${mem.length} · ${m.name||'—'}`);
   _saveState();
 }
 
@@ -1357,7 +1348,17 @@ function _calcChart(num){
     name,gender
   };
   if(num==='1'){_natal=chart;_calc1Done=true;_viewMode=0;}
-  else{_transit=chart;_calc2Done=true;_viewMode=1;}
+  else{
+    _transit=chart;_calc2Done=true;_viewMode=1;
+    // Step 4: set _natal2 ทันที + auto-save to buffer ถ้าไม่ซ้ำ
+    _natal2={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
+    const _buf=_v3LoadBuffer();
+    const _bkey=`${chart.name}|${chart.d}/${chart.m}/${chart.y_be}`;
+    if(!_buf.some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===_bkey)){
+      _buf.unshift({name:chart.name,gender:chart.gender,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng});
+      _v3SaveBuffer(_buf);
+    }
+  }
   _updateShareButton();
   _applyInputColors(num,'done');
   _applyViewMode();
@@ -2183,17 +2184,31 @@ function _updateNavHeader(){
   if(!hdr||!info)return;
   if(!_natal){hdr.classList.add('hidden');return;}
   hdr.classList.remove('hidden');
-  const mem=_loadJSON(MEM_KEY)||[];
-  const name=_natal.name||'ไม่ระบุ';
-  const d=_natal.d,m=_natal.m,y=_natal.y_be;
-  let posStr='';
-  if(mem.length>1){
-    const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
-    const cur=`${name}|${d}/${m}/${y}`;
-    const idx=mem.findIndex(e=>key(e)===cur);
-    if(idx!==-1)posStr=` · ${idx+1}/${mem.length}`;
+  if(_viewMode===1&&_natal2){
+    // ดวงนอก: แสดง _natal2 + ตำแหน่งใน buffer
+    const buf=_v3LoadBuffer();
+    const name=_natal2.name||'ไม่ระบุ';
+    const d=_natal2.d,m=_natal2.m,y=_natal2.y_be;
+    let posStr='';
+    if(buf.length>1){
+      const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
+      const idx=buf.findIndex(e=>key(e)===`${name}|${d}/${m}/${y}`);
+      if(idx!==-1)posStr=` · ${idx+1}/${buf.length}`;
+    }
+    info.textContent=`[นอก] ${name} · ${d}/${m}/${y}${posStr}`;
+  }else{
+    // ดวงใน: แสดง _natal + ตำแหน่งใน mem
+    const mem=_loadJSON(MEM_KEY)||[];
+    const name=_natal.name||'ไม่ระบุ';
+    const d=_natal.d,m=_natal.m,y=_natal.y_be;
+    let posStr='';
+    if(mem.length>1){
+      const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
+      const idx=mem.findIndex(e=>key(e)===`${name}|${d}/${m}/${y}`);
+      if(idx!==-1)posStr=` · ${idx+1}/${mem.length}`;
+    }
+    info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
   }
-  info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
 }
 
 // ── Main menu popup (Phase 1B Step 2) ─────────────────────
