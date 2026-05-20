@@ -107,7 +107,8 @@ label { color:var(--muted); font-size:13px; }
 <div class="toolbar">
   <button class="btn-run"  id="btn-run"  onclick="runFill()" disabled>▶ เริ่ม Fill</button>
   <button class="btn-stop" id="btn-stop" onclick="stopFill()" style="display:none">⏹ หยุด</button>
-  <button class="btn-dl"   id="btn-dl"   onclick="downloadMerged()" disabled>⬇ Download merged JSON</button>
+  <button class="btn-dl"   id="btn-dl"    onclick="downloadMerged()" disabled>⬇ Download merged JSON</button>
+  <button class="btn-dl"   id="btn-dl-kb" onclick="downloadKBJson()"  disabled style="background:#1a4a6b;">⬇ Download kb.json</button>
   <label style="margin-left:auto;">หยุดที่ batch:</label>
   <input type="number" id="inp-stop" value="999" min="1" max="999"
     style="width:60px;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:2px 6px;">
@@ -206,8 +207,9 @@ function applyFilter() {
   const total = targetRules.length;
   document.getElementById('stat-header').textContent = `${allRules.length} rules ทั้งหมด | จะ fill: ${total}`;
   document.getElementById('status').textContent = `พร้อม fill ${total} rules`;
-  document.getElementById('btn-run').disabled = (total === 0);
-  document.getElementById('btn-dl').disabled  = true;
+  document.getElementById('btn-run').disabled    = (total === 0);
+  document.getElementById('btn-dl').disabled    = true;
+  document.getElementById('btn-dl-kb').disabled = true;
   fillResults = {};
 }
 
@@ -252,9 +254,10 @@ async function runFill() {
   aborted = false;
   fillResults = {};
 
-  document.getElementById('btn-run').disabled = true;
+  document.getElementById('btn-run').disabled    = true;
   document.getElementById('btn-stop').style.display = '';
-  document.getElementById('btn-dl').disabled = true;
+  document.getElementById('btn-dl').disabled    = true;
+  document.getElementById('btn-dl-kb').disabled = true;
   document.getElementById('result-wrap').style.display = 'none';
   document.getElementById('result-body').innerHTML = '';
   document.getElementById('log').innerHTML = '';
@@ -298,9 +301,10 @@ async function runFill() {
   }
 
   document.getElementById('prog').style.width = '100%';
-  document.getElementById('btn-run').disabled  = false;
+  document.getElementById('btn-run').disabled    = false;
   document.getElementById('btn-stop').style.display = 'none';
-  document.getElementById('btn-dl').disabled   = false;
+  document.getElementById('btn-dl').disabled    = false;
+  document.getElementById('btn-dl-kb').disabled = false;
   document.getElementById('result-wrap').style.display = '';
 
   const filled = Object.keys(fillResults).length;
@@ -357,6 +361,38 @@ function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 // ────────────────────────────────────────────────────────────────
 // Download — merge fillResults กลับเข้า allRules
 // ────────────────────────────────────────────────────────────────
+// Download — export เป็น kb.json format พร้อมใช้กับ app โดยตรง
+function downloadKBJson() {
+  const merged = allRules.map(r => ({
+    ...r,
+    conditions: fillResults[r.id] !== undefined ? fillResults[r.id] : (r.conditions || []),
+  }));
+
+  // แปลงเป็น kb.json format ที่ app ใช้จริง (เหมือน exportKBJson ใน dictionary_builder)
+  const kb = merged.map(r => {
+    const obj = {
+      c:          r.condition_raw || r.c || '',
+      p:          r.p || '',
+      t:          Array.isArray(r.t) ? r.t : [],
+      ch:         r.ch || r.c_num || 0,
+      pr:         r.pr || 2,
+      rule_type:  r.rule_type || 'TRUE_RULE',
+      category:   r.category  || '(ยังไม่ระบุ)',
+      conditions: r.conditions || [],
+    };
+    return obj;
+  });
+
+  const withCond = kb.filter(r => r.conditions.length > 0).length;
+  const blob = new Blob([JSON.stringify(kb, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'kb.json';
+  a.click();
+  addLog(`ดาวน์โหลด kb.json — ${kb.length} rules, ${withCond} มี conditions (${Math.round(100*withCond/kb.length)}%)`, 'info');
+}
+
+// Download — merge fillResults กลับเข้า allRules (full JSON สำหรับ review)
 function downloadMerged() {
   const merged = allRules.map(r => {
     if (fillResults[r.id] !== undefined) {
