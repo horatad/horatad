@@ -1,5 +1,12 @@
-// HORATAD:SCRIPT:2.2.37
-// Version 2.2.37 | 2026-05-20
+// HORATAD:SCRIPT:2.2.38
+// Version 2.2.38 | 2026-05-20
+// Changes: [V2.2.38] Feature (req 20):
+//   - ปุ่ม ✏️ แก้ไขใน memory list — แตะแล้วโหลด record กลับเข้าฟอร์มของ section
+//     ที่กำลังเลือก (เหมือนแตะรายการ) + ตั้งสถานะ "กำลังแก้ไข" key เดิม
+//     เมื่อกด "ผูกดวง" calculateBoth → _addMemory ลบ entry เดิมตาม key
+//     แม้ user จะแก้ name/d/m/y_be/t/prov ก็ตาม
+//   - _addMemory รับ optional replaceKey เพื่อ remove record เดิมพร้อม dedup ปกติ
+//   - _pickMemory/_quickLoad/openMemory clear edit state ป้องกัน leak ข้าม flow
 // Changes: [V2.2.37] Bug fix:
 //   - 📌 DB indicator ไม่อัปเดตเมื่อกด numpad commit (d/m/y/lng) — _setField ใช้
 //     .value= ตรงๆ ไม่ trigger 'input' event. แก้: เรียก _updateDbIndicator(section)
@@ -132,7 +139,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.37';
+const APP_VERSION='2.2.38';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -1382,8 +1389,12 @@ function calculateBoth(){
   calculateChart1();
   // V1.8: persist + history
   _saveState();
-  if(_natal){const r=_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1});if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);}
-  if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2});if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
+  // V2.2.38: pass replaceKey ถ้ากำลังแก้ไข section นั้น → ลบ entry เดิมแม้ key เปลี่ยน
+  const _rk1=_editingMemSection==='1'?_editingMemKey:null;
+  const _rk2=_editingMemSection==='2'?_editingMemKey:null;
+  if(_natal){const r=_addMemory({name:_natal.name,gender:_natal.gender,d:_natal.d,m:_natal.m,y_be:_natal.y_be,t:_natal.t,prov:_natal.prov,lng:_customLng1},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${_natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_natal.name} แล้ว`);}
+  if(_transit){const r=_addMemory({name:_transit.name,gender:_transit.gender,d:_transit.d,m:_transit.m,y_be:_transit.y_be,t:_transit.t,prov:_transit.prov,lng:_customLng2},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_transit.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_transit.name} แล้ว`);}
+  _editingMemKey=null;_editingMemSection=null;
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
   if(typeof _loadTagsForCurrentChart==='function'){_loadTagsForCurrentChart('1');_loadTagsForCurrentChart('2');_renderTagRow('1');_renderTagRow('2');}
@@ -1697,7 +1708,7 @@ function _applyState(s){
   return true;
 }
 
-function _addMemory(entry){
+function _addMemory(entry,replaceKey){
   if(!entry||!entry.name)return null;
   const skip=['ดวงที่ 2','ไม่ระบุ',''];
   if(skip.includes(entry.name.trim()))return null;
@@ -1705,18 +1716,23 @@ function _addMemory(entry){
   const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
   const k=key(entry);
   const isDup=mem.some(m=>key(m)===k);
-  mem=mem.filter(m=>key(m)!==k);
+  const willReplaceOld=!!(replaceKey&&replaceKey!==k&&mem.some(m=>key(m)===replaceKey));
+  mem=mem.filter(m=>key(m)!==k&&(!replaceKey||key(m)!==replaceKey));
   mem.unshift({...entry,
     jd:(entry.d&&entry.m&&entry.y_be)?_calcJD(entry.d,entry.m,entry.y_be):null,
     lat:(typeof entry.lat==='number')?entry.lat:(PROVINCES_LAT[entry.prov||'']||13.75),
     savedAt:Date.now()});
   _saveJSON(MEM_KEY,mem.slice(0,MEM_MAX));
-  return isDup?'updated':'saved';
+  return(isDup||willReplaceOld)?'updated':'saved';
 }
 
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
+// V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
+// entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
+let _editingMemKey=null;
+let _editingMemSection=null;
 
 // V2.2.23: sort memory by current mode (added jd_desc/jd_asc)
 const _MEM_SORT_LABELS={'jd_desc':'📅 ใหม่→เก่า','jd_asc':'📅 เก่า→ใหม่','recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
@@ -1746,7 +1762,7 @@ function _renderMemory(filter){
   _memCache.forEach((m,i)=>{
     if(!f||(m.name||'').toLowerCase().includes(f)||(m.prov||'').toLowerCase().includes(f)){
       const y_ce=_beToce(m.y_be,m.m);
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}  ${_escHtml(m.prov||'')}</div><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}  ${_escHtml(m.prov||'')}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
     }
   });
   if(items.length===0){
@@ -1758,6 +1774,7 @@ function _renderMemory(filter){
 
 function openMemory(section){
   _memSection=section;
+  _editingMemKey=null;_editingMemSection=null;
   document.querySelector('.memory-title').textContent=`เลือกสำหรับ ดวง ${section}`;
   const s=document.getElementById('memory-search');
   if(s)s.value='';
@@ -1778,6 +1795,8 @@ function _pickMemory(i){
   const m=_memCache[i];if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   const section=_memSection;
+  // V2.2.38: tap (not ✏️) = pick only — clear any pending edit flag
+  _editingMemKey=null;_editingMemSection=null;
   if(section==='1'){
     _setField('name-1',m.name||'');
     document.getElementById('gender1').value=m.gender||'ชาย';
@@ -1794,6 +1813,15 @@ function _pickMemory(i){
     _updateLngUI('2');_applyInputColors('2','init');
   }
   closeMemory();
+}
+// V2.2.38: ✏️ แก้ไข — โหลด record + จำ key เดิม → calculateBoth จะแทนที่ entry เดิม
+function _editMemory(i){
+  const m=_memCache[i];if(!m)return;
+  const section=_memSection;
+  _pickMemory(i); // closes modal + clears _editingMem*
+  _editingMemKey=`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
+  _editingMemSection=section;
+  _showToast(`แก้ไขดวง ${m.name||''} — แก้ฟอร์มแล้วกด "ผูกดวง"`);
 }
 function _confirmDeleteMemory(i){
   const m=_memCache[i];if(!m)return;
@@ -2245,6 +2273,7 @@ function _renderQuickMemory(){
   el.innerHTML=mem.map((m,i)=>`<button class="qm-chip" onclick="_quickLoad(${i})">${_escHtml(m.name||'—')}</button>`).join('');
 }
 function _quickLoad(i){
+  _editingMemKey=null;_editingMemSection=null;
   const mem=(_loadJSON(MEM_KEY)||[]).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
   const m=mem[i];if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
@@ -2310,6 +2339,11 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(e.target.classList.contains('memory-del')){
       e.stopPropagation();
       _confirmDeleteMemory(parseInt(e.target.dataset.i));
+      return;
+    }
+    if(e.target.classList.contains('memory-edit')){
+      e.stopPropagation();
+      _editMemory(parseInt(e.target.dataset.i));
       return;
     }
     const it=e.target.closest('.memory-item');

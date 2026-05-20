@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:2.2.35 */
+/* HORATAD:STYLE:2.2.38 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -171,12 +171,14 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 .memory-search:focus{border-color:#666}
 .memory-search::placeholder{color:#666}
 .memory-list{flex:1;overflow-y:auto;background:#0d1117;border-radius:8px;padding:2px;min-height:120px}
-.memory-item{position:relative;padding:8px 36px 8px 12px;cursor:pointer;color:#c9d1d9;font-size:12px;border-bottom:0.5px solid #2d333b;line-height:1.4;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.memory-item{position:relative;padding:8px 68px 8px 12px;cursor:pointer;color:#c9d1d9;font-size:12px;border-bottom:0.5px solid #2d333b;line-height:1.4;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
 .memory-item:last-child{border-bottom:none}
 .memory-item:hover{background:#2d333b}
 .memory-item .meta{color:#8b949e;font-size:11px;margin-top:2px}
 .memory-del{position:absolute;top:50%;right:6px;transform:translateY(-50%);background:transparent;border:none;color:#8b949e;cursor:pointer;font-size:18px;line-height:1;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:inherit;padding:0}
 .memory-del:hover{background:#3d2b2b;color:#f85149}
+.memory-edit{position:absolute;top:50%;right:36px;transform:translateY(-50%);background:transparent;border:none;color:#8b949e;cursor:pointer;font-size:14px;line-height:1;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:inherit;padding:0}
+.memory-edit:hover{background:#2b3d2b;color:#56d364}
 .memory-empty{padding:20px;text-align:center;color:#8b949e;font-size:12px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
 .memory-actions{display:flex;gap:6px;margin-top:10px}
 .memory-action-btn{flex:1;height:32px;background:#2d333b;color:#c9d1d9;border:none;border-radius:6px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 6px}
