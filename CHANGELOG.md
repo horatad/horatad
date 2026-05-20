@@ -4,6 +4,22 @@
 
 ---
 
+## [3.1.6] — 2026-05-20
+### Fixed
+- จอกระพริบ/reload ซ้ำ: รวม trigger เป็นจุดเดียว (ตัวเลือก A)
+  version.json mismatch → reg.update() → รอ controllerchange → reload ครั้งเดียว
+  controllerchange ไม่ reload เองถ้า version ตรงกัน
+### Changed (UX + Accessibility)
+- label `for=` เชื่อมทุก input ในฟอร์ม (ดวง 1, ดวง 2, วันจร) — screen reader + tap-label
+- `inputmode="numeric"` บน input วัน/เดือน/ปี — keyboard ตัวเลขล้วนบน iOS/Android
+- touch target ขั้นต่ำ 44px: btn-era, btn-mem, btn-clear-form
+- modal desktop wider: memory-modal 380→480px, main-menu-modal 320→400px
+- about page max-width 480→640px (desktop โล่งขึ้น)
+- brand-ver contrast: #999→#666 (contrast AA ผ่าน)
+### Added
+- og:title, og:description, og:image, og:url meta tags
+- twitter:card, twitter:title, twitter:description, twitter:image meta tags
+
 ## [3.1.5] — 2026-05-20
 ### Fixed
 - หน้าเกี่ยวกับ: แก้ข้อความ "ข้อมูลของคุณอยู่ในเครื่องเท่านั้น" → ครบถ้วนกว่า

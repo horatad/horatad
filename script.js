@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.1.5
-// Version 3.1.5 | 2026-05-20
+// HORATAD:SCRIPT:3.1.6
+// Version 3.1.6 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.1.5';
+const APP_VERSION='3.1.6';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -3081,31 +3081,38 @@ window.addEventListener('DOMContentLoaded',()=>{
     }
   }
 
-  // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.31)
+  // PWA service worker register (V3.1.6 — ตัวเลือก A: reload จุดเดียว ป้องกันกระพริบ)
+  // version.json mismatch → บังคับ SW update → รอ controllerchange → reload ครั้งเดียว
+  // ถ้าไม่ mismatch → controllerchange ไม่ reload เอง (SW อาจ activate ใน background ได้)
   if('serviceWorker' in navigator){
+    let _versionMismatch=false;
     navigator.serviceWorker.addEventListener('controllerchange',()=>{
       if(_swRefreshing)return;
+      if(!_versionMismatch)return; // reload เฉพาะเมื่อ version check สั่ง
       _swRefreshing=true;
       location.reload();
     });
     window.addEventListener('load',()=>{
       navigator.serviceWorker.register('./sw.js?v='+APP_VERSION,{scope:'./',updateViaCache:'none'})
         .then(reg=>{
-          if(reg)reg.update().catch(()=>{});
+          // version.json check — ถ้า mismatch บังคับ SW update แล้วรอ controllerchange
+          fetch('./version.json?t='+Date.now(),{cache:'no-store'})
+            .then(r=>r.ok?r.json():null)
+            .then(j=>{
+              if(j&&j.v&&j.v!==APP_VERSION){
+                console.log('[version] mismatch:',APP_VERSION,'→',j.v,'updating SW...');
+                _versionMismatch=true;
+                reg.update().catch(()=>{
+                  // ถ้า update ไม่ได้ (offline) reload ตรงเลย
+                  if(!_swRefreshing){_swRefreshing=true;location.reload();}
+                });
+              }
+            })
+            .catch(()=>{});
           setInterval(()=>{if(reg)reg.update().catch(()=>{});},60*60*1000);
         })
         .catch(()=>{});
     });
-    // version.json check — ถ้า server version ≠ APP_VERSION → reload
-    fetch('./version.json?t='+Date.now(),{cache:'no-store'})
-      .then(r=>r.ok?r.json():null)
-      .then(j=>{
-        if(j&&j.v&&j.v!==APP_VERSION){
-          console.log('[version] mismatch:',APP_VERSION,'→',j.v,'reload');
-          location.reload();
-        }
-      })
-      .catch(()=>{});
   }
   // PWA install prompt
   window.addEventListener('beforeinstallprompt',e=>{
