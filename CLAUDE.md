@@ -5,6 +5,21 @@
 
 ---
 
+## ⚠️ Claude Code Web vs CLI — ลำดับความสำคัญ
+
+**เมื่อรันบน Claude Code Web (harness มี system prompt ของตัวเอง):**
+- Harness git instructions **override** CLAUDE.md git workflow ทุกข้อ
+  - branch ที่ทำงาน → ใช้ของ harness (ไม่ใช่ของ CLAUDE.md)
+  - push target → ใช้ของ harness (harness อาจจำกัด main push)
+  - CLAUDE.md git section ด้านล่างใช้สำหรับ local CLI เท่านั้น
+- Philosophy, stack, quirks, version bump checklist → ยังใช้ได้ทั้ง web และ CLI
+- Session management / handoff → ใช้ได้ทั้งสอง แต่ web session ไม่มี compress signal แบบ CLI
+
+**เมื่อรันบน Claude Code CLI (local):**
+- ทุกอย่างใน CLAUDE.md ใช้ตามปกติ
+
+---
+
 ## 🧭 ปรัชญาการพัฒนา (Development Philosophy)
 
 ทุก feature / fix / UX ต้องยึด 4 หลักนี้ **พร้อมกัน** ไม่ใช่แค่บางข้อ:
