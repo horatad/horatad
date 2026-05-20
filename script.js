@@ -1,5 +1,9 @@
-// HORATAD:SCRIPT:3.0.8
-// Version 3.0.8 | 2026-05-20
+// HORATAD:SCRIPT:3.0.9
+// Version 3.0.9 | 2026-05-20
+// Changes: [V3.0.9] Phase 5 — QR ฝัง URL:
+//   - qrText เปลี่ยนจาก plain "H1|..." → "https://horatad.github.io/horatad/?h=H1|..."
+//   - สแกน QR → browser เปิด app → URL param ?h= → auto-import ทันที (ไม่ต้อง paste)
+//   - _parseH1Payload รองรับทั้งสองรูปแบบอยู่แล้ว (V3.0.8)
 // Changes: [V3.0.8] Phase 4 — QR import (paste payload + URL param):
 //   - _jdToGregorian(customJd): reverse custom JD → CE date (offset +1721117)
 //   - _latLngToProv(lat,lng): nearest province by Euclidean dist on PROVINCES/LAT
@@ -221,7 +225,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.8';
+const APP_VERSION='3.0.9';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1627,9 +1631,9 @@ async function _generateShareImage(active){
     const lat=(typeof active.lat==='number'?active.lat:(PROVINCES_LAT[active.prov||'']||13.75)).toFixed(2);
     const g=(active.gender||'').charAt(0).toUpperCase()||'?';
     const nm=(active.name||'').slice(0,20);
-    // V2.2.43: payload H1 — JD|T|LAT|LNG|G|NAME (เลิกเก็บ PROV string — ใหญ่+เปลือง,
-    //   scan-side reverse จาก lat lookup ใน PROVINCES_LAT แทน)
-    const qrText=`H1|${jd}|${active.t||''}|${lat}|${lng}|${g}|${nm}`;
+    // V3.0.9: embed URL → สแกน QR → browser เปิด app → ?h= auto-import
+    const h1=`H1|${jd}|${active.t||''}|${lat}|${lng}|${g}|${nm}`;
+    const qrText=`https://horatad.github.io/horatad/?h=${h1}`;
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
