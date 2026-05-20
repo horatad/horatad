@@ -7,8 +7,9 @@
 ## [3.2.6] — 2026-05-20
 ### Added
 - ปรัชญาการพัฒนา (Development Philosophy): Simple / Friendly / UX / Fast
-  - เพิ่มใน CLAUDE.md เป็น long-term dev guideline พร้อม checklist ก่อน commit
-  - แสดงใน About page — section "ปรัชญาการพัฒนา" ด้านล่าง feature list
+  - เพิ่มใน CLAUDE.md: guideline + commit checklist + conflict priority (Fast>Simple>UX>Friendly)
+  - เพิ่ม rule #6 token efficiency: concept/analysis → text ก่อน tool เสมอ
+  - แสดงใน About page — section "ปรัชญาการพัฒนา" ด้านล่าง feature list (CSS grid warm tone)
 
 ## [3.2.5] — 2026-05-20
 ### Fixed

@@ -39,6 +39,15 @@
 > - [ ] UX: ทดสอบ flow บน mobile (หรือ note ใน handoff ว่าต้องทดสอบ)
 > - [ ] Fast: มี unnecessary network call / re-render ไหม?
 
+### เมื่อ 4 หลักขัดกัน — ลำดับความสำคัญ
+**Fast > Simple > UX > Friendly** (ถ้าต้องเลือก ให้ Fast ชนะก่อน ยกเว้น UX กระทบ core task)
+
+ตัวอย่าง tradeoff ที่รู้แล้ว:
+- Loading indicator ทุกจุด (UX) vs เรียบง่าย (Simple) → ใส่เฉพาะ operation >300ms
+- Animation ทุก hover (UX) vs 60fps (Fast) → animation เฉพาะ transition หลัก (tab, popup)
+- Error message ยาว (Friendly) vs render เร็ว (Fast) → lazy render + truncate expand
+- Group feature (UX) vs complexity (Simple) → ซ่อนใน sub-menu ไม่ expose บน main flow
+
 ---
 
 ## 🤖 AUTONOMY MODE — ทำเอง ไม่ถาม
@@ -127,6 +136,17 @@ Read script.js offset=1170 limit=40       # อ่านเฉพาะส่ว
 ตัดสินใจถาวร → เขียนลงทันที ไม่ต้องถามซ้ำทุก session
 ⚠️ **tradeoff**: CLAUDE.md โตเรื่อยๆ → อ่านหนักทุก session start / rule เก่าอาจขัดแย้ง rule ใหม่
 **แก้**: review + trim CLAUDE.md ทุก major version — ลบ rule ที่ไม่ใช้แล้ว
+
+#### 6. Concept / analysis → text ก่อน เสมอ ⭐
+ถ้า user ถามเรื่อง concept, design, tradeoff, หรือ "วิเคราะห์" → **ตอบ text ก่อน ไม่เปิดไฟล์**
+ใช้ tool ก็ต่อเมื่อ user ยืนยันว่าจะ implement
+
+```
+❌ user: "วิเคราะห์ tradeoff X" → Claude เปิดไฟล์ + เริ่มแก้ → ช้า + ผิดจุด
+✅ user: "วิเคราะห์ tradeoff X" → Claude ตอบ analysis text → user confirm → Claude ค่อย implement
+```
+⚠️ **tradeoff**: ถ้า user บอก "ทำ" พร้อมกัน → implement เลย ไม่ต้องรอ confirm
+**แก้**: ถ้าคำสั่งมีทั้ง "วิเคราะห์" + "ทำ" → analysis text สั้นๆ 1 block แล้ว implement ทันที
 
 #### สรุปความเสี่ยงรวม
 > ถ้า handoff + CLAUDE.md ไม่ถูก maintain → Claude เริ่ม session ด้วยข้อมูลเก่า → ตัดสินใจผิดโดยไม่รู้ตัว
