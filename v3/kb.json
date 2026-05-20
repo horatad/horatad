@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "updated": "2026-05-20",
   "total": 342,
   "rules": [
@@ -401,7 +401,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "เกษตร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -422,7 +422,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "ประเกษตร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -443,7 +443,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "อุจ",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -464,7 +464,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "นิจ",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -484,7 +484,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "อุจจาวิลาส",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -504,7 +504,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "อุจจาภิมุข",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -526,7 +526,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "มหาจักร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -546,7 +546,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "จุลจักร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -667,12 +667,6 @@
           "quality_required": "ANY",
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "กุมลัคนา",
-          "required": true
         }
       ],
       "rule_type": "TRUE_RULE"
@@ -688,12 +682,6 @@
         "80เปอร์เซ็นต์"
       ],
       "conditions": [
-        {
-          "planet_id": "ANY",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "เล็งลัคนา",
-          "required": true
-        },
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
@@ -719,12 +707,6 @@
           "quality_required": "ANY",
           "lagna_aspect_req": "โยคลัคนา",
           "required": true
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "โยคลัคนา",
-          "required": true
         }
       ],
       "rule_type": "TRUE_RULE"
@@ -740,12 +722,6 @@
         "50เปอร์เซ็นต์"
       ],
       "conditions": [
-        {
-          "planet_id": "ANY",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "ตรีโกณลัคนา",
-          "required": true
-        },
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
@@ -790,13 +766,13 @@
       ],
       "conditions": [
         {
-          "planet_id": "ANY",
+          "planet_id": "6",
           "quality_required": "เกษตร",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
         },
         {
-          "planet_id": "ANY",
+          "planet_id": "6",
           "quality_required": "เกษตร",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
@@ -817,13 +793,13 @@
       ],
       "conditions": [
         {
-          "planet_id": "ANY",
+          "planet_id": "6",
           "quality_required": "ประเกษตร",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
         },
         {
-          "planet_id": "ANY",
+          "planet_id": "6",
           "quality_required": "ประเกษตร",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
@@ -845,13 +821,13 @@
       ],
       "conditions": [
         {
-          "planet_id": "ANY",
+          "planet_id": "0",
           "quality_required": "อุจ",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
         },
         {
-          "planet_id": "ANY",
+          "planet_id": "0",
           "quality_required": "อุจ",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
@@ -914,36 +890,6 @@
           "quality_required": "นิจ",
           "lagna_aspect_req": "ANY",
           "required": true
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "มหาจักร",
-          "lagna_aspect_req": "ANY",
-          "required": false
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "อุจจาวิลาส",
-          "lagna_aspect_req": "ANY",
-          "required": false
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "อุจจาภิมุข",
-          "lagna_aspect_req": "ANY",
-          "required": false
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "ราชาโชค",
-          "lagna_aspect_req": "ANY",
-          "required": false
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "เทวีโชค",
-          "lagna_aspect_req": "ANY",
-          "required": false
         }
       ],
       "rule_type": "TRUE_RULE"
@@ -1097,12 +1043,6 @@
           "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "สัมพันธ์ลัคนา",
-          "required": true
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -3068,10 +3008,10 @@
       ],
       "conditions": [
         {
-          "planet_id": "ANY",
+          "planet_id": "0",
           "quality_required": "ANY",
           "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
-          "required": false
+          "required": true
         }
       ],
       "rule_type": "CASE_STUDY"
@@ -3613,9 +3553,9 @@
         },
         {
           "planet_id": "8",
-          "quality_required": "ANY",
+          "quality_required": "ประเกษตร",
           "lagna_aspect_req": "ANY",
-          "required": true
+          "required": false
         }
       ],
       "rule_type": "CASE_STUDY"
@@ -3642,7 +3582,7 @@
           "planet_id": "6",
           "quality_required": "ประเกษตร",
           "lagna_aspect_req": "ANY",
-          "required": true
+          "required": false
         }
       ],
       "rule_type": "CASE_STUDY"
@@ -3770,7 +3710,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "ANY",
+          "planet_id": "0",
           "quality_required": "ANY",
           "lagna_aspect_req": "โยคลัคนา",
           "required": true
@@ -3792,7 +3732,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "ANY",
+          "planet_id": "0",
           "quality_required": "ANY",
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
@@ -3813,12 +3753,6 @@
         "ดูแลกัน"
       ],
       "conditions": [
-        {
-          "planet_id": "7",
-          "quality_required": "ประเกษตร",
-          "lagna_aspect_req": "กุมลัคนา",
-          "required": true
-        },
         {
           "planet_id": "7",
           "quality_required": "ประเกษตร",
@@ -3884,7 +3818,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "3",
+          "planet_id": "1",
           "quality_required": "อุจ",
           "lagna_aspect_req": "เล็งลัคนา",
           "required": true
@@ -3892,7 +3826,7 @@
         {
           "planet_id": "6",
           "quality_required": "อุจ",
-          "lagna_aspect_req": "เล็งลัคนา",
+          "lagna_aspect_req": "ANY",
           "required": true
         }
       ],
@@ -4511,7 +4445,22 @@
         "พิการ",
         "ขัดแย้ง",
         "พยากรณ์"
-      ]
+      ],
+      "conditions": [
+        {
+          "planet_id": "ANY",
+          "quality_required": "เข้มแข็ง",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        },
+        {
+          "planet_id": "ANY",
+          "quality_required": "เสีย",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "CASE_STUDY"
     },
     {
       "ch": "chapter_49",
@@ -4527,20 +4476,20 @@
       ],
       "conditions": [
         {
-          "planet_id": "3",
+          "planet_id": "1",
           "quality_required": "ANY",
-          "lagna_aspect_req": "กุมลัคนา",
+          "lagna_aspect_req": "ภพวินาศ",
           "required": true
         },
         {
-          "planet_id": "0",
-          "quality_required": "ANY",
+          "planet_id": "ANY",
+          "quality_required": "เสีย",
           "lagna_aspect_req": "ANY",
           "required": true
         },
         {
-          "planet_id": "8",
-          "quality_required": "ANY",
+          "planet_id": "ANY",
+          "quality_required": "ร้าย",
           "lagna_aspect_req": "ANY",
           "required": true
         }
@@ -4561,7 +4510,7 @@
       "conditions": [
         {
           "planet_id": "ANY",
-          "quality_required": "ดี",
+          "quality_required": "เข้มแข็ง",
           "lagna_aspect_req": "ANY",
           "required": true
         },
@@ -4569,19 +4518,19 @@
           "planet_id": "6",
           "quality_required": "ดี",
           "lagna_aspect_req": "ANY",
-          "required": true
+          "required": false
         },
         {
           "planet_id": "ANY",
           "quality_required": "ดี",
           "lagna_aspect_req": "ANY",
-          "required": true
+          "required": false
         },
         {
-          "planet_id": "4",
-          "quality_required": "ดี",
+          "planet_id": "ANY",
+          "quality_required": "ฉลาด",
           "lagna_aspect_req": "ANY",
-          "required": true
+          "required": false
         }
       ],
       "rule_type": "CASE_STUDY"
@@ -4622,6 +4571,12 @@
         {
           "planet_id": "ANY",
           "quality_required": "ไม่เข้มแข็ง",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        },
+        {
+          "planet_id": "6",
+          "quality_required": "ดี",
           "lagna_aspect_req": "ANY",
           "required": true
         }
@@ -4912,7 +4867,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
-          "lagna_aspect_req": "กุมลัคนา",
+          "lagna_aspect_req": "เล็งลัคนา",
           "required": true
         }
       ],
@@ -4934,7 +4889,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
-          "lagna_aspect_req": "ลอยอยู่ในภพปัตนิ",
+          "lagna_aspect_req": "กุมลัคนา",
           "required": true
         }
       ],
@@ -4956,7 +4911,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
-          "lagna_aspect_req": "ลอยอยู่ในภพมรณะ",
+          "lagna_aspect_req": "กุมลัคนา",
           "required": true
         }
       ],
@@ -4978,7 +4933,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
-          "lagna_aspect_req": "เจ้าเรือนปัตนิตกภพมรณะ",
+          "lagna_aspect_req": "กุมลัคนา",
           "required": true
         }
       ],
@@ -5292,13 +5247,13 @@
         {
           "planet_id": "ANY",
           "quality_required": "ดี",
-          "lagna_aspect_req": "ลอยอยู่ในภพดี",
+          "lagna_aspect_req": "ANY",
           "required": true
         },
         {
           "planet_id": "ANY",
           "quality_required": "ANY",
-          "lagna_aspect_req": "เจ้าเรือนกฎุมพะอยู่ภพดี",
+          "lagna_aspect_req": "กุมลัคนา",
           "required": true
         }
       ],
@@ -5401,21 +5356,21 @@
       ],
       "conditions": [
         {
-          "planet_id": "8",
+          "planet_id": "6",
           "quality_required": "อุจ",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         },
         {
-          "planet_id": "8",
+          "planet_id": "6",
           "quality_required": "มหาจักร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         },
         {
-          "planet_id": "8",
+          "planet_id": "6",
           "quality_required": "เกษตร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -5483,6 +5438,12 @@
           "quality_required": "เสีย",
           "lagna_aspect_req": "ANY",
           "required": true
+        },
+        {
+          "planet_id": "6",
+          "quality_required": "ดี",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
+          "required": true
         }
       ],
       "rule_type": "TRUE_RULE"
@@ -5501,15 +5462,15 @@
       ],
       "conditions": [
         {
-          "planet_id": "8",
+          "planet_id": "6",
           "quality_required": "ราชาโชค",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         },
         {
-          "planet_id": "8",
+          "planet_id": "6",
           "quality_required": "เทวีโชค",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -5553,7 +5514,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "มหาจักร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -5574,7 +5535,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "จุลจักร",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -5596,7 +5557,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "อุจ",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "กุมลัคนา",
           "required": true
         }
       ],
@@ -5618,14 +5579,14 @@
         {
           "planet_id": "ANY",
           "quality_required": "อุจจาวิลาส",
-          "lagna_aspect_req": "ANY",
-          "required": false
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
+          "required": true
         },
         {
           "planet_id": "ANY",
           "quality_required": "อุจจาภิมุข",
-          "lagna_aspect_req": "ANY",
-          "required": false
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
+          "required": true
         }
       ],
       "rule_type": "TRUE_RULE"
@@ -5646,13 +5607,7 @@
         {
           "planet_id": "ANY",
           "quality_required": "อุจ",
-          "lagna_aspect_req": "ANY",
-          "required": true
-        },
-        {
-          "planet_id": "ANY",
-          "quality_required": "ดี",
-          "lagna_aspect_req": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -5673,7 +5628,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "1",
+          "planet_id": "ANY",
           "quality_required": "เกษตร",
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
@@ -6573,13 +6528,13 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
         },
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "อยู่ในราศีลัคนา",
           "required": true
@@ -6666,13 +6621,19 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
+          "quality_required": "ANY",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
+          "required": true
+        },
+        {
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "กุมลัคนา",
           "required": false
         },
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "อยู่ในราศีตนุลัคนา",
           "required": false
@@ -6694,10 +6655,10 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
-          "required": true
+          "required": false
         }
       ],
       "rule_type": "HOUSE_CONCEPT"
@@ -6715,7 +6676,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
           "required": true
@@ -6759,13 +6720,13 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
         },
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "อยู่ในราศีตนุลัคนา",
           "required": true
@@ -7301,7 +7262,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
@@ -7323,7 +7284,7 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
           "required": true
@@ -7622,16 +7583,16 @@
       ],
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ดี",
           "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         },
         {
-          "planet_id": "1",
+          "planet_id": "ANY",
           "quality_required": "เสีย",
           "lagna_aspect_req": "สัมพันธ์ลัคนา",
-          "required": true
+          "required": false
         }
       ],
       "rule_type": "HOUSE_CONCEPT"
@@ -7653,7 +7614,7 @@
         {
           "planet_id": "0",
           "quality_required": "นิจ",
-          "lagna_aspect_req": "กุมลัคนา",
+          "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
       ],
@@ -7698,19 +7659,31 @@
       "rule_type": "TRUE_RULE",
       "conditions": [
         {
-          "planet_id": "0",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "ANY",
-          "required": true
-        },
-        {
-          "planet_id": "2",
+          "planet_id": "1",
           "quality_required": "ANY",
           "lagna_aspect_req": "ANY",
           "required": true
         },
         {
           "planet_id": "3",
+          "quality_required": "ANY",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        },
+        {
+          "planet_id": "7",
+          "quality_required": "ANY",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        },
+        {
+          "planet_id": "8",
+          "quality_required": "ANY",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        },
+        {
+          "planet_id": "2",
           "quality_required": "ANY",
           "lagna_aspect_req": "ANY",
           "required": true
@@ -7729,18 +7702,6 @@
         },
         {
           "planet_id": "6",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "ANY",
-          "required": true
-        },
-        {
-          "planet_id": "7",
-          "quality_required": "ANY",
-          "lagna_aspect_req": "ANY",
-          "required": true
-        },
-        {
-          "planet_id": "8",
           "quality_required": "ANY",
           "lagna_aspect_req": "ANY",
           "required": true
@@ -7981,7 +7942,7 @@
       "rule_type": "HOUSE_CONCEPT",
       "conditions": [
         {
-          "planet_id": "0",
+          "planet_id": "ANY",
           "quality_required": "ANY",
           "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
           "required": true
