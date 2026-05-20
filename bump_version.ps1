@@ -1,43 +1,30 @@
-$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+# bump_version.ps1 — Windows wrapper delegating to portable Node script
+# เลิกใช้ logic เดิม (bump แค่ 3 จุด → ทำให้เกิด cache miss)
+# Node script ครอบคลุม 11 patterns ใน 6 ไฟล์ (ดู DEPLOY.md)
+#
+# Usage:
+#   .\bump_version.ps1            # patch +1
+#   .\bump_version.ps1 2.3.0      # explicit
 
-function Write-File($path, $content) {
-  [System.IO.File]::WriteAllText((Resolve-Path $path), $content, $utf8NoBom)
-}
+$ErrorActionPreference = 'Stop'
 
-# 1. อ่าน version.json
-$raw = Get-Content 'version.json' -Raw
-if ($raw -notmatch '"v"\s*:\s*"([0-9]+\.[0-9]+\.[0-9]+)"') {
-  Write-Host "ERROR: version.json format invalid"
-  exit 1
-}
-$old = $Matches[1]
-$parts = $old.Split('.')
-$newV = $parts[0] + '.' + $parts[1] + '.' + ([int]$parts[2] + 1)
-Write-Host "  $old -> $newV"
-
-# 2. อ่าน script.js
-$s = Get-Content 'script.js' -Raw
-if ($s -notmatch "const APP_VERSION='[0-9]+\.[0-9]+\.[0-9]+'") {
-  Write-Host "ERROR: APP_VERSION not found in script.js"
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+  Write-Host "ERROR: node not found in PATH — install Node.js first"
   exit 1
 }
 
-# 3. อ่าน sw.js
-$w = Get-Content 'sw.js' -Raw
-if ($w -notmatch "const CACHE_NAME='horatad-v[0-9]+\.[0-9]+\.[0-9]+'") {
-  Write-Host "ERROR: CACHE_NAME not found in sw.js"
-  exit 1
+$arg = if ($args.Count -gt 0) { $args[0] } else { $null }
+
+if ($arg) {
+  node scripts/bump-version.mjs $arg
+} else {
+  node scripts/bump-version.mjs
 }
 
-# 4. แก้ทั้ง 3 ไฟล์
-Write-File 'version.json' ("{`"v`":`"$newV`"}")
-Write-File 'script.js' ($s -replace "const APP_VERSION='[0-9]+\.[0-9]+\.[0-9]+'", "const APP_VERSION='$newV'")
-Write-File 'sw.js' ($w -replace "const CACHE_NAME='horatad-v[0-9]+\.[0-9]+\.[0-9]+'", "const CACHE_NAME='horatad-v$newV'")
-
-# 5. ตรวจยืนยัน
-$check = Get-Content 'version.json' -Raw
-if ($check -notmatch $newV) {
-  Write-Host "ERROR: version.json verify failed"
-  exit 1
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "ERROR: bump failed"
+  exit $LASTEXITCODE
 }
-Write-Host "[2/3] Bumped: version.json + script.js + sw.js -> $newV"
+
+node scripts/check-version-sync.mjs
+exit $LASTEXITCODE

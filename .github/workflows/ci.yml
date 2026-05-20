@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main, 'claude/**']
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: JS syntax check
+        run: |
+          set -e
+          for f in script.js sw.js v3/engine.js v3/interpretation.js v3/typhoon.js v3/v3tab.js; do
+            echo "  → $f"
+            node --check "$f"
+          done
+
+      - name: Version sync check
+        run: node scripts/check-version-sync.mjs
