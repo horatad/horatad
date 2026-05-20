@@ -1,4 +1,9 @@
-// Version 2.2.26 | 2026-05-17
+// Version 2.2.29 | 2026-05-20
+// Changes: [V2.2.29] Share image polish + filename:
+//   - filename: ตัด `horatad_` prefix → JD_T_LAT.png
+//   - share name: ตัด gender prefix, slice 20 chars
+//   - share QR: 110 → 125 (resilience +15% ต่อ JPEG re-encode)
+//   - chart logo: 160 → 180
 // Changes: [V2.2.26] Adhikamasa: เปลี่ยน formula จาก totalLunations diff
 //   เป็น avoman threshold (aw_ml<3824||aw_ml>16936)
 //   แก้ false positive 2560/2563 และ false negative 2561/2564/2583
@@ -1012,9 +1017,9 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
     }
     // _outerState===4: ไม่แสดง (nothing)
   }
-  // logo top-right on canvas (size 160, margin 0, circular clip, alpha 1.0 + brightness)
+  // logo top-right on canvas (size 180, margin 0, circular clip, alpha 1.0 + brightness)
   if(_logoImg.complete&&_logoImg.naturalWidth>0){
-    const ls=160;
+    const ls=180;
     const lx=1000-ls+8;
     const ly=0;
     ctx.save();
@@ -1182,14 +1187,10 @@ function _updateShareButton(){
 }
 
 function _buildShareFilename(active){
-  const now=new Date();
-  const ts=now.getFullYear()+
-    String(now.getMonth()+1).padStart(2,'0')+
-    String(now.getDate()).padStart(2,'0')+'_'+
-    String(now.getHours()).padStart(2,'0')+
-    String(now.getMinutes()).padStart(2,'0')+
-    String(now.getSeconds()).padStart(2,'0');
-  return `horatad_${ts}.png`;
+  const jd=Math.trunc(_calcJD(active.d,active.m,active.y_be));
+  const t=(active.t||'').replace(':','');
+  const lat=(PROVINCES_LAT[active.prov||'']||13.75).toFixed(2);
+  return `${jd}_${t}_${lat}.png`;
 }
 
 async function saveChart(){
@@ -1261,7 +1262,7 @@ async function _generateShareImage(active){
   ctx.fillStyle='#ffffff';
   ctx.font='bold 32px Sarabun,sans-serif';
   ctx.textAlign='center';ctx.textBaseline='top';
-  ctx.fillText(`${active.gender} ${active.name}`,SZ/2,845);
+  ctx.fillText((active.name||'').slice(0,20),SZ/2,845);
   ctx.fillStyle='#8b949e';
   ctx.font='400 22px Sarabun,sans-serif';
   const y_ce=_beToce(active.y_be,active.m);
@@ -1286,10 +1287,10 @@ async function _generateShareImage(active){
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:110,height:110,colorDark:'#000000',colorLight:'#ffffff'});
+    new QRCode(qrDiv,{text:qrText,width:125,height:125,colorDark:'#000000',colorLight:'#ffffff'});
     await new Promise(r=>setTimeout(r,80));
     const qrCv=qrDiv.querySelector('canvas');
-    if(qrCv)ctx.drawImage(qrCv,SZ-126,SZ-126,110,110);
+    if(qrCv)ctx.drawImage(qrCv,SZ-141,SZ-141,125,125);
     document.body.removeChild(qrDiv);
   }catch(e){console.warn('[QR]',e);}
   return new Promise(resolve=>c.toBlob(resolve,'image/png',0.95));
