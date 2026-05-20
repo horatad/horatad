@@ -41,14 +41,14 @@ Backups     : backup/v3.2.0, backup/v3.1.7, ...
 [ ] **DB1 browser — แยก type** — ตอนนี้ `_renderDB1List` แสดงเฉพาะ type='natal'
     ควรมี tab หรือ filter แสดง person/event/group ด้วย
 
-## PENDING — 🔴 [USER ONLY] / [BLOCKED]
-[ ] [USER ONLY] ทดสอบ V3.2.0 บนมือถือ:
+## PENDING — 🔴 [ทดลองใช้] / [BLOCKED]
+[ ] [ทดลองใช้] ทดสอบ V3.2.0 บนมือถือ:
     - migration V3→V4 ทำงานถูกต้อง (ข้อมูลเดิมยังอยู่)
     - สมพงศ์ popup แสดง list ถูกต้อง
     - event slots popup แสดง list ถูกต้อง
     - เหตุการณ์จรใน tag row กรองตาม natal1 ถูกต้อง
     - export/import ยังใช้งานได้
-[ ] [USER ONLY] CF: deploy horatad-ai Worker (Phase 11 sync/cloud)
+[ ] [ทดลองใช้] CF: deploy horatad-ai Worker (Phase 11 sync/cloud)
 [ ] [BLOCKED] Phase 11 sync/cloud — รอยืนยัน server
 
 ## DEFERRED — รอ "รอบใหญ่" / dependency
