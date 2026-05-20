@@ -2,131 +2,121 @@
 # Date: 2026-05-20 (session 1 ของวัน)
 # Previous: session_handoff_20260519_v4.md
 
----
-
-## STATE ปัจจุบัน
+## STATE
 
 ```
-App version : V2.2.39 (main + deployed via GitHub Pages)
+App version : V2.2.39 (main + deployed via GitHub Pages → horatad.com)
 script.js   : APP_VERSION='2.2.39' + window.APP_VERSION expose
 sw.js       : CACHE_NAME='horatad-v2.2.39'
 version.json: {"_id":"HORATAD:VERSION","v":"2.2.39"}
-index.html  : V2.2.39
 v3/v3tab.js : Version 3.0.4 (sync app V2.2.39)
-GitHub      : main = claude/fix-memory-list-edit-znEDH = cd53013 (fast-forward)
-Backups     : branches backup/v2.2.37, backup/v2.2.38, backup/v2.2.39,
-              backup/v2.2.39-docs (CLAUDE.md commit)
+GitHub      : main = claude/fix-memory-list-edit-znEDH = 95b98f4
+Backups     : backup/v2.2.37, backup/v2.2.38, backup/v2.2.39,
+              backup/v2.2.39-docs, backup/v2.2.39-infra
 ```
 
 ---
 
-## สิ่งที่ทำใน session นี้
+## DONE (session นี้)
 
 ```
-✓ V2.2.36 — ปุ่ม ✕ ออกจากพยากรณ์ บน TAB 3 + ลบ duplicate
-            controllerchange listener (พยายามแก้ flicker)
-✓ V2.2.37 — แก้ 📌 DB indicator ไม่ refresh เมื่อกด numpad commit
-            (เรียก _updateDbIndicator(section) ท้าย _numpadConfirm
-            ตาม id suffix) + เพิ่ม 'change' listener สำหรับ iOS
-            native <input type="time">
-✓ Static analysis V3 module import chain — โครงสร้างถูก ไม่มี broken link
+✓ V2.2.38 ปุ่ม ✏️ แก้ไข memory list (req 20)
+  - _addMemory รับ replaceKey ลบ entry เดิมแม้ key เปลี่ยน
+  - _editMemory จำ key + section ก่อนโหลดเข้าฟอร์ม
+  - clear edit state ใน _pickMemory/_quickLoad/openMemory
+
+✓ V2.2.39 V3 tab fixes
+  - toast race: ย้าย toast หลัง _v3Running + _getNatal guard
+  - kb.json cache key: KB_PATH ใส่ ?v=APP_VERSION ตรงกับ SW
+  - script.js expose window.APP_VERSION ให้ ES module ใช้
+
+✓ CLAUDE.md — project conventions + autonomy mode + handoff template
+
+✓ Infra (D)
+  - scripts/check-version-sync.mjs — validate 11 patterns ใน 6 ไฟล์
+  - scripts/bump-version.mjs — bump ครบ 6 จุดอัตโนมัติ
+  - .github/workflows/ci.yml — syntax + version sync ทุก push/PR
+  - DEPLOY.md — production setup, rollback, troubleshooting
+  - bump_version.ps1 → delegate ไป node script
+  - ลบ push.sh (cruft)
+
+✓ Local main เคลียร์ 5 commits "Add files via upload" ขยะที่ค้าง
 ```
 
 ---
 
-## งานที่ค้าง (priority สูง→ต่ำ)
+## PENDING — 🟢 Claude ทำเองได้ (sandbox)
 
-### ⏸️ DEFERRED — รอลงรอบใหญ่ (ไม่เร่ง เพราะไม่กระทบ mobile)
-
-```
-[ ] FLICKER เฉพาะ desktop หลัง Ctrl+Shift+R — แก้มาหลายครั้งไม่หาย
-    มือถือ (target หลัก) ไม่เป็น → ลด priority
-    
-    สงสัย: SW cache propagation race
-    - version.json fetch ใน script.js → mismatch → reload
-    - SW activate → controllerchange → reload (มี _swRefreshing guard)
-    - ทั้งสอง path อาจแข่งกัน
-    - อาจต้องสอบ root cause ที่ horatad.com domain/CDN ด้วย
-    
-    Action: ยกไป "รอบใหญ่" — รื้อ SW lifecycle + reload strategy พร้อมกับ
-            ตรวจสอบ domain/contact horatad.com เป็น root cause ไหม
-    แนวทาง: เลิก version.json reload, ใช้แค่ controllerchange (ปลอดภัยกว่า)
-```
-
-### 🟠 P1 — เหลือ
+เรียงตาม priority (บนสุดทำก่อน):
 
 ```
-[ ] ทดสอบ V2.2.37/.38/.39 บนมือถือจริง:
-    - V2.2.37 📌 indicator refresh หลัง numpad
-    - V2.2.37 ปุ่ม ✕ ออกจากพยากรณ์ (TAB 3)
-    - V2.2.38 ปุ่ม ✏️ แก้ไข memory list — load + แก้ + ผูกดวงทับ
-    - V2.2.39 V3 toast ไม่ซ้อน + offline ปุ่มพยากรณ์ใช้ kb.json cache ได้
-```
-
-### ✅ ปิดใน session นี้
-
-```
-✓ V2.2.38 ปุ่ม ✏️ แก้ไข memory list (req 20) — รวม replaceKey ใน _addMemory
-✓ V2.2.39 V3 toast race fix (ย้าย toast หลัง guard ใน v3tab.js)
-✓ V2.2.39 V3 kb.json cache key fix (KB_PATH ใส่ ?v=APP_VERSION)
-✓ V2.2.39 window.APP_VERSION expose ให้ ES module
-✓ CLAUDE.md สร้าง — บันทึก standing instructions (auto-push main + backup,
-  version bump checklist 6 จุด, cache-bust convention, project quirks)
-```
-
-### 🟡 P2 — Infra / V2 backlog (จาก session ก่อนหน้า ยังคง)
-
-```
-[ ] DEPLOY.md — ไฟล์ไม่มีจริง (handoff note v4 outdated)
-[ ] wrangler deploy workflow สำหรับ horatad-ai/horatad-auth Worker
-[ ] req 11 — ย้าย v3/interpretation.js → Cloudflare Worker
 [ ] req 12 — Obfuscate script.js ก่อน deploy
+    - GitHub Action ใช้ javascript-obfuscator หรือ terser
+    - publish ไป gh-pages branch (main = source clean)
+    - หรือ build → dist/ + Pages serve จาก dist
+    - หมายเหตุ: ต้องตัดสินใจ deploy strategy ก่อน (gh-pages vs Pages-from-Actions)
+
 [ ] req 13 — Cloudflare Access ล็อก /v3/*
-[ ] req 16 — Preload historical records → localStorage
-[ ] req 17 — Ephemeris backtest กับตำราอ้างอิง
+    - frontend: เพิ่ม Access JWT header ใน fetch (v3tab.js, typhoon.js)
+    - backend lockdown: CF dashboard config — [USER ONLY] (อยู่ใน list ล่าง)
+
+[ ] V3 tab — เก็บผลพยากรณ์ล่าสุดใน localStorage
+    - กดปุ่ม "ดูกฎ" / "Typhoon" ครั้งใหม่ → restore ได้
+    - dedup key: natal pos hash
+    - (idea — ยังไม่ใน backlog เดิม, propose ใหม่)
+
+[ ] Refactor: ลบ duplicate code re _customLng handling ใน script.js
+    - section 1/2 มี logic ซ้ำเกือบหมด → factor เป็น helper
+    - scope: 50-100 บรรทัด — clean diff
 ```
 
 ---
 
-## V3 Static Analysis (ทำใน session นี้)
+## PENDING — 🔴 [USER ONLY] / [BLOCKED]
 
 ```
-✓ v3tab.js → engine.js: get_lagna (พบ)
-✓ v3tab.js → interpretation.js: build_natal_payload (พบ)
-✓ v3tab.js → typhoon.js: match_rules, render_fallback, send_to_typhoon (พบ)
-✓ interpretation.js → engine.js: 12 exports (พบครบ)
-✓ typhoon.js → interpretation.js: 3 exports (พบ)
-✓ typhoon.js → engine.js: 3 exports (พบ)
+[USER ONLY] ทดสอบ V2.2.37/.38/.39 บนมือถือจริง:
+  - V2.2.37 📌 indicator refresh หลัง numpad
+  - V2.2.37 ปุ่ม ✕ ออกจากพยากรณ์ (TAB 3)
+  - V2.2.38 ปุ่ม ✏️ แก้ไข memory — load + แก้ + ผูกดวงทับของเดิม
+  - V2.2.39 V3 toast ไม่ซ้อน + offline ปุ่มพยากรณ์ใช้ kb.json cache ได้
 
-→ Issue "ปุ่มพยากรณ์เงียบ" จาก handoff v3.0 น่าจะหายตั้งแต่ V2.2.30
-  (script tag เพิ่ม ?v=APP_VERSION บังคับ cache-bust)
-→ ถ้ายังเงียบบน mobile จริง ต้อง DevTools Console screenshot
+[USER ONLY] CF: deploy / config Worker
+  - wrangler deploy horatad-ai (Typhoon proxy)
+  - wrangler deploy horatad-auth (PIN validator)
+  - CF Access policy บน /v3/* (สำหรับ req 13 backend lockdown)
+
+[BLOCKED] req 16 — Preload historical records → localStorage
+  รอ: ไฟล์ historical records จาก user (JSON/CSV)
+       + format spec (fields ที่ต้องมี: name, d, m, y_be, t, prov, lat, lng)
+
+[BLOCKED] req 17 — Ephemeris backtest กับตำราอ้างอิง
+  รอ: ตำราอ้างอิง expected positions (test cases CSV/JSON)
+       + tolerance spec (ลิปดา? อังศา?)
 ```
 
 ---
 
-## Next Priority (session ถัดไป)
+## DEFERRED — รอ "รอบใหญ่" / dependency
 
 ```
-1. dig FLICKER — เปิด DevTools → Application → Service Workers
-   ดู lifecycle + reload trigger order
-   อาจต้อง refactor: ลบ version.json mismatch reload ทิ้ง
-   ใช้แค่ controllerchange path
-   
-2. req 20 ปุ่ม ✏️ memory list (small-medium scope)
+[ ] FLICKER (desktop หลัง Ctrl+Shift+R เท่านั้น — mobile ไม่เป็น)
+    - SW cache propagation race (version.json reload vs controllerchange)
+    - แก้มาหลายครั้งไม่หาย → ยกไปทำพร้อม root cause horatad.com domain/CDN
+    - แนวทาง: เลิก version.json reload ใช้แค่ controllerchange
 
-3. V3 toast race + kb.json cache miss (small fixes)
+[ ] req 11 — interpretation.js → Cloudflare Worker
+    - รอ format นิ่ง (ตอนนี้ยัง iterate อยู่ → ย้ายตอนนี้จะ slow dev loop)
+    - revisit เมื่อ interp.js stable + V3 spec finalized
 ```
 
 ---
 
 ## Notes สำคัญ
 
-```
-- Branch: develop on `claude/add-test-file-EMaRp` ตาม harness instruction
-  แล้ว fast-forward main เมื่อพร้อม push (วิธีที่ user เลือกใน session นี้)
-- main = production (GitHub Pages deploy)
-- Worker (horatad-ai, horatad-auth) แยก deploy ผ่าน wrangler — ไม่ใช่ git push
-- V3 tab ซ่อน — PIN 6 หลัก → fetch POST /api/auth → 200 = unlock
-- ปุ่ม ✕ ออกจากพยากรณ์ (ใหม่ V2.2.36): ซ่อน tab-btn-3 + สลับไป tab 1
-```
+- Branch: develop on `claude/fix-memory-list-edit-znEDH` (harness instruction)
+  push main + backup branch อัตโนมัติทุก commit (CLAUDE.md standing instruction)
+- main = production (GitHub Pages → horatad.com via CNAME)
+- Worker (horatad-ai, horatad-auth) แยก deploy ผ่าน wrangler ไม่ใช่ git push
+- V3 tab ซ่อน — PIN 6 หลัก → POST `horatad-auth/api/auth` → 200 = unlock
+- CI: `.github/workflows/ci.yml` block push ถ้า version sync ผิด หรือ syntax error

@@ -5,6 +5,43 @@
 
 ---
 
+## 🤖 AUTONOMY MODE — ทำเอง ไม่ถาม
+
+User ไม่อยากเฝ้า — ทุก session ทำตามนี้
+
+### Session lifecycle
+1. **เริ่ม** → อ่าน `CLAUDE.md` (ไฟล์นี้) + `session_handoff_*.md` ล่าสุด → เลือกงานสูงสุดที่ทำได้เอง
+2. **ทำ** → code + test + verify (ภายใน sandbox)
+3. **Commit** → push feature branch + ff main + backup branch (`backup/vX.Y.Z`)
+4. **ถ้ามี task เหลือเวลา** → ทำต่อตาม priority list (loop ข้อ 2-3)
+5. **จบ session** → update / สร้าง `session_handoff_<date>_v<n>.md` ใหม่ ตาม template
+
+### Priority algorithm (เลือกงานจาก handoff ลำดับนี้)
+1. **Bug ที่ Claude ทำได้** (ไม่ใช่ DEFERRED, ไม่ใช่ USER ONLY)
+2. **Feature/req ที่ Claude ทำได้** ตามลำดับ pin ใน handoff หรือเลข req น้อย→มาก
+3. **Infra/quality** (CI, docs, refactor — น้ำหนักต่ำกว่า bug/feature)
+4. **Partial-feasible** (เขียน code ส่วนที่ทำได้ ทิ้ง deploy/data step ให้ user ใน handoff)
+
+### ทำไม่ได้ใน sandbox → skip ทันที (ไม่ถาม) แล้ว note ใน handoff
+- Mobile testing → `[USER ONLY] ทดสอบ X บนมือถือ`
+- Cloudflare account ops (Worker deploy, Access, DNS) → `[USER ONLY] CF: X`
+- Real browser DevTools → `[USER ONLY] debug X ใน DevTools`
+- ต้องการ data file จาก user → `[BLOCKED] req X รอไฟล์ <name>.json`
+
+### ต้องถามก่อน (ขีดเขตปลอดภัย — มีแค่นี้)
+- ลบไฟล์/branch ที่อาจมีงาน user (ไม่ใช่ขยะชัดเจน)
+- Breaking change ต่อ data schema / public API ที่ user ปลายทางใช้
+- Architecture lock-in ระยะยาว (เปลี่ยน framework, auth model)
+- เรื่องเงิน (paid service, plan change)
+
+### ห้ามเด็ดขาด
+- `git push --force` ไป main
+- ลบ branch `backup/*`
+- Commit ไฟล์ที่มี secret (token, API key)
+- Skip CI (`--no-verify`) เว้นแต่ user สั่ง
+
+---
+
 ## Stack
 
 - **Frontend**: vanilla JS, no build step. ทุกอย่าง edit ตรง — push → GitHub Pages deploy
@@ -78,15 +115,51 @@ bump `X.Y.Z` พร้อมกัน **6 จุด**:
 
 ## Pending bugs / backlog
 
-ดู `session_handoff_*.md` (ไฟล์ล่าสุดของวัน) — มี P0/P1/P2 list ที่ update ทุก session
+ดู `session_handoff_*.md` (ไฟล์ล่าสุดของวัน) — ต้องจัดตาม **template ด้านล่าง** เพื่อให้ Claude เลือก task ได้เร็ว
 
-**Long-standing P0**: SW flicker — version.json mismatch reload แข่งกับ controllerchange reload
-อาจต้อง refactor ทิ้ง version.json path ใช้ controllerchange อย่างเดียว
+---
+
+## Handoff template (ใช้ทุก session)
+
+ไฟล์: `session_handoff_<YYYYMMDD>_v<n>.md` (n = session ที่เท่าไหร่ของวัน)
+
+```markdown
+# Horatad — Session Handoff
+# Date: YYYY-MM-DD (session N ของวัน)
+# Previous: <ชื่อไฟล์ก่อนหน้า>
+
+## STATE
+App version : VX.Y.Z (main + deployed)
+Backups     : backup/vX.Y.Z, ...
+
+## DONE (session นี้)
+✓ ...
+
+## PENDING — 🟢 Claude ทำเองได้ (sandbox)
+[ ] req X — <scope สั้นๆ>
+[ ] bug Y — <ที่ไฟล์ไหน บรรทัดไหน>
+(เรียงตาม priority — บนสุดทำก่อน)
+
+## PENDING — 🔴 [USER ONLY] / [BLOCKED]
+[ ] [USER ONLY] ทดสอบ VX.Y.Z บนมือถือ (V2.2.37 indicator, etc.)
+[ ] [USER ONLY] CF: deploy horatad-ai Worker
+[ ] [BLOCKED] req 16 รอไฟล์ historical-records.json
+[ ] [BLOCKED] req 17 รอ ephemeris reference data
+
+## DEFERRED — รอ "รอบใหญ่" / dependency
+[ ] FLICKER (desktop only) — รอบใหญ่ + root cause horatad.com
+[ ] req 11 interp.js → Worker — รอ format นิ่ง
+```
+
+**กฎ:**
+- งาน DEFERRED **ห้าม** จับมาทำเอง — เป็น user decision
+- งาน USER ONLY / BLOCKED **ห้าม** ถาม user — ปล่อยใน handoff รอ user resolve
+- หลังจบ task ให้ย้ายจาก PENDING → DONE ใน handoff เดิม หรือสร้าง handoff ใหม่ของ session ถัดไป
 
 ---
 
 ## Testing
 
-- ไม่มี automated test suite
+- ไม่มี automated test suite (มีแค่ CI: syntax + version sync)
 - UI changes ต้องทดสอบ mobile จริง — Chrome DevTools mobile mode ไม่พอ (iOS Safari quirks)
-- Sandbox container ไม่มี browser → Claude verify ไม่ได้ ต้องแจ้ง user ให้ test
+- Sandbox container ไม่มี browser → Claude verify UI ไม่ได้ → ใส่ `[USER ONLY]` ใน handoff
