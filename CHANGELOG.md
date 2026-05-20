@@ -4,6 +4,11 @@
 
 ---
 
+## [3.2.5] — 2026-05-20
+### Fixed
+- PWA offline: เพิ่ม `horatad_746x746.png` ใน CORE_ASSETS → หน้า About แสดงรูปได้ offline
+- PWA cache: ลบ `horatad_500x500.png` ออก (ไม่มีการอ้างอิง — ประหยัด cache)
+
 ## [3.2.4] — 2026-05-20
 ### Added
 - Phase 14: Group → โหลด / เปรียบเทียบสมาชิก

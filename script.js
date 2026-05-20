@@ -1,12 +1,9 @@
-// HORATAD:SCRIPT:3.2.4
-// Version 3.2.4 | 2026-05-20
-// Changes: [V3.2.4] feat: Phase 14+15 — Group load/compare + Transit persist
-//   - Phase 14: group detail member → "โหลด" (natal1) + "เปรียบ" (natal2/สมพงศ์)
-//   - Phase 15: Transit Strip "วันนี้" reset + persist date ใน localStorage (TS_DATE_KEY)
-//   (Phase 12 ดู V3.2.2, Phase 13 ดู V3.2.3)
+// HORATAD:SCRIPT:3.2.5
+// Version 3.2.5 | 2026-05-20
+// Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.2.4';
+const APP_VERSION='3.2.5';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
