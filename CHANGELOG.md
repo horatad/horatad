@@ -4,6 +4,14 @@
 
 ---
 
+## [3.1.4] — 2026-05-20
+### Added
+- `_db1Edit(uid)`: โหลด record จาก DB1 กลับฟอร์ม 1 + set `_editingUid` (Phase 10)
+- indicator แถบส้ม "✏️ กำลังแก้ไข: [ชื่อ]" เหนือปุ่ม ผูกดวง (กดยกเลิกได้)
+- `_v3UpsertDB1`: รองรับ `_editingUid` — ลบ record เดิมก่อน upsert ใหม่ (รองรับเปลี่ยนชื่อ/วัน/เวลา พร้อมสืบ linkedEvents)
+- ปุ่ม ✏️ ใน DB1 browser list ข้าง ลบ
+- `_hideEditingIndicator()`, `_showEditingIndicator(name)`
+
 ## [3.1.3] — 2026-05-20
 ### Added
 - `_openDB1Popup()` / `_closeDB1Popup()` / `_renderDB1List()`: popup แสดง DB1 ทั้งหมด (Phase 9)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.1.3 -->
-<!-- Version 3.1.3 | 2026-05-20 -->
+<!-- HORATAD:INDEX:3.1.4 -->
+<!-- Version 3.1.4 | 2026-05-20 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.1.3">
+<link rel="stylesheet" href="style.css?v=3.1.4">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -50,7 +50,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.1.3</span>
+  <span class="brand-ver">V 3.1.4</span>
 </h1>
 
 <!-- Tab nav -->
@@ -198,7 +198,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.1.3</div>
+        <div class="about-version">V 3.1.4</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -327,7 +327,7 @@ canvas{max-width:100%;height:auto}
 <!-- ── Chart wrap (shared, moved by JS) ─────────────────── -->
 <div id="chart-wrap">
   <div id="canvas-wrapper" style="background:#0d1117;border-radius:8px;padding:0.75rem">
-    <!-- V3.1.3: chart-nav-header strip — แสดงเหนือ canvas แทน btn-chart-row -->
+    <!-- V3.1.4: chart-nav-header strip — แสดงเหนือ canvas แทน btn-chart-row -->
     <div id="chart-nav-header" class="chart-nav-header hidden">
       <button class="chart-nav-btn" onclick="cycleMemory(-1)" title="ดวงก่อนหน้า">◀</button>
       <div id="chart-nav-info" class="chart-nav-info">—</div>
@@ -424,7 +424,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<!-- ── Main menu popup (V3.1.3 Phase 1B Step 2) ────────── -->
+<!-- ── Main menu popup (V3.1.4 Phase 1B Step 2) ────────── -->
 <div id="main-menu-backdrop" class="main-menu-backdrop hidden" onclick="_closeMainMenu()"></div>
 <div id="main-menu-modal" class="main-menu-modal hidden">
   <div class="main-menu-header">
@@ -469,7 +469,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<!-- ── DB1 browser popup (V3.1.3 Phase 9) ───────────────── -->
+<!-- ── DB1 browser popup (V3.1.4 Phase 9) ───────────────── -->
 <div id="db1-backdrop" class="memory-backdrop hidden" onclick="_closeDB1Popup()"></div>
 <div id="db1-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -484,7 +484,7 @@ canvas{max-width:100%;height:auto}
   <button onclick="_closeDB1Popup()" class="memory-close">ปิด</button>
 </div>
 
-<!-- ── Export/Import modal (V3.1.3 Phase 8) ─────────────── -->
+<!-- ── Export/Import modal (V3.1.4 Phase 8) ─────────────── -->
 <div id="export-backdrop" class="memory-backdrop hidden" onclick="_closeExportModal()"></div>
 <div id="export-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -505,7 +505,7 @@ canvas{max-width:100%;height:auto}
   <button onclick="_closeExportModal()" class="memory-close">ปิด</button>
 </div>
 
-<!-- ── Sompong popup (V3.1.3 Phase 1B Step 3) ──────────── -->
+<!-- ── Sompong popup (V3.1.4 Phase 1B Step 3) ──────────── -->
 <div id="sompong-backdrop" class="memory-backdrop hidden" onclick="_closeSompongPopup()"></div>
 <div id="sompong-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -517,7 +517,7 @@ canvas{max-width:100%;height:auto}
   <button onclick="_closeSompongPopup()" class="memory-close">ปิด</button>
 </div>
 
-<!-- ── QR Import popup (V3.1.3 Phase 4) ─────────────────── -->
+<!-- ── QR Import popup (V3.1.4 Phase 4) ─────────────────── -->
 <div id="qr-import-backdrop" class="memory-backdrop hidden" onclick="_closeQRImportPopup()"></div>
 <div id="qr-import-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -535,7 +535,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<!-- ── Event Slots popup (V3.1.3 Phase 2) ───────────────── -->
+<!-- ── Event Slots popup (V3.1.4 Phase 2) ───────────────── -->
 <div id="event-slots-backdrop" class="memory-backdrop hidden" onclick="_closeEventSlotsPopup()"></div>
 <div id="event-slots-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -550,7 +550,7 @@ canvas{max-width:100%;height:auto}
   <button onclick="_closeEventSlotsPopup()" class="memory-close">ปิด</button>
 </div>
 
-<!-- ── Event Create modal (V3.1.3 Phase 7) ──────────────── -->
+<!-- ── Event Create modal (V3.1.4 Phase 7) ──────────────── -->
 <div id="event-create-backdrop" class="memory-backdrop hidden" onclick="_closeCreateEventModal()"></div>
 <div id="event-create-modal" class="memory-modal hidden">
   <div class="memory-header">
@@ -648,8 +648,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.1.3"></script>
-<script type="module" src="v3/v3tab.js?v=3.1.3"></script>
+<script src="script.js?v=3.1.4"></script>
+<script type="module" src="v3/v3tab.js?v=3.1.4"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
