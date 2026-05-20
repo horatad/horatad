@@ -1,5 +1,9 @@
-// HORATAD:SCRIPT:2.2.41
-// Version 2.2.41 | 2026-05-20
+// HORATAD:SCRIPT:2.2.42
+// Version 2.2.42 | 2026-05-20
+// Changes: [V2.2.42] Bug fix:
+//   - QR overflow "code length overflow (1060>976)" — Thai UTF-8 (3 bytes/char)
+//     ในชื่อ+จังหวัด ทำ payload โตเกิน ECC H ที่ qrcodejs encode ได้
+//   - ลด correctLevel H → M (15% recovery) — QR size 250 ใหญ่พอ M ก็อ่านได้ดี
 // Changes: [V2.2.41] Share image layout + QR payload:
 //   - Logo บน chart-canvas: 180→200, ขยับเข้าจากขอบขวา 10px (เดิมล้นออก 8px)
 //   - QR ขยาย 125→250 มุมบนซ้ายเดิม (28, 820) — bottom y=1070
@@ -153,7 +157,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.41';
+const APP_VERSION='2.2.42';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1521,7 +1525,8 @@ async function _generateShareImage(active){
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:250,height:250,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.H:undefined});
+    // V2.2.42: ECC H → M เพราะ Thai UTF-8 (3 bytes/char) ทำ payload โต → H overflow
+    new QRCode(qrDiv,{text:qrText,width:250,height:250,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.M:undefined});
     // iOS Safari: qrcodejs creates <img> not <canvas> — wait for onload
     await new Promise(res=>{
       const img=qrDiv.querySelector('img');
