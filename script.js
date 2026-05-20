@@ -359,7 +359,7 @@ function _renderTagRow(section){
   row.innerHTML='';
   // Phase 3: transit mode → tag-row-1 แสดง linked event chips
   if(section==='1'&&_reportTransitShow){
-    const evs=natal1?.name?_v3LoadEventSlots().filter(s=>s.linkedNatalName===natal1.name):[];
+    const evs=natal1?.uid?_dbEvents(natal1.uid):[];
     if(evs.length){
       evs.forEach(s=>{
         const chip=document.createElement('span');
@@ -401,9 +401,8 @@ function _renderTagRow(section){
 }
 function _eventSlotLoadByUid(uid){
   if(!uid)return;
-  const slots=_v3LoadEventSlots();
-  const idx=slots.findIndex(s=>s.uid===uid);
-  if(idx>=0)_eventSlotLoad(idx);
+  const s=_dbFind(uid);
+  if(s&&s.type==='event')_eventSlotLoadRecord(s);
 }
 function _toggleTag(section,name){
   const arr=_chartTags[section]||(_chartTags[section]=[]);
@@ -925,9 +924,9 @@ function toggleReportTransit(){
 // dir: -1=prev, +1=next
 function cycleMemory(dir){
   if(_viewMode===1){
-    // ดวงนอก: cycle buffer (horatad_buffer_v3) → update natal2
-    const buf=_v3LoadBuffer();
-    if(!buf.length){_showToast('ยังไม่มีดวงใน buffer — กรอกดวงที่ 2 เพื่อเพิ่ม');return;}
+    // ดวงนอก: cycle persons (สมพงศ์) → update natal2
+    const buf=_dbPersons();
+    if(!buf.length){_showToast('ยังไม่มีดวงในสมพงศ์ — กรอกดวงที่ 2 เพื่อเพิ่ม');return;}
     const curKey=natal2?`${natal2.name}|${natal2.d}/${natal2.m}/${natal2.y_be}`:'';
     const key=s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`;
     let idx=buf.findIndex(s=>key(s)===curKey);
@@ -969,11 +968,8 @@ function cycleMemory(dir){
 function _updateLinkedEventsDisplay(){
   const el=document.getElementById('report-linked-events');
   if(!el)return;
-  if(!natal1?.name){el.style.display='none';return;}
-  const evs=_v3LoadEventSlots().filter(s=>
-    (natal1.uid&&s.linkedNatalUid===natal1.uid)||
-    (!s.linkedNatalUid&&s.linkedNatalName===natal1.name)
-  );
+  if(!natal1?.uid){el.style.display='none';return;}
+  const evs=_dbEvents(natal1.uid);
   if(!evs.length){el.style.display='none';return;}
   el.style.display='block';
   el.innerHTML='🔗 เหตุการณ์: '+evs.map(s=>`<span style="margin-right:8px;cursor:pointer;color:#a0aec0" onclick="_openEventSlotsPopup()" title="${s.d}/${s.m}/${s.y_be} · ${s.t}">${_escHtml(s.name||'—')}</span>`).join('');
@@ -1200,13 +1196,13 @@ function _calcChart(num){
     // clear edit mode ถ้า user กด ผูกดวง 2 แทนที่จะกด 1 ขณะอยู่ใน edit mode
     if(_editingUid){_editingUid=null;_hideEditingIndicator();}
     _chart2=chart;_calc2Done=true;_viewMode=1;
-    // Step 4: set natal2 ทันที + auto-save to buffer ถ้าไม่ซ้ำ
+    // Step 4: set natal2 ทันที + auto-save as type='person' ถ้าไม่ซ้ำ
     natal2={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
-    const _buf=_v3LoadBuffer();
     const _bkey=`${chart.name}|${chart.d}/${chart.m}/${chart.y_be}`;
-    if(!_buf.some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===_bkey)){
-      _buf.unshift({name:chart.name,gender:chart.gender,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng});
-      _v3SaveBuffer(_buf);
+    if(!_dbPersons().some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===_bkey)){
+      _dbUpsert({uid:crypto.randomUUID(),type:'person',
+        name:chart.name,gender:chart.gender,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,
+        prov:chart.prov,lat:chart.lat,lng:chart.lng,savedAt:Date.now(),linkedNatalUid:null});
     }
   }
   _updateShareButton();
@@ -1581,145 +1577,125 @@ const PROMPTPAY_NAME='นายสิทธิเดช ประเสริฐ
 function _loadJSON(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
 function _saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 
-// ── V3.0 Schema Migration + Storage Layer ─────────────────
-// uniform schema สำหรับ natal1, natal2, buffer[10], event[10]
-// {uid, name, gender, d, m, y_be, t, prov, lat, lng, jd, pos|null, vel|null,
-//  savedAt, linkedEvents[], linkedNatal|null}
-const SCHEMA_VERSION=3;
+// ── V4 Unified Storage Layer ──────────────────────────────
+// type: 'natal' | 'person' | 'event' | 'group'
+// natal:  { uid, type, name, gender, d, m, y_be, t, prov, lat, lng, jd, pos, vel, savedAt }
+// person: { uid, type, ..., linkedNatalUid }   — สมพงศ์ / คนเปรียบเทียบ
+// event:  { uid, type, ..., linkedNatalUid }   — เหตุการณ์จร
+// group:  { uid, type, name, memberUids[], savedAt }
+const SCHEMA_VERSION=4;
 const SCHEMA_VERSION_KEY='horatad_schema_v';
-const DB1_KEY='horatad_db1_v3';            // ดวงกำเนิด (natal records)
-const DB2_KEY='horatad_db2_v3';            // เหตุการณ์จร (event records)
-const BUFFER_KEY='horatad_buffer_v3';      // สมพงศ์ buffer (max 10)
-const EVENT_SLOTS_KEY='horatad_event_slots_v3'; // active event slots (max 10)
-const BUFFER_MAX=10;
-const EVENT_SLOTS_MAX=10;
-const MIGRATION_NOTICE_KEY='horatad_v3_notice_shown';
+const DB_KEY='horatad_db_v4';
+const MIGRATION_NOTICE_KEY='horatad_v4_notice_shown';
 
-function _migrateSchemaV3(){
+function _migrateSchemaV4(){
   const cur=parseInt(localStorage.getItem(SCHEMA_VERSION_KEY)||'0',10);
-  if(cur===SCHEMA_VERSION)return false;
-  // Breaking change — ล้าง store เก่า + slot ใหม่ (user confirmed)
-  ['horatad_memory_v1','horatad_events_v1',DB1_KEY,DB2_KEY,BUFFER_KEY,EVENT_SLOTS_KEY]
-    .forEach(k=>localStorage.removeItem(k));
-  localStorage.setItem(SCHEMA_VERSION_KEY,String(SCHEMA_VERSION));
-  console.log('[V3] schema migrated → v'+SCHEMA_VERSION+' (DB เก่า cleared)');
-  return true;
-}
-const _v3Migrated=_migrateSchemaV3();
-
-// V3 record factory — uniform schema
-function _v3Record(input){
-  const {name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,pos=null,vel=null}=input||{};
-  const lat2=(typeof lat==='number')?lat:(PROVINCES_LAT[prov]||13.75);
-  const lng2=(typeof lng==='number')?lng:(PROVINCES[prov]||100.50);
-  return{
-    uid:crypto.randomUUID(),
-    name:(name||'').toString().slice(0,20),
-    gender,
-    d,m,y_be,t,
-    prov,lat:lat2,lng:lng2,
-    jd:(d&&m&&y_be)?Math.trunc(_calcJD(d,m,y_be)):null,
-    pos,vel,
-    savedAt:Date.now(),
-    linkedEvents:[],
-    linkedNatal:null
+  if(cur>=SCHEMA_VERSION)return false;
+  const unified=[];const seen=new Set();
+  const add=(r,type,extra={})=>{
+    if(!r||seen.has(r.uid))return;
+    const uid=r.uid||crypto.randomUUID();
+    seen.add(uid);
+    const clean={...r,...extra,type,uid};
+    delete clean.linkedEvents;delete clean.linkedNatal;
+    if(type!=='person'&&type!=='event')delete clean.linkedNatalUid;
+    unified.push(clean);
   };
+  (_loadJSON('horatad_db1_v3')||[]).forEach(r=>add(r,'natal'));
+  (_loadJSON('horatad_buffer_v3')||[]).forEach(r=>add(r,'person',{linkedNatalUid:null}));
+  (_loadJSON('horatad_event_slots_v3')||[]).forEach(r=>add(r,'event',{linkedNatalUid:r.linkedNatalUid||null}));
+  (_loadJSON('horatad_db2_v3')||[]).forEach(r=>add(r,'event',{linkedNatalUid:r.linkedNatal||null}));
+  if(unified.length)_saveJSON(DB_KEY,unified);
+  localStorage.setItem(SCHEMA_VERSION_KEY,String(SCHEMA_VERSION));
+  ['horatad_memory_v1','horatad_events_v1','horatad_db1_v3','horatad_db2_v3',
+   'horatad_buffer_v3','horatad_event_slots_v3'].forEach(k=>localStorage.removeItem(k));
+  console.log('[V4] unified DB migrated:',unified.length,'records');
+  return cur>0||unified.length>0;
 }
+const _v4Migrated=_migrateSchemaV4();
 
-// V3 storage helpers — DB1 (natal)
-function _v3LoadDB1(){return _loadJSON(DB1_KEY)||[];}
-function _v3SaveDB1(arr){_saveJSON(DB1_KEY,arr);}
-function _v3AddDB1(rec){
-  const db=_v3LoadDB1();
+// ── Core DB CRUD ──────────────────────────────────────────
+function _dbLoad(){return _loadJSON(DB_KEY)||[];}
+function _dbSave(arr){_saveJSON(DB_KEY,arr);}
+function _dbFind(uid){return _dbLoad().find(r=>r.uid===uid)||null;}
+function _dbRemove(uid){_dbSave(_dbLoad().filter(r=>r.uid!==uid));}
+function _dbUpsert(rec){
+  const db=_dbLoad();
   const i=db.findIndex(r=>r.uid===rec.uid);
   if(i>=0)db[i]=rec;else db.unshift(rec);
-  _v3SaveDB1(db);
-  return rec.uid;
+  _dbSave(db);return rec;
 }
-function _v3FindDB1(uid){return _v3LoadDB1().find(r=>r.uid===uid)||null;}
-function _v3RemoveDB1(uid){_v3SaveDB1(_v3LoadDB1().filter(r=>r.uid!==uid));}
-// Phase 6: content-based upsert (key=name|d/m/y_be|t) — เก็บ uid+links เดิมถ้ามีแล้ว
-// Phase 10: ถ้ามี _editingUid → ลบ record เดิมก่อน (รองรับเปลี่ยนชื่อ/วัน/เวลา)
-function _v3UpsertDB1(rec){
-  let db=_v3LoadDB1();
-  let inheritedLinks={linkedEvents:[],linkedNatal:null};
-  if(_editingUid){
-    const old=db.find(r=>r.uid===_editingUid);
-    if(old)inheritedLinks={linkedEvents:old.linkedEvents||[],linkedNatal:old.linkedNatal||null};
-    db=db.filter(r=>r.uid!==_editingUid);
-    _editingUid=null;
-    _hideEditingIndicator();
-  }
-  const key=r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}`;
-  const i=db.findIndex(r=>key(r)===key(rec));
-  if(i>=0){
-    rec=Object.assign({},rec,{
-      uid:db[i].uid,
-      linkedEvents:db[i].linkedEvents||inheritedLinks.linkedEvents,
-      linkedNatal:db[i].linkedNatal||inheritedLinks.linkedNatal,
-      savedAt:Date.now()
-    });
-    db[i]=rec;
-  }else{
-    rec={...rec,...inheritedLinks,savedAt:Date.now()};
-    db.unshift(rec);
-  }
-  _v3SaveDB1(db);
+function _dbLoadType(type){return _dbLoad().filter(r=>r.type===type);}
+function _dbSaveType(type,arr){
+  const others=_dbLoad().filter(r=>r.type!==type);
+  _dbSave([...arr,...others]);
+}
+
+// ── Type-specific queries ─────────────────────────────────
+function _dbPersons(linkedNatalUid){
+  const all=_dbLoadType('person');
+  return linkedNatalUid!=null?all.filter(r=>r.linkedNatalUid===linkedNatalUid):all;
+}
+function _dbEvents(linkedNatalUid){
+  const all=_dbLoadType('event');
+  return linkedNatalUid!=null?all.filter(r=>r.linkedNatalUid===linkedNatalUid):all;
+}
+function _dbGroups(){return _dbLoadType('group');}
+
+// ── Natal shims (keep existing call sites working) ────────
+function _v3LoadDB1(){return _dbLoadType('natal');}
+function _v3SaveDB1(arr){_dbSaveType('natal',arr.map(r=>({...r,type:'natal'})));}
+function _v3FindDB1(uid){const r=_dbFind(uid);return(r&&r.type==='natal')?r:null;}
+function _v3RemoveDB1(uid){_dbRemove(uid);}
+function _v3AddDB1(rec){return _dbUpsert({...rec,type:'natal'});}
+
+// V4 record factory
+function _v3Record(input,type='natal'){
+  const{name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,pos=null,vel=null,linkedNatalUid=null}=input||{};
+  const lat2=(typeof lat==='number')?lat:(PROVINCES_LAT[prov]||13.75);
+  const lng2=(typeof lng==='number')?lng:(PROVINCES[prov]||100.50);
+  const rec={
+    uid:crypto.randomUUID(),type,
+    name:(name||'').toString().slice(0,20),
+    gender,d,m,y_be,t,
+    prov,lat:lat2,lng:lng2,
+    jd:(d&&m&&y_be)?Math.trunc(_calcJD(d,m,y_be)):null,
+    pos,vel,savedAt:Date.now()
+  };
+  if(type==='person'||type==='event')rec.linkedNatalUid=linkedNatalUid;
+  if(type==='group'){rec.memberUids=[];['d','m','y_be','t','prov','lat','lng','jd','pos','vel'].forEach(k=>delete rec[k]);}
   return rec;
 }
 
-// V3 storage — DB2 (events)
-function _v3LoadDB2(){return _loadJSON(DB2_KEY)||[];}
-function _v3SaveDB2(arr){_saveJSON(DB2_KEY,arr);}
-function _v3AddDB2(rec){
-  const db=_v3LoadDB2();
-  const i=db.findIndex(r=>r.uid===rec.uid);
-  if(i>=0)db[i]=rec;else db.unshift(rec);
-  _v3SaveDB2(db);
-  return rec.uid;
-}
-function _v3FindDB2(uid){return _v3LoadDB2().find(r=>r.uid===uid)||null;}
-function _v3RemoveDB2(uid){_v3SaveDB2(_v3LoadDB2().filter(r=>r.uid!==uid));}
-
-// V3 storage — buffer (สมพงศ์ candidates, max 10)
-function _v3LoadBuffer(){return _loadJSON(BUFFER_KEY)||[];}
-function _v3SaveBuffer(arr){_saveJSON(BUFFER_KEY,arr.slice(0,BUFFER_MAX));}
-
-// V3 storage — event slots (active transits, max 10)
-function _v3LoadEventSlots(){return _loadJSON(EVENT_SLOTS_KEY)||[];}
-function _v3SaveEventSlots(arr){_saveJSON(EVENT_SLOTS_KEY,arr.slice(0,EVENT_SLOTS_MAX));}
-
-// V3 bidirectional event link (natal1 ↔ event)
-function _v3LinkEventToNatal(eventUid,natalUid){
-  if(!eventUid||!natalUid)return;
-  const natal=_v3FindDB1(natalUid);
-  if(natal){
-    if(!Array.isArray(natal.linkedEvents))natal.linkedEvents=[];
-    if(!natal.linkedEvents.includes(eventUid))natal.linkedEvents.push(eventUid);
-    _v3AddDB1(natal);
+// natal upsert — content-based dedup, no bidirectional links
+function _v3UpsertDB1(rec){
+  const db=_dbLoad();
+  if(_editingUid){
+    const fi=db.findIndex(r=>r.uid===_editingUid);
+    if(fi>=0)db.splice(fi,1);
+    _editingUid=null;_hideEditingIndicator();
   }
-  const ev=_v3FindDB2(eventUid);
-  if(ev){ev.linkedNatal=natalUid;_v3AddDB2(ev);}
-}
-function _v3UnlinkEvent(eventUid){
-  const ev=_v3FindDB2(eventUid);
-  if(!ev||!ev.linkedNatal)return;
-  const natal=_v3FindDB1(ev.linkedNatal);
-  if(natal&&Array.isArray(natal.linkedEvents)){
-    natal.linkedEvents=natal.linkedEvents.filter(u=>u!==eventUid);
-    _v3AddDB1(natal);
+  const key=r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}`;
+  const normed={...rec,type:'natal',savedAt:Date.now()};
+  delete normed.linkedEvents;delete normed.linkedNatal;
+  const natals=db.filter(r=>r.type==='natal');
+  const i=natals.findIndex(r=>key(r)===key(normed));
+  if(i>=0){
+    normed.uid=natals[i].uid;
+    const gi=db.findIndex(r=>r.uid===normed.uid);
+    if(gi>=0)db[gi]=normed;
+  }else{
+    db.unshift(normed);
   }
-  ev.linkedNatal=null;_v3AddDB2(ev);
+  _dbSave(db);return normed;
 }
 
-// One-time notice หลัง migrate — wired ตอนหน้า ready (init จะเรียก)
+// One-time notice หลัง migrate
 function _v3MaybeShowMigrateNotice(){
-  if(!_v3Migrated)return;
+  if(!_v4Migrated)return;
   if(localStorage.getItem(MIGRATION_NOTICE_KEY))return;
   localStorage.setItem(MIGRATION_NOTICE_KEY,'1');
-  if(typeof _showToast==='function'){
-    _showToast('V3.0: ปรับ schema ฐานข้อมูลใหม่ — ข้อมูลเก่าถูกล้าง (1 ครั้ง)');
-  }
+  if(typeof _showToast==='function')_showToast('V4: รวม DB เป็น schema เดียว — สมพงศ์/เหตุการณ์/กลุ่ม');
 }
 
 
@@ -2064,8 +2040,8 @@ function _updateNavHeader(){
   if(!natal1){hdr.classList.add('hidden');return;}
   hdr.classList.remove('hidden');
   if(_viewMode===1&&natal2){
-    // ดวงนอก: แสดง natal2 + ตำแหน่งใน buffer
-    const buf=_v3LoadBuffer();
+    // ดวงนอก: แสดง natal2 + ตำแหน่งในสมพงศ์
+    const buf=_dbPersons();
     const name=natal2.name||'ไม่ระบุ';
     const d=natal2.d,m=natal2.m,y=natal2.y_be;
     let posStr='';
@@ -2099,12 +2075,10 @@ function _updateMainMenuState(){
     tb.textContent=_reportTransitShow?'แสดง':'ซ่อน';
     tb.classList.toggle('active',_reportTransitShow);
   }
-  const buf=_v3LoadBuffer();
   const si=document.getElementById('main-menu-sompong-info');
-  if(si)si.textContent=`${buf.length}/10 ›`;
-  const evSlots=_v3LoadEventSlots();
+  if(si)si.textContent=`${_dbPersons().length} ›`;
   const ei=document.getElementById('main-menu-event-info');
-  if(ei)ei.textContent=`${evSlots.length}/10 ›`;
+  if(ei)ei.textContent=`${_dbEvents().length} ›`;
   const db1=_v3LoadDB1();
   const di=document.getElementById('main-menu-db1-info');
   if(di)di.textContent=`${db1.length} ›`;
@@ -2139,48 +2113,43 @@ function _closeSompongPopup(){
   document.getElementById('sompong-modal').classList.add('hidden');
 }
 function _renderSompongList(){
-  const slots=_v3LoadBuffer();
+  const slots=_dbPersons();
   const list=document.getElementById('sompong-list');
   const cnt=document.getElementById('sompong-count');
   if(!list)return;
-  if(cnt)cnt.textContent=`${slots.length}/10`;
+  if(cnt)cnt.textContent=`${slots.length}`;
   if(!slots.length){
-    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีดวงใน buffer</div>';
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีดวงในสมพงศ์</div>';
     return;
   }
-  list.innerHTML=slots.map((s,i)=>`
+  list.innerHTML=slots.map(s=>`
     <div class="memory-item" style="display:flex;align-items:center;gap:6px">
-      <div style="flex:1;min-width:0;cursor:pointer" onclick="_sompongLoad(${i})">
-        <div class="memory-name">${s.name||'—'}</div>
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="_sompongLoadByUid('${s.uid}')">
+        <div class="memory-name">${_escHtml(s.name||'—')}</div>
         <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}</div>
       </div>
-      <button onclick="_sompongDelete(${i})" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+      <button onclick="_sompongDeleteByUid('${s.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
     </div>
   `).join('');
 }
-function _sompongLoad(idx){
-  const slots=_v3LoadBuffer();
-  const s=slots[idx];
+function _sompongLoadByUid(uid){
+  const s=_dbFind(uid);
   if(!s)return;
   const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
   const y_ce=_beToce(s.y_be,s.m);
   const[hr,mn]=(s.t||'00:00').split(':').map(Number);
   const pos=get_data(s.d,s.m,y_ce,hr,mn,lng);
   natal2={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
-  _viewMode=1;
-  _applyViewMode();
-  _redraw();
+  _viewMode=1;_applyViewMode();_redraw();
   _closeSompongPopup();
-  _showToast(`โหลดสมพงศ์ ${s.name||'—'} แล้ว`);
+  _showToast(`โหลดสมพงศ์ ${_escHtml(s.name||'—')} แล้ว`);
 }
-function _sompongDelete(idx){
-  const slots=_v3LoadBuffer();
-  const name=slots[idx]?.name||'—';
-  _showConfirm('ลบออกจาก buffer',`ลบ "${name}"?`,()=>{
-    slots.splice(idx,1);
-    _v3SaveBuffer(slots);
-    _renderSompongList();
-    _updateMainMenuState();
+function _sompongDeleteByUid(uid){
+  const s=_dbFind(uid);
+  if(!s)return;
+  _showConfirm('ลบออกจากสมพงศ์',`ลบ "${_escHtml(s.name||'—')}"?`,()=>{
+    _dbRemove(uid);
+    _renderSompongList();_updateMainMenuState();
   });
 }
 function _sompongNew(){
@@ -2201,28 +2170,27 @@ function _closeEventSlotsPopup(){
   document.getElementById('event-slots-modal').classList.add('hidden');
 }
 function _renderEventSlotsList(){
-  const slots=_v3LoadEventSlots();
+  const slots=_dbEvents();
   const list=document.getElementById('event-slots-list');
   const cnt=document.getElementById('event-slots-count');
   if(!list)return;
-  if(cnt)cnt.textContent=`${slots.length}/10`;
+  if(cnt)cnt.textContent=`${slots.length}`;
   if(!slots.length){
-    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีเหตุการณ์ใน slots<br><small>กด "+ บันทึกดวง 2" หลังผูกดวงที่ 2</small></div>';
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีเหตุการณ์<br><small>กด "+ บันทึกดวง 2" หลังผูกดวงที่ 2</small></div>';
     return;
   }
-  list.innerHTML=slots.map((s,i)=>`
-    <div class="memory-item" style="display:flex;align-items:center;gap:6px">
-      <div style="flex:1;min-width:0;cursor:pointer" onclick="_eventSlotLoad(${i})">
-        <div class="memory-name">${s.name||'—'}</div>
-        <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}${s.linkedNatalName?' · 🔗 '+s.linkedNatalName:''}</div>
+  list.innerHTML=slots.map(s=>{
+    const linkedName=s.linkedNatalUid?(_v3FindDB1(s.linkedNatalUid)?.name||null):null;
+    return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
+      <div style="flex:1;min-width:0;cursor:pointer" onclick="_eventSlotLoadByUid('${s.uid}')">
+        <div class="memory-name">${_escHtml(s.name||'—')}</div>
+        <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}${linkedName?' · 🔗 '+_escHtml(linkedName):''}</div>
       </div>
-      <button onclick="_eventSlotDelete(${i})" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
-    </div>
-  `).join('');
+      <button onclick="_eventSlotDeleteByUid('${s.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+    </div>`;
+  }).join('');
 }
-function _eventSlotLoad(idx){
-  const slots=_v3LoadEventSlots();
-  const s=slots[idx];
+function _eventSlotLoadRecord(s){
   if(!s)return;
   const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
   const y_ce=_beToce(s.y_be,s.m);
@@ -2230,51 +2198,37 @@ function _eventSlotLoad(idx){
   const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn,lng);
   const pos2=get_data(s.d,s.m,y_ce,hr+24,mn,lng);
   const vel=s.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
-  natal2={name:s.name,gender:s.gender||'ชาย',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
-  _viewMode=1;
-  _applyViewMode();
-  _redraw();
+  natal2={name:s.name,gender:s.gender||'เหตุการณ์',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+  _viewMode=1;_applyViewMode();_redraw();
   _closeEventSlotsPopup();
-  _showToast(`โหลดเหตุการณ์ "${s.name||'—'}" แล้ว`);
+  _showToast(`โหลดเหตุการณ์ "${_escHtml(s.name||'—')}" แล้ว`);
 }
-function _eventSlotDelete(idx){
-  const slots=_v3LoadEventSlots();
-  const name=slots[idx]?.name||'—';
-  _showConfirm('ลบเหตุการณ์',`ลบ "${name}"?`,()=>{
-    slots.splice(idx,1);
-    _v3SaveEventSlots(slots);
-    _renderEventSlotsList();
-    _updateMainMenuState();
-    _renderTagRow('1');
+function _eventSlotDeleteByUid(uid){
+  const s=_dbFind(uid);
+  if(!s)return;
+  _showConfirm('ลบเหตุการณ์',`ลบ "${_escHtml(s.name||'—')}"?`,()=>{
+    _dbRemove(uid);
+    _renderEventSlotsList();_updateMainMenuState();_renderTagRow('1');
   });
 }
 function _eventSlotSaveCurrent(){
-  if(!_calc2Done||!_chart2){
-    _showToast('กรุณาผูกดวงที่ 2 ก่อน');
-    return;
-  }
-  const slots=_v3LoadEventSlots();
+  if(!_calc2Done||!_chart2){_showToast('กรุณาผูกดวงที่ 2 ก่อน');return;}
   const key=`${_chart2.name}|${_chart2.d}/${_chart2.m}/${_chart2.y_be}`;
-  if(slots.some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===key)){
-    _showToast('เหตุการณ์นี้มีใน slots แล้ว');
-    return;
+  if(_dbEvents().some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===key)){
+    _showToast('เหตุการณ์นี้มีใน DB แล้ว');return;
   }
   const rec={
-    uid:_chart2.uid||crypto.randomUUID(),
+    uid:_chart2.uid||crypto.randomUUID(),type:'event',
     name:_chart2.name,gender:_chart2.gender,
     d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,
     prov:_chart2.prov,lat:_chart2.lat,lng:_chart2.lng,
     pos:_chart2.pos,vel:_chart2.vel,
     savedAt:Date.now(),
-    linkedNatalName:natal1?.name||null,
     linkedNatalUid:natal1?.uid||null
   };
-  slots.unshift(rec);
-  _v3SaveEventSlots(slots);
-  _renderEventSlotsList();
-  _updateMainMenuState();
-  _renderTagRow('1');
-  _showToast(`บันทึก "${rec.name}"${natal1?' (🔗 '+natal1.name+')':''}`);
+  _dbUpsert(rec);
+  _renderEventSlotsList();_updateMainMenuState();_renderTagRow('1');
+  _showToast(`บันทึก "${_escHtml(rec.name)}"${natal1?' (🔗 '+_escHtml(natal1.name)+')':''}`);
 }
 
 // ── Event Create form (Phase 7) ──────────────────────────
@@ -2318,28 +2272,18 @@ function _submitCreateEvent(){
   const pos=get_data(d,m,y_ce,hr,mn,100.50);
   const pos2=get_data(d,m,y_ce,hr+24,mn,100.50);
   const vel=pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
-  const linkedNatal=natalUid?_v3FindDB1(natalUid):null;
   const rec={
-    uid:crypto.randomUUID(),name,gender:'เหตุการณ์',
+    uid:crypto.randomUUID(),type:'event',
+    name,gender:'เหตุการณ์',
     d,m,y_be,t,prov:'กรุงเทพมหานคร',lat:13.75,lng:100.50,
     pos,vel,savedAt:Date.now(),
-    linkedNatalName:linkedNatal?.name||null,
     linkedNatalUid:natalUid||null
   };
-  // bidirectional link
-  if(linkedNatal){
-    if(!Array.isArray(linkedNatal.linkedEvents))linkedNatal.linkedEvents=[];
-    if(!linkedNatal.linkedEvents.includes(rec.uid))linkedNatal.linkedEvents.push(rec.uid);
-    _v3AddDB1(linkedNatal);
-  }
-  const slots=_v3LoadEventSlots();
-  slots.unshift(rec);
-  _v3SaveEventSlots(slots);
+  _dbUpsert(rec);
   _closeCreateEventModal();
-  _updateMainMenuState();
-  _renderTagRow('1');
-  _updateLinkedEventsDisplay();
-  _showToast(`บันทึก "${name}"${linkedNatal?' (🔗 '+linkedNatal.name+')':''}`);
+  _updateMainMenuState();_renderTagRow('1');_updateLinkedEventsDisplay();
+  const linkedName=natalUid?_v3FindDB1(natalUid)?.name:null;
+  _showToast(`บันทึก "${_escHtml(name)}"${linkedName?' (🔗 '+_escHtml(linkedName)+')':''}`);
 }
 
 // ── DB1 Browser (Phase 9) ────────────────────────────────
@@ -2367,7 +2311,7 @@ function _renderDB1List(){
     return;
   }
   list.innerHTML=filtered.map(r=>{
-    const evCount=(r.linkedEvents||[]).length;
+    const evCount=_dbEvents(r.uid).length;
     const badge=evCount?`<span style="font-size:10px;color:#c9b8f0;margin-left:4px">🔗${evCount}</span>`:'';
     return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
       <div style="flex:1;min-width:0;cursor:pointer" onclick="_db1Load('${r.uid}')">
@@ -2453,19 +2397,16 @@ function _closeExportModal(){
 }
 function _exportDB(){
   const payload={
-    _id:'HORATAD:EXPORT',
-    v:APP_VERSION,
+    _id:'HORATAD:EXPORT',v:APP_VERSION,
     exportedAt:new Date().toISOString(),
-    db1:_v3LoadDB1(),
-    eventSlots:_v3LoadEventSlots()
+    db:_dbLoad()
   };
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;
   a.download=`horatad_export_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+  a.click();URL.revokeObjectURL(url);
   _showToast('ส่งออกข้อมูลแล้ว');
 }
 function _importDB(input){
@@ -2476,33 +2417,28 @@ function _importDB(input){
     try{
       const data=JSON.parse(e.target.result);
       if(data._id!=='HORATAD:EXPORT')throw new Error('ไฟล์ไม่ถูกต้อง');
-      let addedDb1=0,addedEv=0;
-      // merge DB1
-      if(Array.isArray(data.db1)){
-        const db=_v3LoadDB1();
-        for(const rec of data.db1){
-          if(!rec.uid)continue;
-          if(!db.find(r=>r.uid===rec.uid)){db.unshift(rec);addedDb1++;}
-        }
-        _v3SaveDB1(db);
+      let added=0;
+      const db=_dbLoad();
+      const existingUids=new Set(db.map(r=>r.uid));
+      // รองรับ format ใหม่ (db[]) และเก่า (db1[]+eventSlots[])
+      const incoming=[
+        ...(Array.isArray(data.db)?data.db:[]),
+        ...(Array.isArray(data.db1)?data.db1.map(r=>({...r,type:r.type||'natal'})):[]),
+        ...(Array.isArray(data.eventSlots)?data.eventSlots.map(r=>({...r,type:r.type||'event'})):[])
+      ];
+      for(const rec of incoming){
+        if(!rec.uid||existingUids.has(rec.uid))continue;
+        existingUids.add(rec.uid);
+        db.unshift(rec);added++;
       }
-      // merge event slots
-      if(Array.isArray(data.eventSlots)){
-        const slots=_v3LoadEventSlots();
-        for(const rec of data.eventSlots){
-          if(!rec.uid)continue;
-          if(!slots.find(r=>r.uid===rec.uid)){slots.unshift(rec);addedEv++;}
-        }
-        _v3SaveEventSlots(slots);
-      }
-      // ตรวจ orphan links (eventSlots ชี้ไป uid ที่ไม่มีใน DB1)
-      const db1After=_v3LoadDB1();
-      const orphans=_v3LoadEventSlots().filter(s=>s.linkedNatalUid&&!db1After.find(r=>r.uid===s.linkedNatalUid)).length;
-      const orphanNote=orphans?` · ⚠️ เหตุการณ์ ${orphans} รายการ link กับดวงที่ไม่ได้นำเข้า`:'';
-      const msg=`นำเข้าสำเร็จ: ดวง +${addedDb1}, เหตุการณ์ +${addedEv}${orphanNote}`;
+      _dbSave(db);
+      // ตรวจ orphan events
+      const natalUids=new Set(_dbLoadType('natal').map(r=>r.uid));
+      const orphans=_dbEvents().filter(s=>s.linkedNatalUid&&!natalUids.has(s.linkedNatalUid)).length;
+      const orphanNote=orphans?` · ⚠️ เหตุการณ์ ${orphans} รายการ link กับดวงที่ไม่มีใน DB`:'';
+      const msg=`นำเข้าสำเร็จ: +${added} รายการ${orphanNote}`;
       document.getElementById('import-result').textContent=msg;
-      _updateMainMenuState();
-      _showToast(msg);
+      _updateMainMenuState();_showToast(msg);
     }catch(err){
       document.getElementById('import-result').textContent='⚠️ '+err.message;
       _showToast('นำเข้าไม่สำเร็จ: '+err.message,true);
