@@ -3,6 +3,14 @@
 
 ---
 
+## [V2.2.32] — 2026-05-20
+- Alert popup ค้างกระพริบ (Phase 2.2 of V2.2.42 restore)
+- `showAlert(msg, type)` + `closeAlert()` helpers — globally available
+- tap-backdrop-to-close, popup ไม่ปิดเอง (ค้างจนกว่าผู้ใช้แตะ)
+- red blink (error) / green blink (success) ผ่าน `@keyframes alert-blink` / `alert-blink-green`
+- CSS classes: `.alert-overlay`, `.alert-popup`, `.alert-success` ใน style.css
+- z-index 3000 อยู่เหนือ toast (2000) และ offline-banner (1900)
+
 ## [V2.2.31] — 2026-05-20
 - Share image layout overhaul (Phase 2 of V2.2.42 restore)
 - QR ย้ายจาก bottom-right ไป bottom-left ที่ `(28, 820)` size `125×125` ECC Level H

@@ -1,5 +1,10 @@
-// HORATAD:SCRIPT:2.2.31
-// Version 2.2.31 | 2026-05-20
+// HORATAD:SCRIPT:2.2.32
+// Version 2.2.32 | 2026-05-20
+// Changes: [V2.2.32] Alert popup ค้างกระพริบ (V2.2.42 restore):
+//   - showAlert(msg,type) / closeAlert() helpers (top-level, globally available)
+//   - tap-backdrop-to-close, popup ไม่ปิดเอง
+//   - red blink (error) / green blink (success) ผ่าน CSS keyframes
+//   - CSS: .alert-overlay + .alert-popup + .alert-success ใน style.css
 // Changes: [V2.2.31] Share image layout overhaul (V2.2.42 spec):
 //   - QR bottom-left (28, 820, 125×125, ECC H), iOS img onload race fix
 //   - Right column right-aligned 4 lines: name / date / time / prov
@@ -97,7 +102,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.31';
+const APP_VERSION='2.2.32';
 
 const PROVINCES={
 "กรุงเทพมหานคร":100.50,"กระบี่":98.91,"กาญจนบุรี":99.53,"กาฬสินธุ์":103.51,
@@ -370,6 +375,25 @@ function _showToast(msg,warn){
   t.classList.add('toast-show');
   if(_toastTimer)clearTimeout(_toastTimer);
   _toastTimer=setTimeout(()=>t.classList.remove('toast-show'),2200);
+}
+
+// V2.2.32: showAlert/closeAlert — popup ค้างกระพริบ tap-backdrop-to-dismiss
+function showAlert(msg,type){
+  closeAlert();
+  const overlay=document.createElement('div');
+  overlay.className='alert-overlay';
+  overlay.id='_alertOverlay';
+  const popup=document.createElement('div');
+  popup.className='alert-popup'+(type==='success'?' alert-success':'');
+  popup.textContent=msg;
+  overlay.appendChild(popup);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeAlert();});
+  popup.addEventListener('click',e=>e.stopPropagation());
+  document.body.appendChild(overlay);
+}
+function closeAlert(){
+  const ov=document.getElementById('_alertOverlay');
+  if(ov)ov.remove();
 }
 
 // logo preload
