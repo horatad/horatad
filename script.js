@@ -1,5 +1,12 @@
-// HORATAD:SCRIPT:3.0.6
-// Version 3.0.6 | 2026-05-20
+// HORATAD:SCRIPT:3.0.7
+// Version 3.0.7 | 2026-05-20
+// Changes: [V3.0.7] Phase 3 — Tag area semantic toggle:
+//   - tag-row-1 ใน transit mode (_reportTransitShow=true) → แสดง linked event chips
+//   - chip คลิก → load event เป็น natal2 (viewMode=1)
+//   - "+ เหตุการณ์" chip → open event slots popup
+//   - _eventSlotLoadByUid(uid): helper สำหรับ load จาก uid โดยตรง
+//   - tag-event-chip CSS class (สีม่วง) แยกจาก category chip
+//   - toggle / save / delete event → refresh tag-row-1 อัตโนมัติ
 // Changes: [V3.0.6] Phase 2 — Event panel (เหตุการณ์ slots popup):
 //   - เพิ่ม "เหตุการณ์" row ใน ⚙️ menu — แสดง N/10 count
 //   - event-slots-modal popup: แสดง slot list, load/delete
@@ -207,7 +214,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.6';
+const APP_VERSION='3.0.7';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -561,6 +568,33 @@ function _renderTagRow(section){
   const row=document.getElementById('tag-row-'+section);
   if(!row)return;
   row.innerHTML='';
+  // Phase 3: transit mode → tag-row-1 แสดง linked event chips
+  if(section==='1'&&_reportTransitShow){
+    const evs=natal1?.name?_v3LoadEventSlots().filter(s=>s.linkedNatalName===natal1.name):[];
+    if(evs.length){
+      evs.forEach(s=>{
+        const chip=document.createElement('span');
+        chip.className='tag-chip tag-event-chip';
+        chip.textContent='🔗 '+(s.name||'—');
+        chip.title=`${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''} — คลิกโหลด`;
+        chip.addEventListener('click',()=>_eventSlotLoadByUid(s.uid));
+        row.appendChild(chip);
+      });
+    }else{
+      const ph=document.createElement('span');
+      ph.className='tag-chip';
+      ph.style.cssText='color:#444;cursor:default;background:transparent;border-color:#2a2a2e';
+      ph.textContent='ยังไม่มีเหตุการณ์';
+      row.appendChild(ph);
+    }
+    const addBtn=document.createElement('span');
+    addBtn.className='tag-chip-add';
+    addBtn.textContent='+ เหตุการณ์';
+    addBtn.addEventListener('click',()=>_openEventSlotsPopup());
+    row.appendChild(addBtn);
+    return;
+  }
+  // ปกติ: category tags
   const tags=_allTags();
   const active=_chartTags[section]||[];
   tags.forEach(name=>{
@@ -575,6 +609,12 @@ function _renderTagRow(section){
   addBtn.textContent='+ เพิ่ม';
   addBtn.addEventListener('click',()=>_openAddTagModal(section));
   row.appendChild(addBtn);
+}
+function _eventSlotLoadByUid(uid){
+  if(!uid)return;
+  const slots=_v3LoadEventSlots();
+  const idx=slots.findIndex(s=>s.uid===uid);
+  if(idx>=0)_eventSlotLoad(idx);
 }
 function _toggleTag(section,name){
   const arr=_chartTags[section]||(_chartTags[section]=[]);
@@ -1084,6 +1124,7 @@ function toggleReportTransit(){
     btn.classList.toggle('btn-active',_reportTransitShow);
   }
   _playBeep(700);
+  _renderTagRow('1');
   if(_reportTransitShow){
     calculateTransit();
   }else{
@@ -2384,6 +2425,7 @@ function _eventSlotDelete(idx){
     _v3SaveEventSlots(slots);
     _renderEventSlotsList();
     _updateMainMenuState();
+    _renderTagRow('1');
   });
 }
 function _eventSlotSaveCurrent(){
@@ -2411,6 +2453,7 @@ function _eventSlotSaveCurrent(){
   _v3SaveEventSlots(slots);
   _renderEventSlotsList();
   _updateMainMenuState();
+  _renderTagRow('1');
   _showToast(`บันทึก "${rec.name}"${natal1?' (🔗 '+natal1.name+')':''}`);
 }
 
