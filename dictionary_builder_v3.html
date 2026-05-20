@@ -201,6 +201,8 @@ header .sub { color: var(--muted); font-size: 12px; }
   <button class="btn btn-purple" onclick="exportKBContext()">⬇ kb_context.json</button>
   <button class="btn btn-outline" onclick="saveState()">💾 Save state</button>
   <button class="btn btn-outline" onclick="loadState()">📂 Load state</button>
+  <button class="btn btn-outline" onclick="importAIConditions()" title="Import conditions จาก extract_conditions.html output">📥 Import AI</button>
+  <button class="btn btn-gold" onclick="exportKBJson()">⬇ kb.json</button>
 </div>
 
 <div class="main">
@@ -537,6 +539,72 @@ function loadState() {
     reader.readAsText(file);
   };
   input.click();
+}
+
+// ============================================================
+// IMPORT AI CONDITIONS (จาก extract_conditions.html output)
+// ============================================================
+function importAIConditions() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        // รองรับ 2 format: {results:[...]} หรือ [...] ตรงๆ
+        const aiResults = Array.isArray(data) ? data : (data.results || []);
+        if (!aiResults.length) { alert('ไม่พบ results ใน JSON'); return; }
+
+        let imported = 0, skipped = 0;
+        aiResults.forEach(item => {
+          const r = rules.find(x => x.id === item.predict_id);
+          if (!r) { skipped++; return; }
+          if (!Array.isArray(item.conditions) || item.conditions.length === 0) { skipped++; return; }
+          // map extract format → builder format
+          r.conditions = item.conditions.map(c => ({
+            planet_id:        c.planet    || c.planet_id    || '',
+            quality_required: c.quality   || c.quality_required || 'ANY',
+            lagna_aspect_req: c.aspect    || c.lagna_aspect_req  || 'ANY',
+            required:         c.required !== undefined ? c.required : true,
+          }));
+          imported++;
+        });
+        // save to localStorage
+        localStorage.setItem('horatad_builder_v3', JSON.stringify(rules.map(r => ({id:r.id, conditions:r.conditions}))));
+        updateStats(); applyFilters();
+        alert(`Import สำเร็จ\nนำเข้า: ${imported} rules\nข้าม: ${skipped} rules\n\nตรวจสอบแล้วกด Save state หรือ Export`);
+      } catch(err) { alert('ไฟล์ไม่ถูกต้อง: ' + err.message); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ============================================================
+// EXPORT kb.json (format ที่ app ใช้จริง)
+// ============================================================
+function exportKBJson() {
+  const allRules = [...ENGINE_RULES_RAW, ...DEFINITIONS_RAW];
+  const kb = allRules.map(raw => {
+    const r = rules.find(x => x.id === raw.id) || raw;
+    const tags = (raw.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+    const obj = {
+      c:  raw.condition,
+      p:  raw.predict,
+      t:  tags,
+      ch: raw.chapter,
+      pr: raw.rule_type === 'TRUE_RULE' ? 1 : raw.rule_type === 'DEFINITION' ? 1 : 2,
+    };
+    if (r.conditions && r.conditions.length > 0) obj.conditions = r.conditions;
+    if (raw.rule_type) obj.rule_type = raw.rule_type;
+    if (raw.category) obj.category = raw.category;
+    return obj;
+  });
+  const blob = new Blob([JSON.stringify(kb, null, 2)], {type:'application/json'});
+  dlBlob(blob, 'kb.json');
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
