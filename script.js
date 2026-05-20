@@ -1,5 +1,9 @@
-// HORATAD:SCRIPT:2.2.39
-// Version 2.2.39 | 2026-05-20
+// HORATAD:SCRIPT:2.2.40
+// Version 2.2.40 | 2026-05-20
+// Changes: [V2.2.40] Refactor (no behavior change):
+//   - calculateChart1/2 มี logic ซ้ำเกือบหมด ยกเว้น id suffix + default name/year
+//   - factor เป็น _calcChart(num) + _CHART_CFG table → ลด duplicate ~35 บรรทัด
+//   - calculateChart1/2 ยังคงไว้เป็น thin wrapper (HTML/internal callers ใช้ชื่อเดิม)
 // Changes: [V2.2.39] V3 tab fixes:
 //   - expose window.APP_VERSION ให้ v3tab.js (ES module) ใช้สร้าง cache-bust query
 //     สำหรับ kb.json — เดิม fetch './v3/kb.json' ไม่มี query → SW cache key
@@ -143,7 +147,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.39';
+const APP_VERSION='2.2.40';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1270,24 +1274,32 @@ function sanitizeTime(val){
 function _setField(id,val){const el=document.getElementById(id);if(el)el.value=val;}
 
 // ── Calculate ─────────────────────────────────────────────
-function calculateChart1(){
-  const name=document.getElementById('name-1').value||'ไม่ระบุ';
-  const gender=document.getElementById('gender1').value||'ชาย';
-  let d=sanitizeInt(document.getElementById('d1').value,1,31,1);
-  let m=sanitizeInt(document.getElementById('m1').value,1,12,1);
-  let y=sanitizeInt(document.getElementById('y1').value,1,9999,_era==='BE'?2509:1966);
-  let[hr,mn]=sanitizeTime(document.getElementById('t1').value);
-  _setField('d1',d);_setField('m1',m);_setField('y1',y);
-  _setField('t1',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
-  const provVal=document.getElementById('prov1').value||'กรุงเทพมหานคร';
-  const lng=_customLng1!==null?_customLng1:(PROVINCES[provVal]||100.50);
+// V2.2.40 refactor: calculateChart1/2 ใช้ logic เดียวกันยกเว้น id suffix + default
+// → factor เป็น _calcChart(num) เพื่อตัด duplicate code
+const _CHART_CFG={
+  '1':{defName:'ไม่ระบุ',defY_BE:2509,defY_CE:1966},
+  '2':{defName:'ดวงที่ 2',defY_BE:2569,defY_CE:2026}
+};
+function _calcChart(num){
+  const cfg=_CHART_CFG[num];
+  const name=document.getElementById('name-'+num).value||cfg.defName;
+  const gender=document.getElementById('gender'+num).value||'ชาย';
+  let d=sanitizeInt(document.getElementById('d'+num).value,1,31,1);
+  let m=sanitizeInt(document.getElementById('m'+num).value,1,12,1);
+  let y=sanitizeInt(document.getElementById('y'+num).value,1,9999,_era==='BE'?cfg.defY_BE:cfg.defY_CE);
+  let[hr,mn]=sanitizeTime(document.getElementById('t'+num).value);
+  _setField('d'+num,d);_setField('m'+num,m);_setField('y'+num,y);
+  _setField('t'+num,String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
+  const provVal=document.getElementById('prov'+num).value||'กรุงเทพมหานคร';
+  const customLng=num==='1'?_customLng1:_customLng2;
+  const lng=customLng!==null?customLng:(PROVINCES[provVal]||100.50);
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
   const pos=get_data(d,m,y_ce,hr,mn,lng);
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
   const lat=PROVINCES_LAT[provVal]||13.75;
-  _natal={
+  const chart={
     uid:crypto.randomUUID(),
     fn:name,ln:'',g:gender,
     jd:Math.trunc(_calcJD(d,m,y_be)),
@@ -1298,47 +1310,15 @@ function calculateChart1(){
     tag:[],group:'',sector:'',trait:'',note:'',
     name,gender
   };
-  _calc1Done=true;
+  if(num==='1'){_natal=chart;_calc1Done=true;_viewMode=0;}
+  else{_transit=chart;_calc2Done=true;_viewMode=1;}
   _updateShareButton();
-  _applyInputColors('1','done');
-  _viewMode=0;_applyViewMode();
+  _applyInputColors(num,'done');
+  _applyViewMode();
   switchTab(1);_redraw();
 }
-
-function calculateChart2(){
-  const name=document.getElementById('name-2').value||'ดวงที่ 2';
-  const gender=document.getElementById('gender2').value||'ชาย';
-  let d=sanitizeInt(document.getElementById('d2').value,1,31,1);
-  let m=sanitizeInt(document.getElementById('m2').value,1,12,1);
-  let y=sanitizeInt(document.getElementById('y2').value,1,9999,_era==='BE'?2569:2026);
-  let[hr,mn]=sanitizeTime(document.getElementById('t2').value);
-  _setField('d2',d);_setField('m2',m);_setField('y2',y);
-  _setField('t2',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
-  const provVal=document.getElementById('prov2').value||'กรุงเทพมหานคร';
-  const lng=_customLng2!==null?_customLng2:(PROVINCES[provVal]||100.50);
-  const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
-  const pos=get_data(d,m,y_ce,hr,mn,lng);
-  const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
-  const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
-  const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  const lat=PROVINCES_LAT[provVal]||13.75;
-  _transit={
-    uid:crypto.randomUUID(),
-    fn:name,ln:'',g:gender,
-    jd:Math.trunc(_calcJD(d,m,y_be)),
-    t,d,m,y_be,
-    lat,lng,prov:provVal,country:'TH',tz:'',dst:false,
-    pos,vel,
-    lagna:null,tanu_lagna:null,tanu_set:null,houses:[],
-    tag:[],group:'',sector:'',trait:'',note:'',
-    name,gender
-  };
-  _calc2Done=true;
-  _updateShareButton();
-  _applyInputColors('2','done');
-  _viewMode=1;_applyViewMode();
-  switchTab(1);_redraw();
-}
+function calculateChart1(){_calcChart('1');}
+function calculateChart2(){_calcChart('2');}
 
 function calculateTransit(){
   let d=sanitizeInt(document.getElementById('dt').value,1,31,1);
