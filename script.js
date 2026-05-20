@@ -1,8 +1,12 @@
-// HORATAD:SCRIPT:3.2.1
-// Version 3.2.1 | 2026-05-20
+// HORATAD:SCRIPT:3.2.2
+// Version 3.2.2 | 2026-05-20
+// Changes: [V3.2.2] feat: Phase 12 Group UI — สร้าง/แก้ไข/ลบ group + เพิ่มสมาชิก
+//   - Group popup (⚙️ → 👥 กลุ่ม): list + detail view, สร้างกลุ่ม, ลบ, เพิ่ม/เอาออกสมาชิก
+//   - Natal Picker popup: เลือกดวงจาก DB1 เพื่อเพิ่มเข้ากลุ่ม (exclude existing members)
+//   - DB1 browser แยก type: tab filter ดวง/บุคคล/เหตุการณ์/กลุ่ม
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.2.1';
+const APP_VERSION='3.2.2';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -97,6 +101,9 @@ let _reportTransitShow=false; // V2.1 toggle transit section in report
 let _activeTab=1;
 let _calc1Done=false,_calc2Done=false;
 let _editingUid=null; // Phase 10: uid ของ record ที่กำลังแก้ไขใน DB1
+let _db1TypeFilter='natal'; // Phase 12: DB1 browser type filter
+let _groupDetailUid=null;   // Phase 12: group ที่กำลัง view detail
+let _natalPickerGroupUid=null; // Phase 12: group ที่กำลังเพิ่มสมาชิก
 let _customLng1=null,_customLng2=null,_customLngT=null;
 let _transitDate=null;
 let _donateAmount=50;
@@ -2101,6 +2108,8 @@ function _updateMainMenuState(){
   const db1=_v3LoadDB1();
   const di=document.getElementById('main-menu-db1-info');
   if(di)di.textContent=`${db1.length} ›`;
+  const gi=document.getElementById('main-menu-group-info');
+  if(gi)gi.textContent=`${_dbGroups().length} ›`;
 }
 function _openMainMenu(){
   _updateMainMenuState();
@@ -2305,13 +2314,19 @@ function _submitCreateEvent(){
   _showToast(`บันทึก "${_escHtml(name)}"${linkedName?' (🔗 '+_escHtml(linkedName)+')':''}`);
 }
 
-// ── DB1 Browser (Phase 9) ────────────────────────────────
+// ── DB1 Browser (Phase 9 + 12) ───────────────────────────
 function _openDB1Popup(){
   _closeMainMenu();
   document.getElementById('db1-search').value='';
-  _renderDB1List();
+  _setDB1Type('natal');
   document.getElementById('db1-backdrop').classList.remove('hidden');
   document.getElementById('db1-modal').classList.remove('hidden');
+}
+function _setDB1Type(t){
+  _db1TypeFilter=t;
+  const labels={natal:'ดวง',person:'บุคคล',event:'เหตุการณ์',group:'กลุ่ม'};
+  document.querySelectorAll('.db1-tab').forEach(b=>b.classList.toggle('active',b.textContent.trim()===labels[t]));
+  _renderDB1List();
 }
 function _closeDB1Popup(){
   document.getElementById('db1-backdrop').classList.add('hidden');
@@ -2319,28 +2334,70 @@ function _closeDB1Popup(){
 }
 function _renderDB1List(){
   const q=(document.getElementById('db1-search')?.value||'').trim().toLowerCase();
-  const db=_v3LoadDB1();
+  const t=_db1TypeFilter||'natal';
+  const db=_dbLoadType(t);
   const filtered=q?db.filter(r=>(r.name||'').toLowerCase().includes(q)):db;
   const list=document.getElementById('db1-list');
   const cnt=document.getElementById('db1-count');
   if(!list)return;
   if(cnt)cnt.textContent=`${db.length} รายการ`;
+  const emptyMsg={natal:'ยังไม่มีดวงใน DB',person:'ยังไม่มีบุคคล',event:'ยังไม่มีเหตุการณ์',group:'ยังไม่มีกลุ่ม'};
   if(!filtered.length){
-    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">'+(q?'ไม่พบ "'+_escHtml(q)+'"':'ยังไม่มีดวงใน DB')+'</div>';
+    list.innerHTML='<div style="text-align:center;padding:20px;color:#666;font-size:13px">'+(q?'ไม่พบ "'+_escHtml(q)+'"':(emptyMsg[t]||'ไม่มีข้อมูล'))+'</div>';
     return;
   }
   list.innerHTML=filtered.map(r=>{
-    const evCount=_dbEvents(r.uid).length;
-    const badge=evCount?`<span style="font-size:10px;color:#c9b8f0;margin-left:4px">🔗${evCount}</span>`:'';
-    return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
-      <div style="flex:1;min-width:0;cursor:pointer" onclick="_db1Load('${r.uid}')">
-        <div class="memory-name">${_escHtml(r.name||'—')}${badge}</div>
-        <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''} · ${_escHtml(r.prov||'')}</div>
-      </div>
-      <button onclick="event.stopPropagation();_db1Edit('${r.uid}')" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">✏️</button>
-      <button onclick="event.stopPropagation();_db1Delete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
-    </div>`;
+    if(t==='natal'){
+      const evCount=_dbEvents(r.uid).length;
+      const badge=evCount?`<span style="font-size:10px;color:#c9b8f0;margin-left:4px">🔗${evCount}</span>`:'';
+      return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="_db1Load('${r.uid}')">
+          <div class="memory-name">${_escHtml(r.name||'—')}${badge}</div>
+          <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''} · ${_escHtml(r.prov||'')}</div>
+        </div>
+        <button onclick="event.stopPropagation();_db1Edit('${r.uid}')" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">✏️</button>
+        <button onclick="event.stopPropagation();_db1Delete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+      </div>`;
+    }
+    if(t==='person'||t==='event'){
+      const linked=r.linkedNatalUid?_v3FindDB1(r.linkedNatalUid):null;
+      return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
+        <div style="flex:1;min-width:0">
+          <div class="memory-name">${_escHtml(r.name||'—')}</div>
+          <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''}${linked?' · 🔗 '+_escHtml(linked.name||''):''}</div>
+        </div>
+        <button onclick="event.stopPropagation();_db1TypeDelete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+      </div>`;
+    }
+    if(t==='group'){
+      return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
+        <div style="flex:1;min-width:0;cursor:pointer" onclick="_openGroupFromDB1('${r.uid}')">
+          <div class="memory-name">${_escHtml(r.name||'—')}</div>
+          <div class="memory-meta">${r.memberUids?.length||0} สมาชิก</div>
+        </div>
+        <button onclick="event.stopPropagation();_openGroupFromDB1('${r.uid}')" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ดู</button>
+        <button onclick="event.stopPropagation();_db1TypeDelete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+      </div>`;
+    }
+    return'';
   }).join('');
+}
+function _db1TypeDelete(uid){
+  const r=_dbFind(uid);
+  if(!r)return;
+  const typeLabel={natal:'ดวง',person:'บุคคล',event:'เหตุการณ์',group:'กลุ่ม'}[r.type]||r.type;
+  _showConfirm(`ลบ${typeLabel}`,`ลบ "${_escHtml(r.name||'—')}"?`,()=>{
+    _dbRemove(uid);
+    _renderDB1List();
+    _updateMainMenuState();
+  });
+}
+function _openGroupFromDB1(uid){
+  _closeDB1Popup();
+  _groupDetailUid=uid;
+  _renderGroupBody();
+  document.getElementById('group-backdrop').classList.remove('hidden');
+  document.getElementById('group-modal').classList.remove('hidden');
 }
 function _db1Load(uid){
   const r=_v3FindDB1(uid);
@@ -2400,6 +2457,130 @@ function _showEditingIndicator(name){
 }
 function _hideEditingIndicator(){
   document.getElementById('editing-indicator')?.classList.add('hidden');
+}
+
+// ── Group popup (Phase 12) ───────────────────────────────
+function _openGroupPopup(){
+  _closeMainMenu();
+  _groupDetailUid=null;
+  _renderGroupBody();
+  document.getElementById('group-backdrop').classList.remove('hidden');
+  document.getElementById('group-modal').classList.remove('hidden');
+}
+function _closeGroupPopup(){
+  document.getElementById('group-backdrop').classList.add('hidden');
+  document.getElementById('group-modal').classList.add('hidden');
+}
+function _renderGroupBody(){
+  const title=document.getElementById('group-modal-title');
+  const cnt=document.getElementById('group-modal-count');
+  const body=document.getElementById('group-body');
+  if(!body)return;
+  if(_groupDetailUid){
+    const g=_dbFind(_groupDetailUid);
+    if(!g){_groupDetailUid=null;_renderGroupBody();return;}
+    if(title)title.textContent='👥 '+_escHtml(g.name||'กลุ่ม');
+    if(cnt)cnt.textContent=`${(g.memberUids||[]).length} คน`;
+    const members=(g.memberUids||[]).map(u=>_v3FindDB1(u)).filter(Boolean);
+    body.innerHTML=`<button onclick="_groupDetailUid=null;_renderGroupBody()" style="background:none;border:none;color:#79c0ff;cursor:pointer;font-size:13px;padding:4px 0 8px;align-self:flex-start">← กลับ</button>
+    <div style="overflow-y:auto;background:#0d1117;border-radius:8px;padding:2px;min-height:100px;flex:1">
+      ${members.length?members.map(r=>`
+        <div class="memory-item" style="display:flex;align-items:center;gap:6px">
+          <div style="flex:1;min-width:0">
+            <div class="memory-name">${_escHtml(r.name||'—')}</div>
+            <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''}</div>
+          </div>
+          <button onclick="_groupRemoveMember('${g.uid}','${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">เอาออก</button>
+        </div>`).join(''):'<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีสมาชิก</div>'}
+    </div>
+    <button onclick="_openNatalPickerForGroup('${g.uid}')" style="margin-top:8px;background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:6px;padding:9px;font-size:13px;cursor:pointer;font-family:inherit;flex-shrink:0">+ เพิ่มสมาชิก</button>`;
+  }else{
+    const groups=_dbGroups();
+    if(title)title.textContent='👥 กลุ่ม';
+    if(cnt)cnt.textContent=`${groups.length} กลุ่ม`;
+    body.innerHTML=`<div style="display:flex;gap:6px;padding:0 0 8px;flex-shrink:0">
+      <input id="group-new-name" placeholder="ชื่อกลุ่มใหม่..." style="flex:1;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit" onkeydown="if(event.key==='Enter')_groupCreate()">
+      <button onclick="_groupCreate()" style="flex-shrink:0;background:#1a6b3c;color:#fff;border:none;border-radius:6px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:inherit">สร้าง</button>
+    </div>
+    <div style="overflow-y:auto;background:#0d1117;border-radius:8px;padding:2px;flex:1">
+      ${groups.length?groups.map(g=>`
+        <div class="memory-item" style="display:flex;align-items:center;gap:6px">
+          <div style="flex:1;min-width:0;cursor:pointer" onclick="_groupDetailUid='${g.uid}';_renderGroupBody()">
+            <div class="memory-name">${_escHtml(g.name||'—')}</div>
+            <div class="memory-meta">${(g.memberUids||[]).length} สมาชิก</div>
+          </div>
+          <button onclick="event.stopPropagation();_groupDetailUid='${g.uid}';_renderGroupBody()" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ดู</button>
+          <button onclick="event.stopPropagation();_groupDelete('${g.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
+        </div>`).join(''):'<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีกลุ่ม</div>'}
+    </div>`;
+  }
+}
+function _groupCreate(){
+  const inp=document.getElementById('group-new-name');
+  const name=(inp?.value||'').trim();
+  if(!name){_showToast('กรอกชื่อกลุ่มก่อน');return;}
+  _dbUpsert({uid:crypto.randomUUID(),type:'group',name,memberUids:[],savedAt:Date.now()});
+  if(inp)inp.value='';
+  _renderGroupBody();
+  _updateMainMenuState();
+  _showToast(`สร้างกลุ่ม "${_escHtml(name)}" แล้ว`);
+}
+function _groupDelete(uid){
+  const g=_dbFind(uid);
+  if(!g)return;
+  _showConfirm('ลบกลุ่ม',`ลบ "${_escHtml(g.name||'—')}"?`,()=>{
+    _dbRemove(uid);
+    if(_groupDetailUid===uid)_groupDetailUid=null;
+    _renderGroupBody();
+    _updateMainMenuState();
+  });
+}
+function _groupRemoveMember(groupUid,natalUid){
+  const g=_dbFind(groupUid);
+  if(!g)return;
+  g.memberUids=(g.memberUids||[]).filter(u=>u!==natalUid);
+  _dbUpsert(g);
+  _renderGroupBody();
+}
+function _openNatalPickerForGroup(groupUid){
+  _natalPickerGroupUid=groupUid;
+  const inp=document.getElementById('natal-picker-search');
+  if(inp)inp.value='';
+  _renderNatalPicker();
+  document.getElementById('natal-picker-backdrop').classList.remove('hidden');
+  document.getElementById('natal-picker-modal').classList.remove('hidden');
+}
+function _closeNatalPicker(){
+  document.getElementById('natal-picker-backdrop').classList.add('hidden');
+  document.getElementById('natal-picker-modal').classList.add('hidden');
+  _natalPickerGroupUid=null;
+}
+function _renderNatalPicker(){
+  const q=(document.getElementById('natal-picker-search')?.value||'').trim().toLowerCase();
+  const g=_natalPickerGroupUid?_dbFind(_natalPickerGroupUid):null;
+  const existing=new Set(g?.memberUids||[]);
+  const db=_v3LoadDB1().filter(r=>!existing.has(r.uid));
+  const filtered=q?db.filter(r=>(r.name||'').toLowerCase().includes(q)):db;
+  const list=document.getElementById('natal-picker-list');
+  if(!list)return;
+  list.innerHTML=filtered.length?filtered.map(r=>`
+    <div class="memory-item" style="cursor:pointer" onclick="_groupAddMember('${r.uid}')">
+      <div class="memory-name">${_escHtml(r.name||'—')}</div>
+      <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''} · ${_escHtml(r.prov||'')}</div>
+    </div>`).join(''):'<div style="text-align:center;padding:20px;color:#666;font-size:13px">'+(q?'ไม่พบ':'ไม่มีดวงที่เพิ่มได้')+'</div>';
+}
+function _groupAddMember(natalUid){
+  const groupUid=_natalPickerGroupUid;
+  if(!groupUid)return;
+  const g=_dbFind(groupUid);
+  if(!g)return;
+  if(!(g.memberUids||[]).includes(natalUid)){
+    g.memberUids=[...(g.memberUids||[]),natalUid];
+    _dbUpsert(g);
+    _showToast('เพิ่มสมาชิกแล้ว');
+  }
+  _closeNatalPicker();
+  _renderGroupBody();
 }
 
 // ── Export / Import DB (Phase 8) ─────────────────────────

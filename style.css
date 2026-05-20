@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.2.1 */
+/* HORATAD:STYLE:3.2.2 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -369,3 +369,6 @@ body.about-active .logo-h1{display:none}
 .main-menu-row-link:hover .main-menu-info-badge{color:#c9d1d9}
 .main-menu-create-btn{display:block;width:100%;padding:9px;background:#1a3a2a;color:#56d364;border:1px solid #2ea043;border-radius:8px;font-size:14px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer;font-weight:500;text-align:center;box-sizing:border-box;margin-top:8px}
 .main-menu-create-btn:hover{background:#1f4a33}
+.db1-tab{flex:1;padding:5px 2px;background:#2d333b;color:#8b949e;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap}
+.db1-tab:hover{background:#3d444c;color:#c9d1d9}
+.db1-tab.active{background:#1a3c6b;color:#79c0ff}

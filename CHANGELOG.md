@@ -4,6 +4,17 @@
 
 ---
 
+## [3.2.2] — 2026-05-20
+### Added
+- Phase 12: Group UI — สร้าง/แก้ไข/ลบ group records ใน unified DB V4
+  - ⚙️ → 👥 กลุ่ม → list view: สร้างกลุ่มใหม่ (ชื่อ + Enter/ปุ่มสร้าง), ดู detail, ลบ
+  - Detail view: แสดง member list, เพิ่มสมาชิก (Natal Picker popup), เอาออก, ← กลับ
+  - Natal Picker: ค้นหา + เลือกดวงจาก DB1 — exclude existing members อัตโนมัติ
+- DB1 browser แยก type: tab filter ดวง / บุคคล / เหตุการณ์ / กลุ่ม
+  - ดวง (natal): load, edit, delete (เดิม)
+  - บุคคล/เหตุการณ์: แสดง linked natal, delete
+  - กลุ่ม: แสดง member count, ดู detail (เปิด group popup), delete
+
 ## [3.2.1] — 2026-05-20
 ### Added
 - นำเข้าดวงจากรูป: ปุ่ม "📷 เลือกรูปดวง" ใน QR import modal → อ่าน QR จากรูปอัตโนมัติ
