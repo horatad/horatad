@@ -1,5 +1,15 @@
-// HORATAD:SCRIPT:2.2.43
-// Version 2.2.43 | 2026-05-20
+// HORATAD:SCRIPT:3.0.0
+// Version 3.0.0 | 2026-05-20
+// Changes: [V3.0.0] Schema migration + storage layer (Phase 1A — foundation, no UI yet):
+//   - Add uniform schema (uid, name, gender, d/m/y/t, prov, lat, lng, jd, pos, vel,
+//     savedAt, linkedEvents, linkedNatal) สำหรับ natal1/natal2/buffer/event
+//   - localStorage keys ใหม่: horatad_db1_v3, horatad_db2_v3, horatad_buffer_v3,
+//     horatad_event_slots_v3 + schema version marker
+//   - Migration: ล้าง horatad_memory_v1 + horatad_events_v1 (BREAKING — user confirmed)
+//   - Toast notice 1 ครั้งหลัง migrate
+//   - Storage helpers: _v3Record, _v3Load/Save/Add/Find/Remove (DB1/DB2),
+//     _v3LoadBuffer/Save, _v3LoadEventSlots/Save, _v3LinkEventToNatal/_v3UnlinkEvent
+//   - UI ยังไม่แตะ — Phase 1B (next session): TAB minimal + ⚙️ menu + popups + arrows
 // Changes: [V2.2.43] QR payload — เก็บ lat/lng แทนชื่อจังหวัด:
 //   - PROV string ภาษาไทย กิน ~40 bytes (3 bytes/char × 13 ตัว) เปลือง space
 //   - เปลี่ยนเป็น LAT|LNG (~12 bytes รวม) — ประหยัด ~28 bytes/QR
@@ -162,7 +172,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.43';
+const APP_VERSION='3.0.0';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1699,6 +1709,119 @@ const PROMPTPAY_NAME='นายสิทธิเดช ประเสริฐ
 function _loadJSON(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
 function _saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 
+// ── V3.0 Schema Migration + Storage Layer ─────────────────
+// uniform schema สำหรับ natal1, natal2, buffer[10], event[10]
+// {uid, name, gender, d, m, y_be, t, prov, lat, lng, jd, pos|null, vel|null,
+//  savedAt, linkedEvents[], linkedNatal|null}
+const SCHEMA_VERSION=3;
+const SCHEMA_VERSION_KEY='horatad_schema_v';
+const DB1_KEY='horatad_db1_v3';            // ดวงกำเนิด (natal records)
+const DB2_KEY='horatad_db2_v3';            // เหตุการณ์จร (event records)
+const BUFFER_KEY='horatad_buffer_v3';      // สมพงศ์ buffer (max 10)
+const EVENT_SLOTS_KEY='horatad_event_slots_v3'; // active event slots (max 10)
+const BUFFER_MAX=10;
+const EVENT_SLOTS_MAX=10;
+const MIGRATION_NOTICE_KEY='horatad_v3_notice_shown';
+
+function _migrateSchemaV3(){
+  const cur=parseInt(localStorage.getItem(SCHEMA_VERSION_KEY)||'0',10);
+  if(cur===SCHEMA_VERSION)return false;
+  // Breaking change — ล้าง store เก่า + slot ใหม่ (user confirmed)
+  ['horatad_memory_v1','horatad_events_v1',DB1_KEY,DB2_KEY,BUFFER_KEY,EVENT_SLOTS_KEY]
+    .forEach(k=>localStorage.removeItem(k));
+  localStorage.setItem(SCHEMA_VERSION_KEY,String(SCHEMA_VERSION));
+  console.log('[V3] schema migrated → v'+SCHEMA_VERSION+' (DB เก่า cleared)');
+  return true;
+}
+const _v3Migrated=_migrateSchemaV3();
+
+// V3 record factory — uniform schema
+function _v3Record(input){
+  const {name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,pos=null,vel=null}=input||{};
+  const lat2=(typeof lat==='number')?lat:(PROVINCES_LAT[prov]||13.75);
+  const lng2=(typeof lng==='number')?lng:(PROVINCES[prov]||100.50);
+  return{
+    uid:crypto.randomUUID(),
+    name:(name||'').toString().slice(0,20),
+    gender,
+    d,m,y_be,t,
+    prov,lat:lat2,lng:lng2,
+    jd:(d&&m&&y_be)?Math.trunc(_calcJD(d,m,y_be)):null,
+    pos,vel,
+    savedAt:Date.now(),
+    linkedEvents:[],
+    linkedNatal:null
+  };
+}
+
+// V3 storage helpers — DB1 (natal)
+function _v3LoadDB1(){return _loadJSON(DB1_KEY)||[];}
+function _v3SaveDB1(arr){_saveJSON(DB1_KEY,arr);}
+function _v3AddDB1(rec){
+  const db=_v3LoadDB1();
+  const i=db.findIndex(r=>r.uid===rec.uid);
+  if(i>=0)db[i]=rec;else db.unshift(rec);
+  _v3SaveDB1(db);
+  return rec.uid;
+}
+function _v3FindDB1(uid){return _v3LoadDB1().find(r=>r.uid===uid)||null;}
+function _v3RemoveDB1(uid){_v3SaveDB1(_v3LoadDB1().filter(r=>r.uid!==uid));}
+
+// V3 storage — DB2 (events)
+function _v3LoadDB2(){return _loadJSON(DB2_KEY)||[];}
+function _v3SaveDB2(arr){_saveJSON(DB2_KEY,arr);}
+function _v3AddDB2(rec){
+  const db=_v3LoadDB2();
+  const i=db.findIndex(r=>r.uid===rec.uid);
+  if(i>=0)db[i]=rec;else db.unshift(rec);
+  _v3SaveDB2(db);
+  return rec.uid;
+}
+function _v3FindDB2(uid){return _v3LoadDB2().find(r=>r.uid===uid)||null;}
+function _v3RemoveDB2(uid){_v3SaveDB2(_v3LoadDB2().filter(r=>r.uid!==uid));}
+
+// V3 storage — buffer (สมพงศ์ candidates, max 10)
+function _v3LoadBuffer(){return _loadJSON(BUFFER_KEY)||[];}
+function _v3SaveBuffer(arr){_saveJSON(BUFFER_KEY,arr.slice(0,BUFFER_MAX));}
+
+// V3 storage — event slots (active transits, max 10)
+function _v3LoadEventSlots(){return _loadJSON(EVENT_SLOTS_KEY)||[];}
+function _v3SaveEventSlots(arr){_saveJSON(EVENT_SLOTS_KEY,arr.slice(0,EVENT_SLOTS_MAX));}
+
+// V3 bidirectional event link (natal1 ↔ event)
+function _v3LinkEventToNatal(eventUid,natalUid){
+  if(!eventUid||!natalUid)return;
+  const natal=_v3FindDB1(natalUid);
+  if(natal){
+    if(!Array.isArray(natal.linkedEvents))natal.linkedEvents=[];
+    if(!natal.linkedEvents.includes(eventUid))natal.linkedEvents.push(eventUid);
+    _v3AddDB1(natal);
+  }
+  const ev=_v3FindDB2(eventUid);
+  if(ev){ev.linkedNatal=natalUid;_v3AddDB2(ev);}
+}
+function _v3UnlinkEvent(eventUid){
+  const ev=_v3FindDB2(eventUid);
+  if(!ev||!ev.linkedNatal)return;
+  const natal=_v3FindDB1(ev.linkedNatal);
+  if(natal&&Array.isArray(natal.linkedEvents)){
+    natal.linkedEvents=natal.linkedEvents.filter(u=>u!==eventUid);
+    _v3AddDB1(natal);
+  }
+  ev.linkedNatal=null;_v3AddDB2(ev);
+}
+
+// One-time notice หลัง migrate — wired ตอนหน้า ready (init จะเรียก)
+function _v3MaybeShowMigrateNotice(){
+  if(!_v3Migrated)return;
+  if(localStorage.getItem(MIGRATION_NOTICE_KEY))return;
+  localStorage.setItem(MIGRATION_NOTICE_KEY,'1');
+  if(typeof _showToast==='function'){
+    _showToast('V3.0: ปรับ schema ฐานข้อมูลใหม่ — ข้อมูลเก่าถูกล้าง (1 ครั้ง)');
+  }
+}
+
+
 function _saveState(){
   const g=id=>document.getElementById(id)?.value;
   _saveJSON(STATE_KEY,{
@@ -2331,6 +2454,8 @@ function setupProvDropdown(inputId,listId){
 
 // ── Init ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
+  // V3.0: show migrate notice (1 ครั้ง) — _showToast ต้องพร้อมแล้ว
+  setTimeout(_v3MaybeShowMigrateNotice,500);
   setupProvDropdown('prov1','prov-list-1');
   setupProvDropdown('prov2','prov-list-2');
   setupProvDropdown('provt','prov-list-t');
