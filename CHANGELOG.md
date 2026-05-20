@@ -4,6 +4,13 @@
 
 ---
 
+## [3.1.2] — 2026-05-20
+### Added
+- `_exportDB()`: ดาวน์โหลด DB1 + event slots เป็น JSON (Phase 8)
+- `_importDB(file)`: merge JSON กลับเข้า DB1 + event slots (upsert by uid, ไม่ลบของเดิม)
+- export-modal ใน ⚙️ menu row "📦 ส่งออก/นำเข้า" — ปุ่มส่งออก + ปุ่ม label นำเข้า
+- import result summary แสดงใน modal: "ดวง +N, เหตุการณ์ +M"
+
 ## [3.1.1] — 2026-05-20
 ### Added
 - `_v3UpsertDB1(rec)`: content-based upsert DB1 (key=name|d/m/y_be|t) — เก็บ uid+linkedEvents เดิมถ้าผูกดวงซ้ำ (Phase 6)

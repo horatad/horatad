@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.1.1
-// Version 3.1.1 | 2026-05-20
+// HORATAD:SCRIPT:3.1.2
+// Version 3.1.2 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.1.1';
+const APP_VERSION='3.1.2';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2330,6 +2330,74 @@ function _submitCreateEvent(){
   _renderTagRow('1');
   _updateLinkedEventsDisplay();
   _showToast(`บันทึก "${name}"${linkedNatal?' (🔗 '+linkedNatal.name+')':''}`);
+}
+
+// ── Export / Import DB (Phase 8) ─────────────────────────
+function _openExportModal(){
+  _closeMainMenu();
+  document.getElementById('import-result').textContent='';
+  document.getElementById('import-file-input').value='';
+  document.getElementById('export-backdrop').classList.remove('hidden');
+  document.getElementById('export-modal').classList.remove('hidden');
+}
+function _closeExportModal(){
+  document.getElementById('export-backdrop').classList.add('hidden');
+  document.getElementById('export-modal').classList.add('hidden');
+}
+function _exportDB(){
+  const payload={
+    _id:'HORATAD:EXPORT',
+    v:APP_VERSION,
+    exportedAt:new Date().toISOString(),
+    db1:_v3LoadDB1(),
+    eventSlots:_v3LoadEventSlots()
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`horatad_export_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  _showToast('ส่งออกข้อมูลแล้ว');
+}
+function _importDB(input){
+  const file=input?.files?.[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(data._id!=='HORATAD:EXPORT')throw new Error('ไฟล์ไม่ถูกต้อง');
+      let addedDb1=0,addedEv=0;
+      // merge DB1
+      if(Array.isArray(data.db1)){
+        const db=_v3LoadDB1();
+        for(const rec of data.db1){
+          if(!rec.uid)continue;
+          if(!db.find(r=>r.uid===rec.uid)){db.unshift(rec);addedDb1++;}
+        }
+        _v3SaveDB1(db);
+      }
+      // merge event slots
+      if(Array.isArray(data.eventSlots)){
+        const slots=_v3LoadEventSlots();
+        for(const rec of data.eventSlots){
+          if(!rec.uid)continue;
+          if(!slots.find(r=>r.uid===rec.uid)){slots.unshift(rec);addedEv++;}
+        }
+        _v3SaveEventSlots(slots);
+      }
+      const msg=`นำเข้าสำเร็จ: ดวง +${addedDb1}, เหตุการณ์ +${addedEv}`;
+      document.getElementById('import-result').textContent=msg;
+      _updateMainMenuState();
+      _showToast(msg);
+    }catch(err){
+      document.getElementById('import-result').textContent='⚠️ '+err.message;
+      _showToast('นำเข้าไม่สำเร็จ: '+err.message,true);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // ── QR Import (Phase 4) ──────────────────────────────────
