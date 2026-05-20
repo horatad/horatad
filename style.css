@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.0.1 */
+/* HORATAD:STYLE:3.0.2 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -339,3 +339,20 @@ body.about-active .logo-h1{display:none}
 .about-kb-version{font-size:10px;color:#8b949e;margin-top:2px}
 .btn-kb-load{display:block;margin-top:6px;width:100%;padding:9px;background:#1a3a2a;color:#56d364;border:1px solid #2ea043;border-radius:8px;font-size:14px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer;font-weight:500;text-align:center;box-sizing:border-box}
 .btn-kb-load:hover{background:#1f4a33}
+/* ── Chart nav header (Phase 1B Step 2) ─────────────────── */
+.chart-nav-header{display:flex;align-items:center;gap:4px;margin-bottom:6px;padding:0 2px}
+.chart-nav-btn{flex:0 0 auto;width:28px;height:28px;padding:0;background:#3d2b5b;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center}
+.chart-nav-btn:hover{background:#5b3fa0}
+.chart-nav-btn:disabled{background:#333;color:#666;cursor:not-allowed}
+.chart-nav-info{flex:1;min-width:0;text-align:center;font-size:12px;color:#8b949e;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+.chart-nav-gear{flex:0 0 auto;width:28px;height:28px;padding:0;background:#2d333b;color:#c9d1d9;border:none;border-radius:4px;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center}
+.chart-nav-gear:hover{background:#444c56}
+/* ── Main menu popup (Phase 1B Step 2) ──────────────────── */
+.main-menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1099}
+.main-menu-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1e2328;border:1px solid #444;border-radius:14px;padding:0;z-index:1100;width:min(320px,90vw);box-shadow:0 8px 32px rgba(0,0,0,0.7)}
+.main-menu-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;border-bottom:1px solid #30363d}
+.main-menu-title{font-size:14px;font-weight:600;color:#c9d1d9;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.main-menu-close{background:none;border:none;color:#8b949e;font-size:18px;cursor:pointer;padding:0 4px;line-height:1}
+.main-menu-close:hover{color:#c9d1d9}
+.main-menu-body{padding:12px 14px 16px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.main-menu-placeholder{font-size:13px;color:#8b949e;text-align:center;padding:20px 0}

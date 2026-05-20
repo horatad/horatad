@@ -1,5 +1,12 @@
-// HORATAD:SCRIPT:3.0.1
-// Version 3.0.1 | 2026-05-20
+// HORATAD:SCRIPT:3.0.2
+// Version 3.0.2 | 2026-05-20
+// Changes: [V3.0.2] Phase 1B step 2 — chart-nav-header strip + ⚙️ main menu skeleton:
+//   - เพิ่ม #chart-nav-header (◀ name·date ▶ ⚙️) แสดงเหนือ canvas เมื่อมีดวง
+//   - ซ่อน #btn-chart-row (ถูกแทนที่ด้วย header strip — DOM elements ยังอยู่)
+//   - เพิ่ม #main-menu-backdrop + #main-menu-modal (skeleton ว่าง — Step 3 จะใส่ content)
+//   - เพิ่ม _updateNavHeader(), _openMainMenu(), _closeMainMenu()
+//   - _redraw() เรียก _updateNavHeader() ทุกครั้ง
+//   - ESC ปิด main menu
 // Changes: [V3.0.1] Phase 1B step 1 — visual cleanup (no JS logic change):
 //   - Hide section-transit ใน TAB 0 (วันที่จร input) — Phase 1B จะย้ายเป็น popup
 //   - Hide TAB 1 buttons: btn-view (toggle ดวงใน/นอก), btn-outer (ราศี outer ring),
@@ -180,7 +187,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.1';
+const APP_VERSION='3.0.2';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1149,6 +1156,7 @@ function _redraw(){
       displayName,gender,d,m,y_be,t,prov,pos,vel,transitSrc?.pos,isV2
     );
   }
+  _updateNavHeader();
 }
 
 // Varga
@@ -2163,6 +2171,36 @@ function _confirmYes(){
   if(typeof cb==='function')cb();
 }
 
+// ── Chart nav header (Phase 1B Step 2) ────────────────────
+function _updateNavHeader(){
+  const hdr=document.getElementById('chart-nav-header');
+  const info=document.getElementById('chart-nav-info');
+  if(!hdr||!info)return;
+  if(!_natal){hdr.classList.add('hidden');return;}
+  hdr.classList.remove('hidden');
+  const mem=_loadJSON(MEM_KEY)||[];
+  const name=_natal.name||'ไม่ระบุ';
+  const d=_natal.d,m=_natal.m,y=_natal.y_be;
+  let posStr='';
+  if(mem.length>1){
+    const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
+    const cur=`${name}|${d}/${m}/${y}`;
+    const idx=mem.findIndex(e=>key(e)===cur);
+    if(idx!==-1)posStr=` · ${idx+1}/${mem.length}`;
+  }
+  info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
+}
+
+// ── Main menu popup (Phase 1B Step 2) ─────────────────────
+function _openMainMenu(){
+  document.getElementById('main-menu-backdrop').classList.remove('hidden');
+  document.getElementById('main-menu-modal').classList.remove('hidden');
+}
+function _closeMainMenu(){
+  document.getElementById('main-menu-backdrop').classList.add('hidden');
+  document.getElementById('main-menu-modal').classList.add('hidden');
+}
+
 // ── Pre-2484 warning (numpad year) ────────────────────────
 // V2.1.9: only show when buf is full 4-digit year (avoid flash during partial typing)
 function _updatePre2484Warning(){
@@ -2546,6 +2584,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       closeMemory();
       closeEvents();
       closeConfirm();
+      _closeMainMenu();
       document.getElementById('numpad').classList.add('hidden');
       document.getElementById('numpad-backdrop').classList.add('hidden');
       const warn=document.getElementById('numpad-warning');
