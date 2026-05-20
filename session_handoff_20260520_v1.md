@@ -7,12 +7,15 @@
 ## STATE ปัจจุบัน
 
 ```
-App version : V2.2.37 (main + deployed via GitHub Pages)
-script.js   : APP_VERSION='2.2.37'
-sw.js       : CACHE_NAME='horatad-v2.2.37'
-version.json: {"v":"2.2.37"}
-index.html  : V2.2.37
-GitHub      : main = claude/add-test-file-EMaRp = b550f3a (fast-forward)
+App version : V2.2.39 (main + deployed via GitHub Pages)
+script.js   : APP_VERSION='2.2.39' + window.APP_VERSION expose
+sw.js       : CACHE_NAME='horatad-v2.2.39'
+version.json: {"_id":"HORATAD:VERSION","v":"2.2.39"}
+index.html  : V2.2.39
+v3/v3tab.js : Version 3.0.4 (sync app V2.2.39)
+GitHub      : main = claude/fix-memory-list-edit-znEDH = cd53013 (fast-forward)
+Backups     : branches backup/v2.2.37, backup/v2.2.38, backup/v2.2.39,
+              backup/v2.2.39-docs (CLAUDE.md commit)
 ```
 
 ---
@@ -33,44 +36,42 @@ GitHub      : main = claude/add-test-file-EMaRp = b550f3a (fast-forward)
 
 ## งานที่ค้าง (priority สูง→ต่ำ)
 
-### 🔴 P0 — Bug ที่ยังไม่หาย
+### ⏸️ DEFERRED — รอลงรอบใหญ่ (ไม่เร่ง เพราะไม่กระทบ mobile)
 
 ```
-[ ] FLICKER ยังไม่หาย — V2.2.36 ลบ duplicate controllerchange ใน
-    index.html แล้ว แต่ผู้ใช้ยังเห็นจอกระพริบถี่ๆ ต้องรอนาน + F12 +
-    Ctrl+Shift+R จึงหาย
+[ ] FLICKER เฉพาะ desktop หลัง Ctrl+Shift+R — แก้มาหลายครั้งไม่หาย
+    มือถือ (target หลัก) ไม่เป็น → ลด priority
     
     สงสัย: SW cache propagation race
-    - version.json fetch ใน script.js:2447 → mismatch → reload
+    - version.json fetch ใน script.js → mismatch → reload
     - SW activate → controllerchange → reload (มี _swRefreshing guard)
-    - ทั้งสอง path อาจแข่งกันทำงาน
+    - ทั้งสอง path อาจแข่งกัน
+    - อาจต้องสอบ root cause ที่ horatad.com domain/CDN ด้วย
     
-    Next: dig SW lifecycle + reload trigger order
-    หรือเปลี่ยน strategy: เลิกใช้ version.json reload,
-    ใช้แค่ controllerchange (ปลอดภัยกว่า)
-
-[ ] ทดสอบ V2.2.37 บนมือถือจริง — 📌 indicator refresh หลัง numpad
-    + ปุ่มออกจากพยากรณ์ (✕ บน TAB 3)
+    Action: ยกไป "รอบใหญ่" — รื้อ SW lifecycle + reload strategy พร้อมกับ
+            ตรวจสอบ domain/contact horatad.com เป็น root cause ไหม
+    แนวทาง: เลิก version.json reload, ใช้แค่ controllerchange (ปลอดภัยกว่า)
 ```
 
-### 🟠 P1 — Improvements
+### 🟠 P1 — เหลือ
 
 ```
-[ ] ปุ่ม ✏️ แก้ไขข้อมูลใน memory list (req 20)
-    Scope: แตะ _renderQuickMemory ใน script.js +
-           load record กลับเข้าฟอร์ม → กด "ผูกดวง" ทับของเดิม
-    _addMemory มี logic 'updated' รองรับอยู่แล้ว
-    
-[ ] V3 tab — ปรับ toast race ใน v3tab.js:79-83
-    ปัจจุบัน toast "กำลังโหลดกฎ..." fire ก่อน guard check
-    ทำให้ผู้ใช้ที่ยังไม่ผูกดวงเห็น toast ซ้อน 2 ตัว
-    แก้: ย้าย _showToastV3 หลัง _v3Running check + _getNatal check
+[ ] ทดสอบ V2.2.37/.38/.39 บนมือถือจริง:
+    - V2.2.37 📌 indicator refresh หลัง numpad
+    - V2.2.37 ปุ่ม ✕ ออกจากพยากรณ์ (TAB 3)
+    - V2.2.38 ปุ่ม ✏️ แก้ไข memory list — load + แก้ + ผูกดวงทับ
+    - V2.2.39 V3 toast ไม่ซ้อน + offline ปุ่มพยากรณ์ใช้ kb.json cache ได้
+```
 
-[ ] V3 tab — SW cache miss สำหรับ kb.json
-    CORE_ASSETS cache './v3/kb.json?v=VER' มี query
-    แต่ v3tab.js fetch './v3/kb.json' (ไม่มี query) — key ไม่ตรง
-    Offline mode ปุ่มพยากรณ์จะ fail
-    แก้: เปลี่ยน _loadKb() ให้ fetch ด้วย ?v=APP_VERSION
+### ✅ ปิดใน session นี้
+
+```
+✓ V2.2.38 ปุ่ม ✏️ แก้ไข memory list (req 20) — รวม replaceKey ใน _addMemory
+✓ V2.2.39 V3 toast race fix (ย้าย toast หลัง guard ใน v3tab.js)
+✓ V2.2.39 V3 kb.json cache key fix (KB_PATH ใส่ ?v=APP_VERSION)
+✓ V2.2.39 window.APP_VERSION expose ให้ ES module
+✓ CLAUDE.md สร้าง — บันทึก standing instructions (auto-push main + backup,
+  version bump checklist 6 จุด, cache-bust convention, project quirks)
 ```
 
 ### 🟡 P2 — Infra / V2 backlog (จาก session ก่อนหน้า ยังคง)
