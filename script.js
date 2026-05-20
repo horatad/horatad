@@ -1,8 +1,8 @@
-// HORATAD:SCRIPT:3.1.7
-// Version 3.1.7 | 2026-05-20
+// HORATAD:SCRIPT:3.2.0
+// Version 3.2.0 | 2026-05-20
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.1.7';
+const APP_VERSION='3.2.0';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

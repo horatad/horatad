@@ -4,6 +4,19 @@
 
 ---
 
+## [3.2.0] — 2026-05-20
+### Changed (Breaking — DB Architecture)
+- รวม DB1/DB2/BUFFER/EVENT_SLOTS → unified `horatad_db_v4` (localStorage key เดียว)
+- เพิ่ม `type` field: `'natal'|'person'|'event'|'group'` บนทุก record
+- ลบ bidirectional link (`linkedEvents[]`) ออกจาก natal — ใช้ `linkedNatalUid` บน child เป็น source of truth เดียว
+- `group` record มี `memberUids[]` — natal ไม่รู้ว่าตัวเองอยู่ group ไหน (ค้น O(n) ผ่าน group)
+- migration อัตโนมัติจาก V3 → V4 เมื่อโหลดครั้งแรก (preserve data เดิม)
+- ลบ cap 10 ออกจาก buffer/event slots
+- export/import รองรับ format ใหม่ + backward compat กับ format เก่า (db1[]+eventSlots[])
+### Added
+- `_dbPersons(linkedNatalUid?)` / `_dbEvents(linkedNatalUid?)` / `_dbGroups()` helpers
+- `_dbUpsert(rec)` / `_dbFind(uid)` / `_dbRemove(uid)` core CRUD
+
 ## [3.1.7] — 2026-05-20
 ### Fixed (logic flow audit)
 - report transit: เมื่อเปิดดวงจร แสดง natal1 + "ดาวจรสัมพันธ์ ณ" แทนดาวจรล้วนๆ
