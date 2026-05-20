@@ -1,5 +1,12 @@
-// HORATAD:SCRIPT:3.0.7
-// Version 3.0.7 | 2026-05-20
+// HORATAD:SCRIPT:3.0.8
+// Version 3.0.8 | 2026-05-20
+// Changes: [V3.0.8] Phase 4 — QR import (paste payload + URL param):
+//   - _jdToGregorian(customJd): reverse custom JD → CE date (offset +1721117)
+//   - _latLngToProv(lat,lng): nearest province by Euclidean dist on PROVINCES/LAT
+//   - _parseH1Payload(raw): parse "H1|jd|t|lat|lng|g|nm" หรือ URL "?h=H1|..."
+//   - _doQRImport(): ดึง textarea → parse → fill form 1 → calculateChart1()
+//   - URL param auto-import: ถ้า ?h=H1|... ตอน DOMContentLoaded → ไม่ต้อง paste
+//   - "นำเข้า QR" row ใน ⚙️ menu + qr-import-modal popup
 // Changes: [V3.0.7] Phase 3 — Tag area semantic toggle:
 //   - tag-row-1 ใน transit mode (_reportTransitShow=true) → แสดง linked event chips
 //   - chip คลิก → load event เป็น natal2 (viewMode=1)
@@ -214,7 +221,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='3.0.7';
+const APP_VERSION='3.0.8';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2457,6 +2464,90 @@ function _eventSlotSaveCurrent(){
   _showToast(`บันทึก "${rec.name}"${natal1?' (🔗 '+natal1.name+')':''}`);
 }
 
+// ── QR Import (Phase 4) ──────────────────────────────────
+function _jdToGregorian(customJd){
+  const jdn=Math.round(customJd)+1721117;
+  const a=jdn+32044;
+  const b=Math.floor((4*a+3)/146097);
+  const c=a-Math.floor(146097*b/4);
+  const dv=Math.floor((4*c+3)/1461);
+  const e=c-Math.floor(1461*dv/4);
+  const mv=Math.floor((5*e+2)/153);
+  return{
+    d:e-Math.floor((153*mv+2)/5)+1,
+    m:mv+3-12*Math.floor(mv/10),
+    y_ce:100*b+dv-4800+Math.floor(mv/10)
+  };
+}
+function _latLngToProv(lat,lng){
+  let best='กรุงเทพมหานคร',bestDist=Infinity;
+  for(const[prov,platLat]of Object.entries(PROVINCES_LAT)){
+    const plng=PROVINCES[prov];
+    if(plng==null)continue;
+    const dist=(lat-platLat)**2+(lng-plng)**2;
+    if(dist<bestDist){bestDist=dist;best=prov;}
+  }
+  return best;
+}
+function _parseH1Payload(raw){
+  const s=(raw||'').trim();
+  // รองรับ plain "H1|..." และ URL "?h=H1|..."
+  let payload=s;
+  if(s.includes('?')){
+    try{const u=new URL(s.startsWith('http')?s:'https://x/?'+s.split('?')[1]);payload=u.searchParams.get('h')||s;}catch{}
+  }
+  const parts=payload.split('|');
+  if(parts.length<7||parts[0]!=='H1')return null;
+  const jd=parseInt(parts[1],10);
+  if(!jd||isNaN(jd))return null;
+  const{d,m,y_ce}=_jdToGregorian(jd);
+  const lat=parseFloat(parts[3]),lng=parseFloat(parts[4]);
+  if(isNaN(lat)||isNaN(lng))return null;
+  const prov=_latLngToProv(lat,lng);
+  const gMap={'ช':'ชาย','ห':'หญิง','เ':'เหตุการณ์'};
+  const gender=gMap[parts[5]]||'ชาย';
+  const name=(parts[6]||'').trim().slice(0,20)||'ไม่ระบุ';
+  return{name,gender,d,m,y_be:y_ce+543,t:parts[2]||'00:00',lat,lng,prov};
+}
+function _fillFormFromImport(data){
+  if(!data)return false;
+  _era='BE';
+  _applyEraStyle();
+  _setField('name-1',data.name);
+  document.getElementById('gender1').value=data.gender;
+  _setField('d1',data.d);
+  _setField('m1',data.m);
+  _setField('y1',data.y_be);
+  _setField('t1',data.t);
+  _setField('prov1',data.prov);
+  _customLng1=data.lng;
+  return true;
+}
+function _openQRImportPopup(){
+  _closeMainMenu();
+  const ta=document.getElementById('qr-import-textarea');
+  if(ta)ta.value='';
+  document.getElementById('qr-import-backdrop').classList.remove('hidden');
+  document.getElementById('qr-import-modal').classList.remove('hidden');
+  setTimeout(()=>{if(ta)ta.focus();},60);
+}
+function _closeQRImportPopup(){
+  document.getElementById('qr-import-backdrop').classList.add('hidden');
+  document.getElementById('qr-import-modal').classList.add('hidden');
+}
+function _doQRImport(){
+  const ta=document.getElementById('qr-import-textarea');
+  const text=(ta&&ta.value||'').trim();
+  if(!text){_showToast('วาง payload QR ก่อน',true);return;}
+  const data=_parseH1Payload(text);
+  if(!data){_showToast('รูปแบบไม่ถูกต้อง (ต้องเริ่มด้วย H1|...)',true);return;}
+  _closeQRImportPopup();
+  _fillFormFromImport(data);
+  switchTab(0);
+  calculateChart1();
+  _showToast(`นำเข้า "${data.name}" สำเร็จ`);
+}
+
 // ── Pre-2484 warning (numpad year) ────────────────────────
 // V2.1.9: only show when buf is full 4-digit year (avoid flash during partial typing)
 function _updatePre2484Warning(){
@@ -2916,6 +3007,16 @@ window.addEventListener('DOMContentLoaded',()=>{
   _loadTagsForCurrentChart('2');
   _renderTagRow('1');
   _renderTagRow('2');
+
+  // V3.0.8: URL param auto-import ?h=H1|...
+  const _urlH=new URLSearchParams(location.search).get('h');
+  if(_urlH){
+    const _importData=_parseH1Payload(_urlH);
+    if(_importData&&_fillFormFromImport(_importData)){
+      calculateChart1();
+      _showToast(`นำเข้าจาก QR: "${_importData.name}"`);
+    }
+  }
 
   // PWA service worker register + auto-reload เมื่อ SW ใหม่ activate (V2.2.31)
   if('serviceWorker' in navigator){
