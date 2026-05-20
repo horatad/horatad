@@ -1,5 +1,11 @@
-// HORATAD:SCRIPT:2.2.40
-// Version 2.2.40 | 2026-05-20
+// HORATAD:SCRIPT:2.2.41
+// Version 2.2.41 | 2026-05-20
+// Changes: [V2.2.41] Share image layout + QR payload:
+//   - Logo บน chart-canvas: 180→200, ขยับเข้าจากขอบขวา 10px (เดิมล้นออก 8px)
+//   - QR ขยาย 125→250 มุมบนซ้ายเดิม (28, 820) — bottom y=1070
+//   - QR payload ใหม่ "H1|JD|T|PROV|LNG|G|NAME" (Option B + JD reference)
+//     เลิกเก็บ d/m/y — scan ฝั่ง reverse จาก JD (ภายหลัง)
+//   - horatad.com: font Cinzel → Sarabun → render lowercase (เดิม Cinzel render caps-ish)
 // Changes: [V2.2.40] Refactor (no behavior change):
 //   - calculateChart1/2 มี logic ซ้ำเกือบหมด ยกเว้น id suffix + default name/year
 //   - factor เป็น _calcChart(num) + _CHART_CFG table → ลด duplicate ~35 บรรทัด
@@ -147,7 +153,7 @@
 //          [8]transit arabic 44px [9]ดวงที่2 bg purple [10]report no [ดวงที่N] label
 //          [11]Thai lunar numerals [12]transit for both views [13]ดาวจรสัมพันธ์ ณ
 
-const APP_VERSION='2.2.40';
+const APP_VERSION='2.2.41';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1248,10 +1254,10 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
     }
     // _outerState===4: ไม่แสดง (nothing)
   }
-  // logo top-right on canvas (size 180, margin 0, circular clip, alpha 1.0 + brightness)
+  // logo top-right on canvas (size 200, gap 10 right + 0 top, circular clip, alpha 1.0 + brightness)
   if(_logoImg.complete&&_logoImg.naturalWidth>0){
-    const ls=180;
-    const lx=1000-ls+8;
+    const ls=200;
+    const lx=1000-ls-10;
     const ly=0;
     ctx.save();
     ctx.beginPath();
@@ -1499,20 +1505,23 @@ async function _generateShareImage(active){
   ctx.fillStyle='#c9d1d9';
   ctx.font='500 22px Sarabun,sans-serif';
   ctx.fillText(scoreLabel,SZ/2,905);
-  // horatad.com center, smaller, level with prov line
+  // horatad.com center, smaller, level with prov line (Sarabun → lowercase render)
   ctx.fillStyle='#888888';
-  ctx.font='500 13px Cinzel,serif';
+  ctx.font='500 13px Sarabun,sans-serif';
   ctx.fillText('horatad.com',SZ/2,933);
-  // QR bottom-left — (28, 820), 125×125, bottom y=945
+  // QR bottom-left — top-left corner คงเดิม (28, 820), ขยาย 125→250, bottom y=1070
   try{
     await _loadQRLib();
     const jd=Math.trunc(_calcJD(active.d,active.m,active.y_be));
-    const lat=(PROVINCES_LAT[active.prov||'']||13.75).toFixed(2);
-    const qrText=`JD:${jd}|T:${active.t}|LAT:${lat}`;
+    const lng=(typeof active.lng==='number'?active.lng:100.50).toFixed(2);
+    const g=(active.gender||'').charAt(0).toUpperCase()||'?';
+    const nm=(active.name||'').slice(0,20);
+    // V2.2.41: payload H1 — JD ref + T/PROV/LNG/G/NAME (no d/m/y — JD reverse on scan)
+    const qrText=`H1|${jd}|${active.t||''}|${active.prov||''}|${lng}|${g}|${nm}`;
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
     document.body.appendChild(qrDiv);
-    new QRCode(qrDiv,{text:qrText,width:125,height:125,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.H:undefined});
+    new QRCode(qrDiv,{text:qrText,width:250,height:250,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.H:undefined});
     // iOS Safari: qrcodejs creates <img> not <canvas> — wait for onload
     await new Promise(res=>{
       const img=qrDiv.querySelector('img');
@@ -1525,7 +1534,7 @@ async function _generateShareImage(active){
       }
     });
     const qrEl=qrDiv.querySelector('canvas')||qrDiv.querySelector('img');
-    if(qrEl)ctx.drawImage(qrEl,28,820,125,125);
+    if(qrEl)ctx.drawImage(qrEl,28,820,250,250);
     document.body.removeChild(qrDiv);
   }catch(e){console.warn('[QR]',e);}
   return new Promise(resolve=>c.toBlob(resolve,'image/png',0.95));
