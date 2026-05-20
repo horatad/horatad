@@ -1,14 +1,12 @@
-// HORATAD:SCRIPT:3.2.3
-// Version 3.2.3 | 2026-05-20
-// Changes: [V3.2.3] feat: Phase 13 Transit Strip — ควบคุมดวงจรใต้แผนผัง
-//   - transit-strip ใน canvas-wrapper: toggle จร, date inputs, events dropdown, คำนวณจร
-//   - _tsCalc(): คำนวณ _transitDate จาก strip inputs → redraw
-//   - _tsEventSelect(): เลือก event → โหลดวันที่ event → คำนวณ auto
-//   - _updateTransitStrip(): update strip state + events dropdown เมื่อ redraw
-//   (Phase 12 ดู V3.2.2)
+// HORATAD:SCRIPT:3.2.4
+// Version 3.2.4 | 2026-05-20
+// Changes: [V3.2.4] feat: Phase 14+15 — Group load/compare + Transit persist
+//   - Phase 14: group detail member → "โหลด" (natal1) + "เปรียบ" (natal2/สมพงศ์)
+//   - Phase 15: Transit Strip "วันนี้" reset + persist date ใน localStorage (TS_DATE_KEY)
+//   (Phase 12 ดู V3.2.2, Phase 13 ดู V3.2.3)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.2.3';
+const APP_VERSION='3.2.4';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2464,6 +2462,7 @@ function _hideEditingIndicator(){
 }
 
 // ── Transit Strip (Phase 13) ─────────────────────────────
+const TS_DATE_KEY='horatad_ts_date_v1';
 let _tsInited=false; // ป้องกัน reset ค่า date ทุกครั้งที่ redraw
 
 function _updateTransitStrip(){
@@ -2477,14 +2476,12 @@ function _updateTransitStrip(){
     toggle.classList.toggle('active',_reportTransitShow);
   }
   if(!_tsInited){
-    const n=_nowStr();
-    const tsD=document.getElementById('ts-d');
-    if(tsD&&!tsD.value){
-      tsD.value=n.d;
-      const tsM=document.getElementById('ts-m');if(tsM)tsM.value=n.m;
-      const tsY=document.getElementById('ts-y');if(tsY)tsY.value=n.y;
-      const tsT=document.getElementById('ts-t');if(tsT)tsT.value=n.t;
-    }
+    const saved=_loadJSON(TS_DATE_KEY);
+    const ref=saved||_nowStr();
+    const tsD=document.getElementById('ts-d');if(tsD)tsD.value=ref.d||ref.d;
+    const tsM=document.getElementById('ts-m');if(tsM)tsM.value=ref.m;
+    const tsY=document.getElementById('ts-y');if(tsY)tsY.value=saved?ref.y_be:ref.y;
+    const tsT=document.getElementById('ts-t');if(tsT)tsT.value=ref.t;
     _tsInited=true;
   }
   const sel=document.getElementById('ts-event');
@@ -2502,6 +2499,15 @@ function _tsToggle(){
     toggle.textContent=_reportTransitShow?'จร แสดง':'จร ซ่อน';
     toggle.classList.toggle('active',_reportTransitShow);
   }
+}
+function _tsReset(){
+  const n=_nowStr();
+  const tsD=document.getElementById('ts-d');if(tsD)tsD.value=n.d;
+  const tsM=document.getElementById('ts-m');if(tsM)tsM.value=n.m;
+  const tsY=document.getElementById('ts-y');if(tsY)tsY.value=n.y;
+  const tsT=document.getElementById('ts-t');if(tsT)tsT.value=n.t;
+  const sel=document.getElementById('ts-event');if(sel)sel.value='';
+  _tsCalc();
 }
 function _tsEventSelect(uid){
   if(!uid)return;
@@ -2527,6 +2533,7 @@ function _tsCalc(){
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   _transitDate={pos,vel,d,m,y_be,t:tStr,prov};
+  localStorage.setItem(TS_DATE_KEY,JSON.stringify({d,m,y_be,t:tStr}));
   if(!_reportTransitShow){
     toggleReportTransit();
     const toggle=document.getElementById('ts-toggle');
@@ -2562,12 +2569,14 @@ function _renderGroupBody(){
     body.innerHTML=`<button onclick="_groupDetailUid=null;_renderGroupBody()" style="background:none;border:none;color:#79c0ff;cursor:pointer;font-size:13px;padding:4px 0 8px;align-self:flex-start">← กลับ</button>
     <div style="overflow-y:auto;background:#0d1117;border-radius:8px;padding:2px;min-height:100px;flex:1">
       ${members.length?members.map(r=>`
-        <div class="memory-item" style="display:flex;align-items:center;gap:6px">
-          <div style="flex:1;min-width:0">
+        <div class="memory-item" style="display:flex;align-items:center;gap:4px">
+          <div style="flex:1;min-width:0;cursor:pointer" onclick="_groupLoadAsNatal1('${r.uid}')">
             <div class="memory-name">${_escHtml(r.name||'—')}</div>
             <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''}</div>
           </div>
-          <button onclick="_groupRemoveMember('${g.uid}','${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">เอาออก</button>
+          <button onclick="event.stopPropagation();_groupLoadAsNatal1('${r.uid}')" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:11px">โหลด</button>
+          <button onclick="event.stopPropagation();_groupLoadAsNatal2('${r.uid}')" style="flex:0;background:#3d1f6b;border:none;color:#c9b8f0;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:11px">เปรียบ</button>
+          <button onclick="event.stopPropagation();_groupRemoveMember('${g.uid}','${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:11px">ออก</button>
         </div>`).join(''):'<div style="text-align:center;padding:20px;color:#666;font-size:13px">ยังไม่มีสมาชิก</div>'}
     </div>
     <button onclick="_openNatalPickerForGroup('${g.uid}')" style="margin-top:8px;background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:6px;padding:9px;font-size:13px;cursor:pointer;font-family:inherit;flex-shrink:0">+ เพิ่มสมาชิก</button>`;
@@ -2658,6 +2667,34 @@ function _groupAddMember(natalUid){
   }
   _closeNatalPicker();
   _renderGroupBody();
+}
+function _groupLoadAsNatal1(natalUid){
+  const r=_v3FindDB1(natalUid);
+  if(!r)return;
+  const lng=(typeof r.lng==='number')?r.lng:(PROVINCES[r.prov||'']||100.50);
+  const y_ce=_beToce(r.y_be,r.m);
+  const[hr,mn]=(r.t||'00:00').split(':').map(Number);
+  const pos=r.pos||get_data(r.d,r.m,y_ce,hr,mn,lng);
+  const pos2=get_data(r.d,r.m,y_ce,hr+24,mn,lng);
+  const vel=r.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
+  natal1={...r,pos,vel};
+  _calc1Done=true;_viewMode=0;_tsInited=false;
+  _applyViewMode();_redraw();
+  _closeGroupPopup();
+  _showToast(`โหลด "${_escHtml(r.name||'—')}" แล้ว`);
+}
+function _groupLoadAsNatal2(natalUid){
+  const r=_v3FindDB1(natalUid);
+  if(!r)return;
+  if(!natal1){_showToast('ผูกดวง 1 ก่อน');return;}
+  const lng=(typeof r.lng==='number')?r.lng:(PROVINCES[r.prov||'']||100.50);
+  const y_ce=_beToce(r.y_be,r.m);
+  const[hr,mn]=(r.t||'00:00').split(':').map(Number);
+  const pos=get_data(r.d,r.m,y_ce,hr,mn,lng);
+  natal2={...r,pos,vel:[]};
+  _viewMode=1;_applyViewMode();_redraw();
+  _closeGroupPopup();
+  _showToast(`เปรียบเทียบกับ "${_escHtml(r.name||'—')}"`);
 }
 
 // ── Export / Import DB (Phase 8) ─────────────────────────

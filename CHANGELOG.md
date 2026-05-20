@@ -4,6 +4,17 @@
 
 ---
 
+## [3.2.4] — 2026-05-20
+### Added
+- Phase 14: Group → โหลด / เปรียบเทียบสมาชิก
+  - member row ใน group detail: ปุ่ม "โหลด" (natal1) + "เปรียบ" (natal2/สมพงศ์) + "ออก"
+  - โหลด: ปิด group popup → โหลดดวงสมาชิกเป็น natal1 → chart view
+  - เปรียบ: โหลดสมาชิกเป็น natal2 → สมพงศ์ mode (ต้องมี natal1 ก่อน)
+- Phase 15: Transit Strip improvements
+  - ปุ่ม "วันนี้": reset date inputs → วันนี้ → คำนวณใหม่
+  - Persist transit date ใน localStorage (horatad_ts_date_v1)
+  - Restore date ข้าม session เมื่อเปิดดวงใหม่ (ถ้าไม่มีใน localStorage ใช้วันนี้)
+
 ## [3.2.3] — 2026-05-20
 ### Added
 - Phase 13: Transit Strip — ควบคุมดวงจรโดยตรงใต้แผนผัง (ไม่ต้องสลับ TAB)
