@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LLM Latency Ping — Horatad M0</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#0f1117;color:#e0e0e0;font-size:14px}
+h1{padding:14px 20px;background:#1a1d27;border-bottom:1px solid #2a2d3a;font-size:16px;color:#fff}
+h1 a{color:#4f6ef7;font-size:12px;margin-left:10px;text-decoration:none}
+h1 a:hover{text-decoration:underline}
+
+/* Keys panel */
+.keys{background:#13151f;border-bottom:1px solid #2a2d3a;padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.keys label{font-size:11px;color:#888;display:block;margin-bottom:3px}
+.keys input{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;width:280px;font-size:12px;font-family:monospace}
+.tag{font-size:10px;color:#4caf87;margin-left:4px}
+
+/* LLM cards grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:16px 20px}
+.card{background:#1a1d27;border:1px solid #2a2d3a;border-radius:8px;overflow:hidden;transition:border-color .2s}
+.card.running{border-color:#4f6ef7}
+.card.ok{border-color:#4caf87}
+.card.err{border-color:#e05555}
+.card-head{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2a2d3a}
+.card-name{font-weight:700;font-size:13px}
+.card-model{font-size:10px;color:#666;margin-top:2px}
+.card-body{padding:12px 14px}
+.metric{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
+.metric .k{color:#666}
+.metric .v{font-weight:700}
+.v-ok{color:#4caf87}
+.v-err{color:#e05555}
+.v-warn{color:#e0b04f}
+.v-dim{color:#555}
+.preview{background:#0f1117;border-radius:4px;padding:8px;font-size:11px;color:#aaa;line-height:1.5;min-height:40px;margin-top:4px;word-break:break-word}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#333;flex-shrink:0}
+.dot-idle{background:#333}
+.dot-run{background:#4f6ef7;animation:pulse .8s infinite}
+.dot-ok{background:#4caf87}
+.dot-err{background:#e05555}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Add LLM panel */
+.add-panel{padding:0 20px 20px}
+.add-panel h3{font-size:13px;color:#888;margin-bottom:8px}
+.add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.add-row input,.add-row select{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:6px 8px;border-radius:4px;font-size:12px}
+.add-row input.sm{width:130px}
+.add-row input.md{width:200px}
+.add-row input.lg{width:280px}
+.add-row select{width:160px}
+
+/* Buttons */
+.btn{padding:7px 16px;border-radius:5px;border:none;cursor:pointer;font-size:13px;font-weight:600}
+.btn-ping{background:#4f6ef7;color:#fff}
+.btn-ping:hover{opacity:.85}
+.btn-sm{padding:5px 10px;font-size:11px;background:#2a2d3a;color:#bbb;border-radius:4px;border:none;cursor:pointer}
+.btn-sm:hover{background:#333647}
+.btn-del{background:#3a1a1a;color:#e05555;padding:4px 8px;border-radius:4px;border:none;cursor:pointer;font-size:11px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Controls bar */
+.ctrl{padding:8px 20px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #1e2130}
+.ctrl label{font-size:11px;color:#888}
+.ctrl input[type=number]{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:4px 6px;border-radius:4px;width:70px;font-size:12px}
+
+/* Question */
+.q-bar{padding:8px 20px;background:#13151f;border-bottom:1px solid #1e2130;font-size:12px;color:#666}
+.q-bar span{color:#ccc}
+</style>
+</head>
+<body>
+
+<h1>⚡ LLM Latency Ping
+  <a href="m0_hallucination_test.html">← Hallucination Test</a>
+</h1>
+
+<div class="keys" id="keysPanel">
+  <div>
+    <label>Gemini API Key <span class="tag" id="tag-g"></span></label>
+    <input id="keyGemini" type="password" placeholder="AIzaSy..." oninput="saveKeys()">
+  </div>
+  <div>
+    <label>Groq API Key <span class="tag" id="tag-r"></span></label>
+    <input id="keyGroq" type="password" placeholder="gsk_..." oninput="saveKeys()">
+  </div>
+  <button class="btn btn-ping" id="btnPing" onclick="pingAll()" style="height:32px">⚡ Ping All</button>
+  <button class="btn-sm" onclick="forgetKeys()" style="color:#e05555">🗑 Forget Keys</button>
+</div>
+
+<div class="ctrl">
+  <label>Timeout (ms):</label>
+  <input type="number" id="timeoutMs" value="15000" min="3000" max="60000" step="1000">
+  <label style="margin-left:12px">คำถาม ping:</label>
+  <input type="text" id="pingQ" value="ดาวโคจรเร็วกว่าปกติ เรียกว่าอะไรในโหราศาสตร์ไทยสุริยยาตร์? (ตอบคำเดียว)" style="background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:4px 8px;border-radius:4px;font-size:12px;width:420px">
+</div>
+
+<div class="q-bar">คำถาม: <span id="qDisplay">ดาวโคจรเร็วกว่าปกติ เรียกว่าอะไร?</span> &nbsp;|&nbsp; เฉลย: <span style="color:#6c9">เสริด</span></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="add-panel">
+  <h3>+ เพิ่ม LLM</h3>
+  <div class="add-row">
+    <input class="sm" id="addName" placeholder="ชื่อ (เช่น GPT-4o)">
+    <select id="addAuth">
+      <option value="bearer">Authorization: Bearer</option>
+      <option value="apikey">apikey: (iApp)</option>
+      <option value="none">ไม่ต้อง key</option>
+    </select>
+    <input class="lg" id="addKey" placeholder="API Key (ถ้ามี)">
+    <input class="lg" id="addUrl" placeholder="Endpoint URL">
+    <input class="md" id="addModel" placeholder="model name">
+    <button class="btn btn-sm" onclick="addLLM()" style="background:#1e3a2a;color:#4caf87">+ Add</button>
+  </div>
+</div>
+
+<script>
+const SYSTEM = 'คุณคือผู้เชี่ยวชาญโหราศาสตร์ไทย ตอบสั้นมากที่สุด';
+
+// ── Built-in LLM configs ───────────────────────────────────────────────────
+const BUILTIN = [
+  {
+    id:'gemini-flash', name:'Gemini 2.0 Flash', model:'gemini-2.0-flash',
+    color:'#4285f4', type:'gemini',
+    url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    authType:'query-key', keyRef:'g',
+  },
+  {
+    id:'gemini-15-flash', name:'Gemini 1.5 Flash', model:'gemini-1.5-flash',
+    color:'#34a853', type:'gemini',
+    url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
+    authType:'query-key', keyRef:'g',
+  },
+  {
+    id:'groq-llama33', name:'Groq LLaMA 3.3 70B', model:'llama-3.3-70b-versatile',
+    color:'#9b59b6', type:'openai',
+    url:'https://api.groq.com/openai/v1/chat/completions',
+    authType:'bearer', keyRef:'r',
+  },
+  {
+    id:'groq-llama31', name:'Groq LLaMA 3.1 8B', model:'llama-3.1-8b-instant',
+    color:'#8e44ad', type:'openai',
+    url:'https://api.groq.com/openai/v1/chat/completions',
+    authType:'bearer', keyRef:'r',
+  },
+  {
+    id:'groq-gemma2', name:'Groq Gemma2 9B', model:'gemma2-9b-it',
+    color:'#6c3483', type:'openai',
+    url:'https://api.groq.com/openai/v1/chat/completions',
+    authType:'bearer', keyRef:'r',
+  },
+  {
+    id:'typhoon-cf', name:'Typhoon v2.5 30B', model:'typhoon-v2.5-30b-a3b-instruct',
+    color:'#e74c3c', type:'openai',
+    url:'https://horatad-ai.uchujaro5.workers.dev',
+    authType:'none', keyRef:null,
+  },
+];
+
+// Dynamic LLMs added by user
+let customLLMs = [];
+
+function getLLMs(){ return [...BUILTIN, ...customLLMs]; }
+function getKey(ref){ return ref==='g' ? document.getElementById('keyGemini').value.trim() : ref==='r' ? document.getElementById('keyGroq').value.trim() : ''; }
+
+// ── Render cards ──────────────────────────────────────────────────────────
+function renderGrid(){
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  for(const llm of getLLMs()){
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-'+llm.id;
+    const isCustom = !!llm._custom;
+    card.innerHTML = `
+      <div class="card-head">
+        <div>
+          <div class="card-name" style="color:${llm.color}">${llm.name}${isCustom ? ' <button class="btn-del" onclick="removeLLM(\''+llm.id+'\')">✕</button>' : ''}</div>
+          <div class="card-model">${llm.model}</div>
+        </div>
+        <span class="status-dot dot-idle" id="dot-${llm.id}"></span>
+      </div>
+      <div class="card-body">
+        <div class="metric"><span class="k">Status</span><span class="v v-dim" id="st-${llm.id}">—</span></div>
+        <div class="metric"><span class="k">TTFB</span><span class="v v-dim" id="ttfb-${llm.id}">—</span></div>
+        <div class="metric"><span class="k">Total</span><span class="v v-dim" id="ms-${llm.id}">—</span></div>
+        <div class="metric"><span class="k">Chars</span><span class="v v-dim" id="ch-${llm.id}">—</span></div>
+        <div class="preview" id="prev-${llm.id}">รอ ping…</div>
+      </div>`;
+    g.appendChild(card);
+  }
+}
+
+function setDot(id, cls){ document.getElementById('dot-'+id).className='status-dot '+cls; }
+function setCard(id, cls){ const c=document.getElementById('card-'+id); if(c) c.className='card '+cls; }
+function setMetric(id, field, val, cls=''){
+  const el=document.getElementById(field+'-'+id);
+  if(el){ el.textContent=val; if(cls) el.className='v '+cls; }
+}
+function setPreview(id, txt){ const el=document.getElementById('prev-'+id); if(el) el.textContent=txt; }
+
+// ── Fetch helpers ─────────────────────────────────────────────────────────
+function buildBody(llm, question){
+  const msg = [
+    {role:'system', content:SYSTEM},
+    {role:'user', content:question},
+  ];
+  if(llm.type==='gemini'){
+    return JSON.stringify({
+      system_instruction:{parts:[{text:SYSTEM}]},
+      contents:[{role:'user',parts:[{text:question}]}],
+      generationConfig:{maxOutputTokens:100,temperature:0},
+    });
+  }
+  return JSON.stringify({model:llm.model, messages:msg, max_tokens:100, temperature:0});
+}
+
+function buildHeaders(llm){
+  const h={'Content-Type':'application/json'};
+  if(llm.authType==='bearer'){
+    const k=llm._key||getKey(llm.keyRef);
+    if(k) h['Authorization']='Bearer '+k;
+  } else if(llm.authType==='apikey'){
+    const k=llm._key||getKey(llm.keyRef);
+    if(k) h['apikey']=k;
+  }
+  return h;
+}
+
+function buildUrl(llm){
+  if(llm.type==='gemini'){
+    const k=llm._key||getKey(llm.keyRef);
+    return llm.url+'?key='+encodeURIComponent(k||'');
+  }
+  return llm.url;
+}
+
+function extractText(llm, d){
+  if(llm.type==='gemini') return d?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+  return d?.choices?.[0]?.message?.content||'';
+}
+
+// ── Ping one LLM ──────────────────────────────────────────────────────────
+async function pingOne(llm){
+  const q = document.getElementById('pingQ').value.trim();
+  const timeout = parseInt(document.getElementById('timeoutMs').value)||15000;
+
+  setCard(llm.id,'running'); setDot(llm.id,'dot-run');
+  setMetric(llm.id,'st','ส่ง…','v-dim');
+  setMetric(llm.id,'ttfb','—','v-dim');
+  setMetric(llm.id,'ms','—','v-dim');
+  setMetric(llm.id,'ch','—','v-dim');
+  setPreview(llm.id,'กำลังรอ…');
+
+  const t0=Date.now();
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),timeout);
+
+  try{
+    const url=buildUrl(llm);
+    const r=await fetch(url,{
+      method:'POST',
+      headers:buildHeaders(llm),
+      body:buildBody(llm,q),
+      signal:ctrl.signal,
+    });
+    const ttfb=Date.now()-t0;
+    clearTimeout(timer);
+
+    if(!r.ok){
+      const txt=await r.text().catch(()=>'');
+      const errPrev = txt.slice(0,120);
+      setCard(llm.id,'err'); setDot(llm.id,'dot-err');
+      setMetric(llm.id,'st',`HTTP ${r.status}`,'v-err');
+      setMetric(llm.id,'ttfb',ttfb+'ms');
+      setPreview(llm.id, errPrev||'(ไม่มี body)');
+      return;
+    }
+
+    const d=await r.json();
+    const total=Date.now()-t0;
+    clearTimeout(timer);
+
+    const text=extractText(llm,d);
+    setCard(llm.id,'ok'); setDot(llm.id,'dot-ok');
+    setMetric(llm.id,'st','200 OK','v-ok');
+    setMetric(llm.id,'ttfb',ttfb+'ms','v-ok');
+    setMetric(llm.id,'ms',total+'ms','v-ok');
+    setMetric(llm.id,'ch',text.length+' chars');
+    setPreview(llm.id,text||'(ไม่มี text)');
+
+  }catch(e){
+    clearTimeout(timer);
+    const isTimeout=e.name==='AbortError';
+    setCard(llm.id,'err'); setDot(llm.id,'dot-err');
+    setMetric(llm.id,'st',isTimeout?'TIMEOUT':'NETWORK ERR','v-err');
+    setMetric(llm.id,'ttfb',(Date.now()-t0)+'ms');
+    setPreview(llm.id, isTimeout?`Timeout >${timeout}ms`:e.message);
+  }
+}
+
+// ── Ping all ──────────────────────────────────────────────────────────────
+async function pingAll(){
+  document.getElementById('btnPing').disabled=true;
+  document.getElementById('qDisplay').textContent=document.getElementById('pingQ').value;
+  await Promise.all(getLLMs().map(pingOne));
+  document.getElementById('btnPing').disabled=false;
+}
+
+// ── Add custom LLM ─────────────────────────────────────────────────────────
+function addLLM(){
+  const name=document.getElementById('addName').value.trim();
+  const url=document.getElementById('addUrl').value.trim();
+  const model=document.getElementById('addModel').value.trim();
+  const auth=document.getElementById('addAuth').value;
+  const key=document.getElementById('addKey').value.trim();
+  if(!name||!url){ alert('ต้องมีชื่อ + URL'); return; }
+  const id='custom-'+Date.now();
+  customLLMs.push({
+    id, name, model:model||'custom', color:'#e67e22',
+    type: url.includes('generativelanguage') ? 'gemini' : 'openai',
+    url, authType:auth, keyRef:null, _key:key, _custom:true,
+  });
+  saveCustom();
+  renderGrid();
+  ['addName','addKey','addUrl','addModel'].forEach(id=>document.getElementById(id).value='');
+}
+
+function removeLLM(id){
+  customLLMs=customLLMs.filter(l=>l.id!==id);
+  saveCustom();
+  renderGrid();
+}
+
+function saveCustom(){ localStorage.setItem('m0_custom_llms', JSON.stringify(customLLMs)); }
+function loadCustom(){
+  try{ customLLMs=JSON.parse(localStorage.getItem('m0_custom_llms')||'[]'); }catch{ customLLMs=[]; }
+}
+
+// ── Key persistence (shared with hallucination test) ──────────────────────
+function saveKeys(){
+  const g=document.getElementById('keyGemini').value;
+  const r=document.getElementById('keyGroq').value;
+  if(g) localStorage.setItem('m0_key_g',g); else localStorage.removeItem('m0_key_g');
+  if(r) localStorage.setItem('m0_key_r',r); else localStorage.removeItem('m0_key_r');
+  updateKeyTags();
+}
+function loadKeys(){
+  document.getElementById('keyGemini').value=localStorage.getItem('m0_key_g')||'';
+  document.getElementById('keyGroq').value=localStorage.getItem('m0_key_r')||'';
+  updateKeyTags();
+}
+function updateKeyTags(){
+  document.getElementById('tag-g').textContent=localStorage.getItem('m0_key_g')?'✓ saved':'';
+  document.getElementById('tag-r').textContent=localStorage.getItem('m0_key_r')?'✓ saved':'';
+}
+function forgetKeys(){
+  ['m0_key_g','m0_key_r'].forEach(k=>localStorage.removeItem(k));
+  ['keyGemini','keyGroq'].forEach(id=>document.getElementById(id).value='');
+  updateKeyTags();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  loadKeys();
+  loadCustom();
+  renderGrid();
+});
+</script>
+</body>
+</html>
