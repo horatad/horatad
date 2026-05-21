@@ -168,6 +168,7 @@ const BUILTIN = [
     id:'gemini-15-flash', name:'Gemini 1.5 Flash', model:'gemini-1.5-flash',
     color:'#34a853', type:'gemini', keyRef:'g',
     baseUrl:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash',
+    disabled:true,  // ซ่อนไว้ก่อน ประหยัด quota (ใช้ 2.0 Flash พอ)
   },
   {
     id:'groq-llama33', name:'Groq LLaMA 3.3 70B', model:'llama-3.3-70b-versatile',
@@ -193,7 +194,7 @@ const BUILTIN = [
 ];
 
 let customLLMs = [];
-function getLLMs(){ return [...BUILTIN, ...customLLMs]; }
+function getLLMs(){ return [...BUILTIN, ...customLLMs].filter(l=>!l.disabled); }
 function getKey(ref){ return ref==='g'?document.getElementById('keyGemini').value.trim():ref==='r'?document.getElementById('keyGroq').value.trim():''; }
 
 // ─────────────────────────────────────────────────────────────────────────────

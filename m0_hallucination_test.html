@@ -69,7 +69,7 @@ td{padding:8px 10px;font-size:12px;vertical-align:top}
     <input id="keyGroq" class="wide" type="password" placeholder="gsk_..." value="" oninput="saveKeys()">
   </div>
   <div>
-    <label>Delay ระหว่างข้อ (ms) <span style="color:#888;font-size:10px">Gemini free = 15 req/min → ≥4000</span></label>
+    <label>Delay ระหว่างข้อ (ms) <span style="color:#888;font-size:10px">Gemini free = 15 RPM → ≥4000 | 1,500 RPD รวมทุก session</span></label>
     <input id="delayMs" type="number" min="500" max="30000" step="500" value="5000"
       style="background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;width:100px;font-size:12px">
   </div>
@@ -212,7 +212,12 @@ async function callGemini(key, question){
     generationConfig:{maxOutputTokens:200,temperature:0.1},
   };
   const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  if(!r.ok){
+    const msg = r.status===429 ? 'HTTP 429 quota หมด (1,500 RPD) — รอพรุ่งนี้ 11:00น.'
+                : r.status===401 ? 'HTTP 401 key ไม่ถูกต้อง'
+                : `HTTP ${r.status}`;
+    throw new Error(msg);
+  }
   const d = await r.json();
   const text = d?.candidates?.[0]?.content?.parts?.[0]?.text || '';
   return {text, ms: Date.now()-t0};
