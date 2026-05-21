@@ -35,6 +35,14 @@
 
 ---
 
+## 🌐 HTML Tools — standing rule
+
+tools/*.html ทุกไฟล์ deploy บน GitHub Pages เสมอ
+**ห้ามบอก "เปิดใน browser ได้เลย"** — ต้องส่ง URL นี้เสมอ:
+`https://horatad.github.io/horatad/tools/<filename>.html`
+
+---
+
 ## 🔁 GitHub Actions Debug — standing rules
 
 workflow ทดสอบได้แค่ตอน run จริง (ไม่มี local CF token) → bug เจอทีละ run
