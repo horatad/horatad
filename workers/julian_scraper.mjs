@@ -145,7 +145,15 @@ async function processQuery(query, progress, batchFile, today) {
 
     const death       = parseISODate(b.death?.value);
     const countryCode = query.country || b.countryCode?.value || null;
-    const time_utc    = b.birthTime?.value?.slice(11, 16) || null;
+    // เอาเวลาเกิดจาก Wikidata เฉพาะเมื่อ precision >= 13 (ระดับชั่วโมง/นาที)
+    // precision 11 = วัน, 12 = เดือน, 13 = ชั่วโมง, 14 = นาที
+    // ถ้า precision 11 → birth value เป็น T00:00:00Z ซึ่งหมายถึง "ไม่รู้เวลา" ไม่ใช่เที่ยงคืน
+    const birthPrecNum = parseInt(b.birthPrec?.value || '0');
+    const birthVal     = b.birth?.value || '';
+    const tIdx         = birthVal.indexOf('T');
+    const time_utc     = (birthPrecNum >= 13 && tIdx >= 0)
+      ? birthVal.slice(tIdx + 1, tIdx + 6)
+      : null;
 
     records.push({
       jd: birth.jd, name,
