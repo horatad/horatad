@@ -108,8 +108,11 @@ h1 a{color:#4f6ef7;font-size:12px;text-decoration:none}
     <input id="keyGroq" type="password" placeholder="gsk_..." oninput="saveKeys()">
   </div>
   <button class="btn btn-run" id="btnPing" onclick="pingAll()">⚡ Run Decomposition</button>
+  <button class="btn-sm" onclick="testGeminiKey()" style="background:#1e3a2a;color:#4caf87">🔑 Test Gemini Key</button>
   <button class="btn-sm" onclick="forgetKeys()" style="color:#e05555">🗑 Forget Keys</button>
 </div>
+
+<div id="keyTestResult" style="display:none;margin:0 20px 0;padding:10px 14px;border-radius:6px;font-size:12px;font-family:monospace;white-space:pre-wrap;word-break:break-all"></div>
 
 <div class="ctrl">
   <label>คำถาม:</label>
@@ -527,6 +530,76 @@ function removeLLM(id){
 
 function saveCustom(){ localStorage.setItem('m0_custom_llms',JSON.stringify(customLLMs)); }
 function loadCustom(){ try{customLLMs=JSON.parse(localStorage.getItem('m0_custom_llms')||'[]');}catch{customLLMs=[];} }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Gemini Key Tester
+
+async function testGeminiKey(){
+  const key = document.getElementById('keyGemini').value.trim();
+  const box = document.getElementById('keyTestResult');
+  box.style.display = 'block';
+
+  // แสดง key ที่กำลังทดสอบ (masked)
+  const masked = key ? key.slice(0,6)+'…'+key.slice(-4) : '(ว่าง)';
+
+  if(!key){
+    box.style.background='#3a1a1a'; box.style.color='#e05555';
+    box.textContent = '❌ ไม่มี key — พิมพ์ key ใน field ก่อน แล้วกด Test อีกครั้ง';
+    return;
+  }
+
+  box.style.background='#13151f'; box.style.color='#888';
+  box.textContent = `🔍 กำลังทดสอบ key: ${masked}\n...`;
+
+  // Step 1: GET /models — ตรวจว่า key valid (ไม่ใช้ quota)
+  try{
+    const r1 = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}&pageSize=3`,
+      {method:'GET'}
+    );
+    const d1 = await r1.json();
+
+    if(r1.ok){
+      const modelList = (d1.models||[]).map(m=>m.name).join(', ');
+      box.style.background='#0d2a1a'; box.style.color='#4caf87';
+      box.textContent =
+        `✅ Key valid! (HTTP ${r1.status})\n` +
+        `Key ที่ใช้: ${masked}\n` +
+        `Key ใน field: ${key.length} ตัวอักษร\n` +
+        `Models ที่เข้าถึงได้: ${modelList||'(ไม่มี)'}`;
+
+      // Step 2: ทดสอบ generate จริง
+      box.textContent += '\n\n🔄 ทดสอบ generate content...';
+      const r2 = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`,
+        {method:'POST', headers:{'Content-Type':'application/json'},
+         body:'{"contents":[{"parts":[{"text":"ตอบ: 1+1=?"}]}],"generationConfig":{"maxOutputTokens":5}}'}
+      );
+      const d2 = await r2.json();
+      if(r2.ok){
+        const ans = d2?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+        box.textContent += `\n✅ Generate OK — ตอบ: "${ans}"\n\n→ Key ใช้งานได้ปกติ กด Run อีกครั้ง`;
+      } else {
+        box.textContent += `\n⚠️ Generate HTTP ${r2.status}: ${JSON.stringify(d2).slice(0,150)}`;
+        if(r2.status===429) box.textContent += '\n\n→ Rate limit — รอ 1 นาทีแล้วลองใหม่';
+      }
+    } else {
+      box.style.background='#3a1a1a'; box.style.color='#e05555';
+      box.textContent =
+        `❌ HTTP ${r1.status}\n` +
+        `Key ที่ใช้: ${masked}\n` +
+        `Key ใน field: ${key.length} ตัวอักษร\n\n` +
+        `Error: ${JSON.stringify(d1).slice(0,200)}\n\n`;
+      if(r1.status===401)
+        box.textContent += '→ Key ไม่ถูกต้อง หรือถูก revoke — สร้าง key ใหม่ที่ aistudio.google.com/apikey';
+      if(r1.status===429)
+        box.textContent += '→ Rate limit — key ถูกแต่ส่งเกินกำหนด รอ 1 นาที';
+    }
+  }catch(e){
+    box.style.background='#3a1a1a'; box.style.color='#e05555';
+    box.textContent = `❌ Network error: ${e.message}\nKey: ${masked}`;
+  }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Keys
