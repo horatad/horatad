@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.9
-// Version 3.3.9 | 2026-05-21
+// HORATAD:SCRIPT:3.3.10
+// Version 3.3.10 | 2026-05-21
+// Changes: [V3.3.10] fix(about): ลบ section ปรัชญาการพัฒนา, about page full-screen layout
 // Changes: [V3.3.9] fix: JULIAN URL→raw.githubusercontent, no autofocus search, swap transit fn, lunar restore content
 // Changes: [V3.3.8] feat(UX): 8 changes — import choice, DB1 sort, pin fix, tag delete, toggle btns, nav view btn, lunar cleanup
 // Changes: [V3.3.7] fix(UX): memory modal ใช้ dvh แทน vh — keyboard ไม่บัง Export/Import/ปิด บนมือถือ
@@ -11,7 +12,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.9';
+const APP_VERSION='3.3.10';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
