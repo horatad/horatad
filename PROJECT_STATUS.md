@@ -68,7 +68,7 @@
 - (ไม่มี — automation ครบแล้ว รอข้อมูลสะสม 5-7 วัน)
 
 ### Blocked (รอ user)
-- [ ] [BLOCKED] import master_key: julian_keygen.mjs 1700 2100 → D1
+- (ไม่มี blocked tasks — automation รันเองได้ทั้งหมด)
 
 ### Handoff ล่าสุด
 `handoffs/JULIAN_20260521_v5.md`
