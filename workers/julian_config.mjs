@@ -4,12 +4,12 @@ export const CONFIG = {
 
   // ── Target ────────────────────────────────────────────────────
   TARGET_RECORDS: 500,      // หยุด automation เมื่อถึงจำนวนนี้
-  RECORDS_PER_RUN: 50,      // max records ต่อ 1 run (conservative)
+  MAX_PER_RUN: 200,         // เพดาน records ต่อ 1 run (จริงๆ จะน้อยกว่านี้ตาม budget)
 
   // ── Rate Limits ───────────────────────────────────────────────
-  WIKIDATA_DELAY_MS: 1200,  // หน่วงระหว่าง requests (Wikidata limit: 1 req/sec)
-  D1_WRITES_DAILY: 100_000, // CF D1 free tier (ตรวจสอบล่าสุด: 2026-05)
-  D1_WRITES_SAFETY: 0.8,    // หยุดเมื่อถึง 80% ของ limit (safety buffer)
+  WIKIDATA_DELAY_MS: 1200,      // หน่วงระหว่าง requests (Wikidata limit: 1 req/sec)
+  D1_WRITES_DAILY_LIMIT: 100_000, // CF D1 free tier (ตรวจสอบล่าสุด: 2026-05)
+  D1_WRITES_SAFETY_PCT: 0.85,    // กฎหลัก: ใช้ไม่เกิน 85% ของ limit ต่อวัน
 
   // ── Wikidata Query Series ─────────────────────────────────────
   // เรียงตาม priority — แต่ละ run ดึงคนละ query จนครบ TARGET_RECORDS

@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, existsSync, appendFileSync } from 'fs';
 import { CONFIG } from './julian_config.mjs';
 
 const PROGRESS_FILE  = new URL('./julian_progress.json', import.meta.url).pathname;
+const OVERRIDE_FILE  = new URL('./julian_override.json', import.meta.url).pathname;
 const WIKIDATA_URL   = 'https://query.wikidata.org/sparql';
 const USER_AGENT     = 'JULIAN-bot/1.0 (horatad.com; empirical-astro-research)';
 
@@ -33,7 +34,29 @@ function loadProgress() {
   if (existsSync(PROGRESS_FILE)) {
     try { return JSON.parse(readFileSync(PROGRESS_FILE, 'utf8')); } catch (_) {}
   }
-  return { total: 0, done_queries: [], seen_qids: [], runs: [] };
+  return { total: 0, done_queries: [], seen_qids: [], runs: [], daily_writes: {} };
+}
+
+// คำนวณ records ที่รันได้วันนี้ตาม 85% safety rule + override
+function calcRunLimit(progress) {
+  const today        = new Date().toISOString().slice(0, 10);
+  const writesToday  = progress.daily_writes?.[today] || 0;
+  const dailyBudget  = Math.floor(CONFIG.D1_WRITES_DAILY_LIMIT * CONFIG.D1_WRITES_SAFETY_PCT);
+  const remaining    = Math.max(0, dailyBudget - writesToday);
+
+  // อ่าน override (user ลดได้ แต่ขยายไม่ได้เกิน 1.0)
+  let rateMult = 1.0;
+  if (existsSync(OVERRIDE_FILE)) {
+    try {
+      const ov = JSON.parse(readFileSync(OVERRIDE_FILE, 'utf8'));
+      rateMult  = Math.min(1.0, Math.max(0.01, ov.rate_multiplier ?? 1.0));
+    } catch (_) {}
+  }
+
+  const limit = Math.min(CONFIG.MAX_PER_RUN, Math.floor(remaining * rateMult));
+  console.log(`Budget today: ${writesToday} used / ${dailyBudget} (85%) / ${CONFIG.D1_WRITES_DAILY_LIMIT} limit`);
+  console.log(`Rate multiplier: ${rateMult} → this run: max ${limit} records`);
+  return { limit, writesToday, dailyBudget, today };
 }
 
 function saveProgress(p) {
@@ -81,6 +104,13 @@ async function main() {
     process.exit(0);
   }
 
+  const { limit, writesToday, dailyBudget, today } = calcRunLimit(progress);
+  if (limit === 0) {
+    console.log(`Daily budget exhausted (${writesToday}/${dailyBudget}) — รอพรุ่งนี้`);
+    ghOutput('status', 'budget_exhausted');
+    process.exit(0);
+  }
+
   console.log(`\nQuery: ${nextQuery.id} — ${nextQuery.label}`);
   console.log(`Progress: ${progress.total}/${CONFIG.TARGET_RECORDS}`);
 
@@ -101,7 +131,7 @@ async function main() {
   const records  = [];
 
   for (const b of bindings) {
-    if (records.length >= CONFIG.RECORDS_PER_RUN) break;
+    if (records.length >= limit) break;
 
     const qid  = b.person?.value?.split('/').pop();
     if (!qid || seenSet.has(qid)) continue;
@@ -157,6 +187,15 @@ async function main() {
   progress.total    += records.length;
   progress.seen_qids = [...seenSet];
   progress.runs.push({ date, query: nextQuery.id, count: records.length });
+
+  // นับ daily writes (เพื่อตรวจสอบ 85% budget)
+  if (!progress.daily_writes) progress.daily_writes = {};
+  progress.daily_writes[today] = (progress.daily_writes[today] || 0) + records.length;
+  // ลบข้อมูลเกิน 7 วัน ไม่ให้ progress.json บวม
+  const cutoff = new Date(Date.now() - 7*86400000).toISOString().slice(0,10);
+  for (const day of Object.keys(progress.daily_writes)) {
+    if (day < cutoff) delete progress.daily_writes[day];
+  }
 
   // ถ้า query ดึงมาน้อยกว่า RECORDS_PER_RUN แสดงว่า exhausted แล้ว
   const exhausted = bindings.filter(b => {

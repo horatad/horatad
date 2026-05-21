@@ -8,6 +8,13 @@ on:
   schedule:
     - cron: '0 2 * * *'      # 02:00 UTC ทุกคืน (~09:00 ไทย)
   workflow_dispatch:           # กด Run manually ได้จาก GitHub UI
+    inputs:
+      rate:
+        description: 'ลด rate ถ้าต้องการ (0.25/0.5/0.75/1.0) — ขยายเกิน 1.0 ไม่ได้'
+        required: false
+        default: '1.0'
+        type: choice
+        options: ['1.0', '0.75', '0.5', '0.25']
 
 permissions:
   contents: write              # สำหรับ commit progress
@@ -30,6 +37,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # ─── Apply manual rate override (workflow_dispatch เท่านั้น) ────
+      - name: Apply rate override
+        if: github.event_name == 'workflow_dispatch' && inputs.rate != '1.0'
+        run: |
+          node -e "
+            const fs = require('fs');
+            const f  = 'workers/julian_override.json';
+            const ov = JSON.parse(fs.readFileSync(f, 'utf8'));
+            ov.rate_multiplier = Math.min(1.0, parseFloat('${{ inputs.rate }}'));
+            fs.writeFileSync(f, JSON.stringify(ov, null, 2));
+            console.log('Rate set to', ov.rate_multiplier);
+          "
 
       # ─── Scrape Wikidata ──────────────────────────────────────
       - name: Scrape Wikidata
