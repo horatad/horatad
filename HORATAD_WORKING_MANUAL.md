@@ -438,80 +438,11 @@ const summary = compose_summary_text(preds);
 
 ---
 
-# 14. PDCA CASE STUDIES
+# 14. CASE STUDIES
 
-> "Write what you will do, do what you write — Plan, Do, Check, Act"
+ดู **`CASE_STUDIES.md`** — บันทึก PDCA ทุก experiment แยกออกมาเพื่อ manual ไม่บวม
 
----
-
-## Case Study 1 — Multi-LLM Benchmark (M0) | 2026-05-21
-
-### PLAN
-สร้าง benchmark tool เพื่อ:
-1. วัดความแม่นยำ (hallucination rate) ของ Gemini, Groq, iApp กับ Thai astrology KB
-2. วัด latency decomposition: systematic / prefill / decode แยกจากกัน
-3. เลือก LLM ที่ดีที่สุดสำหรับ wording layer
-
-### DO
-- สร้าง `m0_hallucination_test.html`: 31 ข้อจาก kb.json ground truth, parallel fetch 3 LLMs
-- แก้ Gemini 429 (rate limit): เพิ่ม delay default 5000ms + countdown
-- แก้ iApp CORS: เปลี่ยนเป็น Typhoon CF Worker (มี CORS headers แล้ว)
-- สร้าง `m0_latency_ping.html`: Mode B (max_tokens=1 = prefill-only) + Mode C (streaming SSE)
-- เพิ่ม `testGeminiKey()`: แยก key valid vs quota exhausted
-- localStorage key persistence (ไม่ commit secret ลง repo)
-
-### CHECK (ผลที่ได้)
-**ค้นพบสำคัญ:** LLMs ได้คะแนน 0% บนศัพท์โหราศาสตร์ไทยโบราณ (เสริด/พักร/มนท์)
-- ศัพท์เฉพาะเหล่านี้ไม่มีใน training data → LLM ไม่รู้จัก → hallucinate ทั้งหมด
-- **ข้อสรุป:** LLM ไม่สามารถเป็น knowledge source ได้ — ต้องเป็น wording layer เท่านั้น
-- KB-first architecture ถูกต้อง: engine + KB → matched rules → LLM craft wording เท่านั้น
-
-**ปัญหาที่แก้ไม่ได้ใน session:**
-- Gemini quota (1,500 RPD ฟรี) หมดเร็วมาก — ต้องวางแผนการใช้
-- Typhoon CF ไม่รองรับ streaming → decode metric ไม่ได้
-
-### ACT (การตัดสินใจ)
-1. ✅ ยืนยัน KB-first architecture — ไม่เปลี่ยนทิศทาง
-2. ✅ เพิ่ม M8 keyword composition engine (deterministic, no LLM) เป็น priority สูง
-3. ✅ เพิ่ม M7 empirical validation pipeline (Julian Day → empirical_p)
-4. 🔲 รอ user รัน benchmark และเลือก LLM จาก Groq score (Gemini quota หมด)
-
----
-
-## Case Study 2 — Keyword Composition + Empirical Schema (M7/M8) | 2026-05-21
-
-### PLAN
-จาก lesson learned ของ Case Study 1:
-1. Task B: `compose_local_prediction()` — deterministic prediction จาก KB keywords, ไม่ต้องเรียก LLM
-2. Task C: empirical schema (`empirical_p`, `empirical_n`, `empirical_refs`, `secondary_obs`) ใน kb.json
-3. Task A: `scripts/gen_rule_skeletons.mjs` — ระบุ 90 missing planet×quality combinations
-
-### DO
-- เพิ่ม `compose_local_prediction()` + `compose_summary_text()` ใน `v3/interpretation.js`
-  - extract keywords จาก `rule.p` (split Thai phrases)
-  - classify polarity จาก `t[]` tags + `conditions[]` (reliable กว่า text analysis)
-  - compose summary text: positive traits + connector + negative traits
-- เพิ่ม `_empirical_schema` field ใน kb.json root (documentation)
-- เพิ่ม `empirical_p/n/refs/secondary_obs` fields ใน 2 sample TRUE_RULEs (null placeholder)
-- สร้าง `scripts/gen_rule_skeletons.mjs` → `v3/kb_skeletons.json` (90 skeletons)
-- อัปเดต MISSION_FINETUNE.md (M7 + M8 sections + priority table)
-- Version bump V3.2.9 → V3.3.0
-
-### CHECK
-- `compose_local_prediction()` ทำงานได้ — ส่ง structured array พร้อม rule_id, text, keywords, polarity
-- `gen_rule_skeletons.mjs` รันได้ — พบ 90 combinations ขาดกฎ (ศุกร์ missing น้อยสุด 6, อาทิตย์/อังคาร/มฤตยู ขาดมากสุด 10)
-- empirical schema อยู่ใน kb.json แล้ว — รอ data มาเติม
-
-**ข้อสังเกต:**
-- `compose_local_prediction()` ยังไม่ได้ wire เข้า v3tab.js — ยังไม่แสดงใน app
-- 90 rule skeletons = โอกาสเพิ่ม KB coverage อีก 26% ถ้า expert กรอก text
-- polarity classification ง่ายไป (t[] tags) — บางกฎ neutral แต่ไม่มี tag → classify เป็น ~
-
-### ACT (next steps)
-1. 🔲 Wire `compose_local_prediction()` → v3tab.js เป็น enhanced fallback (แทน render_fallback)
-2. 🔲 User รัน benchmark ใน `m0_hallucination_test.html` ดู Groq score
-3. 🔲 Expert review `v3/kb_skeletons.json` — เพิ่ม p field ใน priority rules ก่อน
-4. 🔲 Build Wikipedia scraper สำหรับ Julian Day DB (Phase 2 of M7)
+> Format: CS001, CS002, ... | tag: PROJECT (HORATAD/BIBLE/JULIAN) + วันที่
 
 ---
 
