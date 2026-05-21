@@ -1,4 +1,4 @@
-// Version 3.0.6 | 2026-05-21
+// Version 3.0.7 | 2026-05-21
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -11,18 +11,22 @@ import { build_natal_payload, compose_local_prediction } from './interpretation.
 import { match_rules, send_to_typhoon } from './typhoon.js';
 
 // ── M8: แปลง compose_local_prediction() output → display text ──────────────
-function _renderComposed(predictions, matchCount) {
+function _renderComposed(predictions) {
   if (!predictions.length) return '[ไม่พบกฎที่ตรงกับดวง]';
-  const pos = [], neg = [], neu = [];
+  // group by polarity+domain
+  const groups = {};
   for (const p of predictions) {
-    if (p.polarity === '+') pos.push(p.text);
-    else if (p.polarity === '-') neg.push(p.text);
-    else neu.push(p.text);
+    const icon = p.polarity === '+' ? '✅' : p.polarity === '-' ? '⚠️' : '📋';
+    const key = icon + (p.domain ? ' ' + p.domain : '');
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(p.text);
   }
   const lines = [];
-  if (pos.length) { lines.push('✅ ด้านดี'); pos.forEach(t => lines.push('• ' + t)); lines.push(''); }
-  if (neg.length) { lines.push('⚠️ ด้านระวัง'); neg.forEach(t => lines.push('• ' + t)); lines.push(''); }
-  if (neu.length) { lines.push('📋 ลักษณะทั่วไป'); neu.forEach(t => lines.push('• ' + t)); }
+  for (const [header, texts] of Object.entries(groups)) {
+    lines.push(header);
+    texts.forEach(t => lines.push('• ' + t));
+    lines.push('');
+  }
   return lines.join('\n').trim();
 }
 
@@ -113,7 +117,7 @@ async function v3Local() {
     const ascSign = get_lagna(pos);
     const payload = build_natal_payload(pos, ascSign);
     const matched = match_rules(pos, ascSign, kbRules, null, payload);
-    const text = _renderComposed(compose_local_prediction(matched), matched.length);
+    const text = _renderComposed(compose_local_prediction(matched, payload));
     _showSpinner(false);
     _showResult(text, false, '📋 กฎที่ตรงดวง (' + matched.length + ' กฎ) — ไม่ใช้ AI');
   } catch (err) {
@@ -154,7 +158,7 @@ async function v3Typhoon() {
     console.warn('[v3tab] typhoon error:', err);
     if (payload && matched) {
       // M8: fallback อัตโนมัติ — keyword composition แทน Typhoon
-      const fallbackText = _renderComposed(compose_local_prediction(matched), matched.length);
+      const fallbackText = _renderComposed(compose_local_prediction(matched, payload));
       _showResult(fallbackText, true, '⚠️ Typhoon ไม่ตอบ — ใช้ keyword engine');
       _showToastV3('Typhoon ไม่ตอบ — ใช้กฎดิบแทน');
     } else {

@@ -1,4 +1,4 @@
-// Version 3.0.2 | 2026-05-21
+// Version 3.0.4 | 2026-05-21
 // v3/typhoon.js — Typhoon API Connector
 // ห้าม hardcode ข้อความพยากรณ์
 // ห้าม hallucinate — ข้อความต้องมาจาก kb_context rules เท่านั้น
@@ -7,6 +7,8 @@
 import {
   compute_lagna_aspect,
   describe_planet_for_prompt,
+  classify_rule_polarity,
+  get_rule_domain,
 } from './interpretation.js';
 import {
   getStandards,
@@ -203,9 +205,20 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
  * ห้ามใส่ข้อความพยากรณ์ใน prompt — rules จาก kb_context เท่านั้น
  */
 function build_prompt(natalPayload, matchedRules, isQA=false){
-  // M3: rule IDs สำหรับ validation ต้านการ hallucinate
+  // M8: tagged phrase cluster format — [polarity+domain] keywords
   const rulesText=matchedRules
-    .map((r,i)=>`• [R${String(i+1).padStart(2,'0')}][${r.ch||'?'}] ${r.c} → ${r.p}`)
+    .map((r,i)=>{
+      const pol=classify_rule_polarity(r);
+      const domain=get_rule_domain(r,natalPayload);
+      const tag=`[${pol}${domain?domain:'ทั่วไป'}]`;
+      const kws=r.p
+        .replace(/\([^)]*\)/g,'')
+        .replace(/[—→=+|[\]]/g,' ')
+        .split(/[\s,，]+/)
+        .filter(p=>p.length>=3&&/[ก-๙]/.test(p))
+        .join(', ');
+      return `• [R${String(i+1).padStart(2,'0')}]${tag} ${kws}`;
+    })
     .join('\n');
 
   // M2: ย่อ chart context เหลือแค่ lagna + overall strength
@@ -231,11 +244,10 @@ function build_prompt(natalPayload, matchedRules, isQA=false){
 กฎเหล็ก:
 - ตอบในรูปแบบ JSON เท่านั้น: {"predictions":[{"rule_id":"R01","text":"คำพยากรณ์"},…]}
 - rule_id ต้องมาจากรหัสกฎที่ให้มาเท่านั้น ห้ามสร้าง rule_id ที่ไม่มีในรายการ
+- ใช้ keywords เป็นแกนหลัก ห้ามเพิ่มเนื้อหานอก keywords
+- craft เป็นประโยคภาษาไทยตาม domain ของกฎนั้น ไม่ข้ามบริบท
 - ห้ามแสดงค่าตัวเลขทางเทคนิคใดๆ ในข้อความ text
-- ห้ามสร้างข้อความพยากรณ์ที่ไม่มาจากกฎที่ให้มา
 - ห้ามปลอบโยน ห้าม validate ความรู้สึก ห้ามสร้างความหวังเกินกฎ
-- เรียงจากกฎที่ดาวแสดงออกเด่นชัดสุดก่อน
-- ถ้ากฎบอก "เชื่อคนง่าย" ให้บอกตรงๆ ไม่อ้อมค้อม
 - text แต่ละรายการไม่เกิน 40 คำ ภาษาไทยกระชับ ไม่มีคำนำ-คำส่งท้าย`;
 
   const userPrompt=

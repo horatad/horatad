@@ -1,4 +1,4 @@
-// Version 3.0.2 | 2026-05-21 — Horatad Interpretation Pipeline
+// Version 3.0.4 | 2026-05-21 — Horatad Interpretation Pipeline
 // ห้าม hardcode ข้อความพยากรณ์ — text ต้องมาจาก kb_context.json เท่านั้น
 // ES Module
 
@@ -294,6 +294,13 @@ function _extractKeywords(text){
     .filter(p=>p.length>=3&&/[ก-๙]/.test(p));
 }
 
+// house → domain label สำหรับ tagged phrase cluster
+const HOUSE_DOMAIN = {
+  1:'ตัวตน',2:'การเงิน',3:'การสื่อสาร',4:'ครอบครัว',
+  5:'ความรัก',6:'สุขภาพ',7:'ความสัมพันธ์',8:'วิกฤต',
+  9:'ปัญญา',10:'การงาน',11:'มิตร',12:'ความสูญเสีย',
+};
+
 // ดู polarity จาก t[] tags + conditions[] (เชื่อถือกว่า text analysis)
 function _classifyRulePolarity(rule){
   const ts=rule.t||[];
@@ -307,14 +314,38 @@ function _classifyRulePolarity(rule){
 }
 
 /**
- * compose_local_prediction(matched_rules)
+ * classify_rule_polarity(rule) — exported version of _classifyRulePolarity
+ * ใช้ใน typhoon.js build_prompt() สำหรับ tagged phrase cluster format
+ */
+export function classify_rule_polarity(rule){ return _classifyRulePolarity(rule); }
+
+/**
+ * get_rule_domain(rule, natal_payload) → domain string (Thai)
+ * ดู house ของ planet หลักใน rule conditions → แปลงเป็น domain label
+ * ใช้สร้าง tag [+ตัวตน] [-การเงิน] ฯลฯ
+ */
+export function get_rule_domain(rule, natal_payload){
+  if(!natal_payload)return'';
+  const hMap={};
+  for(const e of(natal_payload._effects_sorted||[]))hMap[e.idx]=e.house;
+  for(const e of(natal_payload._potentials_sorted||[]))hMap[e.idx]=e.house;
+  for(const c of(rule.conditions||[])){
+    const pid=parseInt(c.planet_id);
+    if(pid&&hMap[pid])return HOUSE_DOMAIN[hMap[pid]]||'';
+  }
+  return'';
+}
+
+/**
+ * compose_local_prediction(matched_rules, natal_payload?)
  * Keyword composition engine — deterministic, no LLM
  * คืน structured array ของ predictions จาก KB rules โดยตรง
  *
  * @param {Object[]} matched_rules - output จาก match_rules()
- * @returns {Array<{rule_id,text,keywords,polarity,chapter,source}>}
+ * @param {Object|null} natal_payload - จาก build_natal_payload() (optional, ใช้หา domain)
+ * @returns {Array<{rule_id,text,keywords,polarity,domain,chapter,source}>}
  */
-export function compose_local_prediction(matched_rules){
+export function compose_local_prediction(matched_rules, natal_payload=null){
   if(!matched_rules?.length)return[];
   return matched_rules
     .filter(r=>r.p)
@@ -323,6 +354,7 @@ export function compose_local_prediction(matched_rules){
       text:r.p,
       keywords:_extractKeywords(r.p),
       polarity:_classifyRulePolarity(r),
+      domain:get_rule_domain(r,natal_payload),
       chapter:r.ch||'',
       source:'local',
     }));
