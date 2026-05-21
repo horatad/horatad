@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Horatad System Overview</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  body { font-family: sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 24px; }
+  h1 { color: #f8fafc; font-size: 1.2rem; margin-bottom: 4px; }
+  .sub { color: #94a3b8; font-size: 0.85rem; margin-bottom: 24px; }
+  .card { background: #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .label { font-size: 0.75rem; font-weight: bold; letter-spacing: 0.1em; color: #64748b; margin-bottom: 8px; }
+  .mermaid { background: transparent; }
+</style>
+</head>
+<body>
+<h1>Horatad Ecosystem — System Overview</h1>
+<p class="sub">3 Projects / 1 Repo | Updated 2026-05-21 V3.3.2</p>
+
+<div class="card">
+<div class="label">USER JOURNEY — End-to-End Flow</div>
+<div class="mermaid">
+flowchart TD
+    A([👤 User\nกรอกวันเกิด]) --> B
+
+    subgraph HORATAD["🏠 HORATAD — Thai Astrology PWA"]
+        B[script.js\nรับ input วัน/เวลา/สถานที่] --> C
+        C[engine.js\nคำนวณตำแหน่งดาว pos\nระบบสุริยยาตร์] --> D
+        D[build_natal_payload\nสร้าง chart context\nlagna · house · aspect · manifestation]
+    end
+
+    D --> E
+
+    subgraph BIBLE["📖 BIBLE — Prediction Wording Engine"]
+        E[match_rules\nจับคู่กฎ KB 342 ข้อ\nตาม conditions · polarity · aspect] --> F
+        F[compose_local_prediction\nสกัด keywords\n+ polarity +/-/~\n+ domain ตัวตน/การเงิน/ฯลฯ] --> G
+        G{ช่องทาง}
+        G -->|Local mode| H[_renderComposed\n✅ ตัวตน · ⚠️ การเงิน\ngroup by domain]
+        G -->|AI mode| I[build_prompt\nTagged phrase cluster\n+ตัวตน kw1,kw2\n-การงาน kw3,kw4]
+        I --> J[Typhoon AI\ntyphoon-v2.5-30b\nสร้างประโยคภาษาไทย]
+        J -->|ล้มเหลว| F
+    end
+
+    H --> K([📱 แสดงผล\nV3 Tab])
+    J --> K
+
+    subgraph JULIAN["🔭 JULIAN — Empirical Astro DB"]
+        L[Wikipedia / Public Records\nวันเกิดบุคคลสำคัญ] --> M
+        M[Julian Day + Planet Positions\nคำนวณ natal chart อัตโนมัติ]
+        M --> N[match_rules\nจับคู่กับ KB rules]
+        N --> O[นับ hit/miss per rule\nคำนวณ empirical_p]
+    end
+
+    O -->|อัปเดต weight| E
+
+    style HORATAD fill:#1e3a5f,stroke:#3b82f6,color:#e2e8f0
+    style BIBLE fill:#1e3d2f,stroke:#22c55e,color:#e2e8f0
+    style JULIAN fill:#3d2d1e,stroke:#f97316,color:#e2e8f0
+</div>
+</div>
+
+<div class="card">
+<div class="label">DATA DEPENDENCY — ข้อมูลไหลอย่างไรระหว่าง 3 โครงการ</div>
+<div class="mermaid">
+flowchart LR
+    subgraph KB["kb.json (V2.3.0)"]
+        R1[342 rules\nrule_source · weight\nconditions · polarity · p-text]
+    end
+
+    subgraph HORATAD["HORATAD"]
+        POS[pos · lagna\nnatal_payload]
+    end
+
+    subgraph BIBLE["BIBLE"]
+        MR[match_rules]
+        CLP[compose_local_\nprediction]
+        BP[build_prompt]
+    end
+
+    subgraph JULIAN["JULIAN"]
+        EP[empirical_p\nper rule]
+        CASES[historical\nrecords]
+    end
+
+    POS --> MR
+    KB --> MR
+    MR --> CLP
+    MR --> BP
+    CLP --> BP
+
+    CASES --> EP
+    EP -->|weight × empirical_p| KB
+
+    style KB fill:#2d2d3f,stroke:#8b5cf6,color:#e2e8f0
+    style HORATAD fill:#1e3a5f,stroke:#3b82f6,color:#e2e8f0
+    style BIBLE fill:#1e3d2f,stroke:#22c55e,color:#e2e8f0
+    style JULIAN fill:#3d2d1e,stroke:#f97316,color:#e2e8f0
+</div>
+</div>
+
+<div class="card">
+<div class="label">RULE QUALITY TIERS — ความน่าเชื่อถือของกฎ</div>
+<div class="mermaid">
+flowchart LR
+    A["major\nตำราสุริยยาตร์\nweight=1.0"] -->|effective_weight| S
+    B["minor\nประสบการณ์โหร\nweight=0.8"] -->|effective_weight| S
+    C["empirical\nJULIAN validated\nweight × empirical_p"] -->|effective_weight| S
+    D["case_study\nผู้ใช้ยืนยัน\nweight=0.6"] -->|effective_weight| S
+    S[sort · filter\nก่อนส่ง Typhoon]
+
+    style A fill:#1e3d2f,stroke:#22c55e,color:#e2e8f0
+    style B fill:#2d3a1e,stroke:#84cc16,color:#e2e8f0
+    style C fill:#3d2d1e,stroke:#f97316,color:#e2e8f0
+    style D fill:#3d1e2d,stroke:#ec4899,color:#e2e8f0
+    style S fill:#2d2d3f,stroke:#8b5cf6,color:#e2e8f0
+</div>
+</div>
+
+<div class="card">
+<div class="label">CURRENT STATUS</div>
+<table style="width:100%;border-collapse:collapse;font-size:0.85rem">
+<tr style="border-bottom:1px solid #334155">
+  <th style="text-align:left;padding:8px;color:#94a3b8">Project</th>
+  <th style="text-align:left;padding:8px;color:#94a3b8">สถานะ</th>
+  <th style="text-align:left;padding:8px;color:#94a3b8">งานหลักที่เสร็จ</th>
+  <th style="text-align:left;padding:8px;color:#94a3b8">Blocked on</th>
+</tr>
+<tr style="border-bottom:1px solid #1e293b">
+  <td style="padding:8px;color:#3b82f6"><b>HORATAD</b></td>
+  <td style="padding:8px">🟡 Pre-launch</td>
+  <td style="padding:8px">App ทำงานครบ · V3 tab · Fallback · Offline PWA</td>
+  <td style="padding:8px;color:#94a3b8">ทดสอบมือถือ · CF Worker deploy</td>
+</tr>
+<tr style="border-bottom:1px solid #1e293b">
+  <td style="padding:8px;color:#22c55e"><b>BIBLE</b></td>
+  <td style="padding:8px">🟢 Active</td>
+  <td style="padding:8px">342 rules · conditions[] · compose · house domain · tagged prompt</td>
+  <td style="padding:8px;color:#94a3b8">Expert review skeletons · Groq hallucination test</td>
+</tr>
+<tr>
+  <td style="padding:8px;color:#f97316"><b>JULIAN</b></td>
+  <td style="padding:8px">📋 Schema only</td>
+  <td style="padding:8px">Schema defined · empirical_p placeholder · gen_rule_skeletons.mjs</td>
+  <td style="padding:8px;color:#94a3b8">CF KV/D1 storage · Wikipedia scraper · 0 records</td>
+</tr>
+</table>
+</div>
+
+<script>mermaid.initialize({startOnLoad:true,theme:'dark'});</script>
+</body>
+</html>
