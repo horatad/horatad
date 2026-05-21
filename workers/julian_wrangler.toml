@@ -5,4 +5,4 @@ compatibility_date = "2024-09-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "julian"
-database_id = "REPLACE_WITH_D1_ID"   # จาก CF Dashboard → D1 → database ID
+database_id = "eb644547-f275-41b9-9bb3-204fb1b28eb7"
