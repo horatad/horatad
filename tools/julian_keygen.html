@@ -55,10 +55,6 @@ td:first-child,td:nth-child(2){text-align:left}
     <label>ปีสิ้นสุด CE</label>
     <input type="number" id="y-end" value="2100" min="-3000" max="3000">
   </div>
-  <div class="field">
-    <label>ลองจิจูด (°E)</label>
-    <input type="number" id="lng" value="100.5" step="0.1" min="-180" max="180">
-  </div>
   <button class="btn btn-gen" id="btn-gen">▶ สร้าง</button>
 </div>
 
@@ -85,7 +81,8 @@ let rows = null;
 function daysInMonth(m, y) { return new Date(y, m, 0).getDate(); }
 function pad2(n) { return String(n).padStart(2,'0'); }
 
-async function generate(yStart, yEnd, lng) {
+async function generate(yStart, yEnd) {
+  const lng = 100.5; // Bangkok — fixed reference, canonical values
   const all = [];
   let totalDays = 0;
   for (let y = yStart; y <= yEnd; y++) {
@@ -126,7 +123,7 @@ function renderPreview(data) {
     r.planets.forEach(v => h += `<td>${v}</td>`);
     h += '</tr>';
   });
-  h += `</tbody></table><p class="note">แสดง 10 แถวแรก — ทั้งหมด ${data.length.toLocaleString()} แถว | planets[0..9] = SU..MR degrees (0-360) | hr=0 lng=${document.getElementById('lng').value}</p>`;
+  h += `</tbody></table><p class="note">แสดง 10 แถวแรก — ทั้งหมด ${data.length.toLocaleString()} แถว | planets[0..9] = SU..MR degrees (0-360) | hr=0 lng=100.5 (Bangkok)</p>`;
   return h;
 }
 
@@ -155,8 +152,6 @@ function toJSONL(data) {
 document.getElementById('btn-gen').addEventListener('click', async () => {
   const yStart = +document.getElementById('y-start').value;
   const yEnd = +document.getElementById('y-end').value;
-  const lng = +document.getElementById('lng').value;
-
   if (!yStart || !yEnd || yStart > yEnd) {
     document.getElementById('status').textContent = '⚠ กรุณาระบุช่วงปีให้ถูกต้อง';
     return;
@@ -171,7 +166,7 @@ document.getElementById('btn-gen').addEventListener('click', async () => {
   document.getElementById('status').textContent = '';
 
   const t0 = Date.now();
-  rows = await generate(yStart, yEnd, lng);
+  rows = await generate(yStart, yEnd);
   const sec = ((Date.now() - t0) / 1000).toFixed(1);
 
   document.getElementById('chip-rows').textContent = `${rows.length.toLocaleString()} rows`;
