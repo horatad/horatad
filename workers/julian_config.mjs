@@ -28,7 +28,7 @@ function eraQuery(y1, y2) {
 }
 
 const ERA_SERIES = [];
-for (let y = 1700; y < 2100; y += 20) ERA_SERIES.push(eraQuery(y, y + 20));
+for (let y = 1700; y < 2100; y += 5) ERA_SERIES.push(eraQuery(y, y + 5));
 
 export const CONFIG = {
 

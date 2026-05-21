@@ -6,7 +6,7 @@ name: JULIAN Data Sync
 
 on:
   schedule:
-    - cron: '0 2 * * *'      # 02:00 UTC ทุกคืน — scrape Wikidata
+    - cron: '0 */6 * * *'    # ทุก 6 ชั่วโมง (00/06/12/18 UTC) — scrape Wikidata
     - cron: '0 3 * * 0'      # 03:00 UTC ทุกอาทิตย์ — empirical validation
   workflow_dispatch:           # กด Run manually ได้จาก GitHub UI
     inputs:
