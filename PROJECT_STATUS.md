@@ -72,13 +72,36 @@
 
 ---
 
+## PLATFORM — Training Center + Chatbot + Content 🔲 Vision (ยังไม่เริ่ม)
+**เป้าหมาย:** 1 คนดูแลทุกช่องทาง (LINE OA, YouTube, Facebook, online course, 1:1 consult) ด้วย automation
+
+### Vision (บันทึก 2026-05-21)
+- **Phase 1:** LINE OA chatbot → BIBLE wording → ตอบพยากรณ์อัตโนมัติ 24/7
+- **Phase 2:** QR scan → HORATAD → BIBLE → TTS พูดพยากรณ์ (Web Speech API)
+- **Phase 3:** Content auto: BIBLE generate script → YouTube + Facebook weekly
+- **Phase 4:** Online course (สุริยยาตร์ unique) + Booking 1:1 consult
+
+### Next (Claude ทำได้ — เมื่อ HORATAD/BIBLE พร้อม)
+- [ ] LINE OA webhook CF Worker — รับวันเกิด → reply พยากรณ์ auto
+- [ ] TTS integration ใน HORATAD — Web Speech API (browser built-in)
+
+### Blocked (รอ user)
+- [ ] LINE OA account setup
+- [ ] ตัดสินใจ Phase เริ่มต้น (แนะนำ: LINE OA chatbot ก่อน)
+
+### รายละเอียด
+ดู `handoffs/JULIAN_20260521_v2.md` → section PLATFORM VISION
+
+---
+
 ## Quick Reference
 
 | Project | Code | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD | script.js, v3/*, index.html | 🟡 Pre-launch V3.3.4 |
+| Horatad PWA | HORATAD | script.js, v3/*, index.html | 🟡 Pre-launch V3.3.5 |
 | Wording Engine | BIBLE | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN | tools/julian_keygen.html, tools/julian_scraper.html, docs/JULIAN_MISSION.md | 🛠 Tools ready — รอ CF D1 |
+| Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision — รอ Phase 1 |
 
 ---
 ## วิธีเริ่ม session ใหม่
@@ -87,4 +110,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | JULIAN handoff v2*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | JULIAN handoff v2 | PLATFORM vision บันทึกแล้ว*
