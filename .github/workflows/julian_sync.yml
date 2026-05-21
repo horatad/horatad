@@ -189,16 +189,36 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ─── Commit progress + JSONL (สำหรับ manual import ถ้า D1 ยังไม่พร้อม) ──
+      # ─── Commit progress + data/julian_all.json (รันเสมอ ไม่ต้องมี CF token) ──
       - name: Commit progress
         if: steps.scrape.outputs.status == 'ok'
         run: |
           git config user.name  "JULIAN Bot"
           git config user.email "julian-bot@horatad.com"
           git add workers/julian_progress.json workers/julian_report.json || true
-          # เก็บ JSONL เฉพาะถ้า D1 ยังไม่ได้ import (ไว้ import ทีหลัง)
-          if [ "${{ env.CLOUDFLARE_API_TOKEN }}" == "" ]; then
-            git add workers/julian_scraped_*.jsonl || true
+          # ถ้าไม่มี CF token → D1 export ไม่รัน → merge JSONL เข้า data/julian_all.json เอง
+          if [ "${{ env.CLOUDFLARE_API_TOKEN }}" == "" ] && [ -n "${{ steps.scrape.outputs.out_file }}" ]; then
+            node -e "
+              const fs = require('fs');
+              const outFile = process.argv[1];
+              const dataFile = 'data/julian_all.json';
+              let existing = [];
+              try { existing = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
+              if (!Array.isArray(existing)) existing = [];
+              let newRecs = [];
+              try {
+                const lines = fs.readFileSync(outFile, 'utf8').split('\n').filter(Boolean);
+                newRecs = lines.map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
+              } catch(e) {}
+              const map = new Map();
+              for (const r of existing) if (r.jd && r.name) map.set(r.jd+'|'+r.name, r);
+              for (const r of newRecs)  if (r.jd && r.name) map.set(r.jd+'|'+r.name, r);
+              const merged = [...map.values()].sort((a,b) => (b.jd||0)-(a.jd||0));
+              fs.mkdirSync('data', {recursive:true});
+              fs.writeFileSync(dataFile, JSON.stringify(merged));
+              console.log('data/julian_all.json: total=' + merged.length + ' (+' + newRecs.length + ' batch)');
+            " "${{ steps.scrape.outputs.out_file }}"
+            git add data/julian_all.json || true
           fi
           git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})" || echo "Nothing to commit"
           git push origin HEAD:main
