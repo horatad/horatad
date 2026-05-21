@@ -152,9 +152,12 @@ async function main() {
     const birth = parseISODate(b.birth?.value);
     if (!birth) { skipNoBirth++; continue; }
 
-    const death       = parseISODate(b.death?.value);
-    const countryCode = nextQuery.country || b.countryCode?.value || null;
-    const relate_id   = death ? [death.jd] : null;
+    const death        = parseISODate(b.death?.value);
+    const countryCode  = nextQuery.country || b.countryCode?.value || null;
+    const relate_id    = death ? [death.jd] : null;
+    const time_utc     = b.birthTime?.value?.slice(11, 16) || null; // "HH:MM" หรือ null
+    // confidence: มีเวลาเกิด = 0.95 | วันเกิดครบ (ผ่าน precision filter) = 0.85
+    const confidence   = time_utc ? 0.95 : 0.85;
 
     records.push({
       jd:              birth.jd,
@@ -165,13 +168,13 @@ async function main() {
       tier:            nextQuery.tier,
       lat:             null,
       lng:             null,
-      time_utc:        null,
+      time_utc,
       lagna_sign:      null,
       relate_id,
       source:          `wikidata:${qid}`,
       source_type:     'internet',
       validated_count: 0,
-      confidence:      0.85,
+      confidence,
       notes:           null,
     });
 

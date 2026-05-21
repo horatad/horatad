@@ -132,11 +132,13 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
 
-      # ─── Disable workflow เมื่อ target ถึง ─────────────────────
-      - name: Disable when target reached
-        if: steps.scrape.outputs.status == 'target_reached'
+      # ─── Disable workflow เมื่อ target ถึง หรือ queries หมด ────
+      - name: Disable when done
+        if: |
+          steps.scrape.outputs.status == 'target_reached' ||
+          steps.scrape.outputs.status == 'queries_exhausted'
         run: |
-          echo "Target reached — disabling workflow"
+          echo "Done (${{ steps.scrape.outputs.status }}) — disabling workflow"
           gh workflow disable julian_sync.yml
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
