@@ -3,8 +3,8 @@
 # Previous: session_handoff_20260520_v17.md
 
 ## STATE
-App version : V3.2.7 (main + deployed)
-Backups     : backup/v3.2.7, backup/v3.2.6, backup/v3.2.5, backup/v3.2.4
+App version : V3.2.8 (main + deployed)
+Backups     : backup/v3.2.8, backup/v3.2.7, backup/v3.2.6, backup/v3.2.5
 
 ## DONE (session นี้)
 ✓ Merge branch claude/merge-branch-handoff-G4TM1 → sync กับ main (V3.2.6 + v16/v17 handoff)
@@ -14,6 +14,8 @@ Backups     : backup/v3.2.7, backup/v3.2.6, backup/v3.2.5, backup/v3.2.4
 ✓ MISSION_FINETUNE.md — อัปเดตครบ: Core Premise, M0 Multi-LLM, M4 Empirical DB, M6 Fine-tune
 ✓ HORATAD_WORKING_MANUAL.md — สร้างใหม่: Vision/Mission/Roadmap/OKR/Action Plan/Partnership
 ✓ อ่าน Thai_Astrology_LLM_Benchmark_v2.docx — integrate เข้า roadmap แล้ว
+✓ fill_yaml_conditions retry รอบ 2 + merge → kb.json V2.1: 284/342 conditions (83%)
+✓ Version bump V3.2.7 → V3.2.8 ครบ 6 จุด + deploy
 
 ## PENDING — 🟢 Claude ทำเองได้ (sandbox)
 [ ] M2: แก้ build_prompt() ใน v3/typhoon.js — ตัด chartSummary เหลือแค่ lagna + overall.strength
