@@ -1,5 +1,35 @@
 // JULIAN Automation Config — แก้ที่นี่ที่เดียว ไม่ต้องแตะ logic
 
+// ── Era query generator — 1700-2100, 20-ปีต่อ chunk ─────────────────────────
+// ดึงบุคคลสำคัญ (sitelinks >= 5) ที่มีวันเดือนปีเกิดครบ (precision=day)
+// ไม่จำกัดอาชีพ — ครอบคลุมทุกสาขา ทุกประเทศ
+function eraQuery(y1, y2) {
+  const from = `${y1}-01-01T00:00:00Z`;
+  const to   = `${y2}-01-01T00:00:00Z`;
+  return {
+    id:      `era_${y1}_${y2}`,
+    label:   `บุคคลสำคัญ ${y1}–${y2}`,
+    country: null,
+    tier:    2,
+    sparql: `
+      SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+        ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+        ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+        FILTER(?birthPrec >= 11)
+        FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
+        OPTIONAL {
+          ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+          FILTER(?deathPrec >= 11)
+        }
+        OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
+      } LIMIT 500`,
+  };
+}
+
+const ERA_SERIES = [];
+for (let y = 1700; y < 2100; y += 20) ERA_SERIES.push(eraQuery(y, y + 20));
+
 export const CONFIG = {
 
   // ── Target ────────────────────────────────────────────────────
@@ -284,5 +314,7 @@ export const CONFIG = {
           SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
         } LIMIT 500`,
     },
+    // ── Era series: บุคคลสำคัญ 1700-2100 (generate อัตโนมัติ) ────────────
+    ...ERA_SERIES,
   ],
 };
