@@ -69,9 +69,6 @@ jobs:
           env.CLOUDFLARE_API_TOKEN != ''
         run: |
           npm install -g wrangler@latest --silent
-          echo "── Auth check ──"
-          wrangler whoami --config workers/julian_wrangler.toml || true
-          echo "── SQL generate ──"
           node workers/julian_import.mjs "${{ steps.scrape.outputs.out_file }}" > /tmp/import.sql
           echo "SQL preview (first 3 lines):"
           head -3 /tmp/import.sql
