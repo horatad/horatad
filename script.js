@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.5
-// Version 3.3.5 | 2026-05-21
+// HORATAD:SCRIPT:3.3.6
+// Version 3.3.6 | 2026-05-21
+// Changes: [V3.3.6] fix(M3): send_to_typhoon throw แทน return raw → trigger M8 compose_local_prediction fallback
 // Changes: [V3.3.4] feat(HORATAD): V3 tab — 3-panel view (กฎ / Input Typhoon / Output)
 // Changes: [V3.3.3] fix(BIBLE): match_rules — house_lord_of (dynamic เจ้าเรือน), REFERENCE filter, fix planet_id=0 bug
 // Changes: [V3.3.1] feat: wire M8 compose_local_prediction → v3tab.js (✅/⚠️/📋 grouped, แทน render_fallback)
@@ -8,7 +9,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.5';
+const APP_VERSION='3.3.6';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

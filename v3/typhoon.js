@@ -379,7 +379,7 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
       if(raw2){ try{ const r=_parsePredictions(raw2); if(r) return r; }catch(_){} }
     }
   }catch(_){}
-  return raw; // final fallback: raw text ถ้า retry ยังไม่ได้ JSON
+  throw new Error('[Typhoon] ตอบไม่ใช่ JSON หลัง retry');
 }
 
 // ── Fallback renderer ──────────────────────────────────────────────────────
