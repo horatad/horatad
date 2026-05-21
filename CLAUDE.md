@@ -41,6 +41,8 @@ tools/*.html ทุกไฟล์ deploy บน GitHub Pages เสมอ
 **ห้ามบอก "เปิดใน browser ได้เลย"** — ต้องส่ง URL นี้เสมอ:
 `https://horatad.github.io/horatad/tools/<filename>.html`
 
+**App หลัก** (index.html / PWA) ทดสอบที่ **horatad.com** เสมอ — ห้ามบอก horatad.github.io สำหรับ app หลัก
+
 ---
 
 ## 🔁 GitHub Actions Debug — standing rules
