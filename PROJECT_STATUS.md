@@ -54,28 +54,26 @@
 
 ---
 
-## JULIAN — Empirical Astro Search Engine 🛠 Automation ready
-**เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE
+## JULIAN — Empirical Astro Search Engine 🟢 Automation running
+**เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | Storage: ✅ CF D1 online | Records: 400/500
-- Tools (browser): ✅ julian_keygen.html + julian_scraper.html + julian_status.html
-- Tools (Node.js): ✅ julian_keygen.mjs + julian_scraper.mjs + julian_empirical.mjs
-- Automation: ✅ julian_sync.yml (daily scrape + weekly validation) — wrangler@4 pinned + token verify
-- CF D1 database_id: ✅ ตั้งใน wrangler.toml แล้ว
-- D1 setup SQL: ✅ workers/julian_setup.sql (พร้อมรัน)
-- julian_report.json: ✅ generate แล้ว (Run #12) — julian_status.html แสดงได้แล้ว
+- Schema: ✅ | JD: ✅ | CF D1 online | Records: 436/50,000 (รันทุก 6 ชั่วโมง)
+- Automation: ✅ 95 queries (15 category + 80 era 5-yr) | cron ทุก 6 ชม. | export → GitHub Release
+- Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
+- Export: ✅ D1 → GitHub Release ทุก run → URL คงที่ releases/latest/download/julian_all.json
+- Architecture: CF D1 (write) + GitHub Release (read) + IndexedDB (HORATAD local cache)
 
 ### Next (Claude ทำได้)
-- (ไม่มีงาน — ทุกอย่างรอ CF D1 setup + secrets)
+- (ไม่มี — automation ครบแล้ว รอข้อมูลสะสม 5-7 วัน)
 
 ### Blocked (รอ user)
-- [ ] [BLOCKED] import master_key: node julian_keygen.mjs 1700 2100 > mk.csv → import → D1
-- [ ] [BLOCKED] deploy Worker: cd workers && wrangler deploy --config julian_wrangler.toml
-- [ ] [ทดลองใช้] ทดสอบ keygen + scraper ในเบราว์เซอร์
+- [ ] [BLOCKED] รัน D1 migration: CREATE UNIQUE INDEX idx_internet_source_wikidata
+- [ ] [BLOCKED] Reset done_queries: [] ใน julian_progress.json (ถ้าต้องการ re-scrape era ใหม่)
+- [ ] [BLOCKED] import master_key: julian_keygen.mjs 1700 2100 → D1
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260521_v4.md`
+`handoffs/JULIAN_20260521_v5.md`
 
 ---
 
