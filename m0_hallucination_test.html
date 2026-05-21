@@ -67,8 +67,9 @@ td{padding:8px 10px;font-size:12px;vertical-align:top}
     <input id="keyGroq" class="wide" type="password" placeholder="gsk_..." value="" oninput="saveKeys()">
   </div>
   <div>
-    <label>iApp API Key (Chinda) <span id="tag-i" style="color:#4caf87;font-size:10px"></span></label>
-    <input id="keyIapp" class="wide" type="password" placeholder="iapp_live_..." value="" oninput="saveKeys()">
+    <label>Delay ระหว่างข้อ (ms) <span style="color:#888;font-size:10px">Gemini free = 15 req/min → ≥4000</span></label>
+    <input id="delayMs" type="number" min="500" max="30000" step="500" value="5000"
+      style="background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;width:100px;font-size:12px">
   </div>
   <div>
     <button class="btn btn-run" id="btnRun" onclick="runAll()">▶ Run All Tests</button>
@@ -94,7 +95,7 @@ td{padding:8px 10px;font-size:12px;vertical-align:top}
     <div class="detail" id="s-groq-d">latency —</div>
   </div>
   <div class="scard">
-    <div class="name">🟠 iApp Chinda 4B</div>
+    <div class="name">🔴 Typhoon v2.5 (CF Worker)</div>
     <div class="score sc-g" id="s-iapp">—</div>
     <div class="detail" id="s-iapp-d">latency —</div>
   </div>
@@ -112,7 +113,7 @@ td{padding:8px 10px;font-size:12px;vertical-align:top}
   <th style="min-width:180px">เฉลย (KB ground truth)</th>
   <th style="min-width:175px" class="model-header">🔵 Gemini Flash</th>
   <th style="min-width:175px" class="model-header">🟣 Groq LLaMA</th>
-  <th style="min-width:175px" class="model-header">🟠 iApp Chinda</th>
+  <th style="min-width:175px" class="model-header">🔴 Typhoon (CF Worker)</th>
 </tr>
 </thead>
 <tbody id="tbody"></tbody>
@@ -121,7 +122,7 @@ td{padding:8px 10px;font-size:12px;vertical-align:top}
 
 <div class="notes">
   หมายเหตุ: คะแนน = keyword overlap กับเฉลย (KB) — ✅ ≥70% | ⚠️ 40–69% | ❌ &lt;40% &nbsp;|&nbsp;
-  iApp endpoint: api.iapp.co.th/ai/v2/chat/completions (OpenAI-compatible, header: apikey)
+  Typhoon: horatad-ai.uchujaro5.workers.dev (CF Worker, ไม่ต้องการ key จาก browser) &nbsp;|&nbsp; iApp Chinda ถูกแทนด้วย Typhoon เพราะ CORS block browser fetch โดยตรง
 </div>
 
 <script>
@@ -230,15 +231,16 @@ async function callGroq(key, question){
   return {text, ms: Date.now()-t0};
 }
 
-async function callIapp(key, question){
+async function callTyphoon(question){
+  // ใช้ CF Worker เดิม (horatad-ai) — มี CORS headers + ไม่ต้องการ key จาก browser
   const t0 = Date.now();
-  const url = 'https://api.iapp.co.th/ai/v2/chat/completions';
+  const url = 'https://horatad-ai.uchujaro5.workers.dev';
   const body = {
-    model:'chinda-qwen3-4b',
+    model:'typhoon-v2.5-30b-a3b-instruct',
     messages:[{role:'system',content:SYSTEM},{role:'user',content:makeQ(question)}],
-    max_tokens:200, temperature:0.1,
+    max_tokens:200, temperature:0.1, stream:false,
   };
-  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','apikey':key},body:JSON.stringify(body)});
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   if(!r.ok){
     const txt = await r.text().catch(()=>'');
     throw new Error(`HTTP ${r.status}: ${txt.slice(0,80)}`);
@@ -303,7 +305,7 @@ async function runAll(){
 
   const keyG = document.getElementById('keyGemini').value.trim();
   const keyR = document.getElementById('keyGroq').value.trim();
-  const keyI = document.getElementById('keyIapp').value.trim();
+  const delayMs = parseInt(document.getElementById('delayMs').value)||5000;
 
   stats.g={scores:[],ms:[]}; stats.r={scores:[],ms:[]}; stats.i={scores:[],ms:[]};
   initTable();
@@ -318,8 +320,8 @@ async function runAll(){
     // Run all 3 in parallel
     const promises = [
       keyG ? callGemini(keyG, t.q).catch(e=>({text:'', err:e.message, ms:0})) : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
-      keyR ? callGroq(keyR, t.q).catch(e=>({text:'', err:e.message, ms:0})) : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
-      keyI ? callIapp(keyI, t.q).catch(e=>({text:'', err:e.message, ms:0})) : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
+      keyR ? callGroq(keyR, t.q).catch(e=>({text:'', err:e.message, ms:0}))   : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
+      callTyphoon(t.q).catch(e=>({text:'', err:e.message, ms:0})),
     ];
 
     const [rG, rR, rI] = await Promise.all(promises);
@@ -332,7 +334,7 @@ async function runAll(){
     if(rR.err && !rR.text){ setErr(`ans-r-${i}`, rR.err); stats.r.scores.push(0); }
     else { const sc=score(rR.text, t.keys); setCell(`ans-r-${i}`, rR.text, sc); stats.r.scores.push(sc); stats.r.ms.push(rR.ms); }
 
-    // iApp
+    // Typhoon
     if(rI.err && !rI.text){ setErr(`ans-i-${i}`, rI.err); stats.i.scores.push(0); }
     else { const sc=score(rI.text, t.keys); setCell(`ans-i-${i}`, rI.text, sc); stats.i.scores.push(sc); stats.i.ms.push(rI.ms); }
 
@@ -340,8 +342,12 @@ async function runAll(){
     setProgress(done, TESTS.length);
     updateSummary();
 
-    // small delay to avoid rate limit
-    if(i < TESTS.length-1) await new Promise(r=>setTimeout(r,300));
+    // delay — Gemini free tier = 15 req/min = 4s minimum (5s default = safe buffer)
+    if(i < TESTS.length-1){
+      const eta = Math.round((TESTS.length-done)*delayMs/1000);
+      setLog(`ข้อ ${done}/${TESTS.length} เสร็จ — รอ ${delayMs/1000}s ก่อนข้อถัดไป (เหลือ ~${eta}s) <span>${escHtml(t.q.slice(0,40))}</span>`);
+      await new Promise(r=>setTimeout(r,delayMs));
+    }
   }
 
   setLog(`✅ เสร็จแล้ว — ${TESTS.length} ข้อ`);
@@ -361,7 +367,7 @@ function updateSummary(){
   const models = [
     {key:'g', elId:'s-gemini', dId:'s-gemini-d'},
     {key:'r', elId:'s-groq',   dId:'s-groq-d'},
-    {key:'i', elId:'s-iapp',   dId:'s-iapp-d'},
+    {key:'i', elId:'s-iapp',   dId:'s-iapp-d'},  // Typhoon CF Worker
   ];
   for(const m of models){
     const s = stats[m.key];
@@ -379,32 +385,25 @@ function updateSummary(){
 function saveKeys(){
   const g=document.getElementById('keyGemini').value;
   const r=document.getElementById('keyGroq').value;
-  const i=document.getElementById('keyIapp').value;
   if(g) localStorage.setItem('m0_key_g', g); else localStorage.removeItem('m0_key_g');
   if(r) localStorage.setItem('m0_key_r', r); else localStorage.removeItem('m0_key_r');
-  if(i) localStorage.setItem('m0_key_i', i); else localStorage.removeItem('m0_key_i');
   updateKeyTags();
 }
 
 function loadKeys(){
-  const g=localStorage.getItem('m0_key_g')||'';
-  const r=localStorage.getItem('m0_key_r')||'';
-  const i=localStorage.getItem('m0_key_i')||'';
-  document.getElementById('keyGemini').value=g;
-  document.getElementById('keyGroq').value=r;
-  document.getElementById('keyIapp').value=i;
+  document.getElementById('keyGemini').value=localStorage.getItem('m0_key_g')||'';
+  document.getElementById('keyGroq').value=localStorage.getItem('m0_key_r')||'';
   updateKeyTags();
 }
 
 function updateKeyTags(){
   document.getElementById('tag-g').textContent = localStorage.getItem('m0_key_g') ? '✓ saved' : '';
   document.getElementById('tag-r').textContent = localStorage.getItem('m0_key_r') ? '✓ saved' : '';
-  document.getElementById('tag-i').textContent = localStorage.getItem('m0_key_i') ? '✓ saved' : '';
 }
 
 function forgetKeys(){
-  ['m0_key_g','m0_key_r','m0_key_i'].forEach(k=>localStorage.removeItem(k));
-  ['keyGemini','keyGroq','keyIapp'].forEach(id=>document.getElementById(id).value='');
+  ['m0_key_g','m0_key_r'].forEach(k=>localStorage.removeItem(k));
+  ['keyGemini','keyGroq'].forEach(id=>document.getElementById(id).value='');
   updateKeyTags();
 }
 
