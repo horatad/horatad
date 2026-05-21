@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.11
-// Version 3.3.11 | 2026-05-21
+// HORATAD:SCRIPT:3.3.12
+// Version 3.3.12 | 2026-05-21
+// Changes: [V3.3.12] fix: JULIAN 404 — placeholder data/julian_all.json, ปรับ empty msg
 // Changes: [V3.3.11] fix: QR ใน capture — bundle qrcode.min.js, fix qrDiv pos, เพิ่ม toast location
 // Changes: [V3.3.10] fix(about): ลบ section ปรัชญาการพัฒนา, about page full-screen layout
 // Changes: [V3.3.9] fix: JULIAN URL→raw.githubusercontent, no autofocus search, swap transit fn, lunar restore content
@@ -13,7 +14,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.11';
+const APP_VERSION='3.3.12';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1927,7 +1928,7 @@ async function _importFromJulian(){
     const resp=await fetch(_JULIAN_URL);
     if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
     const records=await resp.json();
-    if(!Array.isArray(records)||!records.length){_showToast('ไม่พบข้อมูลใน JULIAN',true);return;}
+    if(!Array.isArray(records)||!records.length){_showToast('JULIAN ยังไม่มีข้อมูล — ระบบกำลังรวบรวม รอ 1-2 วัน',true);return;}
     const existing=_loadJSON(MEM_KEY)||[];
     const keyFn=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
     const map=new Map();
