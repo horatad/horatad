@@ -15,20 +15,7 @@ export const CONFIG = {
   // เรียงตาม priority — แต่ละ run ดึงคนละ query จนครบ TARGET_RECORDS
   QUERY_SERIES: [
     {
-      id: 'th_prime_ministers',
-      label: 'นายกรัฐมนตรีไทย',
-      country: 'TH',
-      tier: 1,
-      sparql: `
-        SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
-          ?person wdt:P39 wd:Q216360;
-                  wdt:P569 ?birth.
-          OPTIONAL { ?person wdt:P570 ?death. }
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
-        }
-      `,
-    },
-    {
+      // P27=Q869 (Thai national) + P106=Q82955 (politician) — verified pattern
       id: 'th_politicians',
       label: 'นักการเมืองไทย',
       country: 'TH',
@@ -39,7 +26,7 @@ export const CONFIG = {
                   wdt:P106 wd:Q82955;
                   wdt:P569 ?birth.
           OPTIONAL { ?person wdt:P570 ?death. }
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
         }
         LIMIT 300
       `,
@@ -47,7 +34,7 @@ export const CONFIG = {
     {
       id: 'world_leaders',
       label: 'ผู้นำโลก',
-      country: null,          // detect จาก Wikidata P27
+      country: null,
       tier: 1,
       sparql: `
         SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
@@ -56,7 +43,7 @@ export const CONFIG = {
                   wdt:P569 ?birth.
           OPTIONAL { ?person wdt:P570 ?death. }
           OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
         }
         LIMIT 500
       `,
@@ -72,7 +59,7 @@ export const CONFIG = {
                   wdt:P106 wd:Q2066131;
                   wdt:P569 ?birth.
           OPTIONAL { ?person wdt:P570 ?death. }
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
         }
         LIMIT 200
       `,
@@ -86,13 +73,35 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P27 wd:Q869;
                   wdt:P569 ?birth.
-          { ?person wdt:P106 wd:Q177220. }   # singer
+          { ?person wdt:P106 wd:Q177220. }
           UNION
-          { ?person wdt:P106 wd:Q33999. }    # actor
+          { ?person wdt:P106 wd:Q33999. }
           OPTIONAL { ?person wdt:P570 ?death. }
-          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
         }
         LIMIT 200
+      `,
+    },
+    {
+      // th_prime_ministers ไว้ท้าย — Q216360 ต้องยืนยัน QID ก่อน
+      // fallback: ใช้ P27 Thai + P39 any position from Thailand
+      id: 'th_prime_ministers',
+      label: 'นายกรัฐมนตรีไทย',
+      country: 'TH',
+      tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
+          ?person wdt:P27 wd:Q869;
+                  wdt:P569 ?birth.
+          { ?person wdt:P39 wd:Q216360. }
+          UNION
+          { ?person wdt:P39 ?pos.
+            ?pos wdt:P17 wd:Q869;
+                 wdt:P31 wd:Q4164871. }
+          OPTIONAL { ?person wdt:P570 ?death. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
+        }
+        LIMIT 50
       `,
     },
   ],
