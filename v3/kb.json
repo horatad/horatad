@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.0",
   "updated": "2026-05-21",
   "total": 342,
   "rules": [
@@ -13,7 +13,9 @@
         "ราศี",
         "จักรราศี",
         "พื้นฐาน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_02",
@@ -25,7 +27,9 @@
         "เสริด",
         "การโคจร",
         "ดาวเคราะห์"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_02",
@@ -37,7 +41,9 @@
         "พักร",
         "การโคจร",
         "ถอยหลัง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_02",
@@ -48,7 +54,9 @@
       "t": [
         "มนท์",
         "การโคจร"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_02",
@@ -76,7 +84,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_02",
@@ -110,7 +120,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_03",
@@ -123,7 +135,9 @@
         "อริ",
         "วินาศ",
         "ภพร้าย"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_03",
@@ -134,7 +148,9 @@
       "t": [
         "วินาศ",
         "จากไป"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_03",
@@ -145,7 +161,9 @@
       "t": [
         "อริ",
         "อุปสรรค"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -171,7 +189,9 @@
       "empirical_p": null,
       "empirical_n": null,
       "empirical_refs": [],
-      "secondary_obs": []
+      "secondary_obs": [],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -197,7 +217,9 @@
       "empirical_p": null,
       "empirical_n": null,
       "empirical_refs": [],
-      "secondary_obs": []
+      "secondary_obs": [],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -219,7 +241,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -241,7 +265,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -263,7 +289,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -285,7 +313,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -307,7 +337,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -329,7 +361,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -350,7 +384,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -371,7 +407,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_04",
@@ -392,7 +430,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -413,7 +453,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -434,7 +476,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -455,7 +499,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -476,7 +522,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -496,7 +544,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -516,7 +566,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -538,7 +590,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -558,7 +612,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -571,7 +627,9 @@
         "ได้มาง่าย",
         "สบาย",
         "สม่ำเสมอ"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_06",
@@ -583,7 +641,9 @@
         "เทวีโชค",
         "ให้คุณ60",
         "กุมลัคนา"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_07",
@@ -596,7 +656,9 @@
         "ไฟ",
         "น้ำ",
         "อ่อนกำลัง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_07",
@@ -609,7 +671,9 @@
         "ไฟ",
         "ลม",
         "ทวีกำลัง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_07",
@@ -621,7 +685,9 @@
         "ธาตุ",
         "คู่ธาตุ",
         "เสริมกัน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_08",
@@ -633,7 +699,9 @@
         "คู่มิตร",
         "เสริมกัน",
         "โชค"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_08",
@@ -645,7 +713,9 @@
         "คู่ศัตรู",
         "บ่อนทำลาย",
         "ขัดแย้ง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_08",
@@ -656,7 +726,9 @@
       "t": [
         "คู่สมพล",
         "เสริมกัน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_09",
@@ -677,7 +749,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_09",
@@ -697,7 +771,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_09",
@@ -717,7 +793,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_09",
@@ -737,7 +815,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_09",
@@ -758,7 +838,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_10",
@@ -786,7 +868,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_10",
@@ -813,7 +897,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_10",
@@ -841,7 +927,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_10",
@@ -862,7 +950,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_10",
@@ -900,7 +990,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_11",
@@ -912,7 +1004,9 @@
         "เรือนนอก",
         "เรือนใน",
         "เกษตรเจ้าเรือน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_12",
@@ -981,7 +1075,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1008,7 +1104,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1020,7 +1118,9 @@
         "ไม่รู้เวลาเกิด",
         "สอบลัคนา",
         "นิสัย"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1033,7 +1133,9 @@
         "นิสัย",
         "ไม่ดูภพ",
         "ไม่ดูคุณภาพ"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1054,7 +1156,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1066,7 +1170,9 @@
         "ตนุลัคน์",
         "ภพ",
         "ชีวิตยุ่งเกี่ยว"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1078,7 +1184,9 @@
         "ตนุลัคน์",
         "ร่วมราศี",
         "คุณสมบัติดาวอื่น"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_13",
@@ -1107,7 +1215,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1130,7 +1240,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1152,7 +1264,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1175,7 +1289,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1198,7 +1314,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1221,7 +1339,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1244,7 +1364,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1266,7 +1388,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1289,7 +1413,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1312,7 +1438,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1335,7 +1463,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1357,7 +1487,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1386,7 +1518,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1414,7 +1548,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1426,7 +1562,9 @@
         "โปรแกรมโหราศาสตร์",
         "สอบลัคนา",
         "ความถูกต้อง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_32",
@@ -1454,7 +1592,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1482,7 +1622,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1503,7 +1645,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1524,7 +1668,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1546,7 +1692,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1567,7 +1715,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1588,7 +1738,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1610,7 +1762,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1638,7 +1792,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1659,7 +1815,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1680,7 +1838,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1701,7 +1861,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1730,7 +1892,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1745,7 +1909,9 @@
         "อริ",
         "วินาศ",
         "ห้ามวาง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1766,7 +1932,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1789,7 +1957,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_38",
@@ -1811,7 +1981,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1822,7 +1994,9 @@
       "t": [
         "อัจฉริยภาพภายใน",
         "หลักการ"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1844,7 +2018,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1865,7 +2041,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1886,7 +2064,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1907,7 +2087,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1928,7 +2110,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1949,7 +2133,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1970,7 +2156,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -1992,7 +2180,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2019,7 +2209,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2040,7 +2232,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2061,7 +2255,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2082,7 +2278,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2104,7 +2302,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2125,7 +2325,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2153,7 +2355,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2175,7 +2379,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2196,7 +2402,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2217,7 +2425,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2244,7 +2454,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2271,7 +2483,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2299,7 +2513,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2327,7 +2543,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2348,7 +2566,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2376,7 +2596,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2397,7 +2619,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2419,7 +2643,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2447,7 +2673,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2469,7 +2697,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2497,7 +2727,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2524,7 +2756,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2545,7 +2779,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2567,7 +2803,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2589,7 +2827,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2617,7 +2857,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2639,7 +2881,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2661,7 +2905,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2682,7 +2928,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2703,7 +2951,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2724,7 +2974,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2759,7 +3011,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2781,7 +3035,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_39",
@@ -2802,7 +3058,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2830,7 +3088,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2858,7 +3118,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2893,7 +3155,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2914,7 +3178,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2935,7 +3201,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2957,7 +3225,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -2980,7 +3250,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_41",
@@ -3001,7 +3273,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42",
@@ -3022,7 +3296,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42",
@@ -3051,7 +3327,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42",
@@ -3085,7 +3363,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42",
@@ -3120,7 +3400,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42",
@@ -3142,7 +3424,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42",
@@ -3169,7 +3453,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3191,7 +3477,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3219,7 +3507,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3241,7 +3531,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3270,7 +3562,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3318,7 +3612,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3341,7 +3637,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3376,7 +3674,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3397,7 +3697,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_42a",
@@ -3450,7 +3752,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3473,7 +3777,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3494,7 +3800,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3516,7 +3824,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3538,7 +3848,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3566,7 +3878,9 @@
           "required": false
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3593,7 +3907,9 @@
           "required": false
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_43",
@@ -3652,7 +3968,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_44",
@@ -3680,7 +3998,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_44",
@@ -3702,7 +4022,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_44",
@@ -3724,7 +4046,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_44",
@@ -3746,7 +4070,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_44",
@@ -3768,7 +4094,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_44",
@@ -3808,7 +4136,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_45",
@@ -3838,7 +4168,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_45",
@@ -3891,7 +4223,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_45",
@@ -3914,7 +4248,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_46",
@@ -3957,7 +4293,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_46",
@@ -3991,7 +4329,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_46",
@@ -4013,7 +4353,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_47",
@@ -4042,7 +4384,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_47",
@@ -4064,7 +4408,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_47",
@@ -4100,7 +4446,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_47",
@@ -4142,7 +4490,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_48",
@@ -4178,7 +4528,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_48",
@@ -4206,7 +4558,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_48",
@@ -4227,7 +4581,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_48",
@@ -4275,7 +4631,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_48",
@@ -4304,7 +4662,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_49",
@@ -4327,7 +4687,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_49",
@@ -4369,7 +4731,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_49",
@@ -4417,7 +4781,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_49",
@@ -4440,7 +4806,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_49",
@@ -4468,7 +4836,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_49",
@@ -4502,7 +4872,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4541,7 +4913,9 @@
           "required": false
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4562,7 +4936,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4589,7 +4965,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4602,7 +4980,9 @@
         "เปรียบเทียบ",
         "โอกาส",
         "ฐานะ"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4629,7 +5009,9 @@
           "required": true
         }
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4641,7 +5023,9 @@
         "ดวงดี",
         "พื้นเพยากจน",
         "ขีดจำกัด"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_50",
@@ -4653,7 +5037,9 @@
         "ดวงธรรมดา",
         "พื้นเพรวย",
         "บั้นปลาย"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_51",
@@ -4665,7 +5051,9 @@
         "พื้นเพ",
         "อัตราการเจริญ",
         "ดวงเหมือนกัน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_52",
@@ -4678,7 +5066,9 @@
         "เติมเต็ม",
         "การเงิน",
         "ทำงาน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_52",
@@ -4707,7 +5097,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_52",
@@ -4735,7 +5127,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_53",
@@ -4757,7 +5151,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_53",
@@ -4786,7 +5182,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_53",
@@ -4808,7 +5206,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_54",
@@ -4821,7 +5221,9 @@
         "ลัคนา",
         "ราศีเดียวกัน",
         "ข้อเสีย"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_54",
@@ -4850,7 +5252,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_54",
@@ -4879,7 +5283,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_54",
@@ -4901,7 +5307,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_55",
@@ -4923,7 +5331,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_55",
@@ -4945,7 +5355,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -4973,7 +5385,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -5000,7 +5414,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -5022,7 +5438,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -5045,7 +5463,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -5068,7 +5488,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -5091,7 +5513,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_56",
@@ -5113,7 +5537,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_57",
@@ -5149,7 +5575,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_58",
@@ -5184,7 +5612,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_58",
@@ -5214,7 +5644,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_58",
@@ -5237,7 +5669,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_58",
@@ -5265,7 +5699,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_59",
@@ -5287,7 +5723,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_59",
@@ -5300,7 +5738,9 @@
         "เสีย",
         "ดวงเข้มแข็ง",
         "คู่ดี"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_59",
@@ -5313,7 +5753,9 @@
         "เสีย",
         "แนะนำ",
         "อสังหาริมทรัพย์"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_59",
@@ -5348,7 +5790,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_60",
@@ -5382,7 +5826,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_60",
@@ -5404,7 +5850,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_60",
@@ -5426,7 +5874,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_60",
@@ -5454,7 +5904,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_61",
@@ -5482,7 +5934,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_62",
@@ -5504,7 +5958,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_62",
@@ -5526,7 +5982,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_62",
@@ -5547,7 +6005,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_63",
@@ -5569,7 +6029,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_63",
@@ -5597,7 +6059,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_63",
@@ -5619,7 +6083,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_64",
@@ -5642,7 +6108,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_64",
@@ -5671,7 +6139,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_64",
@@ -5694,7 +6164,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_64",
@@ -5717,7 +6189,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_65",
@@ -5739,7 +6213,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_65",
@@ -5761,7 +6237,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_65",
@@ -5783,7 +6261,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_66",
@@ -5813,7 +6293,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_67",
@@ -5841,7 +6323,9 @@
           "required": false
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_67",
@@ -5868,7 +6352,9 @@
           "required": false
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_67",
@@ -5889,7 +6375,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_67",
@@ -5911,7 +6399,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_68",
@@ -5953,7 +6443,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_68",
@@ -5975,7 +6467,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_68",
@@ -5987,7 +6481,9 @@
         "ดาวจร",
         "คำตัดสิน",
         "ข้อสังเกต"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_69",
@@ -6010,7 +6506,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_69",
@@ -6046,7 +6544,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_70",
@@ -6059,7 +6559,9 @@
         "เคราะห์ร้าย",
         "หลบเลี่ยง",
         "เพิ่มลด"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_70",
@@ -6072,7 +6574,9 @@
         "โชคลาภ",
         "ขยายผล",
         "จังหวะชีวิต"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_71",
@@ -6085,7 +6589,9 @@
         "ร่วมราศี",
         "คุณสมบัติ",
         "ไม่หักลบ"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_71",
@@ -6113,7 +6619,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_71",
@@ -6126,7 +6634,9 @@
         "นิสัยภายใน",
         "ความสำคัญ",
         "ข้อจำกัด"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_72",
@@ -6148,7 +6658,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_72",
@@ -6170,7 +6682,9 @@
           "required": false
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_72",
@@ -6193,7 +6707,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_73",
@@ -6215,7 +6731,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_73",
@@ -6244,7 +6762,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_74",
@@ -6273,7 +6793,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_74",
@@ -6302,7 +6824,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_74",
@@ -6325,7 +6849,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_74",
@@ -6356,7 +6882,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_74",
@@ -6409,7 +6937,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_75",
@@ -6431,7 +6961,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_75",
@@ -6454,7 +6986,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_75",
@@ -6477,7 +7011,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_76",
@@ -6499,7 +7035,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_76",
@@ -6521,7 +7059,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_76",
@@ -6548,7 +7088,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_77",
@@ -6570,7 +7112,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_77",
@@ -6591,7 +7135,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_77",
@@ -6613,7 +7159,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_78",
@@ -6647,7 +7195,9 @@
           "required": false
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_78",
@@ -6669,7 +7219,9 @@
           "required": false
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_78",
@@ -6690,7 +7242,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_79",
@@ -6712,7 +7266,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_79",
@@ -6740,7 +7296,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_80",
@@ -6769,7 +7327,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_80",
@@ -6797,7 +7357,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_80",
@@ -6818,7 +7380,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_80",
@@ -6840,7 +7404,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_81",
@@ -6862,7 +7428,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_81",
@@ -6890,7 +7458,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_82",
@@ -6913,7 +7483,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_82",
@@ -6935,7 +7507,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_82",
@@ -6957,7 +7531,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_83",
@@ -6980,7 +7556,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_83",
@@ -7003,7 +7581,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_83",
@@ -7025,7 +7605,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_84",
@@ -7037,7 +7619,9 @@
         "คู่ดี",
         "นิสัย",
         "เทียบเจ้าชาตา"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_84",
@@ -7050,7 +7634,9 @@
         "ฐานะ",
         "นามธรรม",
         "เทียบเจ้าชาตา"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_85",
@@ -7063,7 +7649,9 @@
         "ไม่ต้องรวย",
         "ตามใจต้องการ",
         "เทียบเจ้าชาตา"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_86",
@@ -7076,7 +7664,9 @@
         "พันธุ",
         "ดาวลอย",
         "ความเข้าใจผิด"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_86",
@@ -7089,7 +7679,9 @@
         "เจ้าเรือน",
         "การเงิน",
         "ดาวลอย"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_87",
@@ -7110,7 +7702,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_87",
@@ -7131,7 +7725,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_87",
@@ -7152,7 +7748,9 @@
           "required": true
         }
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_87",
@@ -7165,7 +7763,9 @@
         "อุจ",
         "ราชาโชค",
         "การตีความ"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_88",
@@ -7194,7 +7794,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_88",
@@ -7218,7 +7820,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_88",
@@ -7241,7 +7845,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_89",
@@ -7254,7 +7860,9 @@
         "ไม่มีคู่",
         "มีคู่ยาก",
         "ฟันธงไม่ได้"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_89",
@@ -7276,7 +7884,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_89",
@@ -7298,7 +7908,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_90",
@@ -7320,7 +7932,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_90",
@@ -7342,7 +7956,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_91",
@@ -7364,7 +7980,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_91",
@@ -7386,7 +8004,9 @@
           "required": true
         }
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_92",
@@ -7415,7 +8035,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_92",
@@ -7437,7 +8059,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_92",
@@ -7460,7 +8084,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_93",
@@ -7483,7 +8109,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_93",
@@ -7507,7 +8135,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_94",
@@ -7536,7 +8166,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_95",
@@ -7550,7 +8182,9 @@
         "ระบบตำรา",
         "ข้อควรระวัง",
         "ตัดทิ้ง"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_96",
@@ -7563,7 +8197,9 @@
         "เจ้าเรือน",
         "พื้นดวง",
         "สำคัญเท่ากัน"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_96",
@@ -7575,7 +8211,9 @@
         "ดาวจร",
         "เจ้าเรือน",
         "สำคัญกว่า"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_97",
@@ -7603,7 +8241,9 @@
           "required": false
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_98",
@@ -7626,7 +8266,9 @@
           "required": true
         }
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_99",
@@ -7639,7 +8281,9 @@
         "มฤตยู",
         "ต่างประเทศ",
         "ไม่มีดาวบอกชัด"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": "chapter_99",
@@ -7651,7 +8295,9 @@
         "ต่างประเทศ",
         "ความพร้อม",
         "ไม่ต้องดูดาว"
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 5,
@@ -7714,7 +8360,9 @@
           "lagna_aspect_req": "ANY",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 8,
@@ -7742,7 +8390,9 @@
           "lagna_aspect_req": "ANY",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 12,
@@ -7755,7 +8405,9 @@
         "ไม่สำคัญมาก",
         "กัมมะ"
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 38,
@@ -7775,7 +8427,9 @@
           "lagna_aspect_req": "ANY",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 38,
@@ -7787,7 +8441,9 @@
         "คุณภาพดาว",
         "ข้อจำกัด"
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 39,
@@ -7800,7 +8456,9 @@
         "ไม่สัมพันธ์ลัคนา",
         "หุ้นส่วน"
       ],
-      "rule_type": "CASE_STUDY"
+      "rule_type": "CASE_STUDY",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 40,
@@ -7812,7 +8470,9 @@
         "สรุป",
         "ภาคผนวก"
       ],
-      "rule_type": "DEFINITION"
+      "rule_type": "DEFINITION",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 42,
@@ -7834,7 +8494,9 @@
           "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 42,
@@ -7856,7 +8518,9 @@
           "lagna_aspect_req": "สัมพันธ์ลัคนา",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 51,
@@ -7870,7 +8534,9 @@
         "ดวงชาตา",
         "หลักการ"
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 61,
@@ -7884,7 +8550,9 @@
         "ข้อโต้แย้ง",
         "สถิติ"
       ],
-      "rule_type": "TRANSIT_RULE"
+      "rule_type": "TRANSIT_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 65,
@@ -7898,7 +8566,9 @@
         "ช่างพูด",
         "วัดผล"
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 70,
@@ -7912,7 +8582,9 @@
         "จิตใจ",
         "ไม่มีผลดวง"
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 76,
@@ -7934,7 +8606,9 @@
           "lagna_aspect_req": "ANY",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 79,
@@ -7955,7 +8629,9 @@
           "lagna_aspect_req": "ไม่สัมพันธ์ลัคนา",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 83,
@@ -7978,7 +8654,9 @@
           "lagna_aspect_req": "กุมลัคนา",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 88,
@@ -7992,7 +8670,9 @@
         "ไม่แรง",
         "ข้อควรระวัง"
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 97,
@@ -8006,7 +8686,9 @@
         "ภพ",
         "ข้อสังเกต"
       ],
-      "rule_type": "HOUSE_CONCEPT"
+      "rule_type": "HOUSE_CONCEPT",
+      "rule_source": "major",
+      "weight": 1.0
     },
     {
       "ch": 98,
@@ -8029,7 +8711,9 @@
           "lagna_aspect_req": "ANY",
           "required": true
         }
-      ]
+      ],
+      "rule_source": "major",
+      "weight": 1.0
     }
   ],
   "_empirical_schema": {
@@ -8037,6 +8721,8 @@
     "empirical_p": "number|null — P(trait_observed | planet_config) computed from empirical DB (0.0–1.0)",
     "empirical_n": "number|null — sample size (number of persons/events matching this rule in empirical DB)",
     "empirical_refs": "string[] — Julian Day strings (JD format) of empirical records that confirm this rule",
-    "secondary_obs": "string[] — secondary keywords/patterns observed in empirical data beyond rule.p"
+    "secondary_obs": "string[] — secondary keywords/patterns observed in empirical data beyond rule.p",
+    "rule_source": "string — major|minor|empirical|case_study (source of truth tier)",
+    "weight": "number — confidence weight 0.0–1.0 (effective_weight = weight × (empirical_p ?? 1.0))"
   }
 }

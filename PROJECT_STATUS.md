@@ -30,6 +30,7 @@
 
 ### สถานะ
 - KB: 342 rules, 284 มี conditions[] (83%)
+- rule taxonomy: `rule_source` (major|minor|empirical|case_study) + `weight` ✅ V2.3.0
 - M8 compose_local_prediction() ✅ — deterministic keywords, no LLM
 - 90 rule skeletons generated (v3/kb_skeletons.json) — รอ expert กรอก p field
 
