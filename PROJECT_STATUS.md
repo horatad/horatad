@@ -4,14 +4,14 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.0 | **URL:** horatad.com / horatad.github.io/horatad
+**Version:** V3.3.1 | **URL:** horatad.com / horatad.github.io/horatad
 
 ### สถานะ
 - App ทำงานได้ครบ — natal + transit + V3 tab (predictions)
 - match_rules() ใช้ conditions[] ✅ | Structured JSON output ✅ | Fallback ✅
 
 ### Next (Claude ทำได้)
-- [ ] Wire `compose_local_prediction()` → v3tab.js (enhanced fallback แทน render_fallback)
+- [x] ~~Wire `compose_local_prediction()` → v3tab.js~~ ✅ V3.3.1
 - [ ] M3 retry: retry 1 ครั้งก่อน fallback ถ้า Typhoon ไม่ follow JSON format
 
 ### Blocked (รอ user)
@@ -91,4 +91,4 @@
 | Empirical DB | JULIAN | v3/kb.json (schema), scripts/gen_rule_skeletons.mjs | 📋 Schema only |
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.0*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.1*
