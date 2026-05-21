@@ -68,7 +68,6 @@
 - (ไม่มี — automation ครบแล้ว รอข้อมูลสะสม 5-7 วัน)
 
 ### Blocked (รอ user)
-- [ ] [BLOCKED] Reset done_queries: [] ใน julian_progress.json (ถ้าต้องการ re-scrape era ใหม่)
 - [ ] [BLOCKED] import master_key: julian_keygen.mjs 1700 2100 → D1
 
 ### Handoff ล่าสุด
