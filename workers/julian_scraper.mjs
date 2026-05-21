@@ -113,152 +113,132 @@ async function sparqlQuery(sparql) {
   throw new Error(`Wikidata query failed after ${MAX_RETRIES} retries`);
 }
 
+// ── Process one query — returns records written (0 = exhausted/skip) ──────────
+async function processQuery(query, progress, batchFile, today) {
+  const { limit } = calcRunLimit(progress);
+  if (limit === 0) return { done: false, budgetExhausted: true };
+
+  console.log(`\n── ${query.id}: ${query.label} ──`);
+  await sleep(CONFIG.WIKIDATA_DELAY_MS);
+
+  let bindings;
+  try {
+    bindings = await sparqlQuery(query.sparql);
+    console.log(`Wikidata: ${bindings.length} results`);
+  } catch (e) {
+    console.error(`Query ${query.id} failed: ${e.message} — skipping`);
+    return { done: false, budgetExhausted: false };
+  }
+
+  const seenSet = new Set(progress.seen_qids);
+  const records = [];
+  let skipNoName = 0, skipNoBirth = 0, skipSeen = 0;
+
+  for (const b of bindings) {
+    if (records.length >= limit) break;
+    const qid = b.person?.value?.split('/').pop();
+    if (!qid || seenSet.has(qid)) { skipSeen++; continue; }
+    const name = b.personLabel?.value?.trim();
+    if (!name || /^Q\d+$/.test(name)) { skipNoName++; continue; }
+    const birth = parseISODate(b.birth?.value);
+    if (!birth) { skipNoBirth++; continue; }
+
+    const death       = parseISODate(b.death?.value);
+    const countryCode = query.country || b.countryCode?.value || null;
+    const time_utc    = b.birthTime?.value?.slice(11, 16) || null;
+
+    records.push({
+      jd: birth.jd, name,
+      event_label: query.label, type: 'human',
+      country: countryCode?.toUpperCase().slice(0, 2) || null,
+      tier: query.tier, lat: null, lng: null,
+      time_utc, lagna_sign: null,
+      relate_id: death ? [death.jd] : null,
+      source: `wikidata:${qid}`, source_type: 'internet',
+      validated_count: 0,
+      confidence: time_utc ? 0.95 : 0.85,
+      notes: null,
+    });
+    seenSet.add(qid);
+  }
+
+  console.log(`Filter: ${records.length} kept | seen=${skipSeen} noName=${skipNoName} noBirth=${skipNoBirth}`);
+
+  if (records.length > 0) {
+    appendFileSync(batchFile, records.map(r => JSON.stringify(r)).join('\n') + '\n');
+    progress.total    += records.length;
+    progress.seen_qids = [...seenSet];
+    progress.runs.push({ date: today, query: query.id, count: records.length });
+    if (!progress.daily_writes) progress.daily_writes = {};
+    progress.daily_writes[today] = (progress.daily_writes[today] || 0) + records.length;
+    const cutoff = new Date(Date.now() - 7*86400000).toISOString().slice(0,10);
+    for (const day of Object.keys(progress.daily_writes)) {
+      if (day < cutoff) delete progress.daily_writes[day];
+    }
+  }
+
+  const queryExhausted = bindings.length < CONFIG.MAX_PER_RUN || records.length === 0;
+  if (queryExhausted) {
+    progress.done_queries.push(query.id);
+    console.log(`"${query.id}" exhausted → marked done`);
+  }
+
+  saveProgress(progress); // บันทึกทุก query — ถ้า timeout จะไม่สูญหาย
+  return { done: queryExhausted, budgetExhausted: false, count: records.length };
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   const progress = loadProgress();
 
-  // ตรวจ target
   if (progress.total >= CONFIG.TARGET_RECORDS) {
-    console.log(`✓ Target reached: ${progress.total}/${CONFIG.TARGET_RECORDS} — stopping`);
+    console.log(`✓ Target reached: ${progress.total}/${CONFIG.TARGET_RECORDS}`);
     ghOutput('status', 'target_reached');
     process.exit(0);
   }
 
-  // เลือก query ถัดไปที่ยังไม่เสร็จ
-  const nextQuery = CONFIG.QUERY_SERIES.find(q => !progress.done_queries.includes(q.id));
-  if (!nextQuery) {
-    console.log('All queries exhausted. Add more queries to CONFIG.QUERY_SERIES to continue.');
+  const pending = CONFIG.QUERY_SERIES.filter(q => !progress.done_queries.includes(q.id));
+  if (pending.length === 0) {
+    console.log('All queries exhausted.');
     ghOutput('status', 'queries_exhausted');
     process.exit(0);
   }
 
-  const { limit, writesToday, dailyBudget, today } = calcRunLimit(progress);
-  if (limit === 0) {
+  const { writesToday, dailyBudget } = calcRunLimit(progress);
+  if (calcRunLimit(progress).limit === 0) {
     console.log(`Daily budget exhausted (${writesToday}/${dailyBudget}) — รอพรุ่งนี้`);
     ghOutput('status', 'budget_exhausted');
     process.exit(0);
   }
 
-  console.log(`\nQuery: ${nextQuery.id} — ${nextQuery.label}`);
-  console.log(`Progress: ${progress.total}/${CONFIG.TARGET_RECORDS}`);
+  console.log(`\nProgress: ${progress.total}/${CONFIG.TARGET_RECORDS} | pending queries: ${pending.length}`);
 
-  await sleep(CONFIG.WIKIDATA_DELAY_MS); // polite delay
+  const today     = new Date().toISOString().slice(0, 10);
+  const batchFile = `workers/julian_scraped_${today}_batch.jsonl`;
+  let totalThisRun = 0;
 
-  let bindings;
-  try {
-    bindings = await sparqlQuery(nextQuery.sparql);
-    console.log(`Wikidata returned ${bindings.length} results`);
-    if (bindings.length > 0) {
-      // debug: ดู 3 แถวแรก
-      console.log('Sample:', JSON.stringify(bindings.slice(0, 3).map(b => ({
-        qid:   b.person?.value?.split('/').pop(),
-        name:  b.personLabel?.value,
-        birth: b.birth?.value,
-      }))));
+  for (const query of pending) {
+    if (progress.total >= CONFIG.TARGET_RECORDS) break;
+
+    const result = await processQuery(query, progress, batchFile, today);
+    totalThisRun += result.count ?? 0;
+
+    if (result.budgetExhausted) {
+      console.log('Daily budget exhausted — stopping run');
+      break;
     }
-  } catch (e) {
-    console.error('Wikidata query failed:', e.message);
-    ghOutput('status', 'error');
-    process.exit(1);
   }
 
-  // กรองและแปลงเป็น Internet Table records
-  const seenSet = new Set(progress.seen_qids);
-  const records  = [];
-  let skipNoName = 0, skipNoBirth = 0, skipSeen = 0;
+  console.log(`\n── Run complete: ${totalThisRun} records this run | total: ${progress.total}/${CONFIG.TARGET_RECORDS}`);
 
-  for (const b of bindings) {
-    if (records.length >= limit) break;
-
-    const qid  = b.person?.value?.split('/').pop();
-    if (!qid || seenSet.has(qid)) { skipSeen++; continue; }
-
-    const name = b.personLabel?.value?.trim();
-    // ข้ามถ้าไม่มี label หรือ label เป็น QID (Wikidata ยังไม่มีชื่อ EN)
-    if (!name || /^Q\d+$/.test(name)) { skipNoName++; continue; }
-
-    const birth = parseISODate(b.birth?.value);
-    if (!birth) { skipNoBirth++; continue; }
-
-    const death        = parseISODate(b.death?.value);
-    const countryCode  = nextQuery.country || b.countryCode?.value || null;
-    const relate_id    = death ? [death.jd] : null;
-    const time_utc     = b.birthTime?.value?.slice(11, 16) || null; // "HH:MM" หรือ null
-    // confidence: มีเวลาเกิด = 0.95 | วันเกิดครบ (ผ่าน precision filter) = 0.85
-    const confidence   = time_utc ? 0.95 : 0.85;
-
-    records.push({
-      jd:              birth.jd,
-      name,
-      event_label:     nextQuery.label,
-      type:            'human',
-      country:         countryCode?.toUpperCase().slice(0, 2) || null,
-      tier:            nextQuery.tier,
-      lat:             null,
-      lng:             null,
-      time_utc,
-      lagna_sign:      null,
-      relate_id,
-      source:          `wikidata:${qid}`,
-      source_type:     'internet',
-      validated_count: 0,
-      confidence,
-      notes:           null,
-    });
-
-    seenSet.add(qid);
-  }
-
-  console.log(`Filter: ${records.length} kept, ${skipSeen} seen, ${skipNoName} no-name, ${skipNoBirth} no-birth`);
-
-  if (records.length === 0) {
-    console.log('No new records in this query — marking done');
-    progress.done_queries.push(nextQuery.id);
-    saveProgress(progress);
+  if (totalThisRun === 0) {
     ghOutput('status', 'no_new_records');
-    process.exit(0);
+  } else {
+    ghOutput('out_file',     batchFile);
+    ghOutput('record_count', totalThisRun.toString());
+    ghOutput('total',        progress.total.toString());
+    ghOutput('status',       'ok');
   }
-
-  // เขียน JSONL
-  const date    = new Date().toISOString().slice(0, 10);
-  const outFile = `workers/julian_scraped_${date}_${nextQuery.id}.jsonl`;
-  writeFileSync(outFile, records.map(r => JSON.stringify(r)).join('\n') + '\n');
-  console.log(`Saved ${records.length} records → ${outFile}`);
-
-  // อัปเดต progress
-  progress.total    += records.length;
-  progress.seen_qids = [...seenSet];
-  progress.runs.push({ date, query: nextQuery.id, count: records.length });
-
-  // นับ daily writes (เพื่อตรวจสอบ 85% budget)
-  if (!progress.daily_writes) progress.daily_writes = {};
-  progress.daily_writes[today] = (progress.daily_writes[today] || 0) + records.length;
-  // ลบข้อมูลเกิน 7 วัน ไม่ให้ progress.json บวม
-  const cutoff = new Date(Date.now() - 7*86400000).toISOString().slice(0,10);
-  for (const day of Object.keys(progress.daily_writes)) {
-    if (day < cutoff) delete progress.daily_writes[day];
-  }
-
-  // ถ้า query ดึงมาน้อยกว่า RECORDS_PER_RUN แสดงว่า exhausted แล้ว
-  const exhausted = bindings.filter(b => {
-    const qid = b.person?.value?.split('/').pop();
-    return qid && !new Set(progress.seen_qids.slice(0, -records.length)).has(qid);
-  }).length <= records.length;
-
-  if (exhausted || bindings.length < CONFIG.MAX_PER_RUN) {
-    progress.done_queries.push(nextQuery.id);
-    console.log(`Query "${nextQuery.id}" exhausted → marked done`);
-  }
-
-  saveProgress(progress);
-
-  console.log(`\nTotal: ${progress.total}/${CONFIG.TARGET_RECORDS} records`);
-  console.log(`Remaining: ${CONFIG.TARGET_RECORDS - progress.total}`);
-
-  ghOutput('out_file',     outFile);
-  ghOutput('record_count', records.length.toString());
-  ghOutput('total',        progress.total.toString());
-  ghOutput('status',       'ok');
 }
 
 main().catch(e => {
