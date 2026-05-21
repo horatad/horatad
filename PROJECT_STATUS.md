@@ -53,19 +53,26 @@
 
 ---
 
-## JULIAN — Empirical Astro Database 📋 Schema only
-**เป้าหมาย:** Julian Day + planet positions + บุคคลสำคัญ → empirical_p ต่อ rule
+## JULIAN — Empirical Astro Search Engine 📋 Design phase
+**เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE
 
 ### สถานะ
-- Schema defined: `_empirical_schema` ใน kb.json root
-- Records collected: **0** — ยังไม่ได้เริ่ม
+- Schema: ออกแบบแล้ว (ดู handoff) | Storage: ยังไม่มี | Records: 0
+- ⚠️ Decision pending: JD format — standard (2451545=J2000) หรือ internal (_calcJD)?
 
-### Next (Claude ทำได้)
-- [ ] สร้าง wikipedia_scraper.html
-- [ ] สร้าง empirical_validator.html
+### Next (Claude ทำได้ — ไม่ต้องรอ CF)
+- [ ] julian_keygen.html — generate Master Key batch (JD range → planets[10]) → download CSV
+- [ ] julian_scraper.html — ค้นหาบุคคล/เหตุการณ์ → บันทึก Internet Table → download JSONL
+- [ ] docs/JULIAN_MISSION.md — แยก JULIAN mission ออกจาก BIBLE_MISSION.md
+- prerequisite: ยืนยัน JD format ก่อน build
 
 ### Blocked (รอ user)
-- [ ] [BLOCKED] CF KV/D1 storage — รอ user setup
+- [ ] [BLOCKED] CF D1 setup — storage + query API
+- [ ] [ทดลองใช้] ยืนยัน JD format (standard vs internal)
+- [ ] [ทดลองใช้] กำหนด year range สำหรับ Master Key
+
+### Handoff ล่าสุด
+`handoffs/JULIAN_20260521_v1.md`
 
 ---
 
