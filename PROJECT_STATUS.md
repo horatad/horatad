@@ -5,25 +5,24 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.5 | **URL:** horatad.com / horatad.github.io/horatad
+**Version:** V3.3.6 | **URL:** horatad.com / horatad.github.io/horatad
 
 ### สถานะ
 - App ทำงานได้ครบ — natal + transit + V3 tab (3-panel: กฎ / Input / Output)
 - V3 tab: rule IDs (R001–R342) ✅ | natal/transit toggle ✅ | 3-panel ✅ | Typhoon [R_XXX] ✅
-- garbage input fixed V3.3.3 | transit matching _include_transit flag V3.3.5
+- M3+M8 fallback chain ครบ V3.3.6: Typhoon fail JSON → throw → compose_local_prediction()
 
 ### Next (Claude ทำได้)
-- [ ] M3 retry: retry 1 ครั้งก่อน fallback ถ้า Typhoon ไม่ follow JSON format
-  (v3/typhoon.js → send_to_typhoon() ~10 บรรทัด — batch กับงานถัดไปก่อน)
+- (ไม่มี — รอ user actions ทั้งหมด)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.4 บนมือถือ — 3-panel view
+- [ ] [ทดลองใช้] ทดสอบ V3.3.6 บนมือถือ
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260521_v3.md`
+`handoffs/HORATAD_20260521_v3.md`
 
 ---
 
@@ -101,7 +100,7 @@
 
 | Project | Code | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD | script.js, v3/*, index.html | 🟡 Pre-launch V3.3.5 |
+| Horatad PWA | HORATAD | script.js, v3/*, index.html | 🟡 Pre-launch V3.3.6 |
 | Wording Engine | BIBLE | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN | tools/julian_keygen.html, tools/julian_scraper.html, docs/JULIAN_MISSION.md | 🛠 Tools ready — รอ CF D1 |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision — รอ Phase 1 |
@@ -113,4 +112,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | JULIAN handoff v3 | JULIAN automation ready*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.6 | HORATAD M3 fix | JULIAN automation ready*
