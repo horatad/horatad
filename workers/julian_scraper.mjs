@@ -70,20 +70,48 @@ function ghOutput(key, val) {
 }
 
 // ── Wikidata SPARQL ───────────────────────────────────────────────────────────
-async function sparqlQuery(sparql) {
-  const url = `${WIKIDATA_URL}?query=${encodeURIComponent(sparql.trim())}&format=json`;
-  const resp = await fetch(url, {
-    headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/sparql-results+json' },
-  });
-  if (!resp.ok) {
-    const txt = await resp.text().catch(() => '');
-    throw new Error(`Wikidata HTTP ${resp.status}: ${txt.slice(0, 200)}`);
-  }
-  const data = await resp.json();
-  return data.results.bindings;
-}
-
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function sparqlQuery(sparql) {
+  const url  = `${WIKIDATA_URL}?query=${encodeURIComponent(sparql.trim())}&format=json`;
+  const MAX_RETRIES = 3;
+
+  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    const t0   = Date.now();
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/sparql-results+json' },
+    });
+    const ms = Date.now() - t0;
+    console.log(`Wikidata: HTTP ${resp.status} in ${ms}ms`);
+
+    // rate-limited → ถาม Retry-After หรือ exponential backoff
+    if (resp.status === 429 || resp.status === 503) {
+      const retryAfterSec = parseInt(resp.headers.get('Retry-After') || '0') || 60;
+      const backoff       = 2000 * Math.pow(2, attempt);          // 2s / 4s / 8s
+      const wait          = Math.max(retryAfterSec * 1000, backoff);
+      console.log(`Rate limited (${resp.status}) — retry ${attempt + 1}/${MAX_RETRIES} after ${Math.round(wait/1000)}s`);
+      await sleep(wait);
+      continue;
+    }
+
+    if (!resp.ok) {
+      const txt = await resp.text().catch(() => '');
+      throw new Error(`Wikidata HTTP ${resp.status}: ${txt.slice(0, 200)}`);
+    }
+
+    // adaptive: ถ้า response ช้า (>3s) แสดงว่า Wikidata โหลด → พักเพิ่มก่อน process ต่อ
+    if (ms > 3000) {
+      const extra = Math.min(ms, 8000);
+      console.log(`Slow response (${ms}ms) — adaptive delay ${extra}ms`);
+      await sleep(extra);
+    }
+
+    const data = await resp.json();
+    return data.results?.bindings ?? [];
+  }
+
+  throw new Error(`Wikidata query failed after ${MAX_RETRIES} retries`);
+}
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
