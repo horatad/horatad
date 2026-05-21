@@ -1,7 +1,7 @@
-// HORATAD:SCRIPT:3.3.7
-// Version 3.3.7 | 2026-05-21
+// HORATAD:SCRIPT:3.3.8
+// Version 3.3.8 | 2026-05-21
+// Changes: [V3.3.8] feat(UX): 8 changes — import choice, DB1 sort, pin fix, tag delete, toggle btns, nav view btn, lunar cleanup
 // Changes: [V3.3.7] fix(UX): memory modal ใช้ dvh แทน vh — keyboard ไม่บัง Export/Import/ปิด บนมือถือ
-// Changes: [V3.3.6] fix(M3): send_to_typhoon throw แทน return raw → trigger M8 compose_local_prediction fallback
 // Changes: [V3.3.4] feat(HORATAD): V3 tab — 3-panel view (กฎ / Input Typhoon / Output)
 // Changes: [V3.3.3] fix(BIBLE): match_rules — house_lord_of (dynamic เจ้าเรือน), REFERENCE filter, fix planet_id=0 bug
 // Changes: [V3.3.1] feat: wire M8 compose_local_prediction → v3tab.js (✅/⚠️/📋 grouped, แทน render_fallback)
@@ -10,7 +10,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.7';
+const APP_VERSION='3.3.8';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -120,6 +120,7 @@ let _swRefreshing=false; // V2.1.5 prevent double reload on SW update
 let _soundLevel=1; // 0=🔇 off, 1-5 = 🔈🔉🔊 scale
 let _audioCtx=null;
 let _memSort='jd_desc'; // 'jd_desc'|'jd_asc'|'recent'|'asc'|'desc'
+let _db1Sort='jd_desc';
 let _evtSort='recent';
 let _numpadPrevValue='';
 let _numpadInvalidCount=0;
@@ -398,11 +399,17 @@ function _renderTagRow(section){
   // ปกติ: category tags
   const tags=_allTags();
   const active=_chartTags[section]||[];
+  const isCustom=name=>!DEFAULT_TAGS.includes(name);
   tags.forEach(name=>{
     const chip=document.createElement('span');
     chip.className='tag-chip'+(active.includes(name)?' tag-active':'');
-    chip.textContent=name;
-    chip.addEventListener('click',()=>_toggleTag(section,name));
+    if(isCustom(name)){
+      chip.innerHTML=`<span>${_escHtml(name)}</span><button class="tag-chip-del" title="ลบ tag" onclick="event.stopPropagation();_deleteCustomTag('${_escHtml(name)}')">✕</button>`;
+      chip.querySelector('span').addEventListener('click',()=>_toggleTag(section,name));
+    }else{
+      chip.textContent=name;
+      chip.addEventListener('click',()=>_toggleTag(section,name));
+    }
     row.appendChild(chip);
   });
   const addBtn=document.createElement('span');
@@ -473,6 +480,13 @@ function _submitAddTag(){
   }
   _closeAddTagModal();
   if(_addTagSection)_renderTagRow(_addTagSection);
+}
+function _deleteCustomTag(name){
+  _saveCustomTags(_loadCustomTags().filter(t=>t!==name));
+  ['1','2'].forEach(s=>{
+    if(_chartTags[s]){const i=_chartTags[s].indexOf(name);if(i>=0){_chartTags[s].splice(i,1);_saveTagsToMemory(s);}}
+    _renderTagRow(s);
+  });
 }
 function _loadTagsForCurrentChart(section){
   const s=String(section);
@@ -898,6 +912,8 @@ function toggleView(){
   _playBeep(700);
   _redraw();
   _updateShareButton();
+  const vn=document.getElementById('btn-view-nav');
+  if(vn){vn.textContent=VIEW_LABELS[_viewMode];vn.classList.toggle('active',_viewMode===1);}
 }
 function toggleOuter(){
   _outerState=(_outerState+1)%5;
@@ -923,6 +939,8 @@ function toggleReportTransit(){
     btn.textContent=REPORT_TRANSIT_LABELS[_reportTransitShow?1:0];
     btn.classList.toggle('btn-active',_reportTransitShow);
   }
+  const ti=document.getElementById('btn-transit-input');
+  if(ti)ti.classList.toggle('active',_reportTransitShow);
   _playBeep(700);
   _renderTagRow('1');
   if(_reportTransitShow){
@@ -1892,6 +1910,47 @@ function exportMemory(){
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+function _openImportChoice(){
+  const el=document.getElementById('import-choice');
+  if(el)el.classList.toggle('hidden');
+}
+function _closeImportChoice(){
+  const el=document.getElementById('import-choice');
+  if(el)el.classList.add('hidden');
+}
+const _JULIAN_URL='https://github.com/horatad/horatad/releases/download/julian-data/julian_all.json';
+async function _importFromJulian(){
+  _closeImportChoice();
+  _showToast('กำลังดาวน์โหลดข้อมูลสาธารณะ...');
+  try{
+    const resp=await fetch(_JULIAN_URL);
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+    const records=await resp.json();
+    if(!Array.isArray(records)||!records.length){_showToast('ไม่พบข้อมูลใน JULIAN',true);return;}
+    const existing=_loadJSON(MEM_KEY)||[];
+    const keyFn=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
+    const map=new Map();
+    for(const m of existing)map.set(keyFn(m),m);
+    let added=0;
+    for(const r of records){
+      if(!r.jd||!r.name)continue;
+      const{d,m,y_ce}=_jdToGregorian(r.jd);
+      const y_be=y_ce+543;
+      const t=r.time_utc?String(r.time_utc).substring(0,5):'00:00';
+      const prov=(r.lat&&r.lng)?_latLngToProv(Number(r.lat),Number(r.lng)):'กรุงเทพมหานคร';
+      const entry={name:r.name,gender:'ชาย',d,m,y_be,t,prov,jd:r.jd,savedAt:Date.now()-added,groups:[]};
+      const k=keyFn(entry);
+      if(!map.has(k)){map.set(k,entry);added++;}
+    }
+    const merged=[...map.values()].sort((a,b)=>(b.jd||0)-(a.jd||0)).slice(0,MEM_MAX);
+    _saveJSON(MEM_KEY,merged);
+    _renderMemory(document.getElementById('memory-search')?.value||'');
+    _showToast(`นำเข้าสำเร็จ ${added} รายการใหม่จาก JULIAN`);
+  }catch(err){
+    console.warn('[importJulian]',err);
+    _showToast('ดาวน์โหลดไม่ได้: '+err.message,true);
+  }
+}
 function importMemory(event){
   const file=event.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -2082,7 +2141,7 @@ function _updateNavHeader(){
       const idx=buf.findIndex(e=>key(e)===`${name}|${d}/${m}/${y}`);
       if(idx!==-1)posStr=` · ${idx+1}/${buf.length}`;
     }
-    info.textContent=`[นอก] ${name} · ${d}/${m}/${y}${posStr}`;
+    info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
   }else{
     // ดวงใน: แสดง natal1 + ตำแหน่งใน mem
     const mem=_loadJSON(MEM_KEY)||[];
@@ -2096,19 +2155,17 @@ function _updateNavHeader(){
     }
     info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
   }
+  const vn=document.getElementById('btn-view-nav');
+  if(vn){vn.textContent=VIEW_LABELS[_viewMode];vn.classList.toggle('active',_viewMode===1);}
 }
 
 // ── Main menu popup (Phase 1B Step 2) ─────────────────────
 function _updateMainMenuState(){
-  const vb=document.getElementById('main-menu-view-btn');
-  if(vb)vb.textContent=VIEW_LABELS[_viewMode];
-  const tb=document.getElementById('main-menu-transit-btn');
-  if(tb){
-    tb.textContent=_reportTransitShow?'แสดง':'ซ่อน';
-    tb.classList.toggle('active',_reportTransitShow);
-  }
-  const si=document.getElementById('main-menu-sompong-info');
-  if(si)si.textContent=`${_dbPersons().length} ›`;
+  // sync input-page toggle buttons
+  const ti=document.getElementById('btn-transit-input');
+  if(ti)ti.classList.toggle('active',_reportTransitShow);
+  const spi=document.getElementById('btn-sompong-input');
+  if(spi)spi.classList.toggle('active',_sompongPopupOpen||false);
   const ei=document.getElementById('main-menu-event-info');
   if(ei)ei.textContent=`${_dbEvents().length} ›`;
   const db1=_v3LoadDB1();
@@ -2136,15 +2193,25 @@ function _toggleTransitFromMenu(){
 }
 
 // ── Sompong popup (Phase 1B Step 3) ───────────────────────
+let _sompongPopupOpen=false;
+function _toggleSompongInput(){
+  if(_sompongPopupOpen){_closeSompongPopup();}else{_openSompongPopup();}
+}
 function _openSompongPopup(){
   _closeMainMenu();
   _renderSompongList();
   document.getElementById('sompong-backdrop').classList.remove('hidden');
   document.getElementById('sompong-modal').classList.remove('hidden');
+  _sompongPopupOpen=true;
+  const spi=document.getElementById('btn-sompong-input');
+  if(spi)spi.classList.add('active');
 }
 function _closeSompongPopup(){
   document.getElementById('sompong-backdrop').classList.add('hidden');
   document.getElementById('sompong-modal').classList.add('hidden');
+  _sompongPopupOpen=false;
+  const spi=document.getElementById('btn-sompong-input');
+  if(spi)spi.classList.remove('active');
 }
 function _renderSompongList(){
   const slots=_dbPersons();
@@ -2338,10 +2405,18 @@ function _closeDB1Popup(){
   document.getElementById('db1-backdrop').classList.add('hidden');
   document.getElementById('db1-modal').classList.add('hidden');
 }
+function _cycleDB1Sort(){
+  const order=['jd_desc','jd_asc','recent'];
+  const labels={'jd_desc':'📅 ใหม่→เก่า','jd_asc':'📅 เก่า→ใหม่','recent':'🕐 ล่าสุด'};
+  _db1Sort=order[(order.indexOf(_db1Sort)+1)%order.length];
+  const btn=document.getElementById('db1-sort-btn');
+  if(btn)btn.textContent=labels[_db1Sort];
+  _renderDB1List();
+}
 function _renderDB1List(){
   const q=(document.getElementById('db1-search')?.value||'').trim().toLowerCase();
   const t=_db1TypeFilter||'natal';
-  const db=_dbLoadType(t);
+  const db=_sortByMode(_dbLoadType(t),_db1Sort);
   const filtered=q?db.filter(r=>(r.name||'').toLowerCase().includes(q)):db;
   const list=document.getElementById('db1-list');
   const cnt=document.getElementById('db1-count');
