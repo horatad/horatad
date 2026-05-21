@@ -1,4 +1,4 @@
-// Version 3.0.5 | 2026-05-21
+// Version 3.0.6 | 2026-05-21
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -7,8 +7,24 @@
 //   - KB_PATH ใส่ ?v=APP_VERSION ให้ตรงกับ SW CORE_ASSETS key → offline ทำงาน
 
 import { get_lagna } from './engine.js';
-import { build_natal_payload } from './interpretation.js';
-import { match_rules, render_fallback, send_to_typhoon } from './typhoon.js';
+import { build_natal_payload, compose_local_prediction } from './interpretation.js';
+import { match_rules, send_to_typhoon } from './typhoon.js';
+
+// ── M8: แปลง compose_local_prediction() output → display text ──────────────
+function _renderComposed(predictions, matchCount) {
+  if (!predictions.length) return '[ไม่พบกฎที่ตรงกับดวง]';
+  const pos = [], neg = [], neu = [];
+  for (const p of predictions) {
+    if (p.polarity === '+') pos.push(p.text);
+    else if (p.polarity === '-') neg.push(p.text);
+    else neu.push(p.text);
+  }
+  const lines = [];
+  if (pos.length) { lines.push('✅ ด้านดี'); pos.forEach(t => lines.push('• ' + t)); lines.push(''); }
+  if (neg.length) { lines.push('⚠️ ด้านระวัง'); neg.forEach(t => lines.push('• ' + t)); lines.push(''); }
+  if (neu.length) { lines.push('📋 ลักษณะทั่วไป'); neu.forEach(t => lines.push('• ' + t)); }
+  return lines.join('\n').trim();
+}
 
 // ── Config ────────────────────────────────────────────────
 const KB_PATH = './v3/kb.json?v=' + (window.APP_VERSION || '0');
@@ -97,7 +113,7 @@ async function v3Local() {
     const ascSign = get_lagna(pos);
     const payload = build_natal_payload(pos, ascSign);
     const matched = match_rules(pos, ascSign, kbRules, null, payload);
-    const text = render_fallback(payload, matched);
+    const text = _renderComposed(compose_local_prediction(matched), matched.length);
     _showSpinner(false);
     _showResult(text, false, '📋 กฎที่ตรงดวง (' + matched.length + ' กฎ) — ไม่ใช้ AI');
   } catch (err) {
@@ -137,9 +153,9 @@ async function v3Typhoon() {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
     if (payload && matched) {
-      // M2: fallback อัตโนมัติ — แสดงกฎดิบแทน
-      const fallbackText = render_fallback(payload, matched);
-      _showResult(fallbackText, true, '⚠️ Typhoon ไม่ตอบ — แสดงกฎดิบ');
+      // M8: fallback อัตโนมัติ — keyword composition แทน Typhoon
+      const fallbackText = _renderComposed(compose_local_prediction(matched), matched.length);
+      _showResult(fallbackText, true, '⚠️ Typhoon ไม่ตอบ — ใช้ keyword engine');
       _showToastV3('Typhoon ไม่ตอบ — ใช้กฎดิบแทน');
     } else {
       _showToastV3('เกิดข้อผิดพลาด: ' + err.message);
