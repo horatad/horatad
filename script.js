@@ -1,13 +1,13 @@
-// HORATAD:SCRIPT:3.3.2
-// Version 3.3.2 | 2026-05-21
-// Changes: [V3.3.2] feat: house context map (H1-H12→domain) + tagged phrase cluster ใน build_prompt() | ลบ tag explanation ใน system prompt
+// HORATAD:SCRIPT:3.3.3
+// Version 3.3.3 | 2026-05-21
+// Changes: [V3.3.3] fix(BIBLE): match_rules — house_lord_of (dynamic เจ้าเรือน), REFERENCE filter, fix planet_id=0 bug
 // Changes: [V3.3.1] feat: wire M8 compose_local_prediction → v3tab.js (✅/⚠️/📋 grouped, แทน render_fallback)
 // Changes: [V3.2.8] feat: kb.json V2.1 — 284/342 conditions[] (combine 2 Typhoon fill rounds)
 // Changes: [V3.2.7] feat: kb.json V2 — 342 rules + conditions[] จาก Typhoon (83% coverage)
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.2';
+const APP_VERSION='3.3.3';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
