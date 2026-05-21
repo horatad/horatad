@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hora DB Import — Internet Table Converter</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
+#topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1e293b;border-bottom:1px solid #334155;flex-wrap:wrap}
+h1{font-size:.9rem;font-weight:700;color:#f8fafc;flex:1}
+.chip{font-size:.7rem;padding:2px 8px;border-radius:12px;white-space:nowrap}
+.chip-blue{background:#1e3a5f;color:#93c5fd}.chip-green{background:#14532d;color:#86efac}
+.chip-yellow{background:#3d2500;color:#fde68a}.chip-red{background:#3d0000;color:#fca5a5}
+/* DROP ZONE */
+#drop-zone{margin:20px 14px;border:2px dashed #334155;border-radius:10px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
+#drop-zone:hover,#drop-zone.over{border-color:#3b82f6;background:#0f1f3d}
+#drop-zone p{color:#64748b;font-size:.85rem;margin-bottom:8px}
+#drop-zone strong{color:#94a3b8}
+#file-input{display:none}
+.btn{padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:600;transition:background .15s}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:#3b82f6;color:#fff}.btn-primary:hover{background:#2563eb}
+.btn-dl{background:#14532d;color:#86efac}.btn-dl:hover{background:#166534}
+.btn-sql{background:#1e3a5f;color:#93c5fd}.btn-sql:hover{background:#1e40af}
+/* STATS */
+#stats{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px}
+/* TABLE */
+#preview-wrap{flex:1;overflow:auto;padding:10px 14px}
+table{border-collapse:collapse;font-size:.72rem;white-space:nowrap;min-width:100%}
+th{background:#1e293b;color:#64748b;padding:5px 8px;text-align:left;font-weight:600;border-bottom:1px solid #334155;position:sticky;top:0}
+td{padding:3px 8px;border-bottom:1px solid #1a2236}
+.jd{color:#fde68a}.name{color:#e2e8f0;font-weight:500}.date{color:#a3e635}
+.lagna{color:#c084fc}.no-time{color:#475569;font-style:italic}
+/* BOTTOM */
+#bottom{padding:10px 14px;border-top:1px solid #334155;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#status{font-size:.78rem;color:#64748b;flex:1}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>Hora DB Import — Internet Table Converter</h1>
+  <span id="chip-total" class="chip chip-blue">0 records</span>
+  <span id="chip-lagna" class="chip chip-green">0 มีลัคนา</span>
+  <span id="chip-notime" class="chip chip-yellow">0 ไม่มีเวลา</span>
+</div>
+
+<div id="drop-zone" id="dz">
+  <p>ลาก Hora_DB_export.json มาวางที่นี่</p>
+  <strong>หรือคลิกเพื่อเลือกไฟล์</strong>
+  <input type="file" id="file-input" accept=".json">
+</div>
+
+<div id="stats"></div>
+<div id="preview-wrap"></div>
+
+<div id="bottom">
+  <span id="status">รอไฟล์...</span>
+  <button class="btn btn-dl" id="btn-dl" disabled>⬇ Download JSONL</button>
+  <button class="btn btn-sql" id="btn-sql" disabled>⬇ Download SQL</button>
+</div>
+
+<script type="module">
+import { get_j, get_data } from '../v3/engine.js';
+
+const ZODIAC_TH = ['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
+let converted = null;
+
+// ── Drop zone ────────────────────────────────────────────────
+const dz = document.getElementById('drop-zone');
+const fi = document.getElementById('file-input');
+
+dz.addEventListener('click', () => fi.click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); loadFile(e.dataTransfer.files[0]); });
+fi.addEventListener('change', () => loadFile(fi.files[0]));
+
+function loadFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      process(data);
+    } catch(err) {
+      document.getElementById('status').textContent = 'JSON parse error: ' + err.message;
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── Convert ──────────────────────────────────────────────────
+function process(data) {
+  const records = data.memories || data;
+  if (!Array.isArray(records)) { document.getElementById('status').textContent = 'ไม่พบ memories array'; return; }
+
+  const t0 = performance.now();
+  converted = records.map(r => {
+    const y_ce = r.y_be - 543;
+    const jd = get_j(r.d, r.m, y_ce);
+
+    let lagna_sign = null, time_utc = null;
+    if (r.t && /^\d{1,2}:\d{2}/.test(r.t)) {
+      const [hr, mn] = r.t.split(':').map(Number);
+      time_utc = `${String(hr).padStart(2,'0')}:${String(mn).padStart(2,'0')}`;
+      const lng = r.lng ?? 100.5;
+      const sp = get_data(r.d, r.m, y_ce, hr, mn, lng);
+      lagna_sign = Math.trunc(sp[0] / 1800);
+    }
+
+    return {
+      jd,
+      name: r.name,
+      event_label: (r.category && r.category !== 'ทั่วไป') ? r.category : null,
+      type: 'human',
+      lat: r.lat || null,
+      lng: r.lng || null,
+      time_utc,
+      lagna_sign,
+      relate_id: [],
+      source: 'horatad_db',
+      confidence: 0.9,
+      notes: r.note ? r.note.slice(0, 300) : null,
+    };
+  });
+
+  const ms = (performance.now() - t0).toFixed(1);
+  const withLagna = converted.filter(r => r.lagna_sign !== null).length;
+  const noTime = converted.filter(r => !r.time_utc).length;
+
+  document.getElementById('chip-total').textContent = `${converted.length} records`;
+  document.getElementById('chip-lagna').textContent = `${withLagna} มีลัคนา`;
+  document.getElementById('chip-notime').textContent = `${noTime} ไม่มีเวลา`;
+  document.getElementById('status').textContent = `แปลงเสร็จ ${converted.length} records ใน ${ms}ms`;
+  document.getElementById('drop-zone').style.display = 'none';
+  document.getElementById('btn-dl').disabled = false;
+  document.getElementById('btn-sql').disabled = false;
+
+  renderStats(records);
+  renderPreview(converted, records);
+}
+
+function renderStats(records) {
+  const cats = {};
+  records.forEach(r => { cats[r.category||'ไม่ระบุ'] = (cats[r.category||'ไม่ระบุ']||0)+1; });
+  const el = document.getElementById('stats');
+  el.innerHTML = Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v]) =>
+    `<span class="chip chip-blue">${k}: ${v}</span>`).join('');
+}
+
+function renderPreview(rows, orig) {
+  const sample = rows.slice(0, 20);
+  let h = `<table><thead><tr>
+    <th>#</th><th>ชื่อ</th><th>วันเกิด CE</th><th>JD</th><th>เวลา</th><th>ลัคนา</th><th>lat</th><th>lng</th>
+  </tr></thead><tbody>`;
+  sample.forEach((r, i) => {
+    const o = orig[i];
+    const date = `${o.d}/${o.m}/${o.y_be-543}`;
+    const lagnaCell = r.lagna_sign !== null
+      ? `<span class="lagna">ราศี${ZODIAC_TH[r.lagna_sign]} (${r.lagna_sign})</span>`
+      : `<span class="no-time">—</span>`;
+    h += `<tr>
+      <td>${i+1}</td>
+      <td class="name">${r.name}</td>
+      <td class="date">${date}</td>
+      <td class="jd">${r.jd}</td>
+      <td>${r.time_utc || '<span class="no-time">ไม่มี</span>'}</td>
+      <td>${lagnaCell}</td>
+      <td>${r.lat ?? '—'}</td>
+      <td>${r.lng ?? '—'}</td>
+    </tr>`;
+  });
+  h += `</tbody></table>`;
+  h += `<p style="font-size:.7rem;color:#475569;padding:6px 0">แสดง 20 แถวแรก จากทั้งหมด ${rows.length} แถว</p>`;
+  document.getElementById('preview-wrap').innerHTML = h;
+}
+
+// ── Download ─────────────────────────────────────────────────
+function dlBlob(content, filename, mime) {
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([content], {type: mime})),
+    download: filename
+  });
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById('btn-dl').addEventListener('click', () => {
+  if (!converted) return;
+  const jsonl = converted.map(r => JSON.stringify(r)).join('\n');
+  dlBlob(jsonl, 'hora_db_internet.jsonl', 'application/x-ndjson');
+});
+
+document.getElementById('btn-sql').addEventListener('click', () => {
+  if (!converted) return;
+  const BATCH = 500;
+  const lines = ['-- Internet Table import from Hora DB', `-- ${converted.length} records\n`];
+  for (let i = 0; i < converted.length; i += BATCH) {
+    const batch = converted.slice(i, i + BATCH);
+    const vals = batch.map(r => {
+      const relate = JSON.stringify(r.relate_id);
+      return `(${[r.jd, s(r.name), s(r.event_label), s(r.type),
+        r.lat??'NULL', r.lng??'NULL', s(r.time_utc),
+        r.lagna_sign??'NULL', s(relate), s(r.source),
+        r.confidence, s(r.notes)].join(',')})`;
+    }).join(',\n  ');
+    lines.push(`INSERT INTO internet (jd,name,event_label,type,lat,lng,time_utc,lagna_sign,relate_id,source,confidence,notes) VALUES\n  ${vals};\n`);
+  }
+  dlBlob(lines.join('\n'), 'hora_db_internet.sql', 'text/plain');
+});
+
+function s(v) {
+  if (v === null || v === undefined) return 'NULL';
+  return `'${String(v).replace(/'/g,"''")}'`;
+}
+</script>
+</body>
+</html>
