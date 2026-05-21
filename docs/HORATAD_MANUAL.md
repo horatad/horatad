@@ -447,4 +447,52 @@ const summary = compose_summary_text(preds);
 ---
 
 *เอกสารนี้อัปเดตต่อเนื่อง — version ล่าสุดที่ HORATAD_WORKING_MANUAL.md ใน repository*
+
+---
+
+# 15. HORATAD — Technical Reference for Claude
+
+> Section นี้ย้ายมาจาก CLAUDE.md เพื่อแยก universal rules ออกจาก HORATAD-specific rules
+> Claude อ่าน section นี้เมื่ออยู่ใน HORATAD session เท่านั้น
+
+## Stack
+
+- **Frontend**: vanilla JS, no build step — edit ตรง → push → GitHub Pages deploy
+- **Service Worker**: `sw.js` — cache-first สำหรับ same-origin, network-first สำหรับ `version.json`
+- **CF Workers**: `horatad-ai` + `horatad-auth` — deploy ผ่าน wrangler **ไม่ใช่** git push
+- **V3 modules**: `v3/*.js` เป็น ES module (v3tab.js, engine.js, interpretation.js, typhoon.js)
+- **Production URL**: `https://horatad.github.io/horatad/` (deploy from main branch)
+
+## Version bump checklist (ทุกครั้งที่มี change)
+
+bump `X.Y.Z` พร้อมกัน **6 จุด**:
+
+| ไฟล์ | pattern |
+|---|---|
+| `script.js` | `HORATAD:SCRIPT:X.Y.Z` (l.1) + `Version X.Y.Z` (l.2) + `const APP_VERSION='X.Y.Z'` |
+| `sw.js` | `HORATAD:SW:X.Y.Z` + `Version X.Y.Z` + `const CACHE_NAME='horatad-vX.Y.Z'` |
+| `version.json` | `{"_id":"HORATAD:VERSION","v":"X.Y.Z"}` |
+| `index.html` | 6 จุด — `HORATAD:INDEX`, `Version`, `style.css?v=`, `brand-ver`, `about-version`, `script.js?v=`, `v3tab.js?v=` (use `replace_all`) |
+| `style.css` | `HORATAD:STYLE:X.Y.Z` (l.1) |
+| `v3/v3tab.js` | bump เฉพาะตอนแก้ V3 logic — มี internal version (`Version 3.0.X`) แยก |
+
+**Changelog**: prepend block ใน `script.js` header — `// Changes: [VX.Y.Z] <type>: <bullet>...`
+
+## Cache-bust convention
+
+ทุก asset URL ต้องมี `?v=APP_VERSION`:
+- ใน `index.html`: hardcode (`?v=X.Y.Z`)
+- ใน `sw.js` `CORE_ASSETS`: `'./X?v='+V`
+- ใน ES module (เช่น v3tab.js): อ่านจาก `window.APP_VERSION`
+  (`const` ใน classic script ไม่อยู่บน window อัตโนมัติ — `script.js` ต้องทำ `window.APP_VERSION=APP_VERSION;`)
+
+ถ้า key ไม่ตรงกัน 100% (เช่น SW cache `kb.json?v=2.2.39` แต่ module fetch `kb.json`) → offline ใช้ไม่ได้
+
+## Project quirks
+
+- **Memory dedup key**: `${name}|${d}/${m}/${y_be}|${t}|${prov}` — ถ้าแก้ field ที่เป็นส่วนของ key จะสร้าง entry ใหม่ (V2.2.38 รองรับ edit mode ผ่าน `replaceKey` param)
+- **PIN auth**: V3 tab unlock ผ่าน CF Worker `horatad-auth` — ห้าม hardcode PIN ใน frontend
+- **Era toggle**: BE (พ.ศ.) ↔ CE (ค.ศ.) — input field เก็บตาม era ปัจจุบัน แต่ memory เก็บ y_be เสมอ
+- **Numpad commit**: `_setField()` ใช้ `.value=` ตรงๆ → ไม่ trigger `input` event → ถ้าต้องปลุก listener (เช่น DB indicator) ต้องเรียกเอง
+- **iOS Safari `<input type="time">`**: บางครั้ง fire เฉพาะ `change` ไม่ใช่ `input`
 *Production URL: https://horatad.github.io/horatad/*

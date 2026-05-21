@@ -33,7 +33,8 @@
   - branch ที่ทำงาน → ใช้ของ harness (ไม่ใช่ของ CLAUDE.md)
   - push target → ใช้ของ harness (harness อาจจำกัด main push)
   - CLAUDE.md git section ด้านล่างใช้สำหรับ local CLI เท่านั้น
-- Philosophy, stack, quirks, version bump checklist → ยังใช้ได้ทั้ง web และ CLI
+- Philosophy, autonomy mode, git workflow → ยังใช้ได้ทั้ง web และ CLI
+- Stack, version bump, cache-bust, quirks → ดู `docs/HORATAD_MANUAL.md`
 - Session management / handoff → ใช้ได้ทั้งสอง แต่ web session ไม่มี compress signal แบบ CLI
 
 **เมื่อรันบน Claude Code CLI (local):**
@@ -86,19 +87,76 @@
 
 ---
 
+## 🔭 BIG SESSION — Cross-Project Coordinator
+
+เมื่อ user พิมพ์ **"BIG"** หรือ **"session BIG"** — Claude ทำหน้าที่ Program Manager  
+**ไม่เขียน code** แต่วิเคราะห์, จัดลำดับ, และวางแผนข้าม project ทั้งหมด
+
+### ขั้นตอน BIG session
+1. อ่าน `ECOSYSTEM.md` → `PROJECT_STATUS.md` → handoffs ล่าสุดของทุก project
+2. สร้าง output ตาม format ด้านล่าง
+3. **ไม่ implement** — แนะนำ session ถัดไปให้ user เปิดเอง
+
+### Output format มาตรฐาน
+
+```
+## BIG REPORT — YYYY-MM-DD
+
+### 1. สถานะรวม
+| Project  | สถานะ | Blocker | %พร้อม |
+|---|---|---|---|
+| HORATAD  | ...   | ...     | ...   |
+| BIBLE    | ...   | ...     | ...   |
+| JULIAN   | ...   | ...     | ...   |
+| PLATFORM | ...   | ...     | ...   |
+
+### 2. Priority Queue (เรียงลำดับ ทำก่อน → หลัง)
+1. [PROJECT] งาน — เหตุผล (score: N)
+2. [PROJECT] งาน — เหตุผล
+...
+
+### 3. Dependency Chain
+งาน A → ปลดล็อก B → ปลดล็อก C
+(อะไร block อะไร — ทำ A ก่อนได้ผลมากสุด)
+
+### 4. Recommended next session
+"session BIBLE" → ทำ [งานนี้] ก่อน เพราะ [เหตุผล]
+
+### 5. New project proposals (ถ้ามี)
+- [ชื่อ] — gap ที่เห็น + value + effort estimate
+```
+
+### Priority scoring (BIG ใช้ criteria นี้)
+| เงื่อนไข | คะแนน |
+|---|---|
+| unblocks project อื่น (dependency chain) | +3 |
+| user รอทดสอบ / deadline ใกล้ | +2 |
+| value สูง / milestone สำคัญ | +2 |
+| Claude ทำได้เองทั้งหมด (ไม่ต้อง user) | +1 |
+| ต้อง user action ก่อน (ทดลองใช้/BLOCKED) | -2 |
+| DEFERRED / dependency ยังไม่พร้อม | -3 |
+
+### New project proposal criteria
+เสนอ project ใหม่เมื่อเห็น gap ใน ECOSYSTEM vision ที่:
+- ไม่มี project ปัจจุบันรับผิดชอบ
+- value ชัดเจน + เชื่อมกับ project ที่มีอยู่
+- effort สมเหตุสมผล (ไม่ใหญ่กว่า 1 milestone)
+
+---
+
 ## 🤖 AUTONOMY MODE — ทำเอง ไม่ถาม
 
 User ไม่อยากเฝ้า — ทุก session ทำตามนี้
 
 ### Session scope (สำคัญ — อ่านก่อนเสมอ)
-- **ทุก session มี project scope 1 อย่าง**: HORATAD | BIBLE | JULIAN
-- User ประกาศ scope ตอนเริ่ม เช่น "session นี้ BIBLE"
+- **ทุก session มี project scope 1 อย่าง**: BIG | HORATAD | BIBLE | JULIAN | PLATFORM | (project ใหม่)
+- User ประกาศ scope ตอนเริ่ม เช่น "session BIBLE" หรือ "BIG"
 - ถ้าไม่ประกาศ → อ่าน `PROJECT_STATUS.md` แล้วเลือก project ที่มี PENDING สูงสุด
 - **Cross-project request**: ถ้า user ขอให้ทำงานนอก scope → **บันทึกลง handoff ของ project ปลายทาง แล้วแจ้ง user แต่ไม่ทำใน session นี้**
   ตัวอย่าง: อยู่ใน BIBLE session แล้ว user พูดถึง HORATAD bug → note ลง `handoffs/HORATAD_*.md` + แจ้ง "บันทึกไว้ใน HORATAD แล้ว จะทำ session ถัดไป"
 
 ### Session lifecycle
-1. **เริ่ม** → อ่าน `PROJECT_STATUS.md` + `handoffs/<PROJECT>_*.md` ล่าสุด → เลือกงานสูงสุดที่ทำได้เอง
+1. **เริ่ม** → อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` → `handoffs/<PROJECT>_*.md` ล่าสุด → เลือกงานสูงสุดที่ทำได้เอง
 2. **ทำ** → code + test + verify (ภายใน sandbox)
 3. **Commit** → push feature branch + ff main + backup branch (`backup/vX.Y.Z`)
 4. **ถ้ามี task เหลือเวลา** → ทำต่อตาม priority list (loop ข้อ 2-3)
@@ -221,16 +279,6 @@ Claude **ไม่มี tool ดู token usage จริง** — ใช้ he
 
 ---
 
-## Stack
-
-- **Frontend**: vanilla JS, no build step. ทุกอย่าง edit ตรง — push → GitHub Pages deploy
-- **Service Worker**: `sw.js` — cache-first สำหรับ same-origin, network-first สำหรับ `version.json`
-- **Worker (separate repo)**: `horatad-ai` + `horatad-auth` (Cloudflare Workers) — deploy ผ่าน wrangler **ไม่ใช่** git push
-- **V3 module**: `v3/*.js` เป็น ES module (v3tab.js, engine.js, interpretation.js, typhoon.js)
-- **Production URL**: `https://horatad.github.io/horatad/` (deploy from main branch)
-
----
-
 ## Git workflow (standing instructions — ห้ามถามซ้ำ)
 
 **Branch**:
@@ -254,44 +302,6 @@ git checkout main && git reset --hard origin/main && git checkout <feature-branc
 
 ---
 
-## Version bump checklist (ทุกครั้งที่มี change)
-
-bump `X.Y.Z` พร้อมกัน **6 จุด**:
-
-| ไฟล์ | pattern |
-|---|---|
-| `script.js` | `HORATAD:SCRIPT:X.Y.Z` (l.1) + `Version X.Y.Z` (l.2) + `const APP_VERSION='X.Y.Z'` |
-| `sw.js` | `HORATAD:SW:X.Y.Z` + `Version X.Y.Z` + `const CACHE_NAME='horatad-vX.Y.Z'` |
-| `version.json` | `{"_id":"HORATAD:VERSION","v":"X.Y.Z"}` |
-| `index.html` | 6 จุด — `HORATAD:INDEX`, `Version`, `style.css?v=`, `brand-ver`, `about-version`, `script.js?v=`, `v3tab.js?v=` (use `replace_all`) |
-| `style.css` | `HORATAD:STYLE:X.Y.Z` (l.1) |
-| `v3/v3tab.js` | bump เฉพาะตอนแก้ V3 logic — มี internal version (`Version 3.0.X`) แยก |
-
-**Changelog**: prepend block ใน `script.js` header — `// Changes: [VX.Y.Z] <type>: <bullet>...`
-
----
-
-## Cache-bust convention
-
-ทุก asset URL ต้องมี `?v=APP_VERSION`:
-- ใน `index.html`: hardcode (`?v=2.2.39`)
-- ใน `sw.js` `CORE_ASSETS`: `'./X?v='+V`
-- ใน ES module (เช่น v3tab.js): อ่านจาก `window.APP_VERSION` (top-level `const` ใน classic script **ไม่อยู่บน window อัตโนมัติ** — `script.js` ต้องทำ `window.APP_VERSION=APP_VERSION;` เสมอ)
-
-ถ้า key ไม่ตรงกัน 100% (เช่น SW cache `kb.json?v=2.2.39` แต่ module fetch `kb.json`) → offline ใช้ไม่ได้
-
----
-
-## Project quirks
-
-- **Memory dedup key**: `${name}|${d}/${m}/${y_be}|${t}|${prov}` — ถ้าแก้ field ที่เป็นส่วนของ key จะสร้าง entry ใหม่ (V2.2.38 รองรับ edit mode ผ่าน `replaceKey` param)
-- **PIN auth**: V3 tab unlock ผ่าน Cloudflare Worker `horatad-auth` (ห้าม hardcode PIN ใน frontend)
-- **Era toggle**: BE (พ.ศ.) ↔ CE (ค.ศ.) — input field เก็บตาม era ปัจจุบัน แต่ memory เก็บ y_be เสมอ
-- **Numpad commit**: `_setField()` ใช้ `.value=` ตรงๆ → ไม่ trigger `input` event → ถ้าต้องปลุก listener (เช่น DB indicator) ต้องเรียกเอง
-- **iOS Safari `<input type="time">`**: บางครั้ง fire เฉพาะ `change` ไม่ใช่ `input`
-
----
-
 ## Pending bugs / backlog
 
 ดู `PROJECT_STATUS.md` (overview ทุก project) + `handoffs/<PROJECT>_*.md` ล่าสุดของ project นั้น
@@ -301,24 +311,28 @@ bump `X.Y.Z` พร้อมกัน **6 จุด**:
 ## โครงสร้างไฟล์ (file map)
 
 ```
-CLAUDE.md                       ← Claude instructions (ไฟล์นี้)
-PROJECT_STATUS.md               ← overview ทุก project — อ่านก่อนทุก session
+CLAUDE.md                       ← Claude instructions universal (ไฟล์นี้)
+ECOSYSTEM.md                    ← architecture + data flow + vision รวม (อ่านก่อน session)
+PROJECT_STATUS.md               ← task list รายวัน ทุก project
 DEPLOY.md                       ← deploy & git reference
 
 handoffs/
+  BIG_YYYYMMDD_vN.md           ← BIG session output (priority report)
   HORATAD_YYYYMMDD_vN.md       ← HORATAD session state
   BIBLE_YYYYMMDD_vN.md         ← BIBLE session state
-  JULIAN_YYYYMMDD_vN.md        ← JULIAN session state (สร้างเมื่อมีงาน)
+  JULIAN_YYYYMMDD_vN.md        ← JULIAN session state
+  PLATFORM_YYYYMMDD_vN.md      ← PLATFORM session state (สร้างเมื่อเริ่ม Phase 2)
   archive/                      ← session เก่า (อ่านอ้างอิงได้ ไม่ต้องแตะ)
 
 docs/
-  BIBLE_MISSION.md              ← BIBLE roadmap + milestone (เดิม MISSION_FINETUNE.md)
-  HORATAD_MANUAL.md             ← HORATAD working manual (เดิม HORATAD_WORKING_MANUAL.md)
+  HORATAD_MANUAL.md             ← HORATAD: stack, version bump, cache-bust, quirks
+  BIBLE_MISSION.md              ← BIBLE roadmap + milestone
+  JULIAN_MISSION.md             ← JULIAN schema + task series
   CASE_STUDIES.md               ← PDCA experiment log
   BEST_PRACTICES.md             ← deploy/git/test best practices
   CHANGELOG.md                  ← version history
   SYSTEM_INSTRUCTION_V3-4.md   ← Typhoon system prompt reference
-  system_overview.html          ← flowchart ภาพรวม 3 โครงการ
+  system_overview.html          ← flowchart ภาพรวม (HTML visual)
 ```
 
 ---
@@ -326,7 +340,7 @@ docs/
 ## Handoff template (ใช้ทุก session)
 
 ไฟล์: `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md`
-- `<PROJECT>` = HORATAD | BIBLE | JULIAN
+- `<PROJECT>` = BIG | HORATAD | BIBLE | JULIAN | PLATFORM | (project ใหม่)
 - `n` = session ที่เท่าไหร่ของวันนั้น
 
 ```markdown
