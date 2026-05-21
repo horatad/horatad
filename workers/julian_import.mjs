@@ -70,17 +70,21 @@ function importInternet(jsonl) {
         sql(r.name),
         sql(r.event_label),
         sql(r.type),
+        sql(r.country ?? null),
+        r.tier ?? 'NULL',
         r.lat ?? 'NULL',
         r.lng ?? 'NULL',
         sql(r.time_utc),
         r.lagna_sign ?? 'NULL',
         sql(relate),
         sql(r.source),
+        sql(r.source_type ?? 'internet'),
+        r.validated_count ?? 0,
         r.confidence ?? 'NULL',
         sql(r.notes),
       ].join(',')})`;
     }).join(',\n  ');
-    console.log(`INSERT INTO internet (jd,name,event_label,type,lat,lng,time_utc,lagna_sign,relate_id,source,confidence,notes) VALUES\n  ${values};\n`);
+    console.log(`INSERT INTO internet (jd,name,event_label,type,country,tier,lat,lng,time_utc,lagna_sign,relate_id,source,source_type,validated_count,confidence,notes) VALUES\n  ${values};\n`);
   }
 }
 

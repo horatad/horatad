@@ -43,17 +43,32 @@ CREATE TABLE internet (
   lng         REAL,
   time_utc    TEXT,                    -- HH:MM หรือ null
   lagna_sign  INTEGER,                 -- 0-11 (คำนวณจาก time_utc+lng) หรือ null
-  relate_id   TEXT,                    -- JSON array of JD เช่น [death_jd]
-  source      TEXT,                    -- "wikipedia:en:TITLE" | "horatad_db" | "manual"
-  confidence  REAL,                    -- 0.0–1.0
-  notes       TEXT
+  relate_id       TEXT,                    -- JSON array of JD เช่น [death_jd]
+  source          TEXT,                    -- "wikipedia:en:TITLE" | "horatad_db" | "manual"
+  source_type     TEXT DEFAULT 'internet', -- 'internet' | 'human'
+  validated_count INTEGER DEFAULT 0,       -- จำนวนคนที่ยืนยัน (human record)
+  confidence      REAL,                    -- 0.0–1.0
+  notes           TEXT
 );
 CREATE INDEX idx_internet_jd ON internet(jd);
 CREATE INDEX idx_internet_country ON internet(country);
 CREATE INDEX idx_internet_tier ON internet(tier);
+CREATE INDEX idx_internet_source_type ON internet(source_type);
 ```
-**tier:** BIBLE ควร filter tier <= 2 สำหรับ empirical analysis (ตัด tier 3 = ส่วนตัว/ไม่แน่ใจ)  
+**tier:** BIBLE ควร filter tier <= 2 สำหรับ empirical analysis  
+**source_type:** 'human' = คนท้องถิ่นให้ข้อมูล (เวลา/สถานที่แน่นอน) | 'internet' = scrape/import  
+**validated_count:** human record ที่ >= 2 คน confirm = น่าเชื่อถือสูง  
 **lagna_sign:** null ถ้าไม่รู้เวลาเกิด — BIBLE ใช้ lagna rules ได้เฉพาะ rows ที่ lagna_sign IS NOT NULL
+
+**Query patterns:**
+```sql
+-- BIBLE empirical: คุณภาพสูงสุด
+SELECT * FROM internet WHERE source_type='human' AND validated_count >= 2 AND tier <= 2;
+-- lagna rules เท่านั้น
+SELECT * FROM internet WHERE lagna_sign IS NOT NULL AND source_type='human';
+-- human update ของคนคนหนึ่ง (INSERT ใหม่ ไม่ update เดิม)
+SELECT * FROM internet WHERE name=? ORDER BY source_type DESC, validated_count DESC;
+```
 - หลาย record ต่อ 1 JD ได้ (คนหลายคนเกิดวันเดียว)
 - HUMAN record: jd = birth JD, relate_id = [death_jd, ...]
 - EVENT record: jd = event JD, relate_id = [person_jd, ...]

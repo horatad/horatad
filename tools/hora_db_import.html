@@ -191,7 +191,7 @@ function process(data) {
       lat: r.lat || null, lng: r.lng || null,
       time_utc, lagna_sign,
       relate_id: [],
-      source: 'horatad_db', confidence: 0.9,
+      source: 'horatad_db', source_type: 'internet', validated_count: 0, confidence: 0.9,
       notes: r.note ? r.note.slice(0, 300) : null,
       // internal
       _cat: r.category || 'ทั่วไป',
@@ -345,9 +345,11 @@ function toSQL(recs) {
       return `(${[r.jd,s(r.name),s(r.event_label),s(r.type),
         s(r.country),r.tier??'NULL',
         r.lat??'NULL',r.lng??'NULL',s(r.time_utc),
-        r.lagna_sign??'NULL',s(rel),s(r.source),r.confidence,s(r.notes)].join(',')})`;
+        r.lagna_sign??'NULL',s(rel),s(r.source),
+        s(r.source_type??'internet'),r.validated_count??0,
+        r.confidence,s(r.notes)].join(',')})`;
     }).join(',\n  ');
-    lines.push(`INSERT INTO internet (jd,name,event_label,type,country,tier,lat,lng,time_utc,lagna_sign,relate_id,source,confidence,notes) VALUES\n  ${vals};\n`);
+    lines.push(`INSERT INTO internet (jd,name,event_label,type,country,tier,lat,lng,time_utc,lagna_sign,relate_id,source,source_type,validated_count,confidence,notes) VALUES\n  ${vals};\n`);
   }
   return lines.join('\n');
 }
