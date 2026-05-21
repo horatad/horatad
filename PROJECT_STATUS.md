@@ -4,12 +4,12 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.4 | **URL:** horatad.com / horatad.github.io/horatad
+**Version:** V3.3.5 | **URL:** horatad.com / horatad.github.io/horatad
 
 ### สถานะ
 - App ทำงานได้ครบ — natal + transit + V3 tab (3-panel: กฎ / Input / Output)
-- V3 tab: match_rules() ✅ | 3-panel display ✅ | Fallback ✅ | onPromptReady callback ✅
-- garbage input fixed V3.3.3: house_lord_of dynamic, REFERENCE filter, planet_id=0
+- V3 tab: rule IDs (R001–R342) ✅ | natal/transit toggle ✅ | 3-panel ✅ | Typhoon [R_XXX] ✅
+- garbage input fixed V3.3.3 | transit matching _include_transit flag V3.3.5
 
 ### Next (Claude ทำได้)
 - [ ] M3 retry: retry 1 ครั้งก่อน fallback ถ้า Typhoon ไม่ follow JSON format
@@ -22,7 +22,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260521_v2.md`
+`handoffs/BIBLE_20260521_v3.md`
 
 ---
 
@@ -91,4 +91,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.4 | จัด file structure ใหม่*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | BIBLE handoff v3*
