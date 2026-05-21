@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JULIAN Status</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; padding: 20px; }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  .sub { color: #666; font-size: 0.85rem; margin-bottom: 24px; }
+  .card { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .card h2 { font-size: 1rem; margin-bottom: 14px; color: #444; }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .stat { flex: 1; min-width: 120px; background: #f8f8f8; border-radius: 8px; padding: 12px 16px; }
+  .stat .n { font-size: 1.8rem; font-weight: 700; color: #1a73e8; }
+  .stat .l { font-size: 0.78rem; color: #666; margin-top: 2px; }
+  .bar-wrap { background: #eee; border-radius: 99px; height: 10px; margin: 8px 0 4px; }
+  .bar { background: #1a73e8; border-radius: 99px; height: 10px; transition: width .6s; }
+  .bar-label { font-size: 0.78rem; color: #666; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; padding: 6px 8px; background: #f0f0f0; color: #555; font-weight: 600; }
+  td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; }
+  tr:last-child td { border-bottom: none; }
+  .tag { display: inline-block; background: #e8f0fe; color: #1a73e8; border-radius: 4px; padding: 1px 6px; font-size: 0.75rem; }
+  .conf { color: #888; font-size: 0.8rem; }
+  input { border: 1px solid #ddd; border-radius: 6px; padding: 7px 10px; font-size: 0.85rem; width: 100%; }
+  .field { margin-bottom: 10px; }
+  .field label { display: block; font-size: 0.78rem; color: #666; margin-bottom: 4px; }
+  button { background: #1a73e8; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-size: 0.85rem; cursor: pointer; }
+  button:hover { background: #1558b0; }
+  button.sec { background: #f0f0f0; color: #333; }
+  button.sec:hover { background: #e0e0e0; }
+  .msg { font-size: 0.82rem; padding: 8px 12px; border-radius: 6px; margin-top: 8px; }
+  .msg.err { background: #fdecea; color: #c62828; }
+  .msg.ok  { background: #e6f4ea; color: #256029; }
+  .run-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+  .run-row:last-child { border-bottom: none; }
+  .run-date { color: #888; font-size: 0.78rem; }
+  .badge { background: #e8f0fe; color: #1a73e8; border-radius: 99px; padding: 2px 8px; font-size: 0.75rem; font-weight: 600; }
+  .loading { color: #888; font-size: 0.85rem; padding: 8px 0; }
+  .jd-note { color: #aaa; font-size: 0.72rem; }
+</style>
+</head>
+<body>
+
+<h1>🔭 JULIAN Status</h1>
+<p class="sub">ข้อมูล empirical astro database — อัปเดตทุกคืน 02:00 UTC</p>
+
+<!-- ── Summary ── -->
+<div class="card" id="card-summary">
+  <h2>📊 ภาพรวม</h2>
+  <div class="row" id="stats-row">
+    <div class="stat"><div class="n" id="s-total">—</div><div class="l">records ใน D1</div></div>
+    <div class="stat"><div class="n" id="s-target">500</div><div class="l">เป้าหมาย</div></div>
+    <div class="stat"><div class="n" id="s-rate">—</div><div class="l">records / วัน</div></div>
+    <div class="stat"><div class="n" id="s-eta">—</div><div class="l">วันที่คาดเสร็จ</div></div>
+  </div>
+  <div class="bar-wrap"><div class="bar" id="prog-bar" style="width:0%"></div></div>
+  <div class="bar-label" id="prog-label">loading...</div>
+</div>
+
+<!-- ── Run history ── -->
+<div class="card" id="card-runs">
+  <h2>📅 ประวัติ run</h2>
+  <div id="runs-list"><div class="loading">กำลังโหลด progress.json...</div></div>
+</div>
+
+<!-- ── D1 records ── -->
+<div class="card" id="card-d1">
+  <h2>🗄️ รายชื่อใน D1</h2>
+
+  <!-- auth fields -->
+  <div id="auth-section">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div class="field" style="flex:1;min-width:200px">
+        <label>Cloudflare Account ID</label>
+        <input id="cf-account" placeholder="5bdddc7f619a29c58dfc12cc..." />
+      </div>
+      <div class="field" style="flex:1;min-width:200px">
+        <label>API Token (User API Token)</label>
+        <input id="cf-token" type="password" placeholder="วาง token ที่นี่" />
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button onclick="loadD1()">โหลดข้อมูล</button>
+      <button class="sec" onclick="clearAuth()">ล้าง</button>
+      <span style="font-size:0.75rem;color:#aaa;margin-left:4px">บันทึก localStorage เฉพาะเครื่องนี้</span>
+    </div>
+    <div id="auth-msg"></div>
+  </div>
+
+  <div id="d1-content" style="margin-top:16px;display:none">
+    <h2 style="font-size:0.9rem;margin-bottom:10px">แบ่งตามหมวด</h2>
+    <div id="cat-list"></div>
+    <h2 style="font-size:0.9rem;margin:16px 0 10px">รายชื่อล่าสุด 50 คน</h2>
+    <table>
+      <thead><tr><th>#</th><th>ชื่อ</th><th>วันเกิด (CE)</th><th>หมวด</th><th>ประเทศ</th><th>confidence</th></tr></thead>
+      <tbody id="names-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const DB_ID       = 'eb644547-f275-41b9-9bb3-204fb1b28eb7';
+const PROGRESS_URL = 'https://raw.githubusercontent.com/horatad/horatad/main/workers/julian_progress.json';
+const TARGET      = 500;
+
+// JD → date CE (engine.js get_j inverse: JD=730428 = 2000-01-01)
+const JD_EPOCH    = 730428;
+const JD_EPOCH_MS = Date.UTC(2000, 0, 1);
+function jdToDate(jd) {
+  const ms = JD_EPOCH_MS + (jd - JD_EPOCH) * 86400000;
+  const d  = new Date(ms);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
+}
+
+// ── Load progress.json from GitHub ──────────────────────────────────────────
+async function loadProgress() {
+  try {
+    const r = await fetch(PROGRESS_URL + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const p = await r.json();
+
+    const total = p.total ?? 0;
+    const pct   = Math.min(100, Math.round(total / TARGET * 100));
+    document.getElementById('s-total').textContent = total.toLocaleString();
+    document.getElementById('prog-bar').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = `${total} / ${TARGET} (${pct}%)`;
+
+    // อัตราเร็ว (avg จาก runs)
+    const runs = p.runs ?? [];
+    if (runs.length > 0) {
+      const days  = new Set(runs.map(r => r.date)).size;
+      const rate  = Math.round(total / Math.max(1, days));
+      const left  = TARGET - total;
+      const etaDays = left > 0 && rate > 0 ? Math.ceil(left / rate) : 0;
+      const etaDate = etaDays > 0
+        ? new Date(Date.now() + etaDays * 86400000).toISOString().slice(0, 10)
+        : (total >= TARGET ? 'เสร็จแล้ว' : '—');
+      document.getElementById('s-rate').textContent = rate.toLocaleString();
+      document.getElementById('s-eta').textContent  = etaDate;
+    }
+
+    // Run history
+    const el = document.getElementById('runs-list');
+    if (runs.length === 0) { el.textContent = 'ยังไม่มีข้อมูล'; return; }
+    el.innerHTML = [...runs].reverse().map(r =>
+      `<div class="run-row">
+        <span>${r.query} <span class="badge">+${r.count}</span></span>
+        <span class="run-date">${r.date}</span>
+      </div>`
+    ).join('');
+
+  } catch (e) {
+    document.getElementById('prog-label').textContent = 'โหลดไม่ได้: ' + e.message;
+    document.getElementById('runs-list').innerHTML = '<span style="color:#c00">ไม่สามารถดึง progress.json ได้</span>';
+  }
+}
+
+// ── D1 query ─────────────────────────────────────────────────────────────────
+async function d1Query(accountId, token, sql) {
+  const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database/${DB_ID}/query`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sql })
+  });
+  const data = await r.json();
+  if (!data.success) throw new Error(data.errors?.[0]?.message ?? 'D1 error');
+  return data.result?.[0]?.results ?? [];
+}
+
+async function loadD1() {
+  const accountId = document.getElementById('cf-account').value.trim();
+  const token     = document.getElementById('cf-token').value.trim();
+  if (!accountId || !token) { showMsg('err', 'กรุณากรอก Account ID และ Token'); return; }
+
+  localStorage.setItem('cf_account', accountId);
+  localStorage.setItem('cf_token',   token);
+  showMsg('ok', 'กำลังโหลด...');
+
+  try {
+    // หมวดหมู่
+    const cats = await d1Query(accountId, token,
+      'SELECT event_label, COUNT(*) as cnt FROM internet GROUP BY event_label ORDER BY cnt DESC');
+    document.getElementById('cat-list').innerHTML = cats.map(c =>
+      `<div class="run-row"><span>${c.event_label ?? '(ไม่ระบุ)'}</span><span class="badge">${c.cnt}</span></div>`
+    ).join('') || '<span style="color:#888">ไม่มีข้อมูล</span>';
+
+    // รายชื่อล่าสุด
+    const rows = await d1Query(accountId, token,
+      'SELECT id, name, jd, event_label, country, confidence FROM internet ORDER BY id DESC LIMIT 50');
+    const tbody = document.getElementById('names-table');
+    tbody.innerHTML = rows.map((r, i) =>
+      `<tr>
+        <td class="jd-note">${r.id}</td>
+        <td>${r.name ?? '—'}</td>
+        <td>${jdToDate(r.jd)} <span class="jd-note">(JD ${r.jd})</span></td>
+        <td><span class="tag">${r.event_label ?? '—'}</span></td>
+        <td>${r.country ?? '—'}</td>
+        <td class="conf">${r.confidence != null ? (r.confidence * 100).toFixed(0) + '%' : '—'}</td>
+      </tr>`
+    ).join('') || '<tr><td colspan="6" style="color:#888;text-align:center">ไม่มีข้อมูล</td></tr>';
+
+    document.getElementById('d1-content').style.display = 'block';
+    showMsg('ok', `โหลดสำเร็จ — ${rows.length} รายชื่อล่าสุด`);
+  } catch (e) {
+    showMsg('err', 'Error: ' + e.message);
+  }
+}
+
+function clearAuth() {
+  localStorage.removeItem('cf_account');
+  localStorage.removeItem('cf_token');
+  document.getElementById('cf-account').value = '';
+  document.getElementById('cf-token').value   = '';
+  document.getElementById('d1-content').style.display = 'none';
+  showMsg('ok', 'ล้างแล้ว');
+}
+
+function showMsg(type, text) {
+  const el = document.getElementById('auth-msg');
+  el.className = 'msg ' + type;
+  el.textContent = text;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('cf-account').value = localStorage.getItem('cf_account') ?? '';
+document.getElementById('cf-token').value   = localStorage.getItem('cf_token')   ?? '';
+loadProgress();
+</script>
+</body>
+</html>
