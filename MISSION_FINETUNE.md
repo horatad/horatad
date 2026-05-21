@@ -1,7 +1,9 @@
-# Horatad — Mission: Thai Astrology LLM Fine-tune
+# BIBLE + JULIAN — Mission Detail
+# Project: BIBLE (Prediction Wording Engine) + JULIAN (Empirical Astro DB)
 # ภาษา: ไทย + Eng technical term
 # กฎ: ✅ = เสร็จแล้ว (ไม่ลบ) | 🔲 = ต้องทำ | 🔴 = blocked/รอ user | ⭐ = priority สูง
 # อัปเดตไฟล์นี้ทุกครั้งที่มี mission ใหม่หรือเสร็จ task
+# ดูสถานะรวม → PROJECT_STATUS.md
 
 ---
 

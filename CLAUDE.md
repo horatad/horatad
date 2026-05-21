@@ -5,6 +5,23 @@
 
 ---
 
+## 🗂️ Project Structure — 3 โครงการใน repo เดียว
+
+**อ่าน `PROJECT_STATUS.md` ก่อนทุก session — มีสถานะทั้ง 3 โครงการ 1 หน้า**
+
+| Code | ชื่อเต็ม | หน้าที่ |
+|---|---|---|
+| **HORATAD** | Horatad PWA | App หลัก — launch, UX, deploy (horatad.com) |
+| **BIBLE** | Prediction Wording Engine | KB rules → keywords → LLM wordings |
+| **JULIAN** | Empirical Astro Database | Julian Day + planet data + บุคคลสำคัญ |
+
+**Handoff files:** `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md`
+- ตัวอย่าง: `handoffs/HORATAD_20260521_v2.md`, `handoffs/BIBLE_20260522_v1.md`
+- เวลาสร้าง handoff ต้องระบุ project code ใน filename เสมอ
+- อัปเดต `PROJECT_STATUS.md` ด้วยทุกครั้งที่จบ session
+
+---
+
 ## ⚠️ Claude Code Web vs CLI — ลำดับความสำคัญ
 
 **เมื่อรันบน Claude Code Web (harness มี system prompt ของตัวเอง):**
