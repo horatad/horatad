@@ -556,7 +556,7 @@ function downloadPatch(){
 function downloadFull(){
   if(!kbRoot){alert('โหลด kb.json ก่อน');return;}
   const out=Array.isArray(kbRoot)?rules:{...kbRoot,rules};
-  dl(JSON.stringify(out,null,2),'kb_reviewed_'+ts()+'.json','application/json');
+  dl(JSON.stringify(out,null,2),'kb.json','application/json');
 }
 
 function dl(content,filename,type){
