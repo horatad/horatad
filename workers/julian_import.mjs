@@ -88,15 +88,27 @@ function importInternet(jsonl) {
       ].join(',')})`;
     }).join(',\n  ');
 
-    // ON CONFLICT: jd+name ซ้ำ → นับ source เพิ่ม + รักษา confidence สูงสุด
-    // validated_count++ = independent source เห็นตรงกัน (auto-validate)
+    // ON CONFLICT: jd+name ซ้ำ → survivorship rules
+    // - COALESCE: เติม NULL field จาก record ใหม่ (ถ้า record เก่ายังไม่มีข้อมูล)
+    // - MAX(confidence): เก็บค่าสูงสุด
+    // - source: append ถ้าไม่ซ้ำ (เก็บ audit trail)
+    // - validated_count++: นับว่า source อื่นเห็นคนเดียวกัน
     console.log(
       `INSERT INTO internet (jd,name,event_label,type,country,tier,lat,lng,time_utc,lagna_sign,relate_id,source,source_type,validated_count,confidence,notes) VALUES\n  ${values}\n` +
       `ON CONFLICT(jd,name) DO UPDATE SET\n` +
-      `  validated_count = validated_count + 1,\n` +
-      `  confidence      = MAX(confidence, excluded.confidence),\n` +
-      `  source          = source || '|' || excluded.source\n` +
-      `WHERE excluded.source NOT LIKE '%' || source || '%';\n`
+      `  time_utc        = COALESCE(internet.time_utc,   excluded.time_utc),\n` +
+      `  lagna_sign      = COALESCE(internet.lagna_sign, excluded.lagna_sign),\n` +
+      `  lat             = COALESCE(internet.lat,         excluded.lat),\n` +
+      `  lng             = COALESCE(internet.lng,         excluded.lng),\n` +
+      `  relate_id       = COALESCE(internet.relate_id,  excluded.relate_id),\n` +
+      `  notes           = COALESCE(internet.notes,       excluded.notes),\n` +
+      `  country         = COALESCE(internet.country,     excluded.country),\n` +
+      `  tier            = COALESCE(internet.tier,        excluded.tier),\n` +
+      `  confidence      = MAX(internet.confidence, excluded.confidence),\n` +
+      `  validated_count = internet.validated_count + 1,\n` +
+      `  source          = CASE\n` +
+      `    WHEN internet.source LIKE '%' || excluded.source || '%' THEN internet.source\n` +
+      `    ELSE internet.source || '|' || excluded.source END;\n`
     );
   }
 }
