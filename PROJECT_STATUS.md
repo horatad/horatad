@@ -58,12 +58,13 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | Storage: ✅ CF D1 online | Records: 200/500
-- Tools (browser): ✅ julian_keygen.html + julian_scraper.html
+- Schema: ✅ | JD: ✅ | Storage: ✅ CF D1 online | Records: 400/500
+- Tools (browser): ✅ julian_keygen.html + julian_scraper.html + julian_status.html
 - Tools (Node.js): ✅ julian_keygen.mjs + julian_scraper.mjs + julian_empirical.mjs
-- Automation: ✅ julian_sync.yml (daily scrape + weekly validation)
+- Automation: ✅ julian_sync.yml (daily scrape + weekly validation) — wrangler@4 pinned + token verify
 - CF D1 database_id: ✅ ตั้งใน wrangler.toml แล้ว
 - D1 setup SQL: ✅ workers/julian_setup.sql (พร้อมรัน)
+- julian_report.json: ✅ generate แล้ว (Run #12) — julian_status.html แสดงได้แล้ว
 
 ### Next (Claude ทำได้)
 - (ไม่มีงาน — ทุกอย่างรอ CF D1 setup + secrets)
@@ -74,7 +75,7 @@
 - [ ] [ทดลองใช้] ทดสอบ keygen + scraper ในเบราว์เซอร์
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260521_v3.md`
+`handoffs/JULIAN_20260521_v4.md`
 
 ---
 
