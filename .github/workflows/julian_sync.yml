@@ -40,7 +40,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       # ─── Apply manual rate override (workflow_dispatch เท่านั้น) ────
       - name: Apply rate override
