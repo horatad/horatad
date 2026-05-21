@@ -35,19 +35,24 @@ CREATE TABLE internet (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   jd          INTEGER NOT NULL,        -- FK → master_key (วันเกิด/เหตุการณ์)
   name        TEXT,
-  event_label TEXT,                    -- หมวดหมู่ เช่น "นายกรัฐมนตรี"
+  event_label TEXT,                    -- หมวดหมู่ เช่น "นายกรัฐมนตรี" | "นักกีฬา"
   type        TEXT,                    -- "human" | "event"
+  country     TEXT,                    -- ISO 3166-1 alpha-2: TH, US, GB, JP, ...
+  tier        INTEGER,                 -- 1=ระดับโลก | 2=ระดับชาติ | 3=ไม่แน่ใจ
   lat         REAL,
   lng         REAL,
   time_utc    TEXT,                    -- HH:MM หรือ null
   lagna_sign  INTEGER,                 -- 0-11 (คำนวณจาก time_utc+lng) หรือ null
   relate_id   TEXT,                    -- JSON array of JD เช่น [death_jd]
-  source      TEXT,                    -- "wikipedia:en:TITLE" | "manual"
+  source      TEXT,                    -- "wikipedia:en:TITLE" | "horatad_db" | "manual"
   confidence  REAL,                    -- 0.0–1.0
   notes       TEXT
 );
 CREATE INDEX idx_internet_jd ON internet(jd);
+CREATE INDEX idx_internet_country ON internet(country);
+CREATE INDEX idx_internet_tier ON internet(tier);
 ```
+**tier:** BIBLE ควร filter tier <= 2 สำหรับ empirical analysis (ตัด tier 3 = ส่วนตัว/ไม่แน่ใจ)  
 **lagna_sign:** null ถ้าไม่รู้เวลาเกิด — BIBLE ใช้ lagna rules ได้เฉพาะ rows ที่ lagna_sign IS NOT NULL
 - หลาย record ต่อ 1 JD ได้ (คนหลายคนเกิดวันเดียว)
 - HUMAN record: jd = birth JD, relate_id = [death_jd, ...]
