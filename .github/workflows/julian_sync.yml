@@ -68,7 +68,14 @@ jobs:
           steps.scrape.outputs.out_file != '' &&
           env.CLOUDFLARE_API_TOKEN != ''
         run: |
-          npm install -g wrangler@latest --silent
+          npm install -g wrangler@4 --silent
+          echo "wrangler version: $(wrangler --version)"
+          echo "── Token verify ──"
+          curl -sf "https://api.cloudflare.com/client/v4/user/tokens/verify" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            -o /tmp/tok.json && \
+            node -e "const d=JSON.parse(require('fs').readFileSync('/tmp/tok.json','utf8')); console.log('token status:', d.result?.status, '| success:', d.success)" \
+            || echo "token verify curl failed"
           node workers/julian_import.mjs "${{ steps.scrape.outputs.out_file }}" > /tmp/import.sql
           echo "SQL preview (first 3 lines):"
           head -3 /tmp/import.sql
