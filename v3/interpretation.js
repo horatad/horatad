@@ -1,4 +1,4 @@
-// Version 3.0.1 | 2026-05-18 — Horatad Interpretation Pipeline
+// Version 3.0.2 | 2026-05-21 — Horatad Interpretation Pipeline
 // ห้าม hardcode ข้อความพยากรณ์ — text ต้องมาจาก kb_context.json เท่านั้น
 // ES Module
 
@@ -277,6 +277,81 @@ export function describe_planet_for_prompt(entry){
   const asp_th={KUM:'กุม',LENG:'เล็ง',YOK:'โยค',TRI:'ตรีโกณ',NONE:'ไม่สัมพันธ์'};
   return (`${entry.name}(${ZODIAC_TH[entry.sign]}) H${entry.house} `+
     `${asp_th[entry.aspect]||''} ${entry.std||''}`).trim();
+}
+
+// ── M8: Keyword Composition Engine ───────────────────────────────────────────
+// Deterministic prediction from KB rules — ไม่ใช้ LLM, 100% anti-hallucination
+
+// แยก phrases จาก rule.p (Thai phrase-separated text)
+function _extractKeywords(text){
+  if(!text)return[];
+  const s=text
+    .replace(/\([^)]*\)/g,'')
+    .replace(/（[^）]*）/g,'')
+    .replace(/[—→=+|[\]]/g,' ');
+  return s.split(/[\s,，]+/)
+    .map(p=>p.trim())
+    .filter(p=>p.length>=3&&/[ก-๙]/.test(p));
+}
+
+// ดู polarity จาก t[] tags + conditions[] (เชื่อถือกว่า text analysis)
+function _classifyRulePolarity(rule){
+  const ts=rule.t||[];
+  if(ts.includes('ดี')||ts.includes('ดีมาก'))return'+';
+  if(ts.includes('เสีย')||ts.includes('ร้าย'))return'-';
+  for(const c of(rule.conditions||[])){
+    if(c.quality_required==='ดี'||c.quality_required==='อุจ'||c.quality_required==='เกษตร')return'+';
+    if(c.quality_required==='เสีย'||c.quality_required==='นิจ')return'-';
+  }
+  return'~';
+}
+
+/**
+ * compose_local_prediction(matched_rules)
+ * Keyword composition engine — deterministic, no LLM
+ * คืน structured array ของ predictions จาก KB rules โดยตรง
+ *
+ * @param {Object[]} matched_rules - output จาก match_rules()
+ * @returns {Array<{rule_id,text,keywords,polarity,chapter,source}>}
+ */
+export function compose_local_prediction(matched_rules){
+  if(!matched_rules?.length)return[];
+  return matched_rules
+    .filter(r=>r.p)
+    .map((r,i)=>({
+      rule_id:'R'+String(i+1).padStart(2,'0'),
+      text:r.p,
+      keywords:_extractKeywords(r.p),
+      polarity:_classifyRulePolarity(r),
+      chapter:r.ch||'',
+      source:'local',
+    }));
+}
+
+/**
+ * compose_summary_text(predictions)
+ * สร้าง summary text จาก compose_local_prediction() output
+ * เรียง: positive traits → negative traits (พร้อม connector)
+ *
+ * @param {Array} predictions - จาก compose_local_prediction()
+ * @returns {string} คำสรุปภาษาไทย deterministic
+ */
+export function compose_summary_text(predictions){
+  if(!predictions?.length)return'[ไม่พบข้อมูล]';
+  const pos=[],neg=[],neu=[];
+  for(const pred of predictions){
+    const kws=(pred.keywords||[]).slice(0,3);
+    if(pred.polarity==='+')pos.push(...kws);
+    else if(pred.polarity==='-')neg.push(...kws);
+    else neu.push(...kws);
+  }
+  const dedup=arr=>[...new Set(arr)].slice(0,5);
+  const uPos=dedup(pos),uNeg=dedup(neg),uNeu=dedup(neu);
+  const parts=[];
+  if(uPos.length)parts.push(uPos.join(' '));
+  if(uNeg.length)parts.push((parts.length?'แต่มีแนวโน้ม ':'มีแนวโน้ม ')+uNeg.join(' '));
+  if(!parts.length&&uNeu.length)parts.push(uNeu.join(' '));
+  return parts.join(' ')||'[ไม่พบคำสำคัญ]';
 }
 
 /**

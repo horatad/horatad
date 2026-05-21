@@ -207,19 +207,83 @@ M3 (structured output) → M1 (conditions ครบ) → M2 (clean pipeline)
 
 ---
 
-## Priority รวม (อัปเดต V3.2.7)
+## M7 — Empirical Validation Pipeline
+**เป้าหมาย:** เชื่อม KB rules กับข้อมูลบุคคลจริง → วัดค่า empirical_p ต่อ rule
 
-| ลำดับ | Mission | ใครทำ | Blocked? |
-|---|---|---|---|
-| 1 | M0: สมัคร Gemini + Groq keys | User | ไม่ |
-| 2 | M1: retry fill 59 rules ว่าง | User (browser) | ไม่ |
-| 3 | M2: แก้ build_prompt() + fallback | Claude | ไม่ |
-| 4 | M3: Structured JSON output | Claude | ไม่ |
-| 5 | M1: อัปเดต match_rules() ใช้ conditions[] | Claude | ไม่ |
-| 6 | M0: cross-validation tool | Claude | รอ API keys |
-| 7 | M4: Empirical DB schema + scraper | Claude | รอ CF setup |
-| 8 | M5: Eval dataset | Claude + Expert | รอ domain expert |
-| 9 | M6: Fine-tune | User + Claude | รอ data |
+### แนวคิด (เพิ่มเติมจาก M4)
+```
+Julian Day DB (บุคคลสำคัญ) → คำนวณ planets[] → match_rules()
+→ ตรวจว่า event_label ตรงกับ rule.p หรือไม่
+→ นับ hit/miss → empirical_p = hits / (hits + miss)
+→ เก็บลง rule.empirical_p ใน kb.json
+```
+
+### Schema (เพิ่มใน kb.json V2.2.0)
+```json
+{
+  "empirical_p":    0.73,     // P(trait | config) — null ถ้าไม่มีข้อมูล
+  "empirical_n":    47,       // sample size
+  "empirical_refs": ["JD:2451545.0", "JD:2449500.3"],  // JD ที่ verify แล้ว
+  "secondary_obs":  ["มักเป็นผู้นำองค์กร", "ชอบงานด้านการเมือง"]
+}
+```
+
+### ✅ เสร็จแล้ว (V3.3.0)
+- ✅ เพิ่ม `_empirical_schema` documentation ใน kb.json root
+- ✅ เพิ่ม empirical fields (null placeholder) ใน 2 sample TRUE_RULEs (rules[9], rules[10])
+- ✅ สร้าง `scripts/gen_rule_skeletons.mjs` — พบ 90 missing planet×quality combinations
+
+### 🔲 ต้องทำต่อ
+- 🔲 สร้าง Wikipedia scraper tool → Julian Day DB
+- 🔲 สร้าง empirical_validator.html — match persons → rules → count hit/miss
+- 🔴 CF KV/D1 storage สำหรับ empirical DB (รอ user setup)
+
+---
+
+## M8 — Keyword Composition Engine
+**เป้าหมาย:** สร้าง prediction จาก KB keywords โดยตรง ไม่ใช้ LLM — 100% anti-hallucination
+
+### แนวคิด
+```
+matched_rules → extract keywords จาก rule.p (deterministic)
+→ classify polarity (+/-/~) จาก t[] tags + conditions[]
+→ compose structured prediction
+→ render โดยไม่ต้องเรียก Typhoon
+```
+
+### ✅ เสร็จแล้ว (V3.3.0)
+- ✅ `compose_local_prediction(matched_rules)` ใน `v3/interpretation.js`
+  - extract keywords จาก rule.p (split Thai phrases)
+  - classify polarity จาก t[]/conditions[]
+  - คืน `[{rule_id, text, keywords, polarity, chapter, source:'local'}]`
+- ✅ `compose_summary_text(predictions)` 
+  - combine positive + negative keywords
+  - คืน Thai summary text (deterministic)
+
+### 🔲 ต้องทำต่อ
+- 🔲 เชื่อม `compose_local_prediction()` กับ v3tab.js — ใช้แทน Typhoon fallback
+- 🔲 เพิ่ม keyword expansion: synonym map สำหรับ Thai astrology terms
+- 🔲 เพิ่ม house context: กำหนด theme ของแต่ละภพ (H1=ตัวตน, H2=การเงิน, ...)
+
+---
+
+## Priority รวม (อัปเดต V3.3.0)
+
+| ลำดับ | Mission | ใครทำ | Blocked? | Status |
+|---|---|---|---|---|
+| 1 | M0: Multi-LLM benchmark tool | User (browser) | ไม่ | ✅ V3.2.9 |
+| 2 | M1: match_rules() ใช้ conditions[] | Claude | ไม่ | ✅ V3.2.9 |
+| 3 | M2: build_prompt() trim + fallback | Claude | ไม่ | ✅ V3.2.9 |
+| 4 | M3: Structured JSON output + validation | Claude | ไม่ | ✅ V3.2.9 |
+| 5 | M8: Keyword composition engine | Claude | ไม่ | ✅ V3.3.0 |
+| 6 | M7: Empirical schema + skeleton generator | Claude | ไม่ | ✅ V3.3.0 |
+| 7 | M0: รัน benchmark + เลือก best LLM | User (browser) | ไม่ | 🔲 |
+| 8 | M1: retry fill 59 rules ว่าง | User (browser) | ไม่ | 🔲 |
+| 9 | M8: เชื่อม compose_local_prediction → v3tab | Claude | ไม่ | 🔲 |
+| 10 | M7: Wikipedia scraper → Julian Day DB | Claude | ไม่ | 🔲 |
+| 11 | M4: CF KV/D1 empirical DB storage | User + Claude | รอ CF setup | 🔴 |
+| 12 | M5: Eval dataset | Claude + Expert | รอ domain expert | 🔴 |
+| 13 | M6: Fine-tune Qwen2.5-3B | User + Claude | รอ data | 🔴 |
 
 ---
 
@@ -227,9 +291,11 @@ M3 (structured output) → M1 (conditions ครบ) → M2 (clean pipeline)
 
 | Mission | ต้องการ | มีแล้ว |
 |---|---|---|
-| M0 | Gemini/Groq API keys | ❌ user สมัคร |
+| M0 | Gemini/Groq API keys | ✅ (Gemini quota reset ทุกวัน) |
 | M1 | browser (fill retry) | ✅ |
-| M2, M3 | code เท่านั้น | ✅ |
+| M2, M3 | code เท่านั้น | ✅ done |
+| M7 | Wikipedia API + CF D1 | 🔲 CF setup |
+| M8 | code เท่านั้น | ✅ done |
 | M4 | CF KV/D1 | ❌ user setup |
 | M5 | domain expert | ❌ |
 | M6 | Google Colab + 500 pairs | ❌ |
@@ -244,9 +310,14 @@ M3 (structured output) → M1 (conditions ครบ) → M2 (clean pipeline)
 | `extract_conditions.html` | Typhoon แปลง master dictionary tags → conditions CSV |
 | `dictionary_builder_v3.html` | Build/edit rules + Import AI + Export kb.json |
 | `scripts/parse_yaml_kb.mjs` | แปลง YAML KB → kb_yaml_import.json |
-| `v3/kb.json` | V2 — 342 rules, 283 มี conditions (83%) |
+| `scripts/gen_rule_skeletons.mjs` | สร้าง skeleton rules สำหรับ missing combinations (M7) |
+| `v3/kb.json` | V2.2.0 — 342 rules, 284 มี conditions + empirical schema |
+| `v3/kb_skeletons.json` | 90 skeleton rules (planet×quality missing) — รอ expert กรอก |
 | `v3/kb_yaml_import.json` | output จาก parse_yaml_kb.mjs (342 rules) |
 | `v3/typhoon.js` | match_rules(), build_prompt(), send_to_typhoon() |
+| `v3/interpretation.js` | pipeline functions + compose_local_prediction() (M8) |
 | `v3/v3tab.js` | v3Typhoon(), v3Local() |
+| `m0_hallucination_test.html` | Multi-LLM benchmark: Groq + Gemini + Typhoon CF (M0) |
+| `m0_latency_ping.html` | Latency decomposition: TTFB + decode + Mode B prefill-only (M0) |
 | `MISSION_FINETUNE.md` | ไฟล์นี้ |
 | `CHANGELOG.md` | ประวัติ version |

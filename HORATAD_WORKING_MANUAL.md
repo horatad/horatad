@@ -1,6 +1,6 @@
 # HORATAD — Working Manual
 ### โหราทาส: Thai Astrology Intelligence Platform
-**เวอร์ชัน:** 1.0 | **อัปเดต:** พฤษภาคม 2026 | **สถานะ:** Active Development
+**เวอร์ชัน:** 1.1 | **อัปเดต:** 2026-05-21 | **สถานะ:** Active Development
 
 ---
 
@@ -147,13 +147,15 @@ INPUT: วันเกิด + เวลา + สถานที่
 2. `fill_yaml_conditions.html` — ให้ AI เติม structured conditions
 3. `dictionary_builder_v3.html` — UI สำหรับ edit/review/export
 
-## 5.2 สถานะปัจจุบัน (V3.2.7)
+## 5.2 สถานะปัจจุบัน (V3.3.0)
 
 | | |
 |---|---|
 | Rules ทั้งหมด | 342 rules |
-| มี conditions[] | 283/342 (83%) |
+| มี conditions[] | 284/342 (83%) |
 | Rule types | TRUE_RULE: 104, TRANSIT_RULE: 49, CASE_STUDY: 122, HOUSE_CONCEPT: 50 |
+| Empirical schema | `_empirical_schema` ใน root, sample fields ใน 2 rules |
+| Missing combinations | 90 planet×quality combinations ขาดกฎ (ดู `v3/kb_skeletons.json`) |
 
 ## 5.3 KB Quality Tiers
 
@@ -181,14 +183,16 @@ INPUT: วันเกิด + เวลา + สถานที่
 ## Phase 2 — Intelligence Layer (Q3–Q4 2026)
 **เป้าหมาย:** เพิ่มความแม่นยำ, กัน hallucination, เริ่มเก็บข้อมูล empirical
 
-| งาน | Priority |
-|---|---|
-| อัปเดต match_rules() ใช้ conditions[] | ⭐ สูง |
-| Structured JSON output + rule_id validation | ⭐ สูง |
-| Multi-LLM benchmark (Gemini, Groq, Chinda) | ⭐ สูง |
-| Known-rules cross-validation framework | สูง |
-| User event logging (opt-in) | กลาง |
-| Public figures scraper (Julian Day DB) | กลาง |
+| งาน | Priority | Status |
+|---|---|---|
+| อัปเดต match_rules() ใช้ conditions[] | ⭐ สูง | ✅ V3.2.9 |
+| Structured JSON output + rule_id validation | ⭐ สูง | ✅ V3.2.9 |
+| Multi-LLM benchmark (Gemini, Groq, Typhoon CF) | ⭐ สูง | ✅ V3.2.9 |
+| M8: Keyword composition engine (no-LLM prediction) | ⭐ สูง | ✅ V3.3.0 |
+| M7: Empirical schema + rule skeleton generator | สูง | ✅ V3.3.0 |
+| Known-rules cross-validation framework | สูง | 🔲 |
+| User event logging (opt-in) | กลาง | 🔲 |
+| Public figures scraper (Julian Day DB) | กลาง | 🔲 |
 
 ## Phase 3 — Empirical & Validation (2027)
 **เป้าหมาย:** พิสูจน์ premise ด้วยข้อมูลจริง
@@ -375,6 +379,139 @@ INPUT: วันเกิด + เวลา + สถานที่
 | Empirical DB | database เหตุการณ์จริงพร้อมตำแหน่งดาว สำหรับ validate กฎ |
 | Secondary rules | กฎที่ได้จาก statistical analysis ของ empirical DB |
 | Provable prediction | การพยากรณ์ที่ระบุ timing ชัดเจน ตรวจสอบได้หลังเกิดจริง |
+
+---
+
+---
+
+# 13. MISSION DETAIL — M7 & M8
+
+## M7 — Empirical Validation Pipeline
+
+**เป้าหมาย:** พิสูจน์กฎด้วยข้อมูลบุคคลจริง → คำนวณ `empirical_p` ต่อ rule
+
+### Pipeline
+```
+Julian Day DB (บุคคลสำคัญ Wikipedia)
+      ↓ match_rules() กับแต่ละ person
+      ↓ ตรวจว่า event_label ตรง rule.p
+      ↓ นับ hit/miss
+      → empirical_p = hits / (hits + miss)
+      → เก็บลง kb.json rule.empirical_p
+```
+
+### Schema fields (optional — absent = no data yet)
+```json
+"empirical_p":    0.73,    // P(trait | config), null = ไม่มีข้อมูล
+"empirical_n":    47,      // sample size
+"empirical_refs": ["JD:2451545.0"],  // Julian Days ที่ verify แล้ว
+"secondary_obs":  ["มักเป็นผู้นำองค์กร"]  // observation เพิ่มเติม
+```
+
+### ไฟล์ที่เกี่ยวข้อง
+- `v3/kb_skeletons.json` — 90 rule skeletons รอ empirical data + expert text
+- `scripts/gen_rule_skeletons.mjs` — generator script
+
+---
+
+## M8 — Keyword Composition Engine
+
+**เป้าหมาย:** Deterministic prediction จาก KB ไม่ใช้ LLM — 100% anti-hallucination
+
+### API (ใน `v3/interpretation.js`)
+
+```javascript
+// สร้าง predictions array จาก matched rules
+const preds = compose_local_prediction(matched_rules);
+// preds = [{rule_id, text, keywords, polarity, chapter, source:'local'}]
+
+// สรุป 1 paragraph
+const summary = compose_summary_text(preds);
+// → "ฉลาดเฉลียว มีเสน่ห์ แต่มีแนวโน้ม อีโก้สูง หยิ่งในศักดิ์ศรี"
+```
+
+### ข้อสังคัญ
+- `text` = `rule.p` ทั้งหมด (ground truth ไม่เปลี่ยน)
+- `keywords` = phrases แยกจาก `rule.p` ด้วย space/punctuation
+- `polarity` = `+`/`-`/`~` จาก `t[]` tags + `conditions[]` (ไม่ใช่ text analysis)
+- ใช้เป็น fallback เมื่อ Typhoon API ไม่พร้อม หรือ offline mode
+
+---
+
+# 14. PDCA CASE STUDIES
+
+> "Write what you will do, do what you write — Plan, Do, Check, Act"
+
+---
+
+## Case Study 1 — Multi-LLM Benchmark (M0) | 2026-05-21
+
+### PLAN
+สร้าง benchmark tool เพื่อ:
+1. วัดความแม่นยำ (hallucination rate) ของ Gemini, Groq, iApp กับ Thai astrology KB
+2. วัด latency decomposition: systematic / prefill / decode แยกจากกัน
+3. เลือก LLM ที่ดีที่สุดสำหรับ wording layer
+
+### DO
+- สร้าง `m0_hallucination_test.html`: 31 ข้อจาก kb.json ground truth, parallel fetch 3 LLMs
+- แก้ Gemini 429 (rate limit): เพิ่ม delay default 5000ms + countdown
+- แก้ iApp CORS: เปลี่ยนเป็น Typhoon CF Worker (มี CORS headers แล้ว)
+- สร้าง `m0_latency_ping.html`: Mode B (max_tokens=1 = prefill-only) + Mode C (streaming SSE)
+- เพิ่ม `testGeminiKey()`: แยก key valid vs quota exhausted
+- localStorage key persistence (ไม่ commit secret ลง repo)
+
+### CHECK (ผลที่ได้)
+**ค้นพบสำคัญ:** LLMs ได้คะแนน 0% บนศัพท์โหราศาสตร์ไทยโบราณ (เสริด/พักร/มนท์)
+- ศัพท์เฉพาะเหล่านี้ไม่มีใน training data → LLM ไม่รู้จัก → hallucinate ทั้งหมด
+- **ข้อสรุป:** LLM ไม่สามารถเป็น knowledge source ได้ — ต้องเป็น wording layer เท่านั้น
+- KB-first architecture ถูกต้อง: engine + KB → matched rules → LLM craft wording เท่านั้น
+
+**ปัญหาที่แก้ไม่ได้ใน session:**
+- Gemini quota (1,500 RPD ฟรี) หมดเร็วมาก — ต้องวางแผนการใช้
+- Typhoon CF ไม่รองรับ streaming → decode metric ไม่ได้
+
+### ACT (การตัดสินใจ)
+1. ✅ ยืนยัน KB-first architecture — ไม่เปลี่ยนทิศทาง
+2. ✅ เพิ่ม M8 keyword composition engine (deterministic, no LLM) เป็น priority สูง
+3. ✅ เพิ่ม M7 empirical validation pipeline (Julian Day → empirical_p)
+4. 🔲 รอ user รัน benchmark และเลือก LLM จาก Groq score (Gemini quota หมด)
+
+---
+
+## Case Study 2 — Keyword Composition + Empirical Schema (M7/M8) | 2026-05-21
+
+### PLAN
+จาก lesson learned ของ Case Study 1:
+1. Task B: `compose_local_prediction()` — deterministic prediction จาก KB keywords, ไม่ต้องเรียก LLM
+2. Task C: empirical schema (`empirical_p`, `empirical_n`, `empirical_refs`, `secondary_obs`) ใน kb.json
+3. Task A: `scripts/gen_rule_skeletons.mjs` — ระบุ 90 missing planet×quality combinations
+
+### DO
+- เพิ่ม `compose_local_prediction()` + `compose_summary_text()` ใน `v3/interpretation.js`
+  - extract keywords จาก `rule.p` (split Thai phrases)
+  - classify polarity จาก `t[]` tags + `conditions[]` (reliable กว่า text analysis)
+  - compose summary text: positive traits + connector + negative traits
+- เพิ่ม `_empirical_schema` field ใน kb.json root (documentation)
+- เพิ่ม `empirical_p/n/refs/secondary_obs` fields ใน 2 sample TRUE_RULEs (null placeholder)
+- สร้าง `scripts/gen_rule_skeletons.mjs` → `v3/kb_skeletons.json` (90 skeletons)
+- อัปเดต MISSION_FINETUNE.md (M7 + M8 sections + priority table)
+- Version bump V3.2.9 → V3.3.0
+
+### CHECK
+- `compose_local_prediction()` ทำงานได้ — ส่ง structured array พร้อม rule_id, text, keywords, polarity
+- `gen_rule_skeletons.mjs` รันได้ — พบ 90 combinations ขาดกฎ (ศุกร์ missing น้อยสุด 6, อาทิตย์/อังคาร/มฤตยู ขาดมากสุด 10)
+- empirical schema อยู่ใน kb.json แล้ว — รอ data มาเติม
+
+**ข้อสังเกต:**
+- `compose_local_prediction()` ยังไม่ได้ wire เข้า v3tab.js — ยังไม่แสดงใน app
+- 90 rule skeletons = โอกาสเพิ่ม KB coverage อีก 26% ถ้า expert กรอก text
+- polarity classification ง่ายไป (t[] tags) — บางกฎ neutral แต่ไม่มี tag → classify เป็น ~
+
+### ACT (next steps)
+1. 🔲 Wire `compose_local_prediction()` → v3tab.js เป็น enhanced fallback (แทน render_fallback)
+2. 🔲 User รัน benchmark ใน `m0_hallucination_test.html` ดู Groq score
+3. 🔲 Expert review `v3/kb_skeletons.json` — เพิ่ม p field ใน priority rules ก่อน
+4. 🔲 Build Wikipedia scraper สำหรับ Julian Day DB (Phase 2 of M7)
 
 ---
 

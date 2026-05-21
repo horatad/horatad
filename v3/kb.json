@@ -1,6 +1,6 @@
 {
-  "version": "2.1.0",
-  "updated": "2026-05-20",
+  "version": "2.2.0",
+  "updated": "2026-05-21",
   "total": 342,
   "rules": [
     {
@@ -167,7 +167,11 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": []
     },
     {
       "ch": "chapter_04",
@@ -189,7 +193,11 @@
           "required": true
         }
       ],
-      "rule_type": "TRUE_RULE"
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": []
     },
     {
       "ch": "chapter_04",
@@ -8023,5 +8031,12 @@
         }
       ]
     }
-  ]
+  ],
+  "_empirical_schema": {
+    "_note": "Optional empirical validation fields — populated from Julian Day DB (M7). Absent = no data yet.",
+    "empirical_p": "number|null — P(trait_observed | planet_config) computed from empirical DB (0.0–1.0)",
+    "empirical_n": "number|null — sample size (number of persons/events matching this rule in empirical DB)",
+    "empirical_refs": "string[] — Julian Day strings (JD format) of empirical records that confirm this rule",
+    "secondary_obs": "string[] — secondary keywords/patterns observed in empirical data beyond rule.p"
+  }
 }
