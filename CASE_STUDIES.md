@@ -5,6 +5,73 @@
 
 ---
 
+## CS004 — Wire M8 Keyword Engine → v3tab.js | HORATAD+BIBLE | 2026-05-21
+
+### PLAN
+`compose_local_prediction()` สร้างแล้วใน interpretation.js แต่ v3tab.js ยังเรียก `render_fallback()` (raw text) อยู่
+
+### DO
+- import `compose_local_prediction` จาก interpretation.js, ลบ `render_fallback` import
+- สร้าง `_renderComposed()` — format predictions array → ✅/⚠️/📋 grouped text
+- v3Local(): render ด้วย compose แทน fallback
+- v3Typhoon() fallback: ใช้ compose แทน fallback, badge → "⚠️ Typhoon ไม่ตอบ — ใช้ keyword engine"
+- V3.3.1
+
+### CHECK
+- display เปลี่ยนจาก raw chapter-grouped text → polarity-grouped (✅ ด้านดี / ⚠️ ด้านระวัง / 📋 ลักษณะทั่วไป)
+- render_fallback ถูกลบออกจาก v3tab.js ทั้งหมด
+
+### ACT
+- 🔲 ทดสอบบนมือถือจริง — ตรวจ formatting แสดงถูกต้อง
+
+---
+
+## CS005 — Rule Taxonomy Schema | BIBLE | 2026-05-21
+
+### PLAN
+KB มี 342 major rules แต่ไม่มี field ระบุ source หรือ confidence tier
+เมื่อ minor/empirical/case_study rules เพิ่มมาในอนาคต — จะแยกไม่ออก
+
+### DO
+- เพิ่ม `rule_source: "major"` และ `weight: 1.0` ให้ 342 rules ทั้งหมดด้วย Python script
+- อัปเดต `_empirical_schema` doc: `effective_weight = weight × (empirical_p ?? 1.0)`
+- kb.json V2.3.0
+
+### CHECK
+- ทุก rule มี 2 fields ใหม่ — verified
+- backward compatible ทั้งหมด (match_rules ไม่กระทบ)
+- taxonomy: major (KB) | minor (manual) | empirical (JULIAN) | case_study (user confirmed)
+
+### ACT
+- minor rule → `rule_source: "minor", weight: 0.8`
+- empirical rule (จาก JULIAN) → `rule_source: "empirical", weight: จาก empirical_p`
+- ✅ ไม่ต้องแตะ schema อีกจนกว่าจะมี rule type ใหม่จริงๆ
+
+---
+
+## CS006 — Backlog Pruning Decision | HORATAD+BIBLE | 2026-05-21
+
+### PLAN
+ตรวจ backlog ทุก item ว่า assumption ยังจริงไหม
+
+### DO
+วิเคราะห์ 3 items:
+- M3 retry (Typhoon JSON fail → retry) — เขียนตอน fallback ยังแย่
+- Keyword expansion (synonym map) — เขียนตอนยังไม่รู้ว่าต้องการ
+- Multi-LLM cross-validation — เขียนก่อนรัน benchmark จริง
+
+### CHECK
+- M3 retry: **obsolete** — M8 fallback ดีแล้ว ไม่ต้องการ Typhoon JSON อีก
+- Keyword expansion: **premature** — ยังไม่รู้ว่าต้องการจนกว่าจะรัน LLM กับ keywords จริง
+- Multi-LLM: **premature** — รอ Groq score ก่อน
+
+### ACT
+- ✂️ ตัด M3 retry ออกจาก backlog
+- ⏸ defer keyword expansion และ multi-LLM cross-validation
+- 📌 บันทึก rule ใน CLAUDE.md: "ก่อนทำ task ตรวจ assumption ก่อน แจ้ง user ถ้าควรตัด"
+
+---
+
 ## CS001 — Multi-LLM Benchmark | BIBLE | 2026-05-21
 
 ### PLAN

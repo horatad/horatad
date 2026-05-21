@@ -21,7 +21,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260521_v2.md`
+`handoffs/BIBLE_20260521_v1.md`
 
 ---
 
@@ -35,9 +35,9 @@
 - 90 rule skeletons generated (v3/kb_skeletons.json) — รอ expert กรอก p field
 
 ### Next (Claude ทำได้)
-- [ ] Keyword expansion: synonym map สำหรับ Thai astrology terms
-- [ ] House context map: H1=ตัวตน, H2=การเงิน, H7=ความสัมพันธ์ (เพิ่ม theme ต่อ ภพ)
-- [ ] Multi-LLM cross-validation: Groq + Gemini agree → high confidence wording
+- [ ] ⭐ House context map → domain tag ใน compose_local_prediction()
+- [ ] Tagged phrase cluster prompt ใน build_prompt() (ต้องการ house map ก่อน)
+- [ ] ~~Keyword expansion~~ ⏸ defer | ~~Multi-LLM cross-validation~~ ⏸ defer
 
 ### Blocked (รอ user)
 - [ ] [ทดลองใช้] รัน m0_hallucination_test.html — ดู Groq score (Gemini quota reset 11:00น.)
@@ -92,4 +92,4 @@
 | Empirical DB | JULIAN | v3/kb.json (schema), scripts/gen_rule_skeletons.mjs | 📋 Schema only |
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.1*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.1 | BIBLE handoff v1*
