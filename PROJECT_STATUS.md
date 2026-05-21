@@ -58,7 +58,7 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE
 
 ### สถานะ
-- Schema: ✅ (UNIQUE index แก้แล้ว) | JD: ✅ | Storage: รอ CF D1 setup | Records: 0
+- Schema: ✅ | JD: ✅ | Storage: ✅ CF D1 online | Records: 200/500
 - Tools (browser): ✅ julian_keygen.html + julian_scraper.html
 - Tools (Node.js): ✅ julian_keygen.mjs + julian_scraper.mjs + julian_empirical.mjs
 - Automation: ✅ julian_sync.yml (daily scrape + weekly validation)
@@ -69,10 +69,8 @@
 - (ไม่มีงาน — ทุกอย่างรอ CF D1 setup + secrets)
 
 ### Blocked (รอ user)
-- [ ] [BLOCKED] ตั้ง GitHub Secrets: CF_API_TOKEN + CF_ACCOUNT_ID
-- [ ] [BLOCKED] รัน: wrangler d1 execute julian --file=workers/julian_setup.sql --remote
-- [ ] [BLOCKED] รัน: cd workers && wrangler deploy --config julian_wrangler.toml
 - [ ] [BLOCKED] import master_key: node julian_keygen.mjs 1700 2100 > mk.csv → import → D1
+- [ ] [BLOCKED] deploy Worker: cd workers && wrangler deploy --config julian_wrangler.toml
 - [ ] [ทดลองใช้] ทดสอบ keygen + scraper ในเบราว์เซอร์
 
 ### Handoff ล่าสุด
