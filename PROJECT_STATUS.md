@@ -5,25 +5,25 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.11 | **URL:** horatad.com
+**Version:** V3.3.12 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
 - M3+M8 fallback chain ครบ: Typhoon fail → throw → compose_local_prediction()
 - Capture: QR bundle local ✅ | toast บอก location ✅ (V3.3.11)
-- JULIAN import: ปุ่ม "ดาวน์โหลดข้อมูลสาธารณะ" ✅ (V3.3.8) — รอ data/julian_all.json พร้อม
+- JULIAN import: ✅ data/julian_all.json มีใน repo ([] placeholder, จะเติมจาก workflow) | empty message user-friendly ✅ (V3.3.12)
 
 ### Next (Claude ทำได้)
 (ไม่มี — รอ user actions ทั้งหมด)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.11 บนมือถือ — capture QR, toast location, about page full-screen
+- [ ] [ทดลองใช้] ทดสอบ V3.3.12 บนมือถือ — capture QR, toast location, about page full-screen, JULIAN download message
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260521_v4.md`
+`handoffs/HORATAD_20260521_v5.md`
 
 ---
 
@@ -100,7 +100,7 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.11 | script.js, v3/*, index.html | 🟡 Pre-launch |
+| Horatad PWA | HORATAD V3.3.12 | script.js, v3/*, index.html | 🟡 Pre-launch |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 436+/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
@@ -113,4 +113,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.11 | HORATAD capture fix | BIBLE รอ MISMATCH review | JULIAN automation running*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.12 | HORATAD JULIAN 404 fix + about page + capture | BIBLE รอ MISMATCH review | JULIAN automation running*
