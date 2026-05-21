@@ -1,4 +1,4 @@
-// Version 3.0.7 | 2026-05-21
+// Version 3.0.8 | 2026-05-21
 // v3/typhoon.js — Typhoon API Connector
 // ห้าม hardcode ข้อความพยากรณ์
 // ห้าม hallucinate — ข้อความต้องมาจาก kb_context rules เท่านั้น
@@ -361,17 +361,25 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
 
   // M3: parse structured JSON + validate rule_ids ต้านการ hallucinate
   const ruleIds=new Set(matchedRules.map(r=>_ruleId(r)));
+  const _parsePredictions=(txt)=>{
+    const m=txt.match(/\{[\s\S]*\}/);
+    const parsed=JSON.parse(m?m[0]:txt); // throws ถ้าไม่ใช่ JSON
+    if(!parsed.predictions||!Array.isArray(parsed.predictions)) return null;
+    const valid=parsed.predictions.filter(p=>ruleIds.has(p.rule_id)&&p.text);
+    return valid.length ? valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n') : null;
+  };
+  try{ const r=_parsePredictions(raw); if(r) return r; }catch(_){}
+
+  // retry 1 ครั้ง — Typhoon ไม่ follow JSON format → ลองอีกครั้งก่อน fallback
   try{
-    const m=raw.match(/\{[\s\S]*\}/);
-    const parsed=JSON.parse(m?m[0]:raw);
-    if(parsed.predictions&&Array.isArray(parsed.predictions)){
-      const valid=parsed.predictions.filter(p=>ruleIds.has(p.rule_id)&&p.text);
-      if(valid.length>0){
-        return valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n');
-      }
+    const r2=await fetch(TYPHOON_WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body,signal:options.signal||null});
+    if(r2.ok){
+      const d2=await r2.json();
+      const raw2=(d2.choices?.[0]?.message?.content||d2.content?.[0]?.text||'').trim();
+      if(raw2){ try{ const r=_parsePredictions(raw2); if(r) return r; }catch(_){} }
     }
   }catch(_){}
-  return raw; // fallback: แสดง raw text ถ้า JSON parse ไม่ได้
+  return raw; // final fallback: raw text ถ้า retry ยังไม่ได้ JSON
 }
 
 // ── Fallback renderer ──────────────────────────────────────────────────────
