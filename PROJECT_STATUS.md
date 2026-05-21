@@ -1,5 +1,5 @@
 # PROJECT STATUS — Horatad Ecosystem
-# อัปเดตทุก session close | Claude อ่านไฟล์นี้ก่อนเลือกงาน
+# อัปเดตทุก session close + ทุกครั้งที่ bump version | Claude อ่านไฟล์นี้ก่อนเลือกงาน
 # ภาพรวม architecture + data flow + vision → ECOSYSTEM.md
 
 ---
@@ -8,15 +8,16 @@
 **Version:** V3.3.11 | **URL:** horatad.com
 
 ### สถานะ
-- App ทำงานได้ครบ — natal + transit + V3 tab (3-panel: กฎ / Input / Output)
-- V3 tab: rule IDs (R001–R342) ✅ | natal/transit toggle ✅ | 3-panel ✅ | Typhoon [R_XXX] ✅
-- M3+M8 fallback chain ครบ V3.3.6 | UI batch V3.3.7–V3.3.9 | about/QR fix V3.3.10–V3.3.11
+- App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
+- M3+M8 fallback chain ครบ: Typhoon fail → throw → compose_local_prediction()
+- Capture: QR bundle local ✅ | toast บอก location ✅ (V3.3.11)
+- JULIAN import: ปุ่ม "ดาวน์โหลดข้อมูลสาธารณะ" ✅ (V3.3.8) — รอ data/julian_all.json พร้อม
 
 ### Next (Claude ทำได้)
-- (ไม่มี — รอ user actions ทั้งหมด)
+(ไม่มี — รอ user actions ทั้งหมด)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.6 บนมือถือ
+- [ ] [ทดลองใช้] ทดสอบ V3.3.11 บนมือถือ — capture QR, toast location, about page full-screen
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
@@ -31,12 +32,12 @@
 
 ### สถานะ
 - KB: 342 rules, 284 มี conditions[] (83%), rule_source + weight ✅
-- M8: compose_local_prediction() + tagged phrase cluster prompt ✅ V3.3.2
-- garbage input root causes แก้แล้ว 2/3 — เหลือ 57 MISMATCH rules รอ expert review
-- kb_reviewer.html: mobile-ready, patch system, merge, backup ✅
+- M3+M8: fallback chain ครบแล้ว (V3.3.6) — Typhoon fail JSON → throw → compose_local_prediction()
+- tagged phrase cluster prompt ✅ | Rule IDs R001–R342 ✅ | natal/transit toggle ✅
+- 57 MISMATCH rules รอ expert review — kb_reviewer.html mobile-ready ✅
 
 ### Next (Claude ทำได้)
-- [ ] M3 retry (รวมกับ HORATAD — ไฟล์เดียวกัน)
+(ไม่มี — รอ user review 57 MISMATCH rules ก่อน)
 
 ### Blocked (รอ user) — สำคัญที่สุด
 - [ ] [ทดลองใช้] ⭐ **รีวิว 57 MISMATCH rules** ผ่าน kb_reviewer.html
@@ -51,26 +52,29 @@
 `v3/kb.json` | `v3/kb_master.json` | `v3/interpretation.js` | `v3/typhoon.js`
 `tools/kb_reviewer.html` | `docs/BIBLE_MISSION.md`
 
+### Handoff ล่าสุด
+`handoffs/BIBLE_20260521_v4.md`
+
 ---
 
 ## JULIAN — Empirical Astro Search Engine 🟢 Automation running
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | CF D1 online | Records: 436/50,000 (รันทุก 6 ชั่วโมง)
-- Automation: ✅ 95 queries (15 category + 80 era 5-yr) | cron ทุก 6 ชม. | export → GitHub Release
+- Schema: ✅ | JD: ✅ | CF D1 online | Records: 436+/50,000 (รันทุก 6 ชั่วโมง)
+- Automation: ✅ 95 queries (15 category + 80 era 5-yr) | cron ทุก 6 ชม.
+- Export: ✅ D1 → `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
-- Export: ✅ D1 → GitHub Release ทุก run → URL คงที่ releases/latest/download/julian_all.json
-- Architecture: CF D1 (write) + GitHub Release (read) + IndexedDB (HORATAD local cache)
+- Astrotheme enrichment: ✅ เติม time_utc + lat/lng อัตโนมัติ
 
 ### Next (Claude ทำได้)
-- (ไม่มี — automation ครบแล้ว รอข้อมูลสะสม 5-7 วัน)
+(ไม่มี — automation ครบแล้ว รอข้อมูลสะสม 5-7 วัน)
 
 ### Blocked (รอ user)
-- (ไม่มี blocked tasks — automation รันเองได้ทั้งหมด)
+(ไม่มี — automation รันเองได้ทั้งหมด)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260521_v5.md`
+`handoffs/JULIAN_20260521_v6.md`
 
 ---
 
@@ -83,11 +87,7 @@
 - **Phase 3:** Content auto: BIBLE generate script → YouTube + Facebook weekly
 - **Phase 4:** Online course (สุริยยาตร์ unique) + Booking 1:1 consult
 
-### Next (Claude ทำได้ — เมื่อ HORATAD/BIBLE พร้อม)
-- [ ] LINE OA webhook CF Worker — รับวันเกิด → reply พยากรณ์ auto
-- [ ] TTS integration ใน HORATAD — Web Speech API (browser built-in)
-
-### Blocked (รอ user)
+### Prerequisite (รอ HORATAD + BIBLE พร้อมก่อน)
 - [ ] LINE OA account setup
 - [ ] ตัดสินใจ Phase เริ่มต้น (แนะนำ: LINE OA chatbot ก่อน)
 
@@ -98,18 +98,19 @@
 
 ## Quick Reference
 
-| Project | Code | ไฟล์หลัก | สถานะ |
+| Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD | script.js, v3/*, index.html | 🟡 Pre-launch V3.3.6 |
-| Wording Engine | BIBLE | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN | tools/julian_keygen.html, tools/julian_scraper.html, docs/JULIAN_MISSION.md | 🛠 Tools ready — รอ CF D1 |
-| Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision — รอ Phase 1 |
+| Horatad PWA | HORATAD V3.3.11 | script.js, v3/*, index.html | 🟡 Pre-launch |
+| Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
+| Empirical DB | JULIAN 436+/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 
 ---
+
 ## วิธีเริ่ม session ใหม่
 1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / PLATFORM**
-2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` (context)
+2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` ล่าสุด
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.11 | HORATAD UI batch + QR/capture fix | JULIAN automation ready*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.11 | HORATAD capture fix | BIBLE รอ MISMATCH review | JULIAN automation running*
