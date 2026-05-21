@@ -1,0 +1,276 @@
+# HORATAD ECOSYSTEM — Master Reference
+# อ่านไฟล์นี้เพื่อเข้าใจภาพรวมทั้งหมด ก่อนเริ่มงานใด ๆ
+# PROJECT_STATUS.md = task list รายวัน | ECOSYSTEM.md = architecture + vision
+
+---
+
+## ภาพรวมระบบ — 1 ประโยค
+
+> เครื่องพยากรณ์โหราศาสตร์สุริยยาตร์ที่คำนวณแม่นยำ (HORATAD) + อธิบายเป็นภาษาคน (BIBLE) + ยืนยันด้วยข้อมูลจริง (JULIAN) + กระจายถึงคนผ่านทุกช่องทาง (PLATFORM)
+
+---
+
+## Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        USER / PUBLIC                            │
+│           (แอป, LINE, YouTube, Facebook, Web, QR)               │
+└────────────┬────────────────────────────────────┬───────────────┘
+             │ input                               │ consume
+             ▼                                     ▼
+┌────────────────────────┐           ┌─────────────────────────────┐
+│       HORATAD          │           │         PLATFORM             │
+│  Thai Astrology PWA    │           │  Training + Chatbot + Content│
+│  ─────────────────     │           │  ─────────────────────────── │
+│  engine.js (สุริยยาตร์) │           │  LINE OA webhook             │
+│  natal + transit chart │           │  YouTube / Facebook content  │
+│  QR share              │           │  Online course + 1:1 consult │
+│  V3 tab (prediction)   │           │  TTS voice (Web Speech API)  │
+└────────┬───────────────┘           └──────────────┬──────────────┘
+         │ planets[10] + JD                          │ uses
+         │ (get_j, get_data)                         │
+         ▼                                           ▼
+┌────────────────────────┐           ┌─────────────────────────────┐
+│         BIBLE          │◄──────────┤         JULIAN               │
+│  Prediction Wording    │           │  Empirical Astro Database    │
+│  ─────────────────     │           │  ──────────────────────────  │
+│  kb.json (342 rules)   │ validate  │  master_key: JD→planets[10] │
+│  match_rules()         │ empirical │  internet: JD→person/event  │
+│  Typhoon LLM           │◄──────────│  empirical_p per rule        │
+│  prediction text       │           │  CF D1 + Worker API          │
+└────────────────────────┘           └─────────────────────────────┘
+```
+
+---
+
+## Data Flow — ข้อมูลไหลอย่างไร
+
+### 1. Natal Prediction (core flow)
+```
+user กรอก วัน/เดือน/ปี/เวลา/สถานที่
+  → HORATAD engine.js
+    → get_j(d,m,y_ce) = JD (integer)
+    → get_data(d,m,y_ce,h,min,lng) = sp[0..10]
+    → planets[10] = SU MO MA ME JU VE SA RA KE MR (degrees 0-360)
+  → BIBLE match_rules(planets)
+    → conditions[] match → rule list
+    → compose_prediction() → phrase clusters
+  → Typhoon LLM → prediction text (ภาษาไทย)
+  → แสดงผล / พูดออกเสียง / ส่งผ่าน LINE
+```
+
+### 2. Empirical Validation (JULIAN → BIBLE)
+```
+JULIAN internet table:
+  บุคคลสำคัญ (name, jd, type, tier, country)
+  ↓
+JULIAN master_key table:
+  planets[10] ณ วันเกิด
+  ↓
+BIBLE empirical_validator:
+  match_rules(planets) → rules hit/miss
+  → empirical_p = hits / (hits + miss) ต่อ rule
+  → อัปเดต kb.json: rule.empirical_p, empirical_n
+```
+
+### 3. PLATFORM Distribution (BIBLE → users)
+```
+HORATAD QR share → PLATFORM scan
+  → natal params → BIBLE → text
+  → Web Speech API.speak() → พูดพยากรณ์
+  → ถามคำถาม audience (conversational)
+
+LINE OA รับวันเกิดจาก user
+  → CF Worker webhook
+  → get_j + get_data (engine via HORATAD)
+  → BIBLE wording
+  → LINE reply auto 24/7
+```
+
+---
+
+## แต่ละ Project — บทบาทและ dependency
+
+### HORATAD — Foundation (ทุกอย่างพึ่ง engine นี้)
+- **หน้าที่:** คำนวณดวง + UI + QR + deploy (horatad.com)
+- **Core:** `engine.js` — สุริยยาตร์ integer arithmetic (ไม่มี sin/cos) — เร็วมาก
+- **Export สำคัญ:** `get_j()`, `get_data()` — BIBLE + JULIAN + PLATFORM ใช้ทั้งหมด
+- **Dependency:** ไม่มี (standalone)
+
+### BIBLE — Intelligence (prediction quality)
+- **หน้าที่:** 342 rules → keywords → LLM wording → prediction text
+- **Core:** `kb.json`, `match_rules()`, `compose_prediction()`, Typhoon API
+- **Dependency:** HORATAD engine (planets input) | JULIAN (empirical validation)
+- **Output:** prediction text → PLATFORM
+
+### JULIAN — Memory (empirical ground truth)
+- **หน้าที่:** เก็บ planet positions ล่วงหน้า + บุคคลสำคัญ → ยืนยัน BIBLE rules
+- **Core:** CF D1 (master_key + internet), CF Worker API
+- **Dependency:** HORATAD engine (generate master_key)
+- **Output:** empirical_p per rule → BIBLE quality score
+
+### PLATFORM — Distribution (reach users)
+- **หน้าที่:** กระจาย prediction ผ่านทุกช่องทาง — chatbot, video, course, consult
+- **Core:** LINE OA webhook, TTS, content automation
+- **Dependency:** HORATAD (chart) + BIBLE (wording) + JULIAN (personalized data)
+- **Goal:** 1 คนดูแลทั้งหมดด้วย automation
+
+---
+
+## Priority Framework — ลำดับงานเมื่อโปรเจคแข่งกัน
+
+```
+ระดับ 1 (CRITICAL):   งานที่บล็อค project อื่น
+  → HORATAD bug ที่ทำให้ engine ผิด → แก้ก่อนทุกอย่าง
+  → JULIAN schema change → กระทบ BIBLE + PLATFORM
+
+ระดับ 2 (HIGH):       User value โดยตรง
+  → BIBLE: prediction quality (rule review, wording)
+  → HORATAD: UX, deploy, mobile
+
+ระดับ 3 (MEDIUM):     Infrastructure + data
+  → JULIAN: CF D1 setup, import pipeline, data collection
+  → PLATFORM: chatbot, content tools
+
+ระดับ 4 (LOW):        Growth + expansion
+  → PLATFORM: training center, YouTube, course
+  → projects ใหม่ที่ยังไม่มี dependency
+```
+
+**กฎ: ถ้าไม่แน่ใจ → ทำ HORATAD/BIBLE ก่อนเสมอ** (foundation มาก่อน distribution)
+
+**กฎ backlog:** ก่อนทำงานใดใน backlog ถามตัวเอง:
+1. Assumption เดิมยังจริงอยู่ไหม?
+2. งานนี้ block งานอื่นไหม หรือถูก block โดยงานอื่น?
+3. Value ยังมีอยู่ไหม เทียบกับ effort?
+
+---
+
+## Roadmap — Phase ทั้งหมด
+
+### ✅ Phase 0 — Core Tools (เสร็จแล้ว)
+- HORATAD: natal + transit + V3 prediction tab
+- BIBLE: 342 rules, KB editor, LLM wording
+- JULIAN: keygen + scraper tools (local, no cloud yet)
+
+### 🔄 Phase 1 — Cloud + API (กำลังทำ)
+- JULIAN: CF D1 setup → import master_key (1700-2100) + internet records
+- JULIAN: CF Worker API `GET /julian?jd=XXX` → planets + persons
+- BIBLE: empirical_validator.html → validate rules ด้วยข้อมูลจริง
+
+### 🔲 Phase 2 — Chatbot (ถัดไป)
+- PLATFORM: LINE OA webhook → CF Worker → BIBLE → reply auto
+- Target: รับวันเกิด → ส่งพยากรณ์ ใน 3 วินาที
+
+### 🔲 Phase 3 — Voice + QR
+- PLATFORM: Web Speech API TTS → พูดพยากรณ์ใน browser
+- HORATAD QR → PLATFORM scan → predict → speak → interactive Q&A
+
+### 🔲 Phase 4 — Training Center + Content
+- PLATFORM: async course (สุริยยาตร์) + Calendly booking + 1:1 consult
+- Content: BIBLE weekly script → YouTube + Facebook schedule auto
+
+### 🔲 Phase 5+ — Scale
+- Multi-language support (EN prediction)
+- JULIAN: crowd-sourced data (opt-in human records)
+- Rating UI (👍/👎) → feedback loop → BIBLE quality improvement
+
+---
+
+## Technology Stack — ทุก tool ที่ใช้
+
+### Frontend / App
+| Component | Tech | หมายเหตุ |
+|---|---|---|
+| HORATAD PWA | Vanilla JS, no build | edit ตรง → push → GitHub Pages |
+| V3 modules | ES Module (v3/*.js) | engine.js, bible.js, typhoon.js |
+| Service Worker | Cache-first | offline support |
+| Deploy | GitHub Pages | auto deploy ทุก push to main |
+
+### Backend / Cloud
+| Component | Tech | หมายเหตุ |
+|---|---|---|
+| Astrology API | CF Worker (horatad-ai) | stateless, 30s limit |
+| Auth | CF Worker (horatad-auth) | PIN verify |
+| Database | CF D1 (SQLite edge) | JULIAN storage |
+| Chatbot webhook | CF Worker | LINE OA event handler |
+
+### AI / LLM
+| Component | Tech | หมายเหตุ |
+|---|---|---|
+| Thai LLM | Typhoon (opentyphoon.ai) | Thai-first, wording generation |
+| Fallback | Local template | offline prediction |
+| Empirical | JULIAN + BIBLE | ground-truth validation |
+
+### PLATFORM / Distribution
+| Component | Tech | หมายเหตุ |
+|---|---|---|
+| LINE OA chatbot | LINE Messaging API | ฟรี 200 msg/เดือน |
+| TTS | Web Speech API | browser built-in, ฟรี |
+| Content schedule | Meta Business Suite | Facebook + IG |
+| Booking | Calendly | ฟรี tier |
+| Online course | Gumroad / Notion | ต้นทุนต่ำ |
+| Video | OBS Studio | record + stream |
+
+### Developer Tools
+| Component | Tech |
+|---|---|
+| Import pipeline | `workers/julian_import.mjs` (Node.js) |
+| D1 deploy | `wrangler d1 execute` |
+| Worker deploy | `wrangler deploy` |
+| Data tools | `tools/julian_keygen.html`, `tools/julian_scraper.html`, `tools/hora_db_import.html` |
+
+---
+
+## Cross-Project Dependencies Map
+
+```
+HORATAD engine.js
+  ├── BIBLE (match_rules ใช้ planets)
+  ├── JULIAN (keygen ใช้ get_data)
+  └── PLATFORM (LINE webhook ใช้ get_j + get_data)
+
+BIBLE kb.json
+  ├── JULIAN (empirical validation → empirical_p)
+  └── PLATFORM (wording output → TTS / LINE reply)
+
+JULIAN D1
+  ├── BIBLE (query planets by JD, query persons for validation)
+  └── PLATFORM (personalized data สำหรับ chatbot)
+
+PLATFORM
+  └── consumes all above (ไม่มี project อื่น depend on PLATFORM)
+```
+
+---
+
+## ไฟล์ Navigation
+
+| ต้องการ | อ่านไฟล์ |
+|---|---|
+| ภาพรวม + architecture | `ECOSYSTEM.md` (ไฟล์นี้) |
+| งานที่ต้องทำวันนี้ | `PROJECT_STATUS.md` |
+| Claude instructions | `CLAUDE.md` |
+| HORATAD detail | `docs/HORATAD_MANUAL.md` + `handoffs/HORATAD_*.md` |
+| BIBLE detail | `docs/BIBLE_MISSION.md` + `handoffs/BIBLE_*.md` |
+| JULIAN detail | `docs/JULIAN_MISSION.md` + `handoffs/JULIAN_*.md` |
+| PLATFORM detail | `handoffs/JULIAN_20260521_v2.md` → section PLATFORM VISION |
+
+---
+
+## สำหรับ Claude — วิธีใช้ไฟล์นี้
+
+**เริ่ม session ใหม่:**
+1. อ่าน `ECOSYSTEM.md` (ไฟล์นี้) — เข้าใจ architecture
+2. อ่าน `PROJECT_STATUS.md` — ดู task ที่ต้องทำ
+3. อ่าน `handoffs/<PROJECT>_*.md` ล่าสุด — รับ context จาก session ก่อน
+4. เริ่มงานตาม Priority Framework
+
+**เมื่อโปรเจคแข่งกัน:** ใช้ Priority Framework ด้านบน
+
+**เมื่อสงสัย dependency:** ดู Cross-Project Dependencies Map
+
+---
+
+*สร้าง: 2026-05-21 | อัปเดตเมื่อมี project ใหม่หรือ architecture เปลี่ยน*

@@ -1,5 +1,6 @@
 # PROJECT STATUS — Horatad Ecosystem
 # อัปเดตทุก session close | Claude อ่านไฟล์นี้ก่อนเลือกงาน
+# ภาพรวม architecture + data flow + vision → ECOSYSTEM.md
 
 ---
 
@@ -105,8 +106,8 @@
 
 ---
 ## วิธีเริ่ม session ใหม่
-1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN**
-2. Claude อ่านไฟล์นี้ + `handoffs/<PROJECT>_*.md` ล่าสุด แล้วเริ่มงาน
+1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / PLATFORM**
+2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` (context)
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---

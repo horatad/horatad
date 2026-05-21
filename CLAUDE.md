@@ -5,15 +5,19 @@
 
 ---
 
-## 🗂️ Project Structure — 3 โครงการใน repo เดียว
+## 🗂️ Project Structure — หลายโครงการใน repo เดียว
 
-**อ่าน `PROJECT_STATUS.md` ก่อนทุก session — มีสถานะทั้ง 3 โครงการ 1 หน้า**
+**ลำดับการอ่านไฟล์ก่อนเริ่ม session:**
+1. `ECOSYSTEM.md` — architecture + data flow + vision รวม (อ่านเพื่อเข้าใจภาพรวม)
+2. `PROJECT_STATUS.md` — task list รายวัน (เลือกงานจากนี้)
+3. `handoffs/<PROJECT>_*.md` ล่าสุด — context จาก session ก่อน
 
 | Code | ชื่อเต็ม | หน้าที่ |
 |---|---|---|
 | **HORATAD** | Horatad PWA | App หลัก — launch, UX, deploy (horatad.com) |
 | **BIBLE** | Prediction Wording Engine | KB rules → keywords → LLM wordings |
 | **JULIAN** | Empirical Astro Database | Julian Day + planet data + บุคคลสำคัญ |
+| **PLATFORM** | Training + Chatbot + Content | กระจาย prediction ทุกช่องทาง (Phase 2+) |
 
 **Handoff files:** `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md`
 - ตัวอย่าง: `handoffs/HORATAD_20260521_v2.md`, `handoffs/BIBLE_20260522_v1.md`
