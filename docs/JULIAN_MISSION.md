@@ -50,10 +50,13 @@ CREATE TABLE internet (
   confidence      REAL,                    -- 0.0–1.0
   notes           TEXT
 );
-CREATE INDEX idx_internet_jd ON internet(jd);
-CREATE INDEX idx_internet_country ON internet(country);
-CREATE INDEX idx_internet_tier ON internet(tier);
+CREATE INDEX idx_internet_jd          ON internet(jd);
+CREATE INDEX idx_internet_country     ON internet(country);
+CREATE INDEX idx_internet_tier        ON internet(tier);
 CREATE INDEX idx_internet_source_type ON internet(source_type);
+CREATE INDEX idx_internet_confidence  ON internet(confidence DESC);
+-- UNIQUE index สำหรับ UPSERT dedup ใน julian_import.mjs
+CREATE UNIQUE INDEX idx_internet_jd_name ON internet(jd, name);
 ```
 **tier:** BIBLE ควร filter tier <= 2 สำหรับ empirical analysis  
 **source_type:** 'human' = คนท้องถิ่นให้ข้อมูล (เวลา/สถานที่แน่นอน) | 'internet' = scrape/import  
@@ -125,27 +128,47 @@ Master Key Table + Internet Table schema — ออกแบบแล้ว (ses
 ### ✅ M2 — Engine Export
 `get_j` export จาก engine.js — เพิ่มแล้ว (session 2026-05-21)
 
-### ✅ M3 — julian_keygen.html
-Browser tool สร้าง Master Key batch (JD range → planets[10]) → download CSV/JSONL
-- input: ช่วงปี CE, ลองจิจูด
-- output: `{jd, date_ce, planets[10]}` ต่อวัน
-- async generate + progress bar
+### ✅ M3 — julian_keygen.html + julian_keygen.mjs
+Browser tool + Node.js CLI สร้าง Master Key batch (JD range → planets[10]) → CSV
 
-### ✅ M4 — julian_scraper.html
-Browser tool ค้นหาบุคคล/เหตุการณ์ผ่าน Wikipedia + Wikidata → บันทึก Internet Table
-- Search EN/TH Wikipedia → auto-fetch Wikidata birth/death dates
-- Buffer persisted ใน localStorage
-- export JSONL (Internet Table format)
+**Browser:** `tools/julian_keygen.html`
+**Node.js CLI (ใหม่):** `workers/julian_keygen.mjs`
+```bash
+node workers/julian_keygen.mjs 1700 2100 > julian_mk_1700-2100.csv
+node workers/julian_keygen.mjs 2000 2026 > julian_mk_test.csv   # subset สำหรับทดสอบ
+```
+- import engine.js โดยตรง — ตรงกัน 100% กับ HORATAD
+- verify: Jan 1, 2000 → JD 730428 ✅
+
+### ✅ M4 — julian_scraper.html + julian_scraper.mjs + julian_sync.yml
+Browser tool + Node.js CLI + GitHub Actions cron ดึงข้อมูลบุคคลจาก Wikidata
+
+**Browser:** `tools/julian_scraper.html` (manual search)
+**Automation:** `workers/julian_scraper.mjs` + `.github/workflows/julian_sync.yml`
+- GitHub Actions รัน 02:00 UTC ทุกคืน — อิสระจาก Claude
+- ดึง Wikidata SPARQL: นักการเมือง, ผู้นำโลก, นักกีฬา, ดารา
+- หยุดอัตโนมัติเมื่อถึง 500 records
+- weekly empirical validation: `workers/julian_empirical.mjs` → auto-update kb.json
 
 ### 🔲 M5 — CF D1 Storage
 - สร้าง CF D1 database: 2 tables (master_key, internet)
 - CF Worker endpoint: `GET /julian?jd=730428` → `{planets, persons[]}`
-- **รอ user setup CF D1 + Worker**
+- **รอ user setup:**
+  ```bash
+  # 1. ตั้ง GitHub secrets: CF_API_TOKEN + CF_ACCOUNT_ID
+  # 2. สร้าง tables (1 คำสั่ง):
+  wrangler d1 execute julian --file=workers/julian_setup.sql --remote --yes
+  # 3. deploy Worker:
+  cd workers && wrangler deploy --config julian_wrangler.toml
+  # 4. import master_key:
+  node workers/julian_keygen.mjs 1700 2100 > julian_mk_1700-2100.csv
+  node workers/julian_import.mjs julian_mk_1700-2100.csv > import_mk.sql
+  wrangler d1 execute julian --file=import_mk.sql --remote --yes
+  ```
 
-### 🔲 M6 — Data Import Pipeline
-- import CSV → CF D1 master_key (73,000 rows สำหรับ 1900-2100)
-- import JSONL → CF D1 internet
-- upsert logic (ไม่ duplicate)
+### 🔲 M6 — Data Import Pipeline ✅ (พร้อมแล้ว — รอ M5)
+- `workers/julian_import.mjs` — CSV/JSONL → SQL (UPSERT dedup ด้วย UNIQUE(jd,name))
+- `workers/julian_setup.sql` — CREATE TABLE + all indices (พร้อมรัน)
 - **รอ M5**
 
 ### 🔲 M7 — BIBLE Integration
@@ -170,8 +193,18 @@ Browser tool ค้นหาบุคคล/เหตุการณ์ผ่า
 | ไฟล์ | หน้าที่ |
 |---|---|
 | `v3/engine.js` | get_j(), get_data() — exported แล้ว |
-| `tools/julian_keygen.html` | สร้าง Master Key batch |
-| `tools/julian_scraper.html` | ค้นหาบุคคล → Internet Table |
+| `tools/julian_keygen.html` | สร้าง Master Key batch (browser) |
+| `tools/julian_scraper.html` | ค้นหาบุคคล → Internet Table (browser) |
+| `workers/julian_keygen.mjs` | สร้าง Master Key batch (Node.js CLI) |
+| `workers/julian_scraper.mjs` | Wikidata SPARQL scraper (Node.js / CI) |
+| `workers/julian_empirical.mjs` | Empirical validator (Node.js / CI) |
+| `workers/julian_import.mjs` | CSV/JSONL → SQL สำหรับ D1 import |
+| `workers/julian_setup.sql` | CREATE TABLE + indices — รัน 1 ครั้ง |
+| `workers/julian_worker.js` | CF Worker API endpoint |
+| `workers/julian_wrangler.toml` | CF deploy config (database_id ตั้งแล้ว) |
+| `workers/julian_config.mjs` | SPARQL series + rate limit config |
+| `workers/julian_override.json` | rate_multiplier override |
+| `.github/workflows/julian_sync.yml` | Cron: daily scrape + weekly validation |
 | `docs/JULIAN_MISSION.md` | ไฟล์นี้ |
 
 ---
@@ -203,4 +236,4 @@ const jd = get_j(d, m, y_ce);
 ```
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | session 1*
+*อัปเดตล่าสุด: 2026-05-21 | session 3*

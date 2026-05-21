@@ -54,22 +54,29 @@
 
 ---
 
-## JULIAN — Empirical Astro Search Engine 🛠 Tools ready
+## JULIAN — Empirical Astro Search Engine 🛠 Automation ready
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE
 
 ### สถานะ
-- Schema: ✅ | JD format: ✅ get_j() internal | Storage: ยังไม่มี (รอ CF D1) | Records: 0
-- Tools: ✅ julian_keygen.html + julian_scraper.html | Mission docs: ✅ JULIAN_MISSION.md
+- Schema: ✅ (UNIQUE index แก้แล้ว) | JD: ✅ | Storage: รอ CF D1 setup | Records: 0
+- Tools (browser): ✅ julian_keygen.html + julian_scraper.html
+- Tools (Node.js): ✅ julian_keygen.mjs + julian_scraper.mjs + julian_empirical.mjs
+- Automation: ✅ julian_sync.yml (daily scrape + weekly validation)
+- CF D1 database_id: ✅ ตั้งใน wrangler.toml แล้ว
+- D1 setup SQL: ✅ workers/julian_setup.sql (พร้อมรัน)
 
 ### Next (Claude ทำได้)
-- [ ] empirical_validator.html — รอ D1 + data ≥100 records
+- (ไม่มีงาน — ทุกอย่างรอ CF D1 setup + secrets)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ keygen + scraper ในเบราว์เซอร์ (verify JD=730428 และ Wikipedia CORS)
-- [ ] [BLOCKED] CF D1 setup → deploy julian_worker → import CSV (ขั้นตอนใน handoff)
+- [ ] [BLOCKED] ตั้ง GitHub Secrets: CF_API_TOKEN + CF_ACCOUNT_ID
+- [ ] [BLOCKED] รัน: wrangler d1 execute julian --file=workers/julian_setup.sql --remote
+- [ ] [BLOCKED] รัน: cd workers && wrangler deploy --config julian_wrangler.toml
+- [ ] [BLOCKED] import master_key: node julian_keygen.mjs 1700 2100 > mk.csv → import → D1
+- [ ] [ทดลองใช้] ทดสอบ keygen + scraper ในเบราว์เซอร์
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260521_v2.md`
+`handoffs/JULIAN_20260521_v3.md`
 
 ---
 
@@ -111,4 +118,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | JULIAN handoff v2 | PLATFORM vision บันทึกแล้ว*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | JULIAN handoff v3 | JULIAN automation ready*
