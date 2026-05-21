@@ -3,81 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LLM Latency Ping — Horatad M0</title>
+<title>LLM Latency Decomposition — Horatad M0</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Sarabun',sans-serif;background:#0f1117;color:#e0e0e0;font-size:14px}
-h1{padding:14px 20px;background:#1a1d27;border-bottom:1px solid #2a2d3a;font-size:16px;color:#fff}
-h1 a{color:#4f6ef7;font-size:12px;margin-left:10px;text-decoration:none}
-h1 a:hover{text-decoration:underline}
+body{font-family:'Sarabun',sans-serif;background:#0f1117;color:#e0e0e0;font-size:14px;line-height:1.5}
+h1{padding:12px 20px;background:#1a1d27;border-bottom:1px solid #2a2d3a;font-size:16px;color:#fff;display:flex;align-items:center;gap:12px}
+h1 a{color:#4f6ef7;font-size:12px;text-decoration:none}
 
-/* Keys panel */
-.keys{background:#13151f;border-bottom:1px solid #2a2d3a;padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.keys{background:#13151f;border-bottom:1px solid #2a2d3a;padding:10px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
 .keys label{font-size:11px;color:#888;display:block;margin-bottom:3px}
 .keys input{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;width:280px;font-size:12px;font-family:monospace}
 .tag{font-size:10px;color:#4caf87;margin-left:4px}
 
-/* LLM cards grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:16px 20px}
+.ctrl{padding:8px 20px;background:#13151f;border-bottom:1px solid #1e2130;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12px}
+.ctrl label{color:#888}
+.ctrl input[type=text]{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:4px 8px;border-radius:4px;width:400px;font-size:12px}
+.ctrl input[type=number]{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:4px 6px;border-radius:4px;width:72px;font-size:12px}
+
+.legend{padding:6px 20px;background:#0f1117;border-bottom:1px solid #1a1d27;display:flex;gap:16px;font-size:11px;color:#666}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:2px;display:inline-block}
+.d-sys{background:#555}
+.d-pre{background:#4f6ef7}
+.d-dec{background:#4caf87}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;padding:16px 20px}
+
 .card{background:#1a1d27;border:1px solid #2a2d3a;border-radius:8px;overflow:hidden;transition:border-color .2s}
 .card.running{border-color:#4f6ef7}
 .card.ok{border-color:#4caf87}
 .card.err{border-color:#e05555}
-.card-head{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2a2d3a}
+.card-head{padding:10px 14px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #1e2130}
 .card-name{font-weight:700;font-size:13px}
-.card-model{font-size:10px;color:#666;margin-top:2px}
-.card-body{padding:12px 14px}
-.metric{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
-.metric .k{color:#666}
-.metric .v{font-weight:700}
-.v-ok{color:#4caf87}
-.v-err{color:#e05555}
-.v-warn{color:#e0b04f}
-.v-dim{color:#555}
-.preview{background:#0f1117;border-radius:4px;padding:8px;font-size:11px;color:#aaa;line-height:1.5;min-height:40px;margin-top:4px;word-break:break-word}
-.status-dot{width:8px;height:8px;border-radius:50%;background:#333;flex-shrink:0}
+.card-model{font-size:10px;color:#555;margin-top:1px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#333;flex-shrink:0;margin-top:4px}
 .dot-idle{background:#333}
-.dot-run{background:#4f6ef7;animation:pulse .8s infinite}
+.dot-run{background:#4f6ef7;animation:pulse .7s infinite}
 .dot-ok{background:#4caf87}
 .dot-err{background:#e05555}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* Add LLM panel */
-.add-panel{padding:0 20px 20px}
-.add-panel h3{font-size:13px;color:#888;margin-bottom:8px}
-.add-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
-.add-row input,.add-row select{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:6px 8px;border-radius:4px;font-size:12px}
-.add-row input.sm{width:130px}
-.add-row input.md{width:200px}
-.add-row input.lg{width:280px}
-.add-row select{width:160px}
+.card-body{padding:12px 14px}
+
+/* Decomposition bar */
+.dbar-wrap{margin-bottom:10px}
+.dbar-label{font-size:10px;color:#555;margin-bottom:4px;display:flex;justify-content:space-between}
+.dbar{height:16px;background:#0f1117;border-radius:4px;overflow:hidden;display:flex;position:relative}
+.dbar-seg{height:100%;transition:width .4s;position:relative;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.7);overflow:hidden;white-space:nowrap}
+.seg-sys{background:#3a3f55}
+.seg-pre{background:#2d3f8a}
+.seg-dec{background:#1e5c3a}
+.seg-unk{background:#2a2d3a}
+
+/* Metrics grid */
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-bottom:8px}
+.m-row{display:flex;justify-content:space-between;font-size:11px}
+.m-key{color:#555}
+.m-val{font-weight:700}
+.v-ok{color:#4caf87}
+.v-blue{color:#4f6ef7}
+.v-warn{color:#e0b04f}
+.v-err{color:#e05555}
+.v-dim{color:#444}
+
+.divider{height:1px;background:#1e2130;margin:8px 0}
+
+.preview{background:#0f1117;border-radius:4px;padding:7px 9px;font-size:11px;color:#888;line-height:1.5;min-height:32px;word-break:break-word}
+
+/* Mode B strip */
+.modeb{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:#0f1117;border-radius:4px;margin-top:6px;font-size:11px}
+.modeb .k{color:#555}
+.modeb .v{font-weight:700;color:#e0b04f}
+
+/* Add LLM */
+.add-panel{padding:0 20px 24px}
+.add-panel h3{font-size:12px;color:#666;margin-bottom:7px;margin-top:4px}
+.add-row{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end}
+.add-row input,.add-row select{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;font-size:12px}
 
 /* Buttons */
 .btn{padding:7px 16px;border-radius:5px;border:none;cursor:pointer;font-size:13px;font-weight:600}
-.btn-ping{background:#4f6ef7;color:#fff}
-.btn-ping:hover{opacity:.85}
+.btn-run{background:#4f6ef7;color:#fff}
+.btn-run:hover{opacity:.85}
+.btn-run:disabled{opacity:.4;cursor:not-allowed}
 .btn-sm{padding:5px 10px;font-size:11px;background:#2a2d3a;color:#bbb;border-radius:4px;border:none;cursor:pointer}
 .btn-sm:hover{background:#333647}
-.btn-del{background:#3a1a1a;color:#e05555;padding:4px 8px;border-radius:4px;border:none;cursor:pointer;font-size:11px}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* Controls bar */
-.ctrl{padding:8px 20px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #1e2130}
-.ctrl label{font-size:11px;color:#888}
-.ctrl input[type=number]{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:4px 6px;border-radius:4px;width:70px;font-size:12px}
-
-/* Question */
-.q-bar{padding:8px 20px;background:#13151f;border-bottom:1px solid #1e2130;font-size:12px;color:#666}
-.q-bar span{color:#ccc}
+.btn-del{background:none;border:none;color:#e05555;cursor:pointer;font-size:11px;padding:2px 4px}
 </style>
 </head>
 <body>
 
-<h1>⚡ LLM Latency Ping
+<h1>
+  ⚡ LLM Latency Decomposition
   <a href="m0_hallucination_test.html">← Hallucination Test</a>
 </h1>
 
-<div class="keys" id="keysPanel">
+<div class="keys">
   <div>
     <label>Gemini API Key <span class="tag" id="tag-g"></span></label>
     <input id="keyGemini" type="password" placeholder="AIzaSy..." oninput="saveKeys()">
@@ -86,261 +107,399 @@ h1 a:hover{text-decoration:underline}
     <label>Groq API Key <span class="tag" id="tag-r"></span></label>
     <input id="keyGroq" type="password" placeholder="gsk_..." oninput="saveKeys()">
   </div>
-  <button class="btn btn-ping" id="btnPing" onclick="pingAll()" style="height:32px">⚡ Ping All</button>
+  <button class="btn btn-run" id="btnPing" onclick="pingAll()">⚡ Run Decomposition</button>
   <button class="btn-sm" onclick="forgetKeys()" style="color:#e05555">🗑 Forget Keys</button>
 </div>
 
 <div class="ctrl">
-  <label>Timeout (ms):</label>
-  <input type="number" id="timeoutMs" value="15000" min="3000" max="60000" step="1000">
-  <label style="margin-left:12px">คำถาม ping:</label>
-  <input type="text" id="pingQ" value="ดาวโคจรเร็วกว่าปกติ เรียกว่าอะไรในโหราศาสตร์ไทยสุริยยาตร์? (ตอบคำเดียว)" style="background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:4px 8px;border-radius:4px;font-size:12px;width:420px">
+  <label>คำถาม:</label>
+  <input type="text" id="pingQ" value="ดาวโคจรเร็วกว่าปกติ เรียกว่าอะไรในโหราศาสตร์ไทย ตอบคำเดียว">
+  <label>Timeout:</label>
+  <input type="number" id="timeoutMs" value="20000" min="3000" max="60000" step="1000">
+  <span style="color:#555">ms</span>
 </div>
 
-<div class="q-bar">คำถาม: <span id="qDisplay">ดาวโคจรเร็วกว่าปกติ เรียกว่าอะไร?</span> &nbsp;|&nbsp; เฉลย: <span style="color:#6c9">เสริด</span></div>
+<div class="legend">
+  <span><span class="dot d-sys"></span> Systematic (network + queue)</span>
+  <span><span class="dot d-pre"></span> Prefill / Interpret (estimated)</span>
+  <span><span class="dot d-dec"></span> Decode / Respond</span>
+  <span style="margin-left:auto;color:#444">วิธีวัด: streaming TTFB = network+prefill | Mode B (max_tokens=1) = isolate prefill | Decode = Total − TTFB</span>
+</div>
 
 <div class="grid" id="grid"></div>
 
 <div class="add-panel">
-  <h3>+ เพิ่ม LLM</h3>
+  <h3>+ เพิ่ม LLM (OpenAI-compatible)</h3>
   <div class="add-row">
-    <input class="sm" id="addName" placeholder="ชื่อ (เช่น GPT-4o)">
+    <input style="width:130px" id="addName" placeholder="ชื่อ">
+    <input style="width:260px" id="addUrl" placeholder="Endpoint URL">
+    <input style="width:180px" id="addModel" placeholder="model name">
     <select id="addAuth">
       <option value="bearer">Authorization: Bearer</option>
-      <option value="apikey">apikey: (iApp)</option>
+      <option value="apikey">apikey: (iApp style)</option>
       <option value="none">ไม่ต้อง key</option>
     </select>
-    <input class="lg" id="addKey" placeholder="API Key (ถ้ามี)">
-    <input class="lg" id="addUrl" placeholder="Endpoint URL">
-    <input class="md" id="addModel" placeholder="model name">
-    <button class="btn btn-sm" onclick="addLLM()" style="background:#1e3a2a;color:#4caf87">+ Add</button>
+    <input style="width:240px" id="addKey" placeholder="API Key (ถ้ามี)" type="password">
+    <button class="btn-sm" onclick="addLLM()" style="background:#1e3a2a;color:#4caf87">+ Add</button>
   </div>
 </div>
 
 <script>
-const SYSTEM = 'คุณคือผู้เชี่ยวชาญโหราศาสตร์ไทย ตอบสั้นมากที่สุด';
+// ─────────────────────────────────────────────────────────────────────────────
+// Config
 
-// ── Built-in LLM configs ───────────────────────────────────────────────────
+const SYSTEM = 'คุณคือผู้เชี่ยวชาญโหราศาสตร์ไทย ตอบสั้นที่สุด';
+const MAX_TOKENS_FULL = 80;
+const MAX_TOKENS_PREFILL = 1; // Mode B: isolate prefill
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Built-in LLMs
+
 const BUILTIN = [
   {
-    id:'gemini-flash', name:'Gemini 2.0 Flash', model:'gemini-2.0-flash',
-    color:'#4285f4', type:'gemini',
-    url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
-    authType:'query-key', keyRef:'g',
+    id:'gemini-20-flash', name:'Gemini 2.0 Flash', model:'gemini-2.0-flash',
+    color:'#4285f4', type:'gemini', keyRef:'g',
+    baseUrl:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash',
   },
   {
     id:'gemini-15-flash', name:'Gemini 1.5 Flash', model:'gemini-1.5-flash',
-    color:'#34a853', type:'gemini',
-    url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
-    authType:'query-key', keyRef:'g',
+    color:'#34a853', type:'gemini', keyRef:'g',
+    baseUrl:'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash',
   },
   {
     id:'groq-llama33', name:'Groq LLaMA 3.3 70B', model:'llama-3.3-70b-versatile',
-    color:'#9b59b6', type:'openai',
-    url:'https://api.groq.com/openai/v1/chat/completions',
-    authType:'bearer', keyRef:'r',
+    color:'#9b59b6', type:'openai', keyRef:'r',
+    baseUrl:'https://api.groq.com/openai/v1/chat/completions',
   },
   {
-    id:'groq-llama31', name:'Groq LLaMA 3.1 8B', model:'llama-3.1-8b-instant',
-    color:'#8e44ad', type:'openai',
-    url:'https://api.groq.com/openai/v1/chat/completions',
-    authType:'bearer', keyRef:'r',
+    id:'groq-llama31-8b', name:'Groq LLaMA 3.1 8B', model:'llama-3.1-8b-instant',
+    color:'#8e44ad', type:'openai', keyRef:'r',
+    baseUrl:'https://api.groq.com/openai/v1/chat/completions',
   },
   {
     id:'groq-gemma2', name:'Groq Gemma2 9B', model:'gemma2-9b-it',
-    color:'#6c3483', type:'openai',
-    url:'https://api.groq.com/openai/v1/chat/completions',
-    authType:'bearer', keyRef:'r',
+    color:'#6c3483', type:'openai', keyRef:'r',
+    baseUrl:'https://api.groq.com/openai/v1/chat/completions',
   },
   {
     id:'typhoon-cf', name:'Typhoon v2.5 30B', model:'typhoon-v2.5-30b-a3b-instruct',
-    color:'#e74c3c', type:'openai',
-    url:'https://horatad-ai.uchujaro5.workers.dev',
-    authType:'none', keyRef:null,
+    color:'#e74c3c', type:'openai', keyRef:null,
+    baseUrl:'https://horatad-ai.uchujaro5.workers.dev',
   },
 ];
 
-// Dynamic LLMs added by user
 let customLLMs = [];
-
 function getLLMs(){ return [...BUILTIN, ...customLLMs]; }
-function getKey(ref){ return ref==='g' ? document.getElementById('keyGemini').value.trim() : ref==='r' ? document.getElementById('keyGroq').value.trim() : ''; }
+function getKey(ref){ return ref==='g'?document.getElementById('keyGemini').value.trim():ref==='r'?document.getElementById('keyGroq').value.trim():''; }
 
-// ── Render cards ──────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Body builders
+
+function buildHeaders(llm){
+  const h={'Content-Type':'application/json'};
+  const authType = llm.authType||'bearer';
+  const key = llm._key || getKey(llm.keyRef);
+  if(authType==='bearer' && key) h['Authorization']='Bearer '+key;
+  if(authType==='apikey' && key) h['apikey']=key;
+  return h;
+}
+
+function buildOpenAIBody(llm, question, maxTokens, stream){
+  return JSON.stringify({
+    model: llm.model,
+    messages:[{role:'system',content:SYSTEM},{role:'user',content:question}],
+    max_tokens: maxTokens,
+    temperature: 0,
+    stream,
+  });
+}
+
+function buildGeminiBody(question, maxTokens){
+  return JSON.stringify({
+    system_instruction:{parts:[{text:SYSTEM}]},
+    contents:[{role:'user',parts:[{text:question}]}],
+    generationConfig:{maxOutputTokens:maxTokens, temperature:0},
+  });
+}
+
+function buildGeminiStreamBody(question, maxTokens){
+  return buildGeminiBody(question, maxTokens);
+}
+
+function getUrl(llm, stream){
+  if(llm.type==='gemini'){
+    const key = llm._key || getKey(llm.keyRef);
+    const action = stream ? 'streamGenerateContent' : 'generateContent';
+    const sse = stream ? '&alt=sse' : '';
+    return `${llm.baseUrl}:${action}?key=${encodeURIComponent(key||'')}${sse}`;
+  }
+  return llm.baseUrl;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Mode B: max_tokens=1  → prefill + network, no decode
+
+async function runModeB(llm, question, timeout){
+  const t0 = Date.now();
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), timeout);
+  try{
+    const url = getUrl(llm, false);
+    const body = llm.type==='gemini'
+      ? buildGeminiBody(question, MAX_TOKENS_PREFILL)
+      : buildOpenAIBody(llm, question, MAX_TOKENS_PREFILL, false);
+    const r = await fetch(url,{method:'POST',headers:buildHeaders(llm),body,signal:ctrl.signal});
+    clearTimeout(timer);
+    const ms = Date.now()-t0;
+    if(!r.ok) return {ms, err:`HTTP ${r.status}`};
+    return {ms};
+  }catch(e){
+    clearTimeout(timer);
+    return {ms:Date.now()-t0, err:e.name==='AbortError'?'TIMEOUT':e.message};
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Mode C: streaming → TTFB (first token) + tokens/sec + decode time
+
+async function runModeC(llm, question, timeout){
+  const t0 = Date.now();
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), timeout);
+
+  try{
+    const url = getUrl(llm, true);
+    const body = llm.type==='gemini'
+      ? buildGeminiStreamBody(question, MAX_TOKENS_FULL)
+      : buildOpenAIBody(llm, question, MAX_TOKENS_FULL, true);
+
+    const r = await fetch(url,{method:'POST',headers:buildHeaders(llm),body,signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!r.ok){
+      const txt = await r.text().catch(()=>'');
+      return {err:`HTTP ${r.status}: ${txt.slice(0,100)}`};
+    }
+
+    const reader = r.body.getReader();
+    const dec = new TextDecoder();
+    let firstTokenMs = null;
+    let fullText = '';
+    let buf = '';
+
+    while(true){
+      const {done, value} = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, {stream:true});
+
+      // Parse SSE lines
+      const lines = buf.split('\n');
+      buf = lines.pop(); // keep incomplete line
+
+      for(const line of lines){
+        const trimmed = line.trim();
+        if(!trimmed || trimmed==='data: [DONE]') continue;
+        if(!trimmed.startsWith('data: ')) continue;
+        try{
+          const json = JSON.parse(trimmed.slice(6));
+          // OpenAI format
+          const delta = json.choices?.[0]?.delta?.content;
+          // Gemini SSE format
+          const geminiText = json.candidates?.[0]?.content?.parts?.[0]?.text;
+          const tok = delta ?? geminiText ?? '';
+          if(tok){
+            if(firstTokenMs===null) firstTokenMs = Date.now()-t0;
+            fullText += tok;
+          }
+        }catch{}
+      }
+    }
+
+    const totalMs = Date.now()-t0;
+    firstTokenMs = firstTokenMs ?? totalMs;
+    const decodeMs = Math.max(0, totalMs - firstTokenMs);
+    // rough token estimate: Thai chars ≈ 1.5 per token, ASCII ≈ 3-4 chars per token
+    const estTokens = Math.max(1, Math.round(fullText.length / 3));
+    const tokPerSec = decodeMs > 50 ? Math.round(estTokens / (decodeMs/1000)) : 0;
+
+    return {firstTokenMs, decodeMs, totalMs, fullText, estTokens, tokPerSec};
+
+  }catch(e){
+    clearTimeout(timer);
+    return {err:e.name==='AbortError'?`TIMEOUT >${timeout}ms`:e.message};
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Render
+
 function renderGrid(){
   const g = document.getElementById('grid');
   g.innerHTML = '';
   for(const llm of getLLMs()){
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.id = 'card-'+llm.id;
-    const isCustom = !!llm._custom;
-    card.innerHTML = `
-      <div class="card-head">
-        <div>
-          <div class="card-name" style="color:${llm.color}">${llm.name}${isCustom ? ' <button class="btn-del" onclick="removeLLM(\''+llm.id+'\')">✕</button>' : ''}</div>
-          <div class="card-model">${llm.model}</div>
-        </div>
-        <span class="status-dot dot-idle" id="dot-${llm.id}"></span>
-      </div>
-      <div class="card-body">
-        <div class="metric"><span class="k">Status</span><span class="v v-dim" id="st-${llm.id}">—</span></div>
-        <div class="metric"><span class="k">TTFB</span><span class="v v-dim" id="ttfb-${llm.id}">—</span></div>
-        <div class="metric"><span class="k">Total</span><span class="v v-dim" id="ms-${llm.id}">—</span></div>
-        <div class="metric"><span class="k">Chars</span><span class="v v-dim" id="ch-${llm.id}">—</span></div>
-        <div class="preview" id="prev-${llm.id}">รอ ping…</div>
-      </div>`;
-    g.appendChild(card);
+    const c = document.createElement('div');
+    c.className='card'; c.id='card-'+llm.id;
+    const delBtn = llm._custom ? `<button class="btn-del" onclick="removeLLM('${llm.id}')">✕</button>` : '';
+    c.innerHTML=`
+<div class="card-head">
+  <div>
+    <div class="card-name" style="color:${llm.color}">${llm.name} ${delBtn}</div>
+    <div class="card-model">${llm.model}</div>
+  </div>
+  <span class="status-dot dot-idle" id="dot-${llm.id}"></span>
+</div>
+<div class="card-body">
+  <div class="dbar-wrap">
+    <div class="dbar-label">
+      <span>Latency breakdown</span>
+      <span id="bar-total-${llm.id}" style="color:#555">—</span>
+    </div>
+    <div class="dbar" id="bar-${llm.id}">
+      <div class="dbar-seg seg-unk" style="width:100%" id="bar-unk-${llm.id}">รอ…</div>
+      <div class="dbar-seg seg-sys" style="width:0" id="bar-sys-${llm.id}"></div>
+      <div class="dbar-seg seg-pre" style="width:0" id="bar-pre-${llm.id}"></div>
+      <div class="dbar-seg seg-dec" style="width:0" id="bar-dec-${llm.id}"></div>
+    </div>
+  </div>
+  <div class="metrics">
+    <div class="m-row"><span class="m-key">🔵 TTFB (1st token)</span><span class="m-val v-dim" id="m-ttfb-${llm.id}">—</span></div>
+    <div class="m-row"><span class="m-key">🟢 Decode time</span><span class="m-val v-dim" id="m-dec-${llm.id}">—</span></div>
+    <div class="m-row"><span class="m-key">⏱ Total</span><span class="m-val v-dim" id="m-total-${llm.id}">—</span></div>
+    <div class="m-row"><span class="m-key">🚀 Speed</span><span class="m-val v-dim" id="m-spd-${llm.id}">—</span></div>
+    <div class="m-row"><span class="m-key">📝 Chars/~Tokens</span><span class="m-val v-dim" id="m-chars-${llm.id}">—</span></div>
+    <div class="m-row"><span class="m-key">Status</span><span class="m-val v-dim" id="m-st-${llm.id}">—</span></div>
+  </div>
+  <div class="modeb">
+    <span class="k">🟡 Mode B (max_tokens=1): network+prefill only</span>
+    <span class="v" id="modeb-${llm.id}">—</span>
+  </div>
+  <div class="divider"></div>
+  <div class="preview" id="prev-${llm.id}">กด ⚡ Run เพื่อทดสอบ</div>
+</div>`;
+    g.appendChild(c);
   }
 }
 
-function setDot(id, cls){ document.getElementById('dot-'+id).className='status-dot '+cls; }
-function setCard(id, cls){ const c=document.getElementById('card-'+id); if(c) c.className='card '+cls; }
-function setMetric(id, field, val, cls=''){
-  const el=document.getElementById(field+'-'+id);
-  if(el){ el.textContent=val; if(cls) el.className='v '+cls; }
-}
-function setPreview(id, txt){ const el=document.getElementById('prev-'+id); if(el) el.textContent=txt; }
+function setDot(id,cls){ const e=document.getElementById('dot-'+id); if(e) e.className='status-dot '+cls; }
+function setCard(id,cls){ const e=document.getElementById('card-'+id); if(e) e.className='card '+cls; }
+function $m(id,field,val,cls){ const e=document.getElementById('m-'+field+'-'+id); if(e){e.textContent=val; if(cls) e.className='m-val '+cls;} }
+function $prev(id,txt){ const e=document.getElementById('prev-'+id); if(e) e.textContent=txt.slice(0,200); }
+function $modeb(id,txt,cls){ const e=document.getElementById('modeb-'+id); if(e){e.textContent=txt; if(cls) e.className='v '+cls;} }
 
-// ── Fetch helpers ─────────────────────────────────────────────────────────
-function buildBody(llm, question){
-  const msg = [
-    {role:'system', content:SYSTEM},
-    {role:'user', content:question},
-  ];
-  if(llm.type==='gemini'){
-    return JSON.stringify({
-      system_instruction:{parts:[{text:SYSTEM}]},
-      contents:[{role:'user',parts:[{text:question}]}],
-      generationConfig:{maxOutputTokens:100,temperature:0},
-    });
-  }
-  return JSON.stringify({model:llm.model, messages:msg, max_tokens:100, temperature:0});
-}
+function renderBar(id, ttfbMs, decodeMs, modeBms, totalMs){
+  // Estimate: systematic ≈ Mode B minus prefill estimate
+  // prefill estimate ≈ (TTFB - modeBms) if TTFB > modeB, else min value
+  // We approximate: systematic ≈ min(ttfbMs * 0.2, modeBms * 0.3) — network portion
+  // prefill ≈ ttfbMs - systematic
+  // decode ≈ decodeMs
 
-function buildHeaders(llm){
-  const h={'Content-Type':'application/json'};
-  if(llm.authType==='bearer'){
-    const k=llm._key||getKey(llm.keyRef);
-    if(k) h['Authorization']='Bearer '+k;
-  } else if(llm.authType==='apikey'){
-    const k=llm._key||getKey(llm.keyRef);
-    if(k) h['apikey']=k;
-  }
-  return h;
-}
+  const total = totalMs || (ttfbMs + decodeMs);
+  if(!total){ return; }
 
-function buildUrl(llm){
-  if(llm.type==='gemini'){
-    const k=llm._key||getKey(llm.keyRef);
-    return llm.url+'?key='+encodeURIComponent(k||'');
-  }
-  return llm.url;
+  // Best estimate for systematic (network): assume ~15% of TTFB for same-region, or use Mode B delta
+  const sysEst   = Math.round(Math.min(ttfbMs * 0.15, 80)); // rough: ≤80ms
+  const preEst   = ttfbMs - sysEst;
+  const decEst   = decodeMs;
+
+  const pSys = (sysEst / total * 100).toFixed(1);
+  const pPre = (preEst / total * 100).toFixed(1);
+  const pDec = (decEst / total * 100).toFixed(1);
+
+  document.getElementById('bar-unk-'+id).style.width='0';
+  const bs = document.getElementById('bar-sys-'+id);
+  const bp = document.getElementById('bar-pre-'+id);
+  const bd = document.getElementById('bar-dec-'+id);
+  if(bs) bs.style.width=pSys+'%';
+  if(bp){ bp.style.width=pPre+'%'; bp.textContent=pPre>8?`${preEst}ms`:''; }
+  if(bd){ bd.style.width=pDec+'%'; bd.textContent=pDec>8?`${decEst}ms`:''; }
+
+  const bTotal = document.getElementById('bar-total-'+id);
+  if(bTotal) bTotal.textContent=`${total}ms total`;
 }
 
-function extractText(llm, d){
-  if(llm.type==='gemini') return d?.candidates?.[0]?.content?.parts?.[0]?.text||'';
-  return d?.choices?.[0]?.message?.content||'';
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Main ping
 
-// ── Ping one LLM ──────────────────────────────────────────────────────────
 async function pingOne(llm){
   const q = document.getElementById('pingQ').value.trim();
-  const timeout = parseInt(document.getElementById('timeoutMs').value)||15000;
+  const timeout = parseInt(document.getElementById('timeoutMs').value)||20000;
 
   setCard(llm.id,'running'); setDot(llm.id,'dot-run');
-  setMetric(llm.id,'st','ส่ง…','v-dim');
-  setMetric(llm.id,'ttfb','—','v-dim');
-  setMetric(llm.id,'ms','—','v-dim');
-  setMetric(llm.id,'ch','—','v-dim');
-  setPreview(llm.id,'กำลังรอ…');
+  $m(llm.id,'st','กำลังทดสอบ…','v-dim');
+  $prev(llm.id,'กำลังส่ง stream…');
+  document.getElementById('bar-unk-'+llm.id).style.width='100%';
+  document.getElementById('bar-unk-'+llm.id).textContent='รอ…';
+  ['bar-sys-','bar-pre-','bar-dec-'].forEach(p=>{ const e=document.getElementById(p+llm.id); if(e){e.style.width='0';e.textContent='';} });
 
-  const t0=Date.now();
-  const ctrl=new AbortController();
-  const timer=setTimeout(()=>ctrl.abort(),timeout);
+  // Run Mode B and Mode C in parallel
+  const [b, c] = await Promise.all([
+    runModeB(llm, q, timeout),
+    runModeC(llm, q, timeout),
+  ]);
 
-  try{
-    const url=buildUrl(llm);
-    const r=await fetch(url,{
-      method:'POST',
-      headers:buildHeaders(llm),
-      body:buildBody(llm,q),
-      signal:ctrl.signal,
-    });
-    const ttfb=Date.now()-t0;
-    clearTimeout(timer);
+  // Mode B result
+  if(b.err) $modeb(llm.id, b.err, 'v-err');
+  else      $modeb(llm.id, b.ms+'ms', 'v-warn');
 
-    if(!r.ok){
-      const txt=await r.text().catch(()=>'');
-      const errPrev = txt.slice(0,120);
-      setCard(llm.id,'err'); setDot(llm.id,'dot-err');
-      setMetric(llm.id,'st',`HTTP ${r.status}`,'v-err');
-      setMetric(llm.id,'ttfb',ttfb+'ms');
-      setPreview(llm.id, errPrev||'(ไม่มี body)');
-      return;
-    }
-
-    const d=await r.json();
-    const total=Date.now()-t0;
-    clearTimeout(timer);
-
-    const text=extractText(llm,d);
-    setCard(llm.id,'ok'); setDot(llm.id,'dot-ok');
-    setMetric(llm.id,'st','200 OK','v-ok');
-    setMetric(llm.id,'ttfb',ttfb+'ms','v-ok');
-    setMetric(llm.id,'ms',total+'ms','v-ok');
-    setMetric(llm.id,'ch',text.length+' chars');
-    setPreview(llm.id,text||'(ไม่มี text)');
-
-  }catch(e){
-    clearTimeout(timer);
-    const isTimeout=e.name==='AbortError';
+  // Mode C result
+  if(c.err){
     setCard(llm.id,'err'); setDot(llm.id,'dot-err');
-    setMetric(llm.id,'st',isTimeout?'TIMEOUT':'NETWORK ERR','v-err');
-    setMetric(llm.id,'ttfb',(Date.now()-t0)+'ms');
-    setPreview(llm.id, isTimeout?`Timeout >${timeout}ms`:e.message);
+    $m(llm.id,'st', c.err, 'v-err');
+    $prev(llm.id, c.err);
+    document.getElementById('bar-unk-'+llm.id).textContent='ERROR';
+    return;
   }
+
+  setCard(llm.id,'ok'); setDot(llm.id,'dot-ok');
+  $m(llm.id,'st',  '200 OK',                    'v-ok');
+  $m(llm.id,'ttfb',c.firstTokenMs+'ms',          'v-blue');
+  $m(llm.id,'dec', c.decodeMs+'ms',              'v-ok');
+  $m(llm.id,'total',c.totalMs+'ms',              'v-ok');
+  $m(llm.id,'spd', c.tokPerSec ? c.tokPerSec+' tok/s' : 'N/A');
+  $m(llm.id,'chars',`${c.fullText.length} / ~${c.estTokens} tok`);
+
+  renderBar(llm.id, c.firstTokenMs, c.decodeMs, b.ms, c.totalMs);
+  $prev(llm.id, c.fullText || '(ไม่มี text)');
 }
 
-// ── Ping all ──────────────────────────────────────────────────────────────
 async function pingAll(){
-  document.getElementById('btnPing').disabled=true;
-  document.getElementById('qDisplay').textContent=document.getElementById('pingQ').value;
+  const btn=document.getElementById('btnPing');
+  btn.disabled=true;
   await Promise.all(getLLMs().map(pingOne));
-  document.getElementById('btnPing').disabled=false;
+  btn.disabled=false;
 }
 
-// ── Add custom LLM ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Custom LLM management
+
 function addLLM(){
   const name=document.getElementById('addName').value.trim();
   const url=document.getElementById('addUrl').value.trim();
   const model=document.getElementById('addModel').value.trim();
   const auth=document.getElementById('addAuth').value;
   const key=document.getElementById('addKey').value.trim();
-  if(!name||!url){ alert('ต้องมีชื่อ + URL'); return; }
+  if(!name||!url){alert('ต้องมีชื่อ + URL');return;}
   const id='custom-'+Date.now();
   customLLMs.push({
     id, name, model:model||'custom', color:'#e67e22',
-    type: url.includes('generativelanguage') ? 'gemini' : 'openai',
-    url, authType:auth, keyRef:null, _key:key, _custom:true,
+    type: url.includes('generativelanguage')?'gemini':'openai',
+    keyRef:null, _key:key, _custom:true, authType:auth,
+    baseUrl:url,
   });
-  saveCustom();
-  renderGrid();
-  ['addName','addKey','addUrl','addModel'].forEach(id=>document.getElementById(id).value='');
+  saveCustom(); renderGrid();
+  ['addName','addUrl','addModel','addKey'].forEach(i=>document.getElementById(i).value='');
 }
 
 function removeLLM(id){
   customLLMs=customLLMs.filter(l=>l.id!==id);
-  saveCustom();
-  renderGrid();
+  saveCustom(); renderGrid();
 }
 
-function saveCustom(){ localStorage.setItem('m0_custom_llms', JSON.stringify(customLLMs)); }
-function loadCustom(){
-  try{ customLLMs=JSON.parse(localStorage.getItem('m0_custom_llms')||'[]'); }catch{ customLLMs=[]; }
-}
+function saveCustom(){ localStorage.setItem('m0_custom_llms',JSON.stringify(customLLMs)); }
+function loadCustom(){ try{customLLMs=JSON.parse(localStorage.getItem('m0_custom_llms')||'[]');}catch{customLLMs=[];} }
 
-// ── Key persistence (shared with hallucination test) ──────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Keys
+
 function saveKeys(){
   const g=document.getElementById('keyGemini').value;
   const r=document.getElementById('keyGroq').value;
@@ -363,12 +522,7 @@ function forgetKeys(){
   updateKeyTags();
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded',()=>{
-  loadKeys();
-  loadCustom();
-  renderGrid();
-});
+window.addEventListener('DOMContentLoaded',()=>{ loadKeys(); loadCustom(); renderGrid(); });
 </script>
 </body>
 </html>
