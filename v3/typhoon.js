@@ -1,4 +1,4 @@
-// Version 3.0.5 | 2026-05-21
+// Version 3.0.6 | 2026-05-21
 // v3/typhoon.js — Typhoon API Connector
 // ห้าม hardcode ข้อความพยากรณ์
 // ห้าม hallucinate — ข้อความต้องมาจาก kb_context rules เท่านั้น
@@ -296,6 +296,8 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
 
   const isQA=!!(natalPayload._is_qa_mode);
   const {systemPrompt,userPrompt}=build_prompt(natalPayload,matchedRules,isQA);
+  // แจ้ง caller ให้ดู prompt ก่อน call API
+  if(typeof options.onPromptReady==='function') options.onPromptReady(systemPrompt,userPrompt);
 
   const body=JSON.stringify({
     model:TYPHOON_MODEL,

@@ -1,4 +1,4 @@
-// Version 3.0.7 | 2026-05-21
+// Version 3.0.8 | 2026-05-21
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -55,7 +55,6 @@ function _showSpinner(show) {
 }
 
 function _showResult(text, isFallback, label) {
-  const wrap = _el('v3-result-wrap');
   const resultEl = _el('v3-result');
   const badge = _el('v3-fallback-badge');
   const srcLabel = _el('v3-source-label');
@@ -63,13 +62,72 @@ function _showResult(text, isFallback, label) {
   resultEl.classList.toggle('fallback', isFallback);
   badge.classList.toggle('hidden', !isFallback);
   if (srcLabel) srcLabel.textContent = label || '';
-  wrap.classList.remove('hidden');
+  _el('v3-result-wrap').classList.remove('hidden');
   _el('v3-copy-btn').disabled = false;
 }
 
 function _clearResult() {
   _el('v3-result-wrap').classList.add('hidden');
   _el('v3-copy-btn').disabled = true;
+}
+
+// ── Panel helpers ────────────────────────────────────────────
+function v3TogglePanel(id) {
+  const bd = _el(id);
+  const hd = bd && bd.previousElementSibling;
+  if (!bd) return;
+  const open = bd.classList.toggle('open');
+  if (hd) hd.classList.toggle('open', open);
+}
+
+function _showRulesPanel(matched, payload) {
+  _el('v3-rules-count').textContent = matched.length + ' กฎ';
+  const list = _el('v3-rules-list');
+  list.innerHTML = '';
+  if (!matched.length) {
+    list.innerHTML = '<div style="color:#475569;font-size:.78rem">ไม่พบกฎที่ตรงดวง</div>';
+    return;
+  }
+  // use predictions for polarity+domain already computed
+  const preds = compose_local_prediction(matched, payload);
+  matched.forEach((r, i) => {
+    const p = preds[i] || {};
+    const pol = p.polarity || '~';
+    const domain = p.domain || '';
+    const polClass = pol === '+' ? 'pol-pos' : pol === '-' ? 'pol-neg' : 'pol-neu';
+    const polLabel = pol === '+' ? '+' : pol === '-' ? '−' : '~';
+    const row = document.createElement('div');
+    row.className = 'v3-rule-row';
+    row.innerHTML =
+      `<span class="v3-rule-pol ${polClass}">${polLabel}</span>` +
+      `<span class="v3-rule-text">${_esc(r.c || '')}</span>` +
+      (domain ? `<span class="v3-rule-domain">${_esc(domain)}</span>` : '');
+    list.appendChild(row);
+  });
+  // auto-open rules panel
+  const bd = _el('v3-pd-rules');
+  const hd = bd && bd.previousElementSibling;
+  bd.classList.add('open');
+  if (hd) hd.classList.add('open');
+}
+
+function _showInputPanel(sysPrompt, userPrompt) {
+  const box = _el('v3-prompt-box');
+  if (!box) return;
+  box.innerHTML =
+    '<span class="v3-prompt-section">── SYSTEM ──</span>\n' +
+    _esc(sysPrompt) +
+    '\n\n<span class="v3-prompt-section">── USER ──</span>\n' +
+    _esc(userPrompt);
+}
+
+function _setInputPanelLocal() {
+  const box = _el('v3-prompt-box');
+  if (box) box.textContent = '— โหมดกฎท้องถิ่น ไม่ส่ง Typhoon —';
+}
+
+function _esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function _refreshNatalBar() {
@@ -117,9 +175,11 @@ async function v3Local() {
     const ascSign = get_lagna(pos);
     const payload = build_natal_payload(pos, ascSign);
     const matched = match_rules(pos, ascSign, kbRules, null, payload);
-    const text = _renderComposed(compose_local_prediction(matched, payload));
+    const predictions = compose_local_prediction(matched, payload);
     _showSpinner(false);
-    _showResult(text, false, '📋 กฎที่ตรงดวง (' + matched.length + ' กฎ) — ไม่ใช้ AI');
+    _showRulesPanel(matched, payload);
+    _setInputPanelLocal();
+    _showResult(_renderComposed(predictions), false, '📋 กฎท้องถิ่น (' + matched.length + ' กฎ)');
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] local error:', err);
@@ -150,14 +210,16 @@ async function v3Typhoon() {
     const ascSign = get_lagna(pos);
     payload = build_natal_payload(pos, ascSign);
     matched = match_rules(pos, ascSign, kbRules, null, payload);
-    const text = await send_to_typhoon(payload, matched);
+    _showRulesPanel(matched, payload);
+    const text = await send_to_typhoon(payload, matched, {
+      onPromptReady: (sys, user) => _showInputPanel(sys, user)
+    });
     _showSpinner(false);
-    _showResult(text, false, '🤖 พยากรณ์โดย Typhoon AI');
+    _showResult(text, false, '🤖 Typhoon AI');
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
     if (payload && matched) {
-      // M8: fallback อัตโนมัติ — keyword composition แทน Typhoon
       const fallbackText = _renderComposed(compose_local_prediction(matched, payload));
       _showResult(fallbackText, true, '⚠️ Typhoon ไม่ตอบ — ใช้ keyword engine');
       _showToastV3('Typhoon ไม่ตอบ — ใช้กฎดิบแทน');
@@ -202,6 +264,7 @@ function _watchTab3() {
 window.v3Local = v3Local;
 window.v3Typhoon = v3Typhoon;
 window.v3Copy = v3Copy;
+window.v3TogglePanel = v3TogglePanel;
 
 // ── Bootstrap ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {

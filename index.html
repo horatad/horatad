@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.3 -->
-<!-- Version 3.3.3 | 2026-05-21 -->
+<!-- HORATAD:INDEX:3.3.4 -->
+<!-- Version 3.3.4 | 2026-05-21 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.3">
+<link rel="stylesheet" href="style.css?v=3.3.4">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -51,6 +51,27 @@ canvas{max-width:100%;height:auto}
 .v3-copy-btn{background:transparent;border:1px solid #2d2d4e;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:'Sarabun',sans-serif;}
 .v3-copy-btn:hover{border-color:#b8860b;color:#b8860b;}
 .v3-copy-btn:disabled{opacity:.4;cursor:not-allowed;}
+/* V3 3-panel layout */
+.v3-panels{display:flex;flex-direction:column;gap:.6rem;margin-bottom:.5rem;}
+.v3-panel{border:1px solid #2d2d4e;border-radius:8px;overflow:hidden;}
+.v3-panel-hd{display:flex;align-items:center;gap:.5rem;padding:.55rem .9rem;background:#131320;cursor:pointer;user-select:none;font-size:.82rem;color:#8b949e;}
+.v3-panel-hd:hover{background:#1a1a2e;}
+.v3-panel-hd .panel-title{flex:1;font-weight:600;color:#c9d1d9;}
+.v3-panel-hd .panel-count{font-size:.7rem;padding:1px 7px;border-radius:10px;background:#2d2d4e;color:#8b949e;}
+.v3-panel-hd .panel-arrow{font-size:.7rem;color:#475569;transition:transform .2s;}
+.v3-panel-hd.open .panel-arrow{transform:rotate(180deg);}
+.v3-panel-bd{display:none;padding:.75rem .9rem;background:#0d1117;font-size:.82rem;color:#c9d1d9;}
+.v3-panel-bd.open{display:block;}
+.v3-rules-list{display:flex;flex-direction:column;gap:4px;}
+.v3-rule-row{display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border-radius:4px;background:#131320;}
+.v3-rule-pol{font-size:.7rem;padding:1px 6px;border-radius:3px;flex-shrink:0;margin-top:1px;}
+.pol-pos{background:#14532d;color:#86efac;}
+.pol-neg{background:#450a0a;color:#fca5a5;}
+.pol-neu{background:#1e293b;color:#94a3b8;}
+.v3-rule-text{font-size:.78rem;color:#c9d1d9;line-height:1.4;}
+.v3-rule-domain{font-size:.68rem;color:#64748b;flex-shrink:0;}
+.v3-prompt-box{font-family:monospace;font-size:.72rem;white-space:pre-wrap;color:#94a3b8;line-height:1.5;max-height:280px;overflow-y:auto;}
+.v3-prompt-section{color:#b8860b;font-weight:700;margin-top:.5rem;}
 </style>
 </head>
 <body>
@@ -59,7 +80,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.3</span>
+  <span class="brand-ver">V 3.3.4</span>
 </h1>
 
 <!-- Tab nav -->
@@ -207,7 +228,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.3</div>
+        <div class="about-version">V 3.3.4</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -729,20 +750,54 @@ canvas{max-width:100%;height:auto}
     <div id="v3-spinner-label">กำลังประมวลผล...</div>
   </div>
 
-  <!-- result -->
-  <div id="v3-result-wrap" class="hidden">
-    <div id="v3-fallback-badge" class="v3-fallback-badge hidden">⚠️ แสดงกฎดิบ (Typhoon API ไม่พร้อม)</div>
-    <div id="v3-source-label" style="font-size:.75rem;color:#8b949e;margin-bottom:.4rem;"></div>
-    <div id="v3-result" class="v3-result"></div>
-    <button id="v3-copy-btn" class="v3-copy-btn" disabled onclick="v3Copy()">📋 คัดลอก</button>
+  <!-- 3-panel results -->
+  <div id="v3-result-wrap" class="v3-panels hidden">
+
+    <!-- Panel 1: กฎที่ตรงดวง -->
+    <div class="v3-panel">
+      <div class="v3-panel-hd" onclick="v3TogglePanel('v3-pd-rules')">
+        <span class="panel-title">📋 กฎที่ตรงดวง</span>
+        <span class="panel-count" id="v3-rules-count">0 กฎ</span>
+        <span class="panel-arrow">▼</span>
+      </div>
+      <div class="v3-panel-bd" id="v3-pd-rules">
+        <div class="v3-rules-list" id="v3-rules-list"></div>
+      </div>
+    </div>
+
+    <!-- Panel 2: Input to Typhoon -->
+    <div class="v3-panel">
+      <div class="v3-panel-hd" onclick="v3TogglePanel('v3-pd-input')">
+        <span class="panel-title">📤 Input ที่ส่ง Typhoon</span>
+        <span class="panel-arrow">▼</span>
+      </div>
+      <div class="v3-panel-bd" id="v3-pd-input">
+        <div class="v3-prompt-box" id="v3-prompt-box">—</div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Output -->
+    <div class="v3-panel">
+      <div class="v3-panel-hd open" onclick="v3TogglePanel('v3-pd-output')">
+        <span class="panel-title">🤖 ผลพยากรณ์</span>
+        <span id="v3-source-label" style="font-size:.7rem;color:#64748b;"></span>
+        <span class="panel-arrow">▼</span>
+      </div>
+      <div class="v3-panel-bd open" id="v3-pd-output">
+        <div id="v3-fallback-badge" class="v3-fallback-badge hidden">⚠️ Typhoon ไม่ตอบ — ใช้กฎดิบแทน</div>
+        <div id="v3-result" class="v3-result" style="margin-bottom:.6rem;"></div>
+        <button id="v3-copy-btn" class="v3-copy-btn" disabled onclick="v3Copy()">📋 คัดลอก</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.3.3"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.3"></script>
+<script src="script.js?v=3.3.4"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.4"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
