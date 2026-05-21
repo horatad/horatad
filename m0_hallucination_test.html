@@ -59,20 +59,21 @@ td{padding:8px 10px;font-size:12px;vertical-align:top}
 
 <div class="cfg">
   <div>
-    <label>Gemini API Key</label>
-    <input id="keyGemini" class="wide" type="text" placeholder="AIzaSy..." value="">
+    <label>Gemini API Key <span id="tag-g" style="color:#4caf87;font-size:10px"></span></label>
+    <input id="keyGemini" class="wide" type="password" placeholder="AIzaSy..." value="" oninput="saveKeys()">
   </div>
   <div>
-    <label>Groq API Key</label>
-    <input id="keyGroq" class="wide" type="text" placeholder="gsk_..." value="">
+    <label>Groq API Key <span id="tag-r" style="color:#4caf87;font-size:10px"></span></label>
+    <input id="keyGroq" class="wide" type="password" placeholder="gsk_..." value="" oninput="saveKeys()">
   </div>
   <div>
-    <label>iApp API Key (Chinda)</label>
-    <input id="keyIapp" class="wide" type="text" placeholder="iapp_live_..." value="">
+    <label>iApp API Key (Chinda) <span id="tag-i" style="color:#4caf87;font-size:10px"></span></label>
+    <input id="keyIapp" class="wide" type="password" placeholder="iapp_live_..." value="" oninput="saveKeys()">
   </div>
   <div>
     <button class="btn btn-run" id="btnRun" onclick="runAll()">▶ Run All Tests</button>
     <button class="btn btn-clear" onclick="clearResults()" style="margin-left:6px">✕ Clear</button>
+    <button class="btn btn-clear" onclick="forgetKeys()" style="margin-left:6px;color:#e05555" title="ลบ keys จาก localStorage">🗑 Forget Keys</button>
   </div>
 </div>
 
@@ -372,6 +373,42 @@ function updateSummary(){
     document.getElementById(m.dId).textContent = `latency avg ${ms} | n=${s.scores.length}`;
   }
 }
+
+// ── localStorage key persistence ──────────────────────────────────────────
+
+function saveKeys(){
+  const g=document.getElementById('keyGemini').value;
+  const r=document.getElementById('keyGroq').value;
+  const i=document.getElementById('keyIapp').value;
+  if(g) localStorage.setItem('m0_key_g', g); else localStorage.removeItem('m0_key_g');
+  if(r) localStorage.setItem('m0_key_r', r); else localStorage.removeItem('m0_key_r');
+  if(i) localStorage.setItem('m0_key_i', i); else localStorage.removeItem('m0_key_i');
+  updateKeyTags();
+}
+
+function loadKeys(){
+  const g=localStorage.getItem('m0_key_g')||'';
+  const r=localStorage.getItem('m0_key_r')||'';
+  const i=localStorage.getItem('m0_key_i')||'';
+  document.getElementById('keyGemini').value=g;
+  document.getElementById('keyGroq').value=r;
+  document.getElementById('keyIapp').value=i;
+  updateKeyTags();
+}
+
+function updateKeyTags(){
+  document.getElementById('tag-g').textContent = localStorage.getItem('m0_key_g') ? '✓ saved' : '';
+  document.getElementById('tag-r').textContent = localStorage.getItem('m0_key_r') ? '✓ saved' : '';
+  document.getElementById('tag-i').textContent = localStorage.getItem('m0_key_i') ? '✓ saved' : '';
+}
+
+function forgetKeys(){
+  ['m0_key_g','m0_key_r','m0_key_i'].forEach(k=>localStorage.removeItem(k));
+  ['keyGemini','keyGroq','keyIapp'].forEach(id=>document.getElementById(id).value='');
+  updateKeyTags();
+}
+
+window.addEventListener('DOMContentLoaded', loadKeys);
 
 function clearResults(){
   if(running) return;
