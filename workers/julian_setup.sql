@@ -45,3 +45,10 @@ CREATE INDEX IF NOT EXISTS idx_internet_confidence  ON internet(confidence DESC)
 -- UNIQUE index สำหรับ UPSERT dedup (ON CONFLICT(jd,name) ใน julian_import.mjs)
 -- NULL ใน name → SQLite ถือว่าแตกต่างกัน (อนุญาต multiple NULL rows)
 CREATE UNIQUE INDEX IF NOT EXISTS idx_internet_jd_name ON internet(jd, name);
+
+-- UNIQUE บน source สำหรับ Wikidata records — ป้องกันคนเดียวถูก import ซ้ำด้วยชื่อต่างกัน
+-- (เพิ่มเติมจาก seen_qids ที่ป้องกันที่ application level)
+-- migration สำหรับตารางที่มีอยู่:
+--   wrangler d1 execute julian --command="CREATE UNIQUE INDEX IF NOT EXISTS idx_internet_source_wikidata ON internet(source) WHERE source LIKE 'wikidata:%'" --remote --yes
+CREATE UNIQUE INDEX IF NOT EXISTS idx_internet_source_wikidata
+  ON internet(source) WHERE source LIKE 'wikidata:%';
