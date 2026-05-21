@@ -175,6 +175,14 @@ jobs:
             --notes 'Auto-updated every 6 hours by julian_sync workflow' \
             --latest 2>/dev/null || true
           gh release upload julian-data /tmp/julian_all.json --clobber
+          echo "── Commit to repo (for CORS-friendly access via raw.githubusercontent.com) ──"
+          mkdir -p data
+          cp /tmp/julian_all.json data/julian_all.json
+          git config user.name  "JULIAN Bot"
+          git config user.email "julian-bot@horatad.com"
+          git add data/julian_all.json
+          git commit -m "JULIAN data: ${{ steps.scrape.outputs.total }} records [skip ci]" || echo "No data change"
+          git push origin HEAD:main
           echo "Release updated: julian-data/julian_all.json (${{ steps.scrape.outputs.total }} total records)"
         env:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}

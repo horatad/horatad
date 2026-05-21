@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.8 -->
-<!-- Version 3.3.8 | 2026-05-21 -->
+<!-- HORATAD:INDEX:3.3.9 -->
+<!-- Version 3.3.9 | 2026-05-21 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.8">
+<link rel="stylesheet" href="style.css?v=3.3.9">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -86,7 +86,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.8</span>
+  <span class="brand-ver">V 3.3.9</span>
 </h1>
 
 <!-- Tab nav -->
@@ -108,7 +108,7 @@ canvas{max-width:100%;height:auto}
         <button onclick="calculateBoth()" class="btn-calc-main">ผูกดวง</button>
       </div>
       <div class="input-toggle-row">
-        <button id="btn-transit-input" onclick="toggleReportTransit()" class="btn-toggle-input">เหตุการณ์จร</button>
+        <button id="btn-transit-input" onclick="_openEventSlotsPopup()" class="btn-toggle-input">เหตุการณ์จร</button>
         <button id="btn-sompong-input" onclick="_toggleSompongInput()" class="btn-toggle-input">สมพงศ์</button>
       </div>
 
@@ -238,7 +238,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.8</div>
+        <div class="about-version">V 3.3.9</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -314,7 +314,24 @@ canvas{max-width:100%;height:auto}
 
       <div class="about-card">
         <div class="about-card-title">📜 ที่มาและข้อจำกัดของสูตร</div>
-
+        <div class="about-lunar-text">
+          <strong>แม่นยำตามตำราโบราณ:</strong> คำนวณด้วยสูตรคัมภีร์สุริยายาตรดั้งเดิม (ฐานมหายุค 800 ปี / 292,207 วัน) ซึ่งเป็นมาตรฐานโหราศาสตร์ไทยสืบทอดมาตั้งแต่สมัยสุโขทัย
+        </div>
+        <div class="about-lunar-text">
+          <strong>สูตรคณิตศาสตร์แท้:</strong> คำนวณหรคุณและเกณฑ์อวมาน (เพิ่มวันละ 11 หน่วย ฐานตัวหาร 703) ตรงตามระบบครูบาอาจารย์ ปีอธิกวารและอธิกมาสตรวจสอบกับ <strong>ประกาศสงกรานต์ ฝ่ายโหรพราหมณ์ สำนักพระราชวัง</strong> ทุกปี
+        </div>
+        <div class="about-lunar-text">
+          <strong>อิงสูตร ไม่ได้อิงตาเห็น:</strong> คำนวณตำแหน่งดาวเฉลี่ยทางคณิตศาสตร์ ไม่ใช่การมองดวงจันทร์จริงบนท้องฟ้า
+        </div>
+        <div class="about-lunar-text">
+          <strong>อาจเยื้องกับวันพระราชการ:</strong> ระบบสุริยายาตรอาจให้ผลต่างจากระบบ "ปักขคณนา" ที่ทางราชการใช้ ทำให้วันข้างขึ้นข้างแรมอาจเยื้องไป 0–1 วัน ในบางปี
+        </div>
+        <div class="about-lunar-text">
+          <strong>ใช้เพื่อการผูกดวง:</strong> เหมาะสำหรับพยากรณ์และศึกษาโหราศาสตร์ไทยตามเกณฑ์มาตรฐานโบราณ
+        </div>
+        <div class="about-lunar-text">
+          <strong>วันสำคัญให้ดูประกาศรัฐ:</strong> หากต้องการตรวจวันพระหรือวันหยุดราชการที่ถูกต้องแน่นอน ให้ยึดตามปฏิทินหลวง (สำนักพระราชวัง) หรือประกาศของกรมการศาสนา
+        </div>
       </div>
 
       <div class="about-card">
@@ -451,7 +468,7 @@ canvas{max-width:100%;height:auto}
     <div class="memory-title">เลือกจากความทรงจำ</div>
     <button id="memory-sort-btn" class="memory-sort-btn" onclick="cycleMemorySort()">🕐 ล่าสุด</button>
   </div>
-  <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ / จังหวัด..." autocomplete="off">
+  <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ..." autocomplete="off">
   <div id="memory-list" class="memory-list"></div>
   <div class="memory-actions">
     <button onclick="exportMemory()" class="memory-action-btn">📤 Export</button>
@@ -499,9 +516,9 @@ canvas{max-width:100%;height:auto}
   </div>
   <div class="main-menu-body">
     <div class="main-menu-section">
-      <div class="main-menu-row main-menu-row-link" onclick="_openEventSlotsPopup()">
-        <span class="main-menu-row-label">เหตุการณ์</span>
-        <span id="main-menu-event-info" class="main-menu-info-badge">0/10 ›</span>
+      <div class="main-menu-row">
+        <span class="main-menu-row-label">เหตุการณ์จร</span>
+        <button id="main-menu-transit-btn" class="main-menu-toggle" onclick="toggleReportTransit();_updateMainMenuState()">ซ่อน</button>
       </div>
       <div class="main-menu-row main-menu-row-link" onclick="_openQRImportPopup()">
         <span class="main-menu-row-label">นำเข้า QR</span>
@@ -782,8 +799,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.3.8"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.8"></script>
+<script src="script.js?v=3.3.9"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.9"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">

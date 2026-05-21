@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.8
-// Version 3.3.8 | 2026-05-21
+// HORATAD:SCRIPT:3.3.9
+// Version 3.3.9 | 2026-05-21
+// Changes: [V3.3.9] fix: JULIAN URL→raw.githubusercontent, no autofocus search, swap transit fn, lunar restore content
 // Changes: [V3.3.8] feat(UX): 8 changes — import choice, DB1 sort, pin fix, tag delete, toggle btns, nav view btn, lunar cleanup
 // Changes: [V3.3.7] fix(UX): memory modal ใช้ dvh แทน vh — keyboard ไม่บัง Export/Import/ปิด บนมือถือ
 // Changes: [V3.3.4] feat(HORATAD): V3 tab — 3-panel view (กฎ / Input Typhoon / Output)
@@ -10,7 +11,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.8';
+const APP_VERSION='3.3.9';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -939,8 +940,8 @@ function toggleReportTransit(){
     btn.textContent=REPORT_TRANSIT_LABELS[_reportTransitShow?1:0];
     btn.classList.toggle('btn-active',_reportTransitShow);
   }
-  const ti=document.getElementById('btn-transit-input');
-  if(ti)ti.classList.toggle('active',_reportTransitShow);
+  const tb2=document.getElementById('main-menu-transit-btn');
+  if(tb2){tb2.textContent=_reportTransitShow?'แสดง':'ซ่อน';tb2.classList.toggle('active',_reportTransitShow);}
   _playBeep(700);
   _renderTagRow('1');
   if(_reportTransitShow){
@@ -1841,7 +1842,6 @@ function openMemory(section){
   _renderMemory('');
   document.getElementById('memory-backdrop').classList.remove('hidden');
   document.getElementById('memory-modal').classList.remove('hidden');
-  if(s)setTimeout(()=>s.focus(),100);
 }
 function closeMemory(){
   document.getElementById('memory-backdrop').classList.add('hidden');
@@ -1918,7 +1918,7 @@ function _closeImportChoice(){
   const el=document.getElementById('import-choice');
   if(el)el.classList.add('hidden');
 }
-const _JULIAN_URL='https://github.com/horatad/horatad/releases/download/julian-data/julian_all.json';
+const _JULIAN_URL='https://raw.githubusercontent.com/horatad/horatad/main/data/julian_all.json';
 async function _importFromJulian(){
   _closeImportChoice();
   _showToast('กำลังดาวน์โหลดข้อมูลสาธารณะ...');
@@ -2161,9 +2161,8 @@ function _updateNavHeader(){
 
 // ── Main menu popup (Phase 1B Step 2) ─────────────────────
 function _updateMainMenuState(){
-  // sync input-page toggle buttons
-  const ti=document.getElementById('btn-transit-input');
-  if(ti)ti.classList.toggle('active',_reportTransitShow);
+  const tb=document.getElementById('main-menu-transit-btn');
+  if(tb){tb.textContent=_reportTransitShow?'แสดง':'ซ่อน';tb.classList.toggle('active',_reportTransitShow);}
   const spi=document.getElementById('btn-sompong-input');
   if(spi)spi.classList.toggle('active',_sompongPopupOpen||false);
   const ei=document.getElementById('main-menu-event-info');
