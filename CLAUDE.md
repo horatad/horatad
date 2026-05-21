@@ -35,6 +35,28 @@
 
 ---
 
+## 🔁 GitHub Actions Debug — standing rules
+
+workflow ทดสอบได้แค่ตอน run จริง (ไม่มี local CF token) → bug เจอทีละ run
+
+### อ่าน log ให้ถูก
+- screenshot ที่มี **line numbers + step content** = log จริงของ step ที่ขยายแล้ว ✅
+- **ไม่ต้องขอ screenshot ซ้ำ** — ถ้า user ส่ง step log มาแล้วให้วิเคราะห์เลย
+- Annotations tab = สรุป summary เท่านั้น ไม่มี line detail
+
+### แก้ให้ครบในรอบเดียว
+- อ่าน log แล้วระบุ **ทุก error ที่เห็น** ก่อน fix
+- แก้ทุกอย่างใน commit เดียว — ไม่แก้ทีละ bug แล้วรอ run ถัดไป
+- ถ้าเห็น warning + error ในคราวเดียวกัน ให้แก้ทั้งคู่พร้อมกัน
+
+### pattern ที่เคยเกิด (JULIAN workflow)
+- Run #1: env scope (secret ไม่ถึง condition)
+- Run #2: SPARQL QID ผิด
+- Run #3: Node.js version เก่า
+- Run #4: `CF_API_TOKEN` deprecated → ต้องใช้ `CLOUDFLARE_API_TOKEN`
+
+---
+
 ## ⚠️ Claude Code Web vs CLI — ลำดับความสำคัญ
 
 **เมื่อรันบน Claude Code Web (harness มี system prompt ของตัวเอง):**
