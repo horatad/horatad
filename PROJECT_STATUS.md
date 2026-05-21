@@ -53,26 +53,23 @@
 
 ---
 
-## JULIAN — Empirical Astro Search Engine 📋 Design phase
+## JULIAN — Empirical Astro Search Engine 🛠 Tools ready
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE
 
 ### สถานะ
-- Schema: ออกแบบแล้ว (ดู handoff) | Storage: ยังไม่มี | Records: 0
-- ⚠️ Decision pending: JD format — standard (2451545=J2000) หรือ internal (_calcJD)?
+- Schema: ✅ | JD format: ✅ get_j() internal | Storage: ยังไม่มี (รอ CF D1) | Records: 0
+- Tools: ✅ julian_keygen.html + julian_scraper.html | Mission docs: ✅ JULIAN_MISSION.md
 
-### Next (Claude ทำได้ — ไม่ต้องรอ CF)
-- [ ] julian_keygen.html — generate Master Key batch (JD range → planets[10]) → download CSV
-- [ ] julian_scraper.html — ค้นหาบุคคล/เหตุการณ์ → บันทึก Internet Table → download JSONL
-- [ ] docs/JULIAN_MISSION.md — แยก JULIAN mission ออกจาก BIBLE_MISSION.md
-- prerequisite: ยืนยัน JD format ก่อน build
+### Next (Claude ทำได้)
+(ไม่มีงานเหลือที่ทำได้โดยไม่ต้องการ CF หรือ manual testing)
 
 ### Blocked (รอ user)
-- [ ] [BLOCKED] CF D1 setup — storage + query API
-- [ ] [ทดลองใช้] ยืนยัน JD format (standard vs internal)
+- [ ] [ทดลองใช้] ทดสอบ tools บนเบราว์เซอร์จริง (Wikipedia CORS, planet values)
+- [ ] [BLOCKED] CF D1 setup — storage + Worker API
 - [ ] [ทดลองใช้] กำหนด year range สำหรับ Master Key
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260521_v1.md`
+`handoffs/JULIAN_20260521_v2.md`
 
 ---
 
@@ -82,7 +79,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD | script.js, v3/*, index.html | 🟡 Pre-launch V3.3.4 |
 | Wording Engine | BIBLE | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN | v3/kb.json (schema) | 📋 Schema only |
+| Empirical DB | JULIAN | tools/julian_keygen.html, tools/julian_scraper.html, docs/JULIAN_MISSION.md | 🛠 Tools ready — รอ CF D1 |
 
 ---
 ## วิธีเริ่ม session ใหม่
@@ -91,4 +88,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | BIBLE handoff v3*
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.5 | JULIAN handoff v2*

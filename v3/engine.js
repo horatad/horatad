@@ -190,4 +190,4 @@ export function get_tanu_lagna(ascSign){
   return KASET_MAP[ascSign];
 }
 
-export {KASET_MAP,EXALT_MAP,STD_SCORE,HOUSE_SCORE,MEAN_SPEEDS};
+export {KASET_MAP,EXALT_MAP,STD_SCORE,HOUSE_SCORE,MEAN_SPEEDS,get_j};

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JULIAN Scraper — Internet Table Builder</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
+#topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1e293b;border-bottom:1px solid #334155;flex-wrap:wrap}
+h1{font-size:.9rem;font-weight:700;color:#f8fafc;flex:1}
+.chip{font-size:.7rem;padding:2px 8px;border-radius:12px;white-space:nowrap}
+.chip-blue{background:#1e3a5f;color:#93c5fd}.chip-yellow{background:#3d2500;color:#fde68a}
+/* SEARCH */
+#search-bar{display:flex;gap:6px;padding:10px 14px;background:#1e293b;border-bottom:1px solid #334155;flex-wrap:wrap;align-items:center}
+#search-bar input{flex:1;min-width:180px;background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:6px 10px;border-radius:6px;font-size:.85rem}
+#search-bar input:focus{outline:none;border-color:#3b82f6}
+.lang-btn{padding:5px 10px;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:600;background:#0f172a;color:#94a3b8}
+.lang-btn.active{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
+.btn{padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:600;transition:background .15s}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-search{background:#3b82f6;color:#fff}.btn-search:hover:not(:disabled){background:#2563eb}
+.btn-add{background:#14532d;color:#86efac}.btn-add:hover:not(:disabled){background:#166534}
+.btn-dl{background:#1e3a5f;color:#93c5fd}.btn-dl:hover{background:#1e40af}
+.btn-del{background:transparent;color:#ef4444;border:1px solid #7f1d1d;padding:2px 7px;font-size:.72rem}.btn-del:hover{background:#7f1d1d}
+/* LAYOUT */
+#main{display:flex;flex:1;overflow:hidden;min-height:0}
+#left{width:340px;min-width:220px;border-right:1px solid #334155;display:flex;flex-direction:column;overflow:hidden}
+#right{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+@media(max-width:640px){#main{flex-direction:column}#left{width:100%;border-right:none;border-bottom:1px solid #334155;max-height:45vh}}
+/* RESULTS */
+#results{flex:1;overflow-y:auto;font-size:.78rem}
+.result-item{padding:8px 12px;border-bottom:1px solid #1e293b;cursor:pointer}
+.result-item:hover{background:#1e293b}
+.result-item.active{background:#1e3a5f;border-left:3px solid #3b82f6}
+.res-title{font-weight:600;color:#e2e8f0;margin-bottom:2px}
+.res-desc{color:#64748b;font-size:.72rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#results-status{padding:8px 12px;font-size:.73rem;color:#475569;font-style:italic}
+/* EDITOR */
+#editor{padding:12px 14px;border-bottom:1px solid #334155}
+.ed-title{font-size:.82rem;font-weight:700;color:#f8fafc;margin-bottom:8px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}
+.form-row.single{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:2px}
+.form-group label{font-size:.7rem;color:#94a3b8;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:4px 8px;border-radius:5px;font-size:.8rem;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#3b82f6}
+.form-group textarea{resize:vertical;min-height:48px}
+.jd-display{font-size:.7rem;color:#fde68a;margin-top:2px}
+.wikidata-row{display:flex;gap:6px;align-items:center;margin-bottom:8px;font-size:.75rem;flex-wrap:wrap}
+.wd-date{background:#1e293b;border-radius:4px;padding:3px 8px;color:#86efac}
+.wd-miss{color:#64748b}
+/* BUFFER */
+#buffer-wrap{flex:1;overflow-y:auto}
+.buf-header{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #334155}
+.buf-header span{font-size:.82rem;font-weight:700;flex:1}
+.buf-item{display:flex;align-items:center;gap:6px;padding:6px 12px;border-bottom:1px solid #1e293b;font-size:.75rem}
+.buf-name{flex:1;font-weight:600;color:#e2e8f0}
+.buf-jd{color:#fde68a;white-space:nowrap}
+.buf-type{font-size:.68rem;padding:1px 5px;border-radius:3px;white-space:nowrap}
+.type-human{background:#1e3a5f;color:#93c5fd}.type-event{background:#3d1a00;color:#fb923c}
+#buf-empty{padding:14px;font-size:.75rem;color:#475569;font-style:italic}
+#dl-row{padding:10px 14px;border-top:1px solid #334155;display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>JULIAN Scraper — Internet Table Builder</h1>
+  <span id="chip-buf" class="chip chip-blue">0 records</span>
+  <span class="chip chip-yellow">Wikipedia + Wikidata</span>
+</div>
+
+<div id="search-bar">
+  <input type="text" id="q" placeholder="ชื่อบุคคล / เหตุการณ์ เช่น Thaksin Shinawatra" autocomplete="off">
+  <button class="lang-btn active" id="lang-en" data-lang="en">EN</button>
+  <button class="lang-btn" id="lang-th" data-lang="th">TH</button>
+  <button class="btn btn-search" id="btn-search">ค้นหา</button>
+</div>
+
+<div id="main">
+  <!-- LEFT: search results -->
+  <div id="left">
+    <div id="results-status">พิมพ์ชื่อแล้วกดค้นหา</div>
+    <div id="results"></div>
+  </div>
+
+  <!-- RIGHT: editor + buffer -->
+  <div id="right">
+    <div id="editor">
+      <div class="ed-title">บันทึกข้อมูล</div>
+      <div class="wikidata-row" id="wd-row">
+        <span class="wd-miss">ยังไม่ได้เลือก — หรือกรอกวันเกิดเอง</span>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>ชื่อ (name) *</label>
+          <input type="text" id="f-name" placeholder="ชื่อเต็ม">
+        </div>
+        <div class="form-group">
+          <label>ประเภท (type)</label>
+          <select id="f-type">
+            <option value="human">human</option>
+            <option value="event">event</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>วันเกิด CE (birth date) *</label>
+          <input type="date" id="f-birth">
+          <div class="jd-display" id="jd-birth">JD: —</div>
+        </div>
+        <div class="form-group">
+          <label>วันตาย CE (relate_id)</label>
+          <input type="date" id="f-death">
+          <div class="jd-display" id="jd-death">JD: —</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>event_label</label>
+          <input type="text" id="f-label" placeholder="เช่น นายกรัฐมนตรี">
+        </div>
+        <div class="form-group">
+          <label>source</label>
+          <input type="text" id="f-source" value="wikipedia">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>lat</label>
+          <input type="number" id="f-lat" placeholder="13.75" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>lng</label>
+          <input type="number" id="f-lng" placeholder="100.5" step="0.01">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>confidence (0.0–1.0)</label>
+          <input type="number" id="f-conf" value="0.95" min="0" max="1" step="0.05">
+        </div>
+        <div class="form-group">
+          <label>time_utc (HH:MM ถ้ามี)</label>
+          <input type="text" id="f-time" placeholder="00:00">
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label>notes</label>
+          <textarea id="f-notes" placeholder="หมายเหตุ เช่น ไม่แน่ใจเวลาเกิด"></textarea>
+        </div>
+      </div>
+      <button class="btn btn-add" id="btn-add" style="margin-top:4px">+ เพิ่มลง Buffer</button>
+    </div>
+
+    <div id="buffer-wrap">
+      <div class="buf-header">
+        <span>Buffer</span>
+        <button class="btn btn-dl" id="btn-dl" disabled>⬇ Download JSONL</button>
+      </div>
+      <div id="buf-list"><div id="buf-empty">ยังไม่มี record</div></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { get_j } from '../v3/engine.js';
+
+let lang = 'en';
+let buffer = JSON.parse(localStorage.getItem('julian_scraper_buf') || '[]');
+let activeResult = null;
+
+// ── Lang toggle ──────────────────────────────────────────────
+document.getElementById('lang-en').addEventListener('click', () => setLang('en'));
+document.getElementById('lang-th').addEventListener('click', () => setLang('th'));
+function setLang(l) {
+  lang = l;
+  document.getElementById('lang-en').classList.toggle('active', l === 'en');
+  document.getElementById('lang-th').classList.toggle('active', l === 'th');
+}
+
+// ── JD display ───────────────────────────────────────────────
+function dateToJD(val) {
+  if (!val) return null;
+  const [y, m, d] = val.split('-').map(Number);
+  if (!y || !m || !d) return null;
+  return get_j(d, m, y);
+}
+
+function updateJDDisplay(inputId, displayId) {
+  const val = document.getElementById(inputId).value;
+  const jd = dateToJD(val);
+  document.getElementById(displayId).textContent = jd !== null ? `JD: ${jd}` : 'JD: —';
+}
+
+document.getElementById('f-birth').addEventListener('input', () => updateJDDisplay('f-birth','jd-birth'));
+document.getElementById('f-death').addEventListener('input', () => updateJDDisplay('f-death','jd-death'));
+
+// ── Wikipedia search ─────────────────────────────────────────
+async function searchWiki(q, l) {
+  const url = `https://${l}.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q)}&format=json&origin=*&srlimit=8`;
+  const r = await fetch(url);
+  const data = await r.json();
+  return (data.query?.search || []).map(s => ({
+    title: s.title,
+    snippet: s.snippet.replace(/<[^>]+>/g,'')
+  }));
+}
+
+async function getWikidataItem(title, l) {
+  const url = `https://${l}.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageprops&ppprop=wikibase_item&format=json&origin=*`;
+  const r = await fetch(url);
+  const data = await r.json();
+  const pages = data.query?.pages || {};
+  const page = Object.values(pages)[0];
+  return page?.pageprops?.wikibase_item || null;
+}
+
+async function getWikidataClaims(qid) {
+  const url = `https://www.wikidata.org/w/api.php?action=wbgetentities&ids=${qid}&props=claims&format=json&origin=*`;
+  const r = await fetch(url);
+  const data = await r.json();
+  return data.entities?.[qid]?.claims || {};
+}
+
+function parseWdDate(claims, prop) {
+  const claim = claims[prop];
+  if (!claim?.[0]) return null;
+  const val = claim[0].mainsnak?.datavalue?.value;
+  if (!val || val.precision < 11) return null; // need day precision
+  const m = val.time.match(/[+-](\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  return `${m[1]}-${m[2]}-${m[3]}`;
+}
+
+function setStatus(msg) {
+  document.getElementById('results-status').textContent = msg;
+}
+
+document.getElementById('btn-search').addEventListener('click', doSearch);
+document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+
+async function doSearch() {
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  const btn = document.getElementById('btn-search');
+  btn.disabled = true; btn.textContent = '...';
+  setStatus('กำลังค้นหา...');
+  document.getElementById('results').innerHTML = '';
+  try {
+    const items = await searchWiki(q, lang);
+    if (!items.length) { setStatus('ไม่พบผลลัพธ์'); return; }
+    setStatus(`พบ ${items.length} ผลลัพธ์`);
+    const container = document.getElementById('results');
+    items.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      div.innerHTML = `<div class="res-title">${item.title}</div><div class="res-desc">${item.snippet}</div>`;
+      div.addEventListener('click', () => selectResult(item, div));
+      container.appendChild(div);
+    });
+  } catch(e) {
+    setStatus('เกิดข้อผิดพลาด: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'ค้นหา';
+  }
+}
+
+async function selectResult(item, el) {
+  document.querySelectorAll('.result-item').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  activeResult = item;
+
+  document.getElementById('f-name').value = item.title;
+  document.getElementById('f-source').value = `wikipedia:${lang}:${encodeURIComponent(item.title)}`;
+  document.getElementById('wd-row').innerHTML = '<span class="wd-miss">กำลังดึงข้อมูล Wikidata...</span>';
+
+  try {
+    const qid = await getWikidataItem(item.title, lang);
+    if (!qid) {
+      document.getElementById('wd-row').innerHTML = '<span class="wd-miss">ไม่พบ Wikidata entity</span>';
+      return;
+    }
+
+    const claims = await getWikidataClaims(qid);
+    const birth = parseWdDate(claims, 'P569');
+    const death = parseWdDate(claims, 'P570');
+
+    let html = `<span style="color:#64748b;font-size:.68rem">${qid}</span> `;
+    if (birth) {
+      document.getElementById('f-birth').value = birth;
+      updateJDDisplay('f-birth', 'jd-birth');
+      html += `<span class="wd-date">เกิด ${birth}</span> `;
+    } else {
+      html += `<span class="wd-miss">ไม่มีวันเกิด (precision ต่ำ)</span> `;
+    }
+    if (death) {
+      document.getElementById('f-death').value = death;
+      updateJDDisplay('f-death', 'jd-death');
+      html += `<span class="wd-date">ตาย ${death}</span>`;
+    }
+    document.getElementById('wd-row').innerHTML = html;
+  } catch(e) {
+    document.getElementById('wd-row').innerHTML = `<span class="wd-miss">Wikidata error: ${e.message}</span>`;
+  }
+}
+
+// ── Buffer ────────────────────────────────────────────────────
+function saveBuffer() {
+  localStorage.setItem('julian_scraper_buf', JSON.stringify(buffer));
+}
+
+function renderBuffer() {
+  const list = document.getElementById('buf-list');
+  const dlBtn = document.getElementById('btn-dl');
+  document.getElementById('chip-buf').textContent = `${buffer.length} records`;
+  dlBtn.disabled = buffer.length === 0;
+
+  if (!buffer.length) {
+    list.innerHTML = '<div id="buf-empty">ยังไม่มี record</div>';
+    return;
+  }
+  list.innerHTML = buffer.map((r, i) => `
+    <div class="buf-item">
+      <span class="buf-name">${r.name}</span>
+      <span class="buf-jd">${r.jd}</span>
+      <span class="buf-type type-${r.type}">${r.type}</span>
+      <button class="btn btn-del" data-i="${i}">ลบ</button>
+    </div>`).join('');
+  list.querySelectorAll('.btn-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      buffer.splice(+btn.dataset.i, 1);
+      saveBuffer();
+      renderBuffer();
+    });
+  });
+}
+
+document.getElementById('btn-add').addEventListener('click', () => {
+  const name = document.getElementById('f-name').value.trim();
+  const birthVal = document.getElementById('f-birth').value;
+  const jd = dateToJD(birthVal);
+
+  if (!name) { alert('กรุณาระบุชื่อ'); return; }
+  if (!jd) { alert('กรุณาระบุวันเกิดที่ถูกต้อง'); return; }
+
+  const deathVal = document.getElementById('f-death').value;
+  const deathJd = dateToJD(deathVal);
+  const relateId = deathJd ? [deathJd] : [];
+
+  const rec = {
+    jd,
+    name,
+    event_label: document.getElementById('f-label').value.trim() || null,
+    type: document.getElementById('f-type').value,
+    lat: +document.getElementById('f-lat').value || null,
+    lng: +document.getElementById('f-lng').value || null,
+    time_utc: document.getElementById('f-time').value.trim() || null,
+    relate_id: relateId,
+    source: document.getElementById('f-source').value.trim() || 'manual',
+    confidence: +document.getElementById('f-conf').value || 0.95,
+    notes: document.getElementById('f-notes').value.trim() || null
+  };
+
+  buffer.push(rec);
+  saveBuffer();
+  renderBuffer();
+
+  // clear date fields for next entry
+  document.getElementById('f-birth').value = '';
+  document.getElementById('f-death').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-label').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-time').value = '';
+  document.getElementById('f-source').value = 'wikipedia';
+  document.getElementById('jd-birth').textContent = 'JD: —';
+  document.getElementById('jd-death').textContent = 'JD: —';
+  document.getElementById('wd-row').innerHTML = '<span class="wd-miss">เพิ่มแล้ว — เลือกรายการถัดไปได้เลย</span>';
+});
+
+document.getElementById('btn-dl').addEventListener('click', () => {
+  const jsonl = buffer.map(r => JSON.stringify(r)).join('\n');
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([jsonl], {type: 'application/x-ndjson'})),
+    download: `julian_internet_${new Date().toISOString().slice(0,10)}.jsonl`
+  });
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+// init
+renderBuffer();
+</script>
+</body>
+</html>
