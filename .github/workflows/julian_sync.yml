@@ -72,6 +72,7 @@ jobs:
           echo "SQL preview (first 3 lines):"
           head -3 /tmp/import.sql
           wrangler d1 execute julian \
+            --config workers/julian_wrangler.toml \
             --file=/tmp/import.sql \
             --remote \
             --yes
@@ -92,7 +93,7 @@ jobs:
             git add workers/julian_scraped_*.jsonl || true
           fi
           git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})" || echo "Nothing to commit"
-          git push
+          git push origin HEAD:main
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
 
