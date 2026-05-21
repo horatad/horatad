@@ -1,0 +1,713 @@
+{
+  "generated": "2026-05-21T19:08:02.360Z",
+  "total": 400,
+  "by_category": [
+    {
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "cnt": 400
+    }
+  ],
+  "recent": [
+    {
+      "name": "สมชาย สุนทรวัฒน์",
+      "jd": 708259,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิภาต บุญศรี วังซ้าย",
+      "jd": 699910,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "สมุทร์ สหนาวิน",
+      "jd": 701854,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "สมพัฒน์ แก้วพิจิตร",
+      "jd": 716509,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Vilas Osathanon",
+      "jd": 693849,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "สถาพร มณีรัตน์",
+      "jd": 716658,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "So Sethaputra",
+      "jd": 695404,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "สันต์ศักด์ จรูญ งามพิเชษฐ์",
+      "jd": 708879,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "สันติ์ เทพมณี",
+      "jd": 704130,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ศรีสุข รุ่งวิสัย",
+      "jd": 716914,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ศิรินทร์ ธูปกล่ำ",
+      "jd": 707418,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิรัตน์ กัลยาศิริ",
+      "jd": 712166,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wirode Pao-In",
+      "jd": 705957,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Likhit Dhiravegin",
+      "jd": 709009,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ลุงขาวไขอาชีพ",
+      "jd": 704399,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วุฒิ สุโกศล",
+      "jd": 705591,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิชัย วงศ์ไชย",
+      "jd": 707783,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วีระวัฒน์ โอสถานุเคราะห์",
+      "jd": 708148,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Srimuang Charoensiri",
+      "jd": 709244,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิทย์ รายนานนท์",
+      "jd": 709244,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วินัย สมพงษ์",
+      "jd": 709609,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิเศษ จูภิบาล",
+      "jd": 710340,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วุฒิศักดิ์ ลาภเจริญทรัพย์",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Viroj Tangvarnich",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิบูลย์ แช่มชื่น",
+      "jd": 712166,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วันเพ็ญ พร้อมพัฒน์",
+      "jd": 712166,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wich Theamhasadin Na Ayuthaya",
+      "jd": 712457,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิวรรธนไชย ณ กาฬสินธุ์",
+      "jd": 712531,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิลาศ จันทร์พิทักษ์",
+      "jd": 712896,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วาสิต พยัคฆบุตร",
+      "jd": 713262,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Withaya Piwpong",
+      "jd": 713586,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wacharaphon Prasanrachakit",
+      "jd": 713627,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ศรีเรศ โกฎคำลือ",
+      "jd": 713992,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิชัย สังข์ประไพ",
+      "jd": 713992,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wittaya Kaewparadai",
+      "jd": 713992,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Radawan Wongsriwong",
+      "jd": 714357,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วุฒิชัย สงวนวงศ์ชัย",
+      "jd": 715088,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wisut Chaiyarun",
+      "jd": 715088,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ศันสนีย์ นาคพงศ์",
+      "jd": 715453,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วุฒิพงศ์ ฉายแสง",
+      "jd": 715453,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิฑูรย์ นามบุตร",
+      "jd": 715453,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วรวัจน์ เอื้ออภิญญกุล",
+      "jd": 715453,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Leena Jungjunja",
+      "jd": 715709,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วันชัย เจริญนนทสิทธิ์",
+      "jd": 715818,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wiraphong Ramangkun",
+      "jd": 709821,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Vicharn Minchaiynunt",
+      "jd": 716023,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ลินดา เชิดชัย",
+      "jd": 716184,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วิเชษฐ์ เกษมทองศรี",
+      "jd": 716549,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "La-ong Tiyapairat",
+      "jd": 716549,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Vachiramond Gunakasemtanawat",
+      "jd": 716914,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วันชัย บุษบา",
+      "jd": 717279,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วัชระ กรรณิการ์",
+      "jd": 717279,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วราเทพ รัตนากร",
+      "jd": 717279,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "วีรินทร์ทิรา นาทองบ่อจรัส",
+      "jd": 721297,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Weerasak Kowsurat",
+      "jd": 717645,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Wutthipong Nambut",
+      "jd": 720932,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บุญแก้ว สมวงศ์",
+      "jd": 719106,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "นุกูล แสงศิริ",
+      "jd": 719106,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "นพคุณ รัฐผไท",
+      "jd": 711435,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Boonsong Teriyaphirom",
+      "jd": 715818,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ธรรมวิชญ์ โพธิพิพิธ",
+      "jd": 719471,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "พร ธนะภูมิ",
+      "jd": 700254,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Phra Chuangkasetsinlapakan",
+      "jd": 693739,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Nai Vorakarnbancha",
+      "jd": 695173,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ปรีดา พัฒนถาบุตร",
+      "jd": 703765,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ปัญจะ เกสรทอง",
+      "jd": 705442,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Prasert Sapsunthorn",
+      "jd": 698779,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Pratin Santipraphop",
+      "jd": 706322,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บุญชง วีสมหมาย",
+      "jd": 705389,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Banyat Chanthasena",
+      "jd": 709974,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Punnawat Boonmee",
+      "jd": 708779,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "พงศกร เลาหวิเชียร",
+      "jd": 708837,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Thira Wongsamut",
+      "jd": 711435,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "นิพนธ์ ศศิธร",
+      "jd": 705624,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ปกรณ์ บูรณุปกรณ์",
+      "jd": 715396,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บุญรอด บิณฑสันต์",
+      "jd": 699382,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Pramuan Saphawasu",
+      "jd": 704097,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Boonthida Somchai",
+      "jd": 724621,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ปราโมทย์ นาครทรรพ",
+      "jd": 704861,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บุญพันธ์ แขวัฒนะ",
+      "jd": 704861,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "นริศร ทองธิราช",
+      "jd": 715818,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บดี จุณณานนท์",
+      "jd": 706687,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ประสงค์ บูรณ์พงศ์",
+      "jd": 707052,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Praphansak Kamonphet",
+      "jd": 707783,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ปรีชา มุสิกุล",
+      "jd": 707418,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Pramūan Rutčhanasērī",
+      "jd": 708148,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ประกอบ สังข์โต",
+      "jd": 709397,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ผณินทรา ภัคเกษม",
+      "jd": 708513,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Nukun Prachuapmo",
+      "jd": 704701,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บุญชู ตรีทอง",
+      "jd": 710340,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Prasopsuk Bundech",
+      "jd": 710340,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Prayuth Mahagitsiri",
+      "jd": 710674,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Piyasakol Sakolsatayadorn",
+      "jd": 711625,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ปิยะณัฐ วัชราภรณ์",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ประพันธ์ บูรณุปกรณ์",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "บัณฑูร สุภัควณิช",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "Phadung Limjaroenrat",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ธีรพล นพรัมภา",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ธารทอง ทองสวัสดิ์",
+      "jd": 711801,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    },
+    {
+      "name": "ประสงค์ โฆษิตานนท์",
+      "jd": 709609,
+      "event_label": "นักการเมืองไทย",
+      "country": "TH",
+      "confidence": 0.85
+    }
+  ]
+}
