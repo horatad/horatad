@@ -1,4 +1,4 @@
-// Version 3.0.8 | 2026-05-21
+// Version 3.0.9 | 2026-05-21
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -8,7 +8,7 @@
 
 import { get_lagna } from './engine.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
-import { match_rules, send_to_typhoon } from './typhoon.js';
+import { match_rules, send_to_typhoon, _ruleId } from './typhoon.js';
 
 // ── M8: แปลง compose_local_prediction() output → display text ──────────────
 function _renderComposed(predictions) {
@@ -36,6 +36,7 @@ const KB_PATH = './v3/kb.json?v=' + (window.APP_VERSION || '0');
 // ── State ─────────────────────────────────────────────────
 let _v3KbRules = null;
 let _v3Running = false;
+let _v3Mode = 'natal'; // 'natal' | 'transit' | 'both'
 
 // ── KB loader ─────────────────────────────────────────────
 async function _loadKb() {
@@ -96,11 +97,14 @@ function _showRulesPanel(matched, payload) {
     const domain = p.domain || '';
     const polClass = pol === '+' ? 'pol-pos' : pol === '-' ? 'pol-neg' : 'pol-neu';
     const polLabel = pol === '+' ? '+' : pol === '-' ? '−' : '~';
+    const rid = _ruleId(r);
     const row = document.createElement('div');
-    row.className = 'v3-rule-row';
+    row.className = 'v3-rule-row' + (r._isTransit ? ' transit-rule' : '');
     row.innerHTML =
+      `<span class="v3-rule-id">${_esc(rid)}</span>` +
       `<span class="v3-rule-pol ${polClass}">${polLabel}</span>` +
       `<span class="v3-rule-text">${_esc(r.c || '')}</span>` +
+      (r._isTransit ? '<span class="v3-rule-transit">จร</span>' : '') +
       (domain ? `<span class="v3-rule-domain">${_esc(domain)}</span>` : '');
     list.appendChild(row);
   });
@@ -114,16 +118,44 @@ function _showRulesPanel(matched, payload) {
 function _showInputPanel(sysPrompt, userPrompt) {
   const box = _el('v3-prompt-box');
   if (!box) return;
+  // แสดงแค่ rule IDs ที่ส่งไป Typhoon — ดูรายละเอียดใน Panel 1
+  const ruleIds = [...userPrompt.matchAll(/\[(R\d{3})\]/g)].map(m => m[1]);
   box.innerHTML =
-    '<span class="v3-prompt-section">── SYSTEM ──</span>\n' +
-    _esc(sysPrompt) +
-    '\n\n<span class="v3-prompt-section">── USER ──</span>\n' +
-    _esc(userPrompt);
+    '<span class="v3-prompt-section">── Rule IDs ที่ส่งไป Typhoon ──</span>\n' +
+    (ruleIds.length
+      ? _esc(ruleIds.join('  '))
+      : '(ไม่มี rule IDs)') +
+    '\n\n<span class="v3-prompt-section">── MODE ──</span>\n' +
+    _esc(userPrompt.match(/\(โหมด[^)]+\)/)?.[0] || '');
 }
 
 function _setInputPanelLocal() {
   const box = _el('v3-prompt-box');
   if (box) box.textContent = '— โหมดกฎท้องถิ่น ไม่ส่ง Typhoon —';
+}
+
+// กรอง matched rules ตาม mode
+function _filterByMode(matched) {
+  if (_v3Mode === 'natal')   return matched.filter(r => !r._isTransit);
+  if (_v3Mode === 'transit') return matched.filter(r =>  r._isTransit);
+  return matched; // 'both'
+}
+
+// อัปเดต toggle button UI
+function v3SetMode(mode) {
+  _v3Mode = mode;
+  ['natal','transit','both'].forEach(m => {
+    const b = _el('v3-m-' + m);
+    if (b) b.classList.toggle('on', m === mode);
+  });
+  _clearResult();
+}
+
+// transit label สำหรับ toast/badge
+function _transitLabel() {
+  const t = typeof getTransit === 'function' ? getTransit() : null;
+  if (!t) return null;
+  return (t.d && t.m && t.y_be) ? t.d + '/' + t.m + '/' + t.y_be : 'ดาวจร';
 }
 
 function _esc(s) {
@@ -174,12 +206,20 @@ async function v3Local() {
     const pos = natal.pos;
     const ascSign = get_lagna(pos);
     const payload = build_natal_payload(pos, ascSign);
-    const matched = match_rules(pos, ascSign, kbRules, null, payload);
+    const transit = typeof getTransit === 'function' ? getTransit() : null;
+    const transitPos = transit?.pos || null;
+    if (transitPos) payload._include_transit = true;
+    const allMatched = match_rules(pos, ascSign, kbRules, transitPos, payload);
+    const matched = _filterByMode(allMatched);
+    if (_v3Mode !== 'natal' && !transitPos) {
+      _showToastV3('ไม่มีข้อมูลดาวจร — กรุณาตั้งวันดาวจรที่แท็บ "วันนี้" ก่อน');
+    }
     const predictions = compose_local_prediction(matched, payload);
     _showSpinner(false);
     _showRulesPanel(matched, payload);
     _setInputPanelLocal();
-    _showResult(_renderComposed(predictions), false, '📋 กฎท้องถิ่น (' + matched.length + ' กฎ)');
+    const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';
+    _showResult(_renderComposed(predictions), false, `📋 กฎท้องถิ่น (${matched.length} กฎ) ${modeLabel}`);
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] local error:', err);
@@ -209,13 +249,21 @@ async function v3Typhoon() {
     const pos = natal.pos;
     const ascSign = get_lagna(pos);
     payload = build_natal_payload(pos, ascSign);
-    matched = match_rules(pos, ascSign, kbRules, null, payload);
+    const transit = typeof getTransit === 'function' ? getTransit() : null;
+    const transitPos = transit?.pos || null;
+    if (transitPos) payload._include_transit = true;
+    if (_v3Mode !== 'natal' && !transitPos) {
+      _showToastV3('ไม่มีข้อมูลดาวจร — กรุณาตั้งวันดาวจรที่แท็บ "วันนี้" ก่อน');
+    }
+    const allMatched = match_rules(pos, ascSign, kbRules, transitPos, payload);
+    matched = _filterByMode(allMatched);
     _showRulesPanel(matched, payload);
+    const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';
     const text = await send_to_typhoon(payload, matched, {
       onPromptReady: (sys, user) => _showInputPanel(sys, user)
     });
     _showSpinner(false);
-    _showResult(text, false, '🤖 Typhoon AI');
+    _showResult(text, false, `🤖 Typhoon AI ${modeLabel}`);
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
@@ -265,6 +313,7 @@ window.v3Local = v3Local;
 window.v3Typhoon = v3Typhoon;
 window.v3Copy = v3Copy;
 window.v3TogglePanel = v3TogglePanel;
+window.v3SetMode = v3SetMode;
 
 // ── Bootstrap ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {

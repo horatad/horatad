@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.4
-// Version 3.3.4 | 2026-05-21
+// HORATAD:SCRIPT:3.3.5
+// Version 3.3.5 | 2026-05-21
 // Changes: [V3.3.4] feat(HORATAD): V3 tab — 3-panel view (กฎ / Input Typhoon / Output)
 // Changes: [V3.3.3] fix(BIBLE): match_rules — house_lord_of (dynamic เจ้าเรือน), REFERENCE filter, fix planet_id=0 bug
 // Changes: [V3.3.1] feat: wire M8 compose_local_prediction → v3tab.js (✅/⚠️/📋 grouped, แทน render_fallback)
@@ -8,7 +8,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.4';
+const APP_VERSION='3.3.5';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -92,8 +92,9 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 let _era='BE';
 let natal1=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let natal2=null;  // outer ring chart
-// V3 bridge: expose natal1 ให้ ES module อ่านได้
+// V3 bridge: expose natal1 + _transitDate ให้ ES module อ่านได้
 function getNatal(){return natal1;}
+function getTransit(){return _transitDate;}
 let _chart2=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง

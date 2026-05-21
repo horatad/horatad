@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.4 -->
-<!-- Version 3.3.4 | 2026-05-21 -->
+<!-- HORATAD:INDEX:3.3.5 -->
+<!-- Version 3.3.5 | 2026-05-21 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.4">
+<link rel="stylesheet" href="style.css?v=3.3.5">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -64,14 +64,20 @@ canvas{max-width:100%;height:auto}
 .v3-panel-bd.open{display:block;}
 .v3-rules-list{display:flex;flex-direction:column;gap:4px;}
 .v3-rule-row{display:flex;gap:6px;align-items:flex-start;padding:4px 6px;border-radius:4px;background:#131320;}
+.v3-rule-row.transit-rule{background:#1a1a2e;}
+.v3-rule-id{font-size:.65rem;color:#475569;flex-shrink:0;font-family:monospace;margin-top:2px;min-width:36px;}
 .v3-rule-pol{font-size:.7rem;padding:1px 6px;border-radius:3px;flex-shrink:0;margin-top:1px;}
 .pol-pos{background:#14532d;color:#86efac;}
 .pol-neg{background:#450a0a;color:#fca5a5;}
 .pol-neu{background:#1e293b;color:#94a3b8;}
-.v3-rule-text{font-size:.78rem;color:#c9d1d9;line-height:1.4;}
+.v3-rule-text{font-size:.78rem;color:#c9d1d9;line-height:1.4;flex:1;}
 .v3-rule-domain{font-size:.68rem;color:#64748b;flex-shrink:0;}
-.v3-prompt-box{font-family:monospace;font-size:.72rem;white-space:pre-wrap;color:#94a3b8;line-height:1.5;max-height:280px;overflow-y:auto;}
+.v3-rule-transit{font-size:.65rem;padding:1px 5px;border-radius:3px;background:#1e3a5f;color:#93c5fd;flex-shrink:0;}
+.v3-prompt-box{font-family:monospace;font-size:.72rem;white-space:pre-wrap;color:#94a3b8;line-height:1.5;max-height:200px;overflow-y:auto;}
 .v3-prompt-section{color:#b8860b;font-weight:700;margin-top:.5rem;}
+.v3-mode-toggle{display:flex;gap:4px;padding:8px 0 4px;}
+.v3-mode-btn{flex:1;padding:5px 4px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#64748b;font-size:.75rem;cursor:pointer;}
+.v3-mode-btn.on{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd;font-weight:600;}
 </style>
 </head>
 <body>
@@ -80,7 +86,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.4</span>
+  <span class="brand-ver">V 3.3.5</span>
 </h1>
 
 <!-- Tab nav -->
@@ -228,7 +234,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.4</div>
+        <div class="about-version">V 3.3.5</div>
         <div class="about-update">อัปเดต 17 พ.ค. 2569 · เพิ่มกฎพยากรณ์ Suriyart</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -734,6 +740,13 @@ canvas{max-width:100%;height:auto}
     กรุณาผูกดวงที่แท็บ "กรอกข้อมูล" ก่อน แล้วกลับมาพยากรณ์ที่นี่
   </div>
 
+  <!-- mode toggle -->
+  <div class="v3-mode-toggle">
+    <button id="v3-m-natal"   class="v3-mode-btn on" onclick="v3SetMode('natal')">🏠 ดวงเดิม</button>
+    <button id="v3-m-transit" class="v3-mode-btn"    onclick="v3SetMode('transit')">🌐 ดวงจร</button>
+    <button id="v3-m-both"    class="v3-mode-btn"    onclick="v3SetMode('both')">⚡ ทั้งคู่</button>
+  </div>
+
   <!-- predict buttons -->
   <div style="display:flex;gap:.6rem;margin-bottom:1rem;">
     <button id="v3-btn-local" class="v3-btn-predict" style="flex:1;background:#1a6b3c;font-size:.9rem;" onclick="v3Local()">
@@ -796,8 +809,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.3.4"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.4"></script>
+<script src="script.js?v=3.3.5"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.5"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">

@@ -1,4 +1,4 @@
-// Version 3.0.6 | 2026-05-21
+// Version 3.0.7 | 2026-05-21
 // v3/typhoon.js — Typhoon API Connector
 // ห้าม hardcode ข้อความพยากรณ์
 // ห้าม hallucinate — ข้อความต้องมาจาก kb_context rules เท่านั้น
@@ -113,13 +113,15 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
   if(!kbRules||!pos)return[];
   const seen=new Set(), res=[];
 
-  function addRule(r){
+  function addRule(r,isTransit=false){
     const k=r.c+(r.ch||'');
-    if(!seen.has(k)){seen.add(k);res.push(r);}
+    if(!seen.has(k)){seen.add(k);res.push({...r,_isTransit:isTransit});}
   }
 
-  // กรอง REFERENCE rules ออก — เป็นกฎอธิบาย ไม่ใช่พยากรณ์
-  const predRules=kbRules.filter(r=>r.rule_type!=='REFERENCE');
+  // กรอง REFERENCE rules ออก + แนบ _kbIdx (index ใน kb.json) ให้ทุก rule
+  const predRules=kbRules
+    .map((r,i)=>({...r,_kbIdx:i}))
+    .filter(r=>r.rule_type!=='REFERENCE');
 
   // build planet aspect map จาก natalPayload ถ้ามี (เร็วกว่า re-compute)
   const effectsMap={};
@@ -185,21 +187,20 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
       if(_matchByConditions(r,pos,effectsMap,potentialsMap,ascSign))addRule(r);
     });
 
-  // ── transit matching (Q&A mode) ───────────────────────────────────────
-  if(transitPos&&natalPayload?._is_qa_mode){
+  // ── transit matching (Q&A mode หรือ _include_transit) ────────────────
+  if(transitPos&&(natalPayload?._is_qa_mode||natalPayload?._include_transit)){
     const TRANSIT_PLANETS=[10,7,3,8,5]; // MR,SA,MA,RA,JU
     for(const i of TRANSIT_PLANETS){
       const pName=PLANET_NAMES_TH[i];
       const pNameKB=_kbName(pName);
       const asp=compute_lagna_aspect(transitPos,i,ascSign);
       if(asp==='NONE')continue;
-      const aspTH=ASP_TH[asp];
       kbRules
         .filter(r=>{
           const ts=(r.t||[]).join(' ');
           return ts.includes('จร')&&ts.includes(pNameKB);
         })
-        .forEach(r=>addRule(r));
+        .forEach(r=>addRule(r,true));
     }
   }
 
@@ -213,6 +214,15 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
   return res.slice(0,MAX_RULES);
 }
 
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+// สร้าง rule ID อ้างอิง kb.json index — R001..R342
+export function _ruleId(r){
+  return r._kbIdx!=null
+    ?'R'+String(r._kbIdx+1).padStart(3,'0')
+    :'R???';
+}
+
 // ── Prompt builder ─────────────────────────────────────────────────────────
 
 /**
@@ -223,7 +233,8 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
 function build_prompt(natalPayload, matchedRules, isQA=false){
   // M8: tagged phrase cluster format — [polarity+domain] keywords
   const rulesText=matchedRules
-    .map((r,i)=>{
+    .map(r=>{
+      const rid=_ruleId(r);
       const pol=classify_rule_polarity(r);
       const domain=get_rule_domain(r,natalPayload);
       const tag=`[${pol}${domain?domain:'ทั่วไป'}]`;
@@ -233,7 +244,8 @@ function build_prompt(natalPayload, matchedRules, isQA=false){
         .split(/[\s,，]+/)
         .filter(p=>p.length>=3&&/[ก-๙]/.test(p))
         .join(', ');
-      return `• [R${String(i+1).padStart(2,'0')}]${tag} ${kws}`;
+      const transitMark=r._isTransit?'[จร]':'';
+      return `• [${rid}]${transitMark}${tag} ${kws}`;
     })
     .join('\n');
 
@@ -348,15 +360,15 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   }
 
   // M3: parse structured JSON + validate rule_ids ต้านการ hallucinate
-  const ruleIds=new Set(matchedRules.map((_,i)=>'R'+String(i+1).padStart(2,'0')));
+  const ruleIds=new Set(matchedRules.map(r=>_ruleId(r)));
   try{
     const m=raw.match(/\{[\s\S]*\}/);
     const parsed=JSON.parse(m?m[0]:raw);
     if(parsed.predictions&&Array.isArray(parsed.predictions)){
-      const texts=parsed.predictions
-        .filter(p=>ruleIds.has(p.rule_id)&&p.text)
-        .map(p=>p.text.trim());
-      if(texts.length>0)return texts.join('\n\n');
+      const valid=parsed.predictions.filter(p=>ruleIds.has(p.rule_id)&&p.text);
+      if(valid.length>0){
+        return valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n');
+      }
     }
   }catch(_){}
   return raw; // fallback: แสดง raw text ถ้า JSON parse ไม่ได้
