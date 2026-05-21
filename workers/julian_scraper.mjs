@@ -120,6 +120,14 @@ async function main() {
   try {
     bindings = await sparqlQuery(nextQuery.sparql);
     console.log(`Wikidata returned ${bindings.length} results`);
+    if (bindings.length > 0) {
+      // debug: ดู 3 แถวแรก
+      console.log('Sample:', JSON.stringify(bindings.slice(0, 3).map(b => ({
+        qid:   b.person?.value?.split('/').pop(),
+        name:  b.personLabel?.value,
+        birth: b.birth?.value,
+      }))));
+    }
   } catch (e) {
     console.error('Wikidata query failed:', e.message);
     ghOutput('status', 'error');
@@ -129,19 +137,20 @@ async function main() {
   // กรองและแปลงเป็น Internet Table records
   const seenSet = new Set(progress.seen_qids);
   const records  = [];
+  let skipNoName = 0, skipNoBirth = 0, skipSeen = 0;
 
   for (const b of bindings) {
     if (records.length >= limit) break;
 
     const qid  = b.person?.value?.split('/').pop();
-    if (!qid || seenSet.has(qid)) continue;
+    if (!qid || seenSet.has(qid)) { skipSeen++; continue; }
 
     const name = b.personLabel?.value?.trim();
     // ข้ามถ้าไม่มี label หรือ label เป็น QID (Wikidata ยังไม่มีชื่อ EN)
-    if (!name || /^Q\d+$/.test(name)) continue;
+    if (!name || /^Q\d+$/.test(name)) { skipNoName++; continue; }
 
     const birth = parseISODate(b.birth?.value);
-    if (!birth) continue;
+    if (!birth) { skipNoBirth++; continue; }
 
     const death       = parseISODate(b.death?.value);
     const countryCode = nextQuery.country || b.countryCode?.value || null;
@@ -168,6 +177,8 @@ async function main() {
 
     seenSet.add(qid);
   }
+
+  console.log(`Filter: ${records.length} kept, ${skipSeen} seen, ${skipNoName} no-name, ${skipNoBirth} no-birth`);
 
   if (records.length === 0) {
     console.log('No new records in this query — marking done');
@@ -203,7 +214,7 @@ async function main() {
     return qid && !new Set(progress.seen_qids.slice(0, -records.length)).has(qid);
   }).length <= records.length;
 
-  if (exhausted || bindings.length < CONFIG.RECORDS_PER_RUN) {
+  if (exhausted || bindings.length < CONFIG.MAX_PER_RUN) {
     progress.done_queries.push(nextQuery.id);
     console.log(`Query "${nextQuery.id}" exhausted → marked done`);
   }
