@@ -9,31 +9,46 @@
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
 #topbar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1e293b;border-bottom:1px solid #334155;flex-wrap:wrap}
 h1{font-size:.9rem;font-weight:700;color:#f8fafc;flex:1}
-.chip{font-size:.7rem;padding:2px 8px;border-radius:12px;white-space:nowrap}
-.chip-blue{background:#1e3a5f;color:#93c5fd}.chip-green{background:#14532d;color:#86efac}
-.chip-yellow{background:#3d2500;color:#fde68a}.chip-red{background:#3d0000;color:#fca5a5}
+.chip{font-size:.7rem;padding:2px 8px;border-radius:12px;white-space:nowrap;cursor:default}
+.chip-blue{background:#1e3a5f;color:#93c5fd}
+.chip-green{background:#14532d;color:#86efac}
+.chip-yellow{background:#3d2500;color:#fde68a}
 /* DROP ZONE */
 #drop-zone{margin:20px 14px;border:2px dashed #334155;border-radius:10px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
 #drop-zone:hover,#drop-zone.over{border-color:#3b82f6;background:#0f1f3d}
 #drop-zone p{color:#64748b;font-size:.85rem;margin-bottom:8px}
 #drop-zone strong{color:#94a3b8}
 #file-input{display:none}
-.btn{padding:6px 14px;border:none;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:600;transition:background .15s}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn-primary{background:#3b82f6;color:#fff}.btn-primary:hover{background:#2563eb}
-.btn-dl{background:#14532d;color:#86efac}.btn-dl:hover{background:#166534}
-.btn-sql{background:#1e3a5f;color:#93c5fd}.btn-sql:hover{background:#1e40af}
-/* STATS */
-#stats{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px}
+/* TOOLBAR */
+#toolbar{display:none;padding:8px 14px;background:#1e293b;border-bottom:1px solid #334155;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{padding:5px 12px;border:none;border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:600;transition:background .15s;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-sel{background:#334155;color:#e2e8f0}.btn-sel:hover{background:#475569}
+.btn-desel{background:#3d1a00;color:#fb923c}.btn-desel:hover{background:#7c2d00}
+.btn-dl{background:#14532d;color:#86efac}.btn-dl:hover:not(:disabled){background:#166534}
+.btn-sql{background:#1e3a5f;color:#93c5fd}.btn-sql:hover:not(:disabled){background:#1e40af}
+/* FILTER CHIPS */
+#cat-filter{display:none;padding:6px 14px;gap:6px;flex-wrap:wrap;align-items:center;border-bottom:1px solid #334155}
+#cat-filter span{font-size:.72rem;color:#64748b;margin-right:2px}
+.cat-chip{font-size:.72rem;padding:2px 9px;border-radius:10px;cursor:pointer;border:1px solid #334155;background:#1e293b;color:#94a3b8;transition:all .15s;user-select:none}
+.cat-chip.on{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
+/* SEARCH */
+#search-bar{display:none;padding:6px 14px;border-bottom:1px solid #334155}
+#search-bar input{width:100%;max-width:320px;background:#0f172a;border:1px solid #334155;color:#e2e8f0;padding:5px 10px;border-radius:6px;font-size:.82rem}
+#search-bar input:focus{outline:none;border-color:#3b82f6}
 /* TABLE */
-#preview-wrap{flex:1;overflow:auto;padding:10px 14px}
-table{border-collapse:collapse;font-size:.72rem;white-space:nowrap;min-width:100%}
-th{background:#1e293b;color:#64748b;padding:5px 8px;text-align:left;font-weight:600;border-bottom:1px solid #334155;position:sticky;top:0}
+#table-wrap{flex:1;overflow:auto}
+table{border-collapse:collapse;font-size:.73rem;white-space:nowrap;min-width:100%}
+thead th{background:#1e293b;color:#64748b;padding:5px 8px;text-align:left;font-weight:600;border-bottom:1px solid #334155;position:sticky;top:0;z-index:1}
 td{padding:3px 8px;border-bottom:1px solid #1a2236}
-.jd{color:#fde68a}.name{color:#e2e8f0;font-weight:500}.date{color:#a3e635}
-.lagna{color:#c084fc}.no-time{color:#475569;font-style:italic}
+tr.excluded td{opacity:.3}
+tr:hover td{background:#1a2236}
+.jd{color:#fde68a}.tname{color:#e2e8f0;font-weight:500}.date{color:#a3e635}
+.lagna{color:#c084fc}.no-val{color:#475569;font-style:italic}
+.cat{font-size:.68rem;padding:1px 6px;border-radius:3px;background:#1e293b;color:#94a3b8}
+input[type=checkbox]{accent-color:#3b82f6;width:14px;height:14px;cursor:pointer}
 /* BOTTOM */
-#bottom{padding:10px 14px;border-top:1px solid #334155;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#bottom{padding:8px 14px;border-top:1px solid #334155;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#1e293b}
 #status{font-size:.78rem;color:#64748b;flex:1}
 </style>
 </head>
@@ -41,36 +56,51 @@ td{padding:3px 8px;border-bottom:1px solid #1a2236}
 
 <div id="topbar">
   <h1>Hora DB Import — Internet Table Converter</h1>
-  <span id="chip-total" class="chip chip-blue">0 records</span>
-  <span id="chip-lagna" class="chip chip-green">0 มีลัคนา</span>
+  <span id="chip-sel" class="chip chip-green">0 selected</span>
+  <span id="chip-total" class="chip chip-blue">0 total</span>
   <span id="chip-notime" class="chip chip-yellow">0 ไม่มีเวลา</span>
 </div>
 
-<div id="drop-zone" id="dz">
+<div id="drop-zone">
   <p>ลาก Hora_DB_export.json มาวางที่นี่</p>
   <strong>หรือคลิกเพื่อเลือกไฟล์</strong>
   <input type="file" id="file-input" accept=".json">
 </div>
 
-<div id="stats"></div>
-<div id="preview-wrap"></div>
+<div id="cat-filter">
+  <span>Category:</span>
+</div>
+
+<div id="search-bar">
+  <input type="text" id="search-input" placeholder="ค้นหาชื่อ...">
+</div>
+
+<div id="toolbar">
+  <button class="btn btn-sel" id="btn-sel-all">เลือกทั้งหมด</button>
+  <button class="btn btn-desel" id="btn-desel-all">ยกเลิกทั้งหมด</button>
+  <div style="flex:1"></div>
+  <button class="btn btn-dl" id="btn-dl" disabled>⬇ JSONL (selected)</button>
+  <button class="btn btn-sql" id="btn-sql" disabled>⬇ SQL (selected)</button>
+</div>
+
+<div id="table-wrap"></div>
 
 <div id="bottom">
   <span id="status">รอไฟล์...</span>
-  <button class="btn btn-dl" id="btn-dl" disabled>⬇ Download JSONL</button>
-  <button class="btn btn-sql" id="btn-sql" disabled>⬇ Download SQL</button>
 </div>
 
 <script type="module">
 import { get_j, get_data } from '../v3/engine.js';
 
 const ZODIAC_TH = ['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
-let converted = null;
+let allRows = [];       // converted records
+let selected = new Set(); // indices of selected rows
+let activeCats = new Set();
+let searchQ = '';
 
-// ── Drop zone ────────────────────────────────────────────────
+// ── Drop / load ──────────────────────────────────────────────
 const dz = document.getElementById('drop-zone');
 const fi = document.getElementById('file-input');
-
 dz.addEventListener('click', () => fi.click());
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('over'));
@@ -81,12 +111,8 @@ function loadFile(file) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result);
-      process(data);
-    } catch(err) {
-      document.getElementById('status').textContent = 'JSON parse error: ' + err.message;
-    }
+    try { process(JSON.parse(e.target.result)); }
+    catch(err) { document.getElementById('status').textContent = 'JSON error: ' + err.message; }
   };
   reader.readAsText(file);
 }
@@ -94,127 +120,190 @@ function loadFile(file) {
 // ── Convert ──────────────────────────────────────────────────
 function process(data) {
   const records = data.memories || data;
-  if (!Array.isArray(records)) { document.getElementById('status').textContent = 'ไม่พบ memories array'; return; }
-
   const t0 = performance.now();
-  converted = records.map(r => {
+
+  allRows = records.map(r => {
     const y_ce = r.y_be - 543;
     const jd = get_j(r.d, r.m, y_ce);
-
     let lagna_sign = null, time_utc = null;
     if (r.t && /^\d{1,2}:\d{2}/.test(r.t)) {
       const [hr, mn] = r.t.split(':').map(Number);
       time_utc = `${String(hr).padStart(2,'0')}:${String(mn).padStart(2,'0')}`;
-      const lng = r.lng ?? 100.5;
-      const sp = get_data(r.d, r.m, y_ce, hr, mn, lng);
+      const sp = get_data(r.d, r.m, y_ce, hr, mn, r.lng ?? 100.5);
       lagna_sign = Math.trunc(sp[0] / 1800);
     }
-
     return {
-      jd,
-      name: r.name,
+      jd, name: r.name,
       event_label: (r.category && r.category !== 'ทั่วไป') ? r.category : null,
       type: 'human',
-      lat: r.lat || null,
-      lng: r.lng || null,
-      time_utc,
-      lagna_sign,
+      lat: r.lat || null, lng: r.lng || null,
+      time_utc, lagna_sign,
       relate_id: [],
       source: 'horatad_db',
       confidence: 0.9,
       notes: r.note ? r.note.slice(0, 300) : null,
+      _cat: r.category || 'ทั่วไป',
+      _date: `${r.d}/${r.m}/${y_ce}`,
     };
   });
 
+  // default: select all
+  selected = new Set(allRows.map((_, i) => i));
+
+  // collect categories
+  const cats = [...new Set(allRows.map(r => r._cat))].sort();
+  activeCats = new Set(cats);
+
+  // render category chips
+  const cf = document.getElementById('cat-filter');
+  cf.innerHTML = '<span>Category:</span>';
+  cats.forEach(cat => {
+    const chip = document.createElement('div');
+    chip.className = 'cat-chip on';
+    chip.textContent = `${cat} (${allRows.filter(r=>r._cat===cat).length})`;
+    chip.dataset.cat = cat;
+    chip.addEventListener('click', () => {
+      if (activeCats.has(cat)) activeCats.delete(cat);
+      else activeCats.add(cat);
+      chip.classList.toggle('on', activeCats.has(cat));
+      renderTable();
+    });
+    cf.appendChild(chip);
+  });
+
   const ms = (performance.now() - t0).toFixed(1);
-  const withLagna = converted.filter(r => r.lagna_sign !== null).length;
-  const noTime = converted.filter(r => !r.time_utc).length;
+  const noTime = allRows.filter(r => !r.time_utc).length;
 
-  document.getElementById('chip-total').textContent = `${converted.length} records`;
-  document.getElementById('chip-lagna').textContent = `${withLagna} มีลัคนา`;
+  document.getElementById('chip-total').textContent = `${allRows.length} total`;
   document.getElementById('chip-notime').textContent = `${noTime} ไม่มีเวลา`;
-  document.getElementById('status').textContent = `แปลงเสร็จ ${converted.length} records ใน ${ms}ms`;
+  document.getElementById('status').textContent = `แปลงเสร็จใน ${ms}ms — คัดออกรายการที่ไม่ต้องการก่อน export`;
   document.getElementById('drop-zone').style.display = 'none';
-  document.getElementById('btn-dl').disabled = false;
-  document.getElementById('btn-sql').disabled = false;
+  document.getElementById('cat-filter').style.display = 'flex';
+  document.getElementById('search-bar').style.display = 'block';
+  document.getElementById('toolbar').style.display = 'flex';
 
-  renderStats(records);
-  renderPreview(converted, records);
+  updateSelChip();
+  renderTable();
 }
 
-function renderStats(records) {
-  const cats = {};
-  records.forEach(r => { cats[r.category||'ไม่ระบุ'] = (cats[r.category||'ไม่ระบุ']||0)+1; });
-  const el = document.getElementById('stats');
-  el.innerHTML = Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v]) =>
-    `<span class="chip chip-blue">${k}: ${v}</span>`).join('');
+// ── Table ─────────────────────────────────────────────────────
+function visibleIndices() {
+  return allRows.reduce((acc, r, i) => {
+    const catOk = activeCats.has(r._cat);
+    const searchOk = !searchQ || r.name.toLowerCase().includes(searchQ);
+    if (catOk && searchOk) acc.push(i);
+    return acc;
+  }, []);
 }
 
-function renderPreview(rows, orig) {
-  const sample = rows.slice(0, 20);
+function renderTable() {
+  const vis = visibleIndices();
   let h = `<table><thead><tr>
-    <th>#</th><th>ชื่อ</th><th>วันเกิด CE</th><th>JD</th><th>เวลา</th><th>ลัคนา</th><th>lat</th><th>lng</th>
+    <th><input type="checkbox" id="chk-all" title="เลือก/ยกเลิกทั้งหมดที่เห็น"></th>
+    <th>#</th><th>ชื่อ</th><th>วันเกิด CE</th><th>JD</th><th>เวลา</th><th>ลัคนา</th><th>Category</th>
   </tr></thead><tbody>`;
-  sample.forEach((r, i) => {
-    const o = orig[i];
-    const date = `${o.d}/${o.m}/${o.y_be-543}`;
+
+  vis.forEach(i => {
+    const r = allRows[i];
+    const chk = selected.has(i);
     const lagnaCell = r.lagna_sign !== null
-      ? `<span class="lagna">ราศี${ZODIAC_TH[r.lagna_sign]} (${r.lagna_sign})</span>`
-      : `<span class="no-time">—</span>`;
-    h += `<tr>
-      <td>${i+1}</td>
-      <td class="name">${r.name}</td>
-      <td class="date">${date}</td>
+      ? `<span class="lagna">ราศี${ZODIAC_TH[r.lagna_sign]}</span>`
+      : `<span class="no-val">—</span>`;
+    h += `<tr class="${chk?'':'excluded'}" data-i="${i}">
+      <td><input type="checkbox" class="row-chk" data-i="${i}" ${chk?'checked':''}></td>
+      <td class="no-val">${i+1}</td>
+      <td class="tname">${r.name}</td>
+      <td class="date">${r._date}</td>
       <td class="jd">${r.jd}</td>
-      <td>${r.time_utc || '<span class="no-time">ไม่มี</span>'}</td>
+      <td>${r.time_utc || '<span class="no-val">—</span>'}</td>
       <td>${lagnaCell}</td>
-      <td>${r.lat ?? '—'}</td>
-      <td>${r.lng ?? '—'}</td>
+      <td><span class="cat">${r._cat}</span></td>
     </tr>`;
   });
-  h += `</tbody></table>`;
-  h += `<p style="font-size:.7rem;color:#475569;padding:6px 0">แสดง 20 แถวแรก จากทั้งหมด ${rows.length} แถว</p>`;
-  document.getElementById('preview-wrap').innerHTML = h;
+  h += '</tbody></table>';
+  document.getElementById('table-wrap').innerHTML = h;
+
+  // header checkbox state
+  const allVis = vis.every(i => selected.has(i));
+  document.getElementById('chk-all').checked = allVis && vis.length > 0;
+  document.getElementById('chk-all').indeterminate = !allVis && vis.some(i => selected.has(i));
+
+  // row checkbox events (delegated)
+  document.getElementById('table-wrap').addEventListener('change', e => {
+    if (e.target.classList.contains('row-chk')) {
+      const i = +e.target.dataset.i;
+      if (e.target.checked) selected.add(i); else selected.delete(i);
+      e.target.closest('tr').classList.toggle('excluded', !e.target.checked);
+      updateSelChip();
+    }
+    if (e.target.id === 'chk-all') {
+      visibleIndices().forEach(i => e.target.checked ? selected.add(i) : selected.delete(i));
+      renderTable();
+    }
+  }, {once: true});
 }
 
-// ── Download ─────────────────────────────────────────────────
+function updateSelChip() {
+  const n = selected.size;
+  document.getElementById('chip-sel').textContent = `${n} selected`;
+  document.getElementById('btn-dl').disabled = n === 0;
+  document.getElementById('btn-sql').disabled = n === 0;
+}
+
+// ── Toolbar ───────────────────────────────────────────────────
+document.getElementById('btn-sel-all').addEventListener('click', () => {
+  visibleIndices().forEach(i => selected.add(i));
+  renderTable(); updateSelChip();
+});
+document.getElementById('btn-desel-all').addEventListener('click', () => {
+  visibleIndices().forEach(i => selected.delete(i));
+  renderTable(); updateSelChip();
+});
+
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQ = e.target.value.trim().toLowerCase();
+  renderTable();
+});
+
+// ── Export ────────────────────────────────────────────────────
+function getSelected() {
+  return [...selected].sort((a,b)=>a-b).map(i => {
+    const {_cat, _date, ...rec} = allRows[i]; // strip internal fields
+    return rec;
+  });
+}
+
 function dlBlob(content, filename, mime) {
   const a = Object.assign(document.createElement('a'), {
     href: URL.createObjectURL(new Blob([content], {type: mime})),
     download: filename
   });
-  a.click();
-  URL.revokeObjectURL(a.href);
+  a.click(); URL.revokeObjectURL(a.href);
 }
 
-document.getElementById('btn-dl').addEventListener('click', () => {
-  if (!converted) return;
-  const jsonl = converted.map(r => JSON.stringify(r)).join('\n');
-  dlBlob(jsonl, 'hora_db_internet.jsonl', 'application/x-ndjson');
-});
-
-document.getElementById('btn-sql').addEventListener('click', () => {
-  if (!converted) return;
+function toSQL(rows) {
   const BATCH = 500;
-  const lines = ['-- Internet Table import from Hora DB', `-- ${converted.length} records\n`];
-  for (let i = 0; i < converted.length; i += BATCH) {
-    const batch = converted.slice(i, i + BATCH);
-    const vals = batch.map(r => {
-      const relate = JSON.stringify(r.relate_id);
-      return `(${[r.jd, s(r.name), s(r.event_label), s(r.type),
-        r.lat??'NULL', r.lng??'NULL', s(r.time_utc),
-        r.lagna_sign??'NULL', s(relate), s(r.source),
-        r.confidence, s(r.notes)].join(',')})`;
+  const lines = [`-- Internet Table import — ${rows.length} records\n`];
+  for (let i = 0; i < rows.length; i += BATCH) {
+    const vals = rows.slice(i, i+BATCH).map(r => {
+      const rel = JSON.stringify(r.relate_id);
+      return `(${[r.jd,s(r.name),s(r.event_label),s(r.type),
+        r.lat??'NULL',r.lng??'NULL',s(r.time_utc),
+        r.lagna_sign??'NULL',s(rel),s(r.source),r.confidence,s(r.notes)].join(',')})`;
     }).join(',\n  ');
     lines.push(`INSERT INTO internet (jd,name,event_label,type,lat,lng,time_utc,lagna_sign,relate_id,source,confidence,notes) VALUES\n  ${vals};\n`);
   }
-  dlBlob(lines.join('\n'), 'hora_db_internet.sql', 'text/plain');
-});
-
-function s(v) {
-  if (v === null || v === undefined) return 'NULL';
-  return `'${String(v).replace(/'/g,"''")}'`;
+  return lines.join('\n');
 }
+function s(v){return v==null?'NULL':`'${String(v).replace(/'/g,"''")}'`;}
+
+document.getElementById('btn-dl').addEventListener('click', () => {
+  const rows = getSelected();
+  dlBlob(rows.map(r=>JSON.stringify(r)).join('\n'), 'hora_db_internet.jsonl', 'application/x-ndjson');
+});
+document.getElementById('btn-sql').addEventListener('click', () => {
+  dlBlob(toSQL(getSelected()), 'hora_db_internet.sql', 'text/plain');
+});
 </script>
 </body>
 </html>
