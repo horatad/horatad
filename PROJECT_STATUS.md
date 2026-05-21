@@ -61,12 +61,11 @@
 - Tools: ✅ julian_keygen.html + julian_scraper.html | Mission docs: ✅ JULIAN_MISSION.md
 
 ### Next (Claude ทำได้)
-(ไม่มีงานเหลือที่ทำได้โดยไม่ต้องการ CF หรือ manual testing)
+- [ ] empirical_validator.html — รอ D1 + data ≥100 records
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ tools บนเบราว์เซอร์จริง (Wikipedia CORS, planet values)
-- [ ] [BLOCKED] CF D1 setup — storage + Worker API
-- [ ] [ทดลองใช้] กำหนด year range สำหรับ Master Key
+- [ ] [ทดลองใช้] ทดสอบ keygen + scraper ในเบราว์เซอร์ (verify JD=730428 และ Wikipedia CORS)
+- [ ] [BLOCKED] CF D1 setup → deploy julian_worker → import CSV (ขั้นตอนใน handoff)
 
 ### Handoff ล่าสุด
 `handoffs/JULIAN_20260521_v2.md`
