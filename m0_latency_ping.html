@@ -185,6 +185,7 @@ const BUILTIN = [
     id:'typhoon-cf', name:'Typhoon v2.5 30B', model:'typhoon-v2.5-30b-a3b-instruct',
     color:'#e74c3c', type:'openai', keyRef:null,
     baseUrl:'https://horatad-ai.uchujaro5.workers.dev',
+    noStream:true,  // CF Worker ไม่รองรับ streaming pass-through
   },
 ];
 
@@ -205,13 +206,14 @@ function buildHeaders(llm){
 }
 
 function buildOpenAIBody(llm, question, maxTokens, stream){
-  return JSON.stringify({
+  const body = {
     model: llm.model,
     messages:[{role:'system',content:SYSTEM},{role:'user',content:question}],
     max_tokens: maxTokens,
-    temperature: 0,
+    temperature: 0.1,  // 0 บางโมเดลไม่รองรับ (Gemma2)
     stream,
-  });
+  };
+  return JSON.stringify(body);
 }
 
 function buildGeminiBody(question, maxTokens){
@@ -263,6 +265,9 @@ async function runModeB(llm, question, timeout){
 // Mode C: streaming → TTFB (first token) + tokens/sec + decode time
 
 async function runModeC(llm, question, timeout){
+  // noStream: CF Worker ไม่รองรับ streaming → fallback non-stream, TTFB = total
+  if(llm.noStream) return runModeCNonStream(llm, question, timeout);
+
   const t0 = Date.now();
   const ctrl = new AbortController();
   const timer = setTimeout(()=>ctrl.abort(), timeout);
@@ -323,6 +328,32 @@ async function runModeC(llm, question, timeout){
 
     return {firstTokenMs, decodeMs, totalMs, fullText, estTokens, tokPerSec};
 
+  }catch(e){
+    clearTimeout(timer);
+    return {err:e.name==='AbortError'?`TIMEOUT >${timeout}ms`:e.message};
+  }
+}
+
+// Non-streaming fallback (สำหรับ noStream LLMs เช่น CF Worker)
+async function runModeCNonStream(llm, question, timeout){
+  const t0 = Date.now();
+  const ctrl = new AbortController();
+  const timer = setTimeout(()=>ctrl.abort(), timeout);
+  try{
+    const url = getUrl(llm, false);
+    const body = buildOpenAIBody(llm, question, MAX_TOKENS_FULL, false);
+    const r = await fetch(url,{method:'POST',headers:buildHeaders(llm),body,signal:ctrl.signal});
+    clearTimeout(timer);
+    if(!r.ok){
+      const txt = await r.text().catch(()=>'');
+      return {err:`HTTP ${r.status}: ${txt.slice(0,100)}`};
+    }
+    const d = await r.json();
+    const totalMs = Date.now()-t0;
+    const fullText = d?.choices?.[0]?.message?.content||'';
+    const estTokens = Math.max(1, Math.round(fullText.length/3));
+    // non-stream: TTFB ≈ total (ไม่รู้ first token จริง)
+    return {firstTokenMs:totalMs, decodeMs:0, totalMs, fullText, estTokens, tokPerSec:0, noStreamNote:true};
   }catch(e){
     clearTimeout(timer);
     return {err:e.name==='AbortError'?`TIMEOUT >${timeout}ms`:e.message};
@@ -450,15 +481,15 @@ async function pingOne(llm){
   }
 
   setCard(llm.id,'ok'); setDot(llm.id,'dot-ok');
-  $m(llm.id,'st',  '200 OK',                    'v-ok');
-  $m(llm.id,'ttfb',c.firstTokenMs+'ms',          'v-blue');
-  $m(llm.id,'dec', c.decodeMs+'ms',              'v-ok');
-  $m(llm.id,'total',c.totalMs+'ms',              'v-ok');
-  $m(llm.id,'spd', c.tokPerSec ? c.tokPerSec+' tok/s' : 'N/A');
-  $m(llm.id,'chars',`${c.fullText.length} / ~${c.estTokens} tok`);
+  $m(llm.id,'st',  '200 OK',  'v-ok');
+  $m(llm.id,'ttfb', c.noStreamNote ? c.firstTokenMs+'ms *' : c.firstTokenMs+'ms', 'v-blue');
+  $m(llm.id,'dec',  c.noStreamNote ? '— (non-stream)' : c.decodeMs+'ms', c.noStreamNote?'v-dim':'v-ok');
+  $m(llm.id,'total', c.totalMs+'ms', 'v-ok');
+  $m(llm.id,'spd',   c.tokPerSec ? c.tokPerSec+' tok/s' : c.noStreamNote ? '— *' : 'N/A');
+  $m(llm.id,'chars', `${c.fullText.length} / ~${c.estTokens} tok`);
 
   renderBar(llm.id, c.firstTokenMs, c.decodeMs, b.ms, c.totalMs);
-  $prev(llm.id, c.fullText || '(ไม่มี text)');
+  $prev(llm.id, (c.noStreamNote?'[non-stream] ':'') + (c.fullText||'(ไม่มี text)'));
 }
 
 async function pingAll(){
