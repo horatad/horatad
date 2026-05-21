@@ -26,6 +26,15 @@
 
 ---
 
+## 🔄 Version Policy — อัปเดตทันทีไม่ต้องถาม
+
+โปรเจคเพิ่งเริ่ม ไม่มี legacy — พบอะไรล้าสมัยให้แก้เลย:
+- GitHub Actions: Node.js, actions/checkout, actions/setup-node → ใช้ latest LTS เสมอ
+- npm package ใน workflow (`@latest`) → คงไว้ (pull latest ทุก run)
+- dependency ใน package.json (ถ้ามีในอนาคต) → bump minor/patch ได้เลย, major ถามก่อน
+
+---
+
 ## ⚠️ Claude Code Web vs CLI — ลำดับความสำคัญ
 
 **เมื่อรันบน Claude Code Web (harness มี system prompt ของตัวเอง):**
