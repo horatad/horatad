@@ -11,7 +11,7 @@
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
 - M3+M8 fallback chain ครบ: Typhoon fail → throw → compose_local_prediction()
 - Capture: QR bundle local ✅ | toast บอก location ✅ (V3.3.11)
-- JULIAN import: ✅ data/julian_all.json มีใน repo ([] placeholder, จะเติมจาก workflow) | empty message user-friendly ✅ (V3.3.12)
+- JULIAN import: ✅ data/julian_all.json มีใน repo (31,031 records) | empty message user-friendly ✅ (V3.3.12)
 
 ### Next (Claude ทำได้)
 (ไม่มี — รอ user actions ทั้งหมด)
@@ -61,14 +61,14 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | CF D1 online | Records: 436+/50,000 (รันทุก 6 ชั่วโมง)
-- Automation: ✅ 95 queries (15 category + 80 era 5-yr) | cron ทุก 6 ชม.
-- Export: ✅ D1 → `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
+- Schema: ✅ | JD: ✅ | Records: 31,031/50,000 (รันทุก 6 ชั่วโมง)
+- Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
+- Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
 - Astrotheme enrichment: ✅ เติม time_utc + lat/lng อัตโนมัติ
 
 ### Next (Claude ทำได้)
-(ไม่มี — automation ครบแล้ว รอข้อมูลสะสม 5-7 วัน)
+(ไม่มี — automation ครบแล้ว รอข้อมูลสะสม)
 
 ### Blocked (รอ user)
 (ไม่มี — automation รันเองได้ทั้งหมด)
@@ -102,7 +102,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD V3.3.12 | script.js, v3/*, index.html | 🟡 Pre-launch |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN 436+/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 
 ---
@@ -113,4 +113,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว*
