@@ -26,6 +26,7 @@ body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-heig
 .s-merge{background:#3b0764;color:#d8b4fe}.s-merge:hover{background:#4c0f82}
 .s-save{background:#14532d;color:#86efac}.s-save:hover{background:#166534}
 .s-full{background:#334155;color:#94a3b8;border:1px solid #475569}.s-full:hover{background:#475569}
+.s-restore{background:#431407;color:#fdba74;border:1px solid #7c2d12}.s-restore:hover{background:#7c2d12}
 
 /* FILTER ROW */
 #filter-row{display:flex;gap:6px;padding:8px 12px;background:#0f172a;border-bottom:1px solid #1e293b;overflow-x:auto;flex-shrink:0}
@@ -138,6 +139,7 @@ body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-heig
   <button class="strip-btn s-merge" onclick="document.getElementById('merge-file').click()">🔀 Merge Patch</button>
   <button class="strip-btn s-save" onclick="downloadPatch()">💾 Save Patch</button>
   <button class="strip-btn s-full" onclick="downloadFull()">⬇ Full kb.json</button>
+  <button class="strip-btn s-restore" onclick="downloadMaster()">🛟 Master backup</button>
 </div>
 
 <div id="filter-row">
@@ -559,9 +561,16 @@ function downloadFull(){
   dl(JSON.stringify(out,null,2),'kb.json','application/json');
 }
 
-function dl(content,filename,type){
+function downloadMaster(){
+  fetch('../v3/kb_master.json')
+    .then(r=>{ if(!r.ok)throw new Error('HTTP '+r.status); return r.blob(); })
+    .then(blob=>{ dl(URL.createObjectURL(blob),'kb_master.json','application/json',true); })
+    .catch(()=>alert('โหลด kb_master.json ไม่ได้ — ต้องเปิดผ่าน HTTP server'));
+}
+
+function dl(content,filename,type,isUrl){
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.href=isUrl?content:URL.createObjectURL(new Blob([content],{type}));
   a.download=filename; a.click();
 }
 
