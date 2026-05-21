@@ -22,7 +22,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260521_v2.md`
+`handoffs/HORATAD_20260521_v2.md`
 
 ---
 
@@ -49,7 +49,7 @@
 
 ### ไฟล์หลัก
 `v3/kb.json` | `v3/kb_master.json` | `v3/interpretation.js` | `v3/typhoon.js`
-`tools/kb_reviewer.html` | `MISSION_FINETUNE.md`
+`tools/kb_reviewer.html` | `docs/BIBLE_MISSION.md`
 
 ---
 
@@ -78,4 +78,10 @@
 | Empirical DB | JULIAN | v3/kb.json (schema) | 📋 Schema only |
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.4 | BIBLE handoff v2*
+## วิธีเริ่ม session ใหม่
+1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN**
+2. Claude อ่านไฟล์นี้ + `handoffs/<PROJECT>_*.md` ล่าสุด แล้วเริ่มงาน
+3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
+
+---
+*อัปเดตล่าสุด: 2026-05-21 | V3.3.4 | จัด file structure ใหม่*

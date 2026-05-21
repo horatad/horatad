@@ -86,12 +86,19 @@
 
 User ไม่อยากเฝ้า — ทุก session ทำตามนี้
 
+### Session scope (สำคัญ — อ่านก่อนเสมอ)
+- **ทุก session มี project scope 1 อย่าง**: HORATAD | BIBLE | JULIAN
+- User ประกาศ scope ตอนเริ่ม เช่น "session นี้ BIBLE"
+- ถ้าไม่ประกาศ → อ่าน `PROJECT_STATUS.md` แล้วเลือก project ที่มี PENDING สูงสุด
+- **Cross-project request**: ถ้า user ขอให้ทำงานนอก scope → **บันทึกลง handoff ของ project ปลายทาง แล้วแจ้ง user แต่ไม่ทำใน session นี้**
+  ตัวอย่าง: อยู่ใน BIBLE session แล้ว user พูดถึง HORATAD bug → note ลง `handoffs/HORATAD_*.md` + แจ้ง "บันทึกไว้ใน HORATAD แล้ว จะทำ session ถัดไป"
+
 ### Session lifecycle
-1. **เริ่ม** → อ่าน `CLAUDE.md` (ไฟล์นี้) + `session_handoff_*.md` ล่าสุด → เลือกงานสูงสุดที่ทำได้เอง
+1. **เริ่ม** → อ่าน `PROJECT_STATUS.md` + `handoffs/<PROJECT>_*.md` ล่าสุด → เลือกงานสูงสุดที่ทำได้เอง
 2. **ทำ** → code + test + verify (ภายใน sandbox)
 3. **Commit** → push feature branch + ff main + backup branch (`backup/vX.Y.Z`)
 4. **ถ้ามี task เหลือเวลา** → ทำต่อตาม priority list (loop ข้อ 2-3)
-5. **จบ session** → update / สร้าง `session_handoff_<date>_v<n>.md` ใหม่ ตาม template
+5. **จบ session** → อัปเดต `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md` + `PROJECT_STATUS.md`
 
 ### Priority algorithm (เลือกงานจาก handoff ลำดับนี้)
 1. **Bug ที่ Claude ทำได้** (ไม่ใช่ DEFERRED, ไม่ใช่ ทดลองใช้)
@@ -283,18 +290,45 @@ bump `X.Y.Z` พร้อมกัน **6 จุด**:
 
 ## Pending bugs / backlog
 
-ดู `session_handoff_*.md` (ไฟล์ล่าสุดของวัน) — ต้องจัดตาม **template ด้านล่าง** เพื่อให้ Claude เลือก task ได้เร็ว
+ดู `PROJECT_STATUS.md` (overview ทุก project) + `handoffs/<PROJECT>_*.md` ล่าสุดของ project นั้น
+
+---
+
+## โครงสร้างไฟล์ (file map)
+
+```
+CLAUDE.md                       ← Claude instructions (ไฟล์นี้)
+PROJECT_STATUS.md               ← overview ทุก project — อ่านก่อนทุก session
+DEPLOY.md                       ← deploy & git reference
+
+handoffs/
+  HORATAD_YYYYMMDD_vN.md       ← HORATAD session state
+  BIBLE_YYYYMMDD_vN.md         ← BIBLE session state
+  JULIAN_YYYYMMDD_vN.md        ← JULIAN session state (สร้างเมื่อมีงาน)
+  archive/                      ← session เก่า (อ่านอ้างอิงได้ ไม่ต้องแตะ)
+
+docs/
+  BIBLE_MISSION.md              ← BIBLE roadmap + milestone (เดิม MISSION_FINETUNE.md)
+  HORATAD_MANUAL.md             ← HORATAD working manual (เดิม HORATAD_WORKING_MANUAL.md)
+  CASE_STUDIES.md               ← PDCA experiment log
+  BEST_PRACTICES.md             ← deploy/git/test best practices
+  CHANGELOG.md                  ← version history
+  SYSTEM_INSTRUCTION_V3-4.md   ← Typhoon system prompt reference
+  system_overview.html          ← flowchart ภาพรวม 3 โครงการ
+```
 
 ---
 
 ## Handoff template (ใช้ทุก session)
 
-ไฟล์: `session_handoff_<YYYYMMDD>_v<n>.md` (n = session ที่เท่าไหร่ของวัน)
+ไฟล์: `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md`
+- `<PROJECT>` = HORATAD | BIBLE | JULIAN
+- `n` = session ที่เท่าไหร่ของวันนั้น
 
 ```markdown
-# Horatad — Session Handoff
+# <PROJECT> — Session Handoff
 # Date: YYYY-MM-DD (session N ของวัน)
-# Previous: <ชื่อไฟล์ก่อนหน้า>
+# Previous: handoffs/<PROJECT>_YYYYMMDD_vN.md
 
 ## STATE
 App version : VX.Y.Z (main + deployed)
@@ -309,20 +343,18 @@ Backups     : backup/vX.Y.Z, ...
 (เรียงตาม priority — บนสุดทำก่อน)
 
 ## PENDING — 🔴 [ทดลองใช้] / [BLOCKED]
-[ ] [ทดลองใช้] ทดสอบ VX.Y.Z บนมือถือ (V2.2.37 indicator, etc.)
+[ ] [ทดลองใช้] ทดสอบ VX.Y.Z บนมือถือ
 [ ] [ทดลองใช้] CF: deploy horatad-ai Worker
 [ ] [BLOCKED] req 16 รอไฟล์ historical-records.json
-[ ] [BLOCKED] req 17 รอ ephemeris reference data
 
 ## DEFERRED — รอ "รอบใหญ่" / dependency
-[ ] FLICKER (desktop only) — รอบใหญ่ + root cause horatad.com
-[ ] req 11 interp.js → Worker — รอ format นิ่ง
+[ ] req X — รอ format นิ่ง
 ```
 
 **กฎ:**
 - งาน DEFERRED **ห้าม** จับมาทำเอง — เป็น user decision
 - งาน ทดลองใช้ / BLOCKED **ห้าม** ถาม user — ปล่อยใน handoff รอ user resolve
-- หลังจบ task ให้ย้ายจาก PENDING → DONE ใน handoff เดิม หรือสร้าง handoff ใหม่ของ session ถัดไป
+- หลังจบ task ให้ย้ายจาก PENDING → DONE + อัปเดต `PROJECT_STATUS.md`
 
 ---
 
