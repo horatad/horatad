@@ -7,6 +7,10 @@ App version : V3.2.9 (main + deployed)
 Backups     : backup/v3.2.9, backup/v3.2.8, backup/v3.2.7, backup/v3.2.6
 
 ## DONE (session นี้)
+✓ M0: สร้าง m0_hallucination_test.html — 31 ข้อจาก KB ground truth, 3 LLMs parallel
+  - Gemini 2.0 Flash | Groq LLaMA 3.3 70B | iApp Chinda 4B
+  - scoring: keyword overlap (keys[] ต่อ rule) — ✅/⚠️/❌ + latency avg
+  - iApp endpoint: api.iapp.co.th/ai/v2/chat/completions (header: apikey)
 ✓ M1: match_rules() ใช้ conditions[] แทน t[] tag matching
   - _checkCondition() + _matchByConditions() — AND logic สำหรับ required conditions
   - rules ที่ไม่มี conditions[] fallback ไป t[] tag matching (backward compat)
@@ -19,9 +23,6 @@ Backups     : backup/v3.2.9, backup/v3.2.8, backup/v3.2.7, backup/v3.2.6
 ✓ Version bump V3.2.8 → V3.2.9 ครบ 6 จุด + deploy + backup/v3.2.9
 
 ## PENDING — 🟢 Claude ทำเองได้ (sandbox)
-[ ] M0: ขยาย hallucination test 6 → 20+ ข้อจาก KB rules ที่มี conditions verified
-    - สร้างใน MISSION_FINETUNE.md หรือ test file แยก
-    - ยังไม่ต้องการ API keys สำหรับขั้นออกแบบ test cases
 [ ] M1 refinement: ทดสอบว่า conditions[] matching ให้ผล rules ดีกว่า t[] หรือไม่
     - อาจเพิ่ม logging ใน match_rules() เพื่อ debug (flag: _debug=true)
 [ ] M3 refinement: ถ้า Typhoon ไม่ follow JSON format → เพิ่ม retry 1 ครั้ง ก่อน fallback raw text
@@ -33,8 +34,8 @@ Backups     : backup/v3.2.9, backup/v3.2.8, backup/v3.2.7, backup/v3.2.6
     - M1 conditions matching: ดู rules ที่แสดงใน "ดูกฎ local" — สมเหตุสมผลไหม
 [ ] [ทดลองใช้] fill_yaml_conditions retry — 58 rules ว่าง → bug fixed แล้ว
 [ ] [ทดลองใช้] CF: deploy horatad-ai Worker (wrangler บน machine user)
-[ ] [BLOCKED] สมัคร API Keys: Gemini (aistudio.google.com) + Groq (console.groq.com) + iApp (api.iapp.co.th)
-    - ใช้สำหรับ M0: Multi-LLM benchmark + cross-validation hallucination test
+[ ] [ทดลองใช้] รัน m0_hallucination_test.html — ใส่ API keys + กด Run All Tests → ดู score per LLM
+    - API keys พร้อม: Gemini / Groq / iApp ✅
 [ ] [BLOCKED] Phase 11: cloud sync — รอ server confirm
 [ ] [BLOCKED] QR URL privacy — รอ user ตัดสินใจ Option A/B
 

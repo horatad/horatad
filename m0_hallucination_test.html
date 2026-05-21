@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M0 — Multi-LLM Hallucination Test (Horatad)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#0f1117;color:#e0e0e0;font-size:14px;line-height:1.5}
+h1{padding:16px 20px;background:#1a1d27;border-bottom:1px solid #2a2d3a;font-size:18px;color:#fff}
+h1 span{font-size:12px;color:#666;margin-left:8px}
+.cfg{display:flex;gap:8px;padding:12px 20px;background:#13151f;border-bottom:1px solid #2a2d3a;flex-wrap:wrap;align-items:flex-end}
+.cfg label{font-size:11px;color:#888;display:block;margin-bottom:3px}
+.cfg input{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;width:220px;font-size:12px;font-family:monospace}
+.cfg input.wide{width:340px}
+.btn{padding:7px 16px;border-radius:5px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:opacity .15s}
+.btn-run{background:#4f6ef7;color:#fff}
+.btn-run:hover{opacity:.85}
+.btn-clear{background:#2a2d3a;color:#bbb}
+.btn-clear:hover{background:#333647}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.summary{display:flex;gap:12px;padding:10px 20px;background:#13151f;border-bottom:1px solid #2a2d3a;flex-wrap:wrap}
+.scard{background:#1a1d27;border:1px solid #2a2d3a;border-radius:6px;padding:8px 14px;min-width:140px}
+.scard .name{font-size:11px;color:#888;margin-bottom:2px}
+.scard .score{font-size:20px;font-weight:700}
+.scard .detail{font-size:11px;color:#666;margin-top:2px}
+.sc-g{color:#4caf87}
+.sc-y{color:#e0b04f}
+.sc-r{color:#e05555}
+.log{padding:8px 20px 4px;font-size:11px;color:#555;background:#0f1117}
+.log span{color:#4f6ef7}
+.tbl-wrap{overflow-x:auto;padding:0 20px 40px}
+table{width:100%;border-collapse:collapse;margin-top:12px;min-width:900px}
+thead th{background:#1a1d27;padding:8px 10px;text-align:left;font-size:12px;color:#888;border-bottom:2px solid #2a2d3a;position:sticky;top:0;z-index:1}
+tbody tr{border-bottom:1px solid #1e2130}
+tbody tr:hover{background:#141720}
+td{padding:8px 10px;font-size:12px;vertical-align:top}
+.td-q{color:#ccc;max-width:180px}
+.td-exp{color:#6c9;max-width:200px;font-size:11px}
+.td-ans{max-width:200px}
+.ans-text{color:#bbb;font-size:11px;line-height:1.4}
+.ans-wait{color:#444;font-style:italic}
+.ans-err{color:#e05555;font-size:11px}
+.badge{display:inline-block;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:700;margin-bottom:3px}
+.b-pass{background:#1e3a2a;color:#4caf87}
+.b-part{background:#3a2e10;color:#e0b04f}
+.b-fail{background:#3a1a1a;color:#e05555}
+.b-wait{background:#1a1d27;color:#555}
+.td-num{color:#555;text-align:center;width:30px;font-size:11px}
+.chapter{font-size:10px;color:#555;display:block}
+.prog{height:3px;background:#2a2d3a;border-radius:2px;margin:6px 20px}
+.prog-bar{height:3px;background:#4f6ef7;border-radius:2px;transition:width .3s;width:0}
+.notes{padding:8px 20px;font-size:11px;color:#555;border-top:1px solid #1e2130;margin-top:8px}
+.model-header{font-weight:700;color:#aaa}
+</style>
+</head>
+<body>
+<h1>🔬 M0 — Multi-LLM Hallucination Test <span>Thai Astrology (Suryayat) Knowledge Base</span></h1>
+
+<div class="cfg">
+  <div>
+    <label>Gemini API Key</label>
+    <input id="keyGemini" class="wide" type="text" placeholder="AIzaSy..." value="">
+  </div>
+  <div>
+    <label>Groq API Key</label>
+    <input id="keyGroq" class="wide" type="text" placeholder="gsk_..." value="">
+  </div>
+  <div>
+    <label>iApp API Key (Chinda)</label>
+    <input id="keyIapp" class="wide" type="text" placeholder="iapp_live_..." value="">
+  </div>
+  <div>
+    <button class="btn btn-run" id="btnRun" onclick="runAll()">▶ Run All Tests</button>
+    <button class="btn btn-clear" onclick="clearResults()" style="margin-left:6px">✕ Clear</button>
+  </div>
+</div>
+
+<div class="summary" id="summary">
+  <div class="scard">
+    <div class="name">📊 Total Questions</div>
+    <div class="score" id="s-total">—</div>
+    <div class="detail">from kb.json ground truth</div>
+  </div>
+  <div class="scard">
+    <div class="name">🔵 Gemini 2.0 Flash</div>
+    <div class="score sc-g" id="s-gemini">—</div>
+    <div class="detail" id="s-gemini-d">latency —</div>
+  </div>
+  <div class="scard">
+    <div class="name">🟣 Groq LLaMA 3.3 70B</div>
+    <div class="score sc-g" id="s-groq">—</div>
+    <div class="detail" id="s-groq-d">latency —</div>
+  </div>
+  <div class="scard">
+    <div class="name">🟠 iApp Chinda 4B</div>
+    <div class="score sc-g" id="s-iapp">—</div>
+    <div class="detail" id="s-iapp-d">latency —</div>
+  </div>
+</div>
+
+<div class="prog"><div class="prog-bar" id="progBar"></div></div>
+<div class="log" id="logLine">พร้อมรัน — กด "Run All Tests"</div>
+
+<div class="tbl-wrap">
+<table>
+<thead>
+<tr>
+  <th class="td-num">#</th>
+  <th style="min-width:160px">คำถาม (จาก KB)</th>
+  <th style="min-width:180px">เฉลย (KB ground truth)</th>
+  <th style="min-width:175px" class="model-header">🔵 Gemini Flash</th>
+  <th style="min-width:175px" class="model-header">🟣 Groq LLaMA</th>
+  <th style="min-width:175px" class="model-header">🟠 iApp Chinda</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="notes">
+  หมายเหตุ: คะแนน = keyword overlap กับเฉลย (KB) — ✅ ≥70% | ⚠️ 40–69% | ❌ &lt;40% &nbsp;|&nbsp;
+  iApp endpoint: api.iapp.co.th/ai/v2/chat/completions (OpenAI-compatible, header: apikey)
+</div>
+
+<script>
+// ── Test cases — 28 ข้อจาก kb.json ────────────────────────────────────────
+
+const TESTS = [
+  // ── Chapter 02: การโคจรของดาว ──
+  {ch:'chapter_02', q:'ดาวโคจรเร็วกว่าปกติ เรียกว่าอะไรในโหราศาสตร์ไทย?', ans:'เสริด', keys:['เสริด']},
+  {ch:'chapter_02', q:'ดาวโคจรช้าหรือถอยหลัง เรียกว่าอะไร?', ans:'พักร', keys:['พักร']},
+  {ch:'chapter_02', q:'ดาวเริ่มช้าแล้วโคจรย้อนวิถีหรืออยู่นานกว่าปกติ เรียกว่าอะไร?', ans:'มนท์', keys:['มนท์']},
+  {ch:'chapter_02', q:'ดาวราหู เกตุ โคจรในทิศทางใด และมีจริงหรือไม่?', ans:'โคจรทวนดาวอื่น (ตามเข็มนาฬิกา) — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง', keys:['ทวน','สมมุติ','ไม่มีจริง']},
+  {ch:'chapter_02', q:'ดาวเกตุ ราหู มฤตยู มีตำแหน่งเกษตรหรือไม่?', ans:'ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด', keys:['ไม่มีตำแหน่งเกษตร','ไม่เป็นดาวเจ้าเรือน']},
+
+  // ── Chapter 03: ภพ ──
+  {ch:'chapter_03', q:'ภพอริ ภพมรณะ ภพวินาศ ภพใดร้ายแรงที่สุด?', ans:'มรณะร้ายแรงที่สุด — สูญเสียโดยไม่ได้สิ่งตอบแทน', keys:['มรณะ','ร้ายแรงที่สุด']},
+  {ch:'chapter_03', q:'ดาวตกภพวินาศหมายความว่าอย่างไร?', ans:'หมดไปหรือจากไป แต่อาจยังมีสิ่งตอบแทน ไม่เสียเปล่า', keys:['หมดไป','สิ่งตอบแทน','ไม่เสียเปล่า']},
+
+  // ── Chapter 04: ดาวกุมลัคนา ──
+  {ch:'chapter_04', q:'ดาวอาทิตย์ (๑) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง', keys:['หยิ่ง','รักหน้า','อีโก้']},
+  {ch:'chapter_04', q:'ดาวจันทร์ (๒) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง', keys:['นุ่มนวล','อ่อนหวาน','เสน่ห์']},
+  {ch:'chapter_04', q:'ดาวอังคาร (๓) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ', keys:['ขยัน','แข็งกร้าว','ใจร้อน','กล้าหาญ']},
+  {ch:'chapter_04', q:'ดาวพุธ (๔) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร', keys:['ละเอียด','ช่างเจรจา','สื่อสาร']},
+  {ch:'chapter_04', q:'ดาวพฤหัส (๕) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี', keys:['คุณธรรม','เมตตา','ใจอ่อน']},
+  {ch:'chapter_04', q:'ดาวศุกร์ (๖) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'มีทักษะศิลปะ จินตนาการ เพ้อฝัน ชอบรื่นเริง ของสวยงาม', keys:['ศิลปะ','จินตนาการ','สวยงาม']},
+  {ch:'chapter_04', q:'ดาวเสาร์ (๗) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก', keys:['คิดมาก','อดทน','ทำงานหนัก']},
+  {ch:'chapter_04', q:'ดาวราหู (๘) กุมลัคนา บุคลิกเป็นอย่างไร?', ans:'ลุ่มหลงมัวเมา เล่ห์เหลี่ยม หลอกลวง กล้าเสี่ยง ชอบหุ้นหวย อบายมุข', keys:['เล่ห์เหลี่ยม','หลอกลวง','อบายมุข']},
+
+  // ── Chapter 06: คุณภาพดาว ──
+  {ch:'chapter_06', q:'ดาวอยู่ในราศีเกษตรของตนให้ผลอย่างไร?', ans:'มั่นคง แน่นอน อุดมสมบูรณ์ ให้ผลค่อยเป็นค่อยไปแต่มั่นคง', keys:['มั่นคง','อุดมสมบูรณ์']},
+  {ch:'chapter_06', q:'ดาวอยู่ในราศีประเกษตร (ตรงข้ามเกษตร) ให้ผลอย่างไร?', ans:'ไม่มั่นคง ขาดแคลน เสื่อมถอยช้าๆ ตกต่ำที่สุดในบั้นปลาย', keys:['ไม่มั่นคง','เสื่อมถอย','ตกต่ำ']},
+  {ch:'chapter_06', q:'ดาวอยู่ในราศีอุจให้ผลอย่างไร?', ans:'รุ่งโรจน์ อุดมสมบูรณ์ ได้มาด้วยความนิยม ให้คุณแรงและสม่ำเสมอ', keys:['รุ่งโรจน์','อุดมสมบูรณ์','ให้คุณแรง']},
+  {ch:'chapter_06', q:'ดาวอยู่ในราศีนิจ (ตรงข้ามอุจ) ให้ผลอย่างไร?', ans:'ด้อยต่ำ เสื่อมถอย ไม่ได้รับการยอมรับ ให้โทษไม่แรงแต่สม่ำเสมอ', keys:['ด้อยต่ำ','เสื่อมถอย','ไม่ยอมรับ']},
+  {ch:'chapter_06', q:'อุจจาวิลาสและอุจจาภิมุขให้คุณเท่าใดเมื่อเทียบกับอุจ?', ans:'ให้คุณประมาณ 60% ของอุจ', keys:['60%','อุจ']},
+  {ch:'chapter_06', q:'ดาวอยู่ในราศีมหาจักรให้ผลอย่างไร?', ans:'ให้คุณสูงมาก ผาดโผน รวดเร็ว ข้ามขั้นตอน แต่ไม่สม่ำเสมอ ได้ทรัพย์เป็นก้อนใหญ่', keys:['สูงมาก','ผาดโผน','ไม่สม่ำเสมอ']},
+
+  // ── Chapter 07-08: ธาตุ + มิตร-ศัตรู ──
+  {ch:'chapter_07', q:'ดาวธาตุเดียวกันสัมพันธ์กัน ผลเป็นอย่างไร?', ans:'เข้ากันได้สนิท เสริมกัน', keys:['เสริม','เข้ากันได้']},
+  {ch:'chapter_08', q:'คู่ดาวมิตรร่วมราศีหรือสัมพันธ์กัน (เช่น ๑-๕, ๒-๔) ผลเป็นอย่างไร?', ans:'ส่งเสริมกัน มีกำลังมากยิ่งขึ้น แม้เสาร์กับราหูก็ให้โชคใหญ่', keys:['ส่งเสริม','กำลังมาก']},
+  {ch:'chapter_08', q:'คู่ดาวศัตรูสัมพันธ์กัน (เช่น ๑-๓, ๒-๕) ผลเป็นอย่างไร?', ans:'บ่อนทำลายกัน อ่อนกำลังทั้งคู่ เกิดความขัดแย้ง', keys:['บ่อนทำลาย','อ่อนกำลัง','ขัดแย้ง']},
+
+  // ── Chapter 09: ความสัมพันธ์ดาว ──
+  {ch:'chapter_09', q:'ดาวกุมกัน (อยู่ราศีเดียวกัน) ส่งกำลังถึงกันกี่เปอร์เซ็นต์?', ans:'100%', keys:['100%']},
+  {ch:'chapter_09', q:'ดาวเล็งกัน (ตรงข้ามราศี) ส่งกำลังถึงกันกี่เปอร์เซ็นต์?', ans:'80%', keys:['80%']},
+  {ch:'chapter_09', q:'ดาวโยคกัน (นับได้ 3 หรือ 11 ราศี) ส่งกำลังถึงกันกี่เปอร์เซ็นต์?', ans:'60%', keys:['60%']},
+  {ch:'chapter_09', q:'ดาวตรีโกณกัน (นับได้ 5 หรือ 9 ราศี) ส่งกำลังถึงกันกี่เปอร์เซ็นต์?', ans:'50%', keys:['50%']},
+
+  // ── Chapter 10: กฎพิเศษ ──
+  {ch:'chapter_10', q:'เกษตร 2 ดวงเล็งกัน (ตรงข้ามกัน) กลายเป็นอะไร?', ans:'กลายเป็นประเกษตรทั้งคู่ — ดีก่อน ภายหลังเสื่อมถอย (กฎลบ-ลบ=บวก)', keys:['ประเกษตร','ดีก่อน','เสื่อมถอย']},
+  {ch:'chapter_10', q:'ประเกษตร 2 ดวงเล็งกัน กลายเป็นอะไร?', ans:'กลายเป็นเกษตรทั้งคู่ — ไม่ดีก่อน ภายหลังจึงดี', keys:['เกษตร','ไม่ดีก่อน','ภายหลังดี']},
+  {ch:'chapter_10', q:'อุจ 2 ดวงเล็งกัน กลายเป็นอะไร?', ans:'กลายเป็นนิจทั้งคู่ อาจล้มทั้งยืนหรือหักโค่นครั้งใหญ่', keys:['นิจ','ล้มทั้งยืน']},
+];
+
+const SYSTEM = `คุณคือผู้เชี่ยวชาญโหราศาสตร์ไทยแบบสุริยยาตร์ ตอบคำถามสั้น กระชับ ตรงประเด็น เป็นภาษาไทย
+ห้ามเพิ่มข้อมูลที่ไม่อยู่ในตำราโหราศาสตร์ไทย ตอบไม่เกิน 2 ประโยค`;
+
+function makeQ(q){ return `[คำถามโหราศาสตร์ไทยสุริยยาตร์]\n${q}\nตอบสั้นๆ ไม่เกิน 2 ประโยค`; }
+
+// ── Scoring ────────────────────────────────────────────────────────────────
+
+function score(answer, keys){
+  if(!answer) return 0;
+  const a = answer.toLowerCase();
+  let hit = 0;
+  for(const k of keys){
+    if(a.includes(k)) hit++;
+  }
+  return Math.round((hit/keys.length)*100);
+}
+
+function badge(sc){
+  if(sc===null) return '<span class="badge b-wait">…</span>';
+  if(sc>=70) return `<span class="badge b-pass">✅ ${sc}%</span>`;
+  if(sc>=40) return `<span class="badge b-part">⚠️ ${sc}%</span>`;
+  return `<span class="badge b-fail">❌ ${sc}%</span>`;
+}
+
+// ── API calls ──────────────────────────────────────────────────────────────
+
+async function callGemini(key, question){
+  const t0 = Date.now();
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+  const body = {
+    system_instruction:{parts:[{text:SYSTEM}]},
+    contents:[{role:'user',parts:[{text:makeQ(question)}]}],
+    generationConfig:{maxOutputTokens:200,temperature:0.1},
+  };
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const d = await r.json();
+  const text = d?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  return {text, ms: Date.now()-t0};
+}
+
+async function callGroq(key, question){
+  const t0 = Date.now();
+  const url = 'https://api.groq.com/openai/v1/chat/completions';
+  const body = {
+    model:'llama-3.3-70b-versatile',
+    messages:[{role:'system',content:SYSTEM},{role:'user',content:makeQ(question)}],
+    max_tokens:200, temperature:0.1,
+  };
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(`HTTP ${r.status}`);
+  const d = await r.json();
+  const text = d?.choices?.[0]?.message?.content || '';
+  return {text, ms: Date.now()-t0};
+}
+
+async function callIapp(key, question){
+  const t0 = Date.now();
+  const url = 'https://api.iapp.co.th/ai/v2/chat/completions';
+  const body = {
+    model:'chinda-qwen3-4b',
+    messages:[{role:'system',content:SYSTEM},{role:'user',content:makeQ(question)}],
+    max_tokens:200, temperature:0.1,
+  };
+  const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','apikey':key},body:JSON.stringify(body)});
+  if(!r.ok){
+    const txt = await r.text().catch(()=>'');
+    throw new Error(`HTTP ${r.status}: ${txt.slice(0,80)}`);
+  }
+  const d = await r.json();
+  const text = d?.choices?.[0]?.message?.content || '';
+  return {text, ms: Date.now()-t0};
+}
+
+// ── UI helpers ─────────────────────────────────────────────────────────────
+
+function initTable(){
+  const tb = document.getElementById('tbody');
+  tb.innerHTML = '';
+  TESTS.forEach((t,i)=>{
+    const tr = document.createElement('tr');
+    tr.id = 'row-'+i;
+    tr.innerHTML = `
+      <td class="td-num">${i+1}</td>
+      <td class="td-q"><span class="chapter">${t.ch}</span>${t.q}</td>
+      <td class="td-exp">${t.ans}</td>
+      <td class="td-ans" id="ans-g-${i}"><span class="ans-wait">รอ…</span></td>
+      <td class="td-ans" id="ans-r-${i}"><span class="ans-wait">รอ…</span></td>
+      <td class="td-ans" id="ans-i-${i}"><span class="ans-wait">รอ…</span></td>
+    `;
+    tb.appendChild(tr);
+  });
+  document.getElementById('s-total').textContent = TESTS.length;
+}
+
+function setCell(id, text, sc){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const truncated = text.length>180 ? text.slice(0,180)+'…' : text;
+  el.innerHTML = badge(sc)+'<div class="ans-text">'+escHtml(truncated)+'</div>';
+}
+
+function setErr(id, msg){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.innerHTML = `<span class="ans-err">⚠️ ${escHtml(msg)}</span>`;
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function setLog(msg){ document.getElementById('logLine').innerHTML = msg; }
+function setProgress(n,total){ document.getElementById('progBar').style.width = (n/total*100)+'%'; }
+
+// ── Main runner ────────────────────────────────────────────────────────────
+
+let running = false;
+const stats = {
+  g:{scores:[],ms:[]},
+  r:{scores:[],ms:[]},
+  i:{scores:[],ms:[]},
+};
+
+async function runAll(){
+  if(running) return;
+  running = true;
+  document.getElementById('btnRun').disabled = true;
+
+  const keyG = document.getElementById('keyGemini').value.trim();
+  const keyR = document.getElementById('keyGroq').value.trim();
+  const keyI = document.getElementById('keyIapp').value.trim();
+
+  stats.g={scores:[],ms:[]}; stats.r={scores:[],ms:[]}; stats.i={scores:[],ms:[]};
+  initTable();
+
+  let done = 0;
+  setProgress(0, TESTS.length);
+
+  for(let i=0; i<TESTS.length; i++){
+    const t = TESTS[i];
+    setLog(`กำลังทดสอบข้อ ${i+1}/${TESTS.length}: <span>${escHtml(t.q.slice(0,50))}…</span>`);
+
+    // Run all 3 in parallel
+    const promises = [
+      keyG ? callGemini(keyG, t.q).catch(e=>({text:'', err:e.message, ms:0})) : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
+      keyR ? callGroq(keyR, t.q).catch(e=>({text:'', err:e.message, ms:0})) : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
+      keyI ? callIapp(keyI, t.q).catch(e=>({text:'', err:e.message, ms:0})) : Promise.resolve({text:'', err:'ไม่มี key', ms:0}),
+    ];
+
+    const [rG, rR, rI] = await Promise.all(promises);
+
+    // Gemini
+    if(rG.err && !rG.text){ setErr(`ans-g-${i}`, rG.err); stats.g.scores.push(0); }
+    else { const sc=score(rG.text, t.keys); setCell(`ans-g-${i}`, rG.text, sc); stats.g.scores.push(sc); stats.g.ms.push(rG.ms); }
+
+    // Groq
+    if(rR.err && !rR.text){ setErr(`ans-r-${i}`, rR.err); stats.r.scores.push(0); }
+    else { const sc=score(rR.text, t.keys); setCell(`ans-r-${i}`, rR.text, sc); stats.r.scores.push(sc); stats.r.ms.push(rR.ms); }
+
+    // iApp
+    if(rI.err && !rI.text){ setErr(`ans-i-${i}`, rI.err); stats.i.scores.push(0); }
+    else { const sc=score(rI.text, t.keys); setCell(`ans-i-${i}`, rI.text, sc); stats.i.scores.push(sc); stats.i.ms.push(rI.ms); }
+
+    done++;
+    setProgress(done, TESTS.length);
+    updateSummary();
+
+    // small delay to avoid rate limit
+    if(i < TESTS.length-1) await new Promise(r=>setTimeout(r,300));
+  }
+
+  setLog(`✅ เสร็จแล้ว — ${TESTS.length} ข้อ`);
+  running = false;
+  document.getElementById('btnRun').disabled = false;
+}
+
+function avg(arr){ return arr.length ? Math.round(arr.reduce((a,b)=>a+b,0)/arr.length) : 0; }
+
+function scoreColor(v){
+  if(v>=70) return 'sc-g';
+  if(v>=40) return 'sc-y';
+  return 'sc-r';
+}
+
+function updateSummary(){
+  const models = [
+    {key:'g', elId:'s-gemini', dId:'s-gemini-d'},
+    {key:'r', elId:'s-groq',   dId:'s-groq-d'},
+    {key:'i', elId:'s-iapp',   dId:'s-iapp-d'},
+  ];
+  for(const m of models){
+    const s = stats[m.key];
+    const av = avg(s.scores);
+    const el = document.getElementById(m.elId);
+    el.textContent = s.scores.length ? av+'%' : '—';
+    el.className = 'score '+scoreColor(av);
+    const ms = s.ms.length ? avg(s.ms)+'ms' : '—';
+    document.getElementById(m.dId).textContent = `latency avg ${ms} | n=${s.scores.length}`;
+  }
+}
+
+function clearResults(){
+  if(running) return;
+  document.getElementById('tbody').innerHTML = '';
+  stats.g={scores:[],ms:[]}; stats.r={scores:[],ms:[]}; stats.i={scores:[],ms:[]};
+  ['s-gemini','s-groq','s-iapp'].forEach(id=>{
+    document.getElementById(id).textContent='—';
+    document.getElementById(id).className='score sc-g';
+  });
+  ['s-gemini-d','s-groq-d','s-iapp-d'].forEach(id=>document.getElementById(id).textContent='latency —');
+  document.getElementById('s-total').textContent='—';
+  document.getElementById('logLine').textContent='พร้อมรัน — กด "Run All Tests"';
+  document.getElementById('progBar').style.width='0';
+}
+</script>
+</body>
+</html>
