@@ -168,6 +168,7 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 /* ── Memory / Event popup ───────────────────────────────── */
 .memory-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:999}
 .memory-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1e2328;border:1px solid #444;border-radius:14px;padding:14px 16px 14px;z-index:1000;width:min(480px,92vw);max-height:84vh;display:flex;flex-direction:column;box-shadow:0 8px 32px rgba(0,0,0,0.6)}
+@supports (height:1dvh){.memory-modal{top:50dvh;max-height:84dvh}}
 .memory-title{text-align:center;font-size:13px;color:#c9d1d9;font-weight:500;margin-bottom:10px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
 .memory-search{margin-top:0;margin-bottom:8px;height:32px;font-size:13px;padding:4px 10px;background:#0d1117;color:#c9d1d9;border:0.5px solid #444;border-radius:6px;outline:none;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;width:100%}
 .memory-search:focus{border-color:#666}
