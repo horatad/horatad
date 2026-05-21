@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.10
-// Version 3.3.10 | 2026-05-21
+// HORATAD:SCRIPT:3.3.11
+// Version 3.3.11 | 2026-05-21
+// Changes: [V3.3.11] fix: QR ใน capture — bundle qrcode.min.js, fix qrDiv pos, เพิ่ม toast location
 // Changes: [V3.3.10] fix(about): ลบ section ปรัชญาการพัฒนา, about page full-screen layout
 // Changes: [V3.3.9] fix: JULIAN URL→raw.githubusercontent, no autofocus search, swap transit fn, lunar restore content
 // Changes: [V3.3.8] feat(UX): 8 changes — import choice, DB1 sort, pin fix, tag delete, toggle btns, nav view btn, lunar cleanup
@@ -12,7 +13,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.10';
+const APP_VERSION='3.3.11';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1343,6 +1344,7 @@ async function saveChart(){
   if(navigator.canShare&&navigator.canShare({files:[file]})){
     try{
       await navigator.share({files:[file],title:'ดวงชะตา Horatad'});
+      _showToast('บันทึกรูปแล้ว — ดูใน Photos หรือ Files');
       return;
     }catch(e){if(e.name==='AbortError')return;}
   }
@@ -1352,7 +1354,7 @@ async function saveChart(){
   document.body.appendChild(a);a.click();
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
-  _showToast('บันทึกรูปแล้ว');
+  _showToast('บันทึกรูปแล้ว — ดูใน Downloads');
 }
 
 async function shareChart(){
@@ -1366,20 +1368,19 @@ async function shareChart(){
   if(navigator.canShare&&navigator.canShare({files:[file]})){
     try{
       await navigator.share({files:[file],title:'ดวงชะตา Horatad',text:`${active.name} ${active.d}/${active.m}/${active.y_be}`});
+      _showToast('แชร์แล้ว — ดูใน Photos หรือ Files');
       return;
     }catch(e){
       if(e.name==='AbortError')return;
-      // fall through to download fallback
     }
   }
-  // Fallback: download
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
   a.href=url;a.download=filename;
   document.body.appendChild(a);a.click();
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
-  _showToast('เบราว์เซอร์ไม่รองรับแชร์ — บันทึกไฟล์แทน');
+  _showToast('บันทึกรูปแล้ว — ดูใน Downloads');
 }
 
 // ── H2 QR signing (HMAC-SHA256, L2 security) ─────────────
@@ -1394,12 +1395,11 @@ async function _verifyH2(dataStr,hmac){
   try{return(await _hmac8(dataStr))===hmac;}catch{return false;}
 }
 
-// V2.2.24: load qrcode.js on-demand (not in CORE_ASSETS)
 async function _loadQRLib(){
   if(window.QRCode)return;
   await new Promise((res,rej)=>{
     const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+    s.src='./qrcode.min.js?v='+APP_VERSION;
     s.onload=res;s.onerror=rej;
     document.head.appendChild(s);
   });
@@ -1460,7 +1460,7 @@ async function _generateShareImage(active){
     const hmac=await _hmac8(dataStr);
     const qrText=`https://horatad.github.io/horatad/?h=H2|${hmac}|${dataStr}`;
     const qrDiv=document.createElement('div');
-    qrDiv.style.cssText='position:fixed;left:-9999px;top:-9999px';
+    qrDiv.style.cssText='position:fixed;left:0;top:0;opacity:0;pointer-events:none;z-index:-1';
     document.body.appendChild(qrDiv);
     // V2.2.42: ECC H → M เพราะ Thai UTF-8 (3 bytes/char) ทำ payload โต → H overflow
     new QRCode(qrDiv,{text:qrText,width:250,height:250,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.M:undefined});
