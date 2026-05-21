@@ -21,7 +21,6 @@ input[type=number]:focus{outline:none;border-color:#3b82f6}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn-gen{background:#3b82f6;color:#fff}.btn-gen:hover:not(:disabled){background:#2563eb}
 .btn-csv{background:#14532d;color:#86efac}.btn-csv:hover{background:#166534}
-.btn-jsonl{background:#1e3a5f;color:#93c5fd}.btn-jsonl:hover{background:#1e40af}
 #prog-wrap{padding:12px 14px;display:none}
 .prog-bg{background:#334155;border-radius:4px;height:6px;margin-bottom:6px}
 .prog-fill{height:6px;background:#3b82f6;border-radius:4px;transition:width .1s;width:0}
@@ -66,8 +65,7 @@ td:first-child,td:nth-child(2){text-align:left}
 <div id="status"></div>
 
 <div id="dl-wrap">
-  <button class="btn btn-csv" id="btn-csv">⬇ CSV</button>
-  <button class="btn btn-jsonl" id="btn-jsonl">⬇ JSONL</button>
+  <button class="btn btn-csv" id="btn-csv">⬇ Download CSV</button>
 </div>
 
 <div id="preview-wrap"></div>
@@ -141,14 +139,6 @@ function toCSV(data) {
   return hdr + '\n' + data.map(r => [r.jd, r.date_ce, ...r.planets].join(',')).join('\n');
 }
 
-function toJSONL(data) {
-  return data.map(r => {
-    const obj = {jd: r.jd, date_ce: r.date_ce};
-    PLANETS.forEach((k, i) => { obj[k] = r.planets[i]; });
-    return JSON.stringify(obj);
-  }).join('\n');
-}
-
 document.getElementById('btn-gen').addEventListener('click', async () => {
   const yStart = +document.getElementById('y-start').value;
   const yEnd = +document.getElementById('y-end').value;
@@ -185,12 +175,6 @@ document.getElementById('btn-csv').addEventListener('click', () => {
   dlBlob(toCSV(rows), `julian_mk_${ys}-${ye}.csv`, 'text/csv');
 });
 
-document.getElementById('btn-jsonl').addEventListener('click', () => {
-  if (!rows) return;
-  const ys = document.getElementById('y-start').value;
-  const ye = document.getElementById('y-end').value;
-  dlBlob(toJSONL(rows), `julian_mk_${ys}-${ye}.jsonl`, 'application/x-ndjson');
-});
 </script>
 </body>
 </html>
