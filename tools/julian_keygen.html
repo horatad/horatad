@@ -145,7 +145,11 @@ function toCSV(data) {
 }
 
 function toJSONL(data) {
-  return data.map(r => JSON.stringify({jd: r.jd, date_ce: r.date_ce, planets: r.planets})).join('\n');
+  return data.map(r => {
+    const obj = {jd: r.jd, date_ce: r.date_ce};
+    PLANETS.forEach((k, i) => { obj[k] = r.planets[i]; });
+    return JSON.stringify(obj);
+  }).join('\n');
 }
 
 document.getElementById('btn-gen').addEventListener('click', async () => {

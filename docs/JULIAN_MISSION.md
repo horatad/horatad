@@ -16,31 +16,39 @@
 ## Architecture — 2 ตาราง
 
 ### Master Key Table
+```sql
+CREATE TABLE master_key (
+  jd  INTEGER PRIMARY KEY,   -- HORATAD internal JD (Jan 1 2000 CE = 730428)
+  su  REAL, mo REAL, ma REAL, me REAL, ju REAL,
+  ve  REAL, sa REAL, ra REAL, ke REAL, mr REAL
+  -- degrees 0-360, hr=0 lng=100.5 (Bangkok midnight)
+  -- ไม่เก็บลัคนา: เคลื่อน 30°/ชม. ใช้ date-only ไม่ได้
+);
 ```
-jd        INTEGER PRIMARY KEY   ← HORATAD internal JD (get_j(d,m,y_ce), Jan 1 2000 CE = 730428)
-planets   TEXT                  ← JSON array[10] degrees (0-360)
-                                   [0]=SU [1]=MO [2]=MA [3]=ME [4]=JU
-                                   [5]=VE [6]=SA [7]=RA [8]=KE [9]=MR
-                                   hr=0, lng=100.5 (Bangkok midnight)
-```
+**keygen output:** CSV (flat columns) และ JSONL (flat keys su/mo/..) ← D1-import ready โดยตรง
 - 1 row ต่อ 1 วัน — เก็บล่วงหน้า ไม่คำนวณซ้ำ
 - แปลงจาก engine.js: `deg = sp[i] / 60` (unit 21600/circle → 360)
 
 ### Internet Table
+```sql
+CREATE TABLE internet (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  jd          INTEGER NOT NULL,        -- FK → master_key (วันเกิด/เหตุการณ์)
+  name        TEXT,
+  event_label TEXT,                    -- หมวดหมู่ เช่น "นายกรัฐมนตรี"
+  type        TEXT,                    -- "human" | "event"
+  lat         REAL,
+  lng         REAL,
+  time_utc    TEXT,                    -- HH:MM หรือ null
+  lagna_sign  INTEGER,                 -- 0-11 (คำนวณจาก time_utc+lng) หรือ null
+  relate_id   TEXT,                    -- JSON array of JD เช่น [death_jd]
+  source      TEXT,                    -- "wikipedia:en:TITLE" | "manual"
+  confidence  REAL,                    -- 0.0–1.0
+  notes       TEXT
+);
+CREATE INDEX idx_internet_jd ON internet(jd);
 ```
-id        INTEGER PK autoincrement
-jd        INTEGER    ← FK → Master Key (วันเกิด/วันเกิดเหตุการณ์)
-name      TEXT
-event_label TEXT     ← หมวดหมู่ เช่น "นายกรัฐมนตรี"
-type      TEXT       ← "human" | "event"
-lat       REAL
-lng       REAL
-time_utc  TEXT       ← HH:MM หรือ null (ถ้าไม่รู้เวลาเกิด)
-relate_id TEXT       ← JSON array of JD ที่สัมพันธ์ เช่น [death_jd, event_jd]
-source    TEXT       ← "wikipedia:en:TITLE" | "manual" | "historical"
-confidence REAL      ← 0.0–1.0
-notes     TEXT
-```
+**lagna_sign:** null ถ้าไม่รู้เวลาเกิด — BIBLE ใช้ lagna rules ได้เฉพาะ rows ที่ lagna_sign IS NOT NULL
 - หลาย record ต่อ 1 JD ได้ (คนหลายคนเกิดวันเดียว)
 - HUMAN record: jd = birth JD, relate_id = [death_jd, ...]
 - EVENT record: jd = event JD, relate_id = [person_jd, ...]

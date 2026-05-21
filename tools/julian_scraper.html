@@ -145,6 +145,7 @@ h1{font-size:.9rem;font-weight:700;color:#f8fafc;flex:1}
         <div class="form-group">
           <label>time_utc (HH:MM ถ้ามี)</label>
           <input type="text" id="f-time" placeholder="00:00">
+          <div class="jd-display" id="lagna-display">ลัคนา: — (ต้องมีเวลาเกิด)</div>
         </div>
       </div>
       <div class="form-row single">
@@ -167,11 +168,30 @@ h1{font-size:.9rem;font-weight:700;color:#f8fafc;flex:1}
 </div>
 
 <script type="module">
-import { get_j } from '../v3/engine.js';
+import { get_j, get_data } from '../v3/engine.js';
+
+const ZODIAC_TH = ['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
 
 let lang = 'en';
 let buffer = JSON.parse(localStorage.getItem('julian_scraper_buf') || '[]');
 let activeResult = null;
+
+function calcLagna() {
+  const birthVal = document.getElementById('f-birth').value;
+  const timeVal = document.getElementById('f-time').value.trim();
+  const el = document.getElementById('lagna-display');
+  if (!birthVal || !timeVal || !/^\d{1,2}:\d{2}$/.test(timeVal)) {
+    el.textContent = 'ลัคนา: — (ต้องมีเวลาเกิด)';
+    return null;
+  }
+  const [y, m, d] = birthVal.split('-').map(Number);
+  const [hr, mn] = timeVal.split(':').map(Number);
+  const lng = +document.getElementById('f-lng').value || 100.5;
+  const sp = get_data(d, m, y, hr, mn, lng);
+  const sign = Math.trunc(sp[0] / 1800);
+  el.textContent = `ลัคนา: ราศี${ZODIAC_TH[sign]} (${sign})`;
+  return sign;
+}
 
 // ── Lang toggle ──────────────────────────────────────────────
 document.getElementById('lang-en').addEventListener('click', () => setLang('en'));
@@ -196,8 +216,10 @@ function updateJDDisplay(inputId, displayId) {
   document.getElementById(displayId).textContent = jd !== null ? `JD: ${jd}` : 'JD: —';
 }
 
-document.getElementById('f-birth').addEventListener('input', () => updateJDDisplay('f-birth','jd-birth'));
+document.getElementById('f-birth').addEventListener('input', () => { updateJDDisplay('f-birth','jd-birth'); calcLagna(); });
 document.getElementById('f-death').addEventListener('input', () => updateJDDisplay('f-death','jd-death'));
+document.getElementById('f-time').addEventListener('input', calcLagna);
+document.getElementById('f-lng').addEventListener('input', calcLagna);
 
 // ── Wikipedia search ─────────────────────────────────────────
 async function searchWiki(q, l) {
@@ -351,6 +373,7 @@ document.getElementById('btn-add').addEventListener('click', () => {
   const deathJd = dateToJD(deathVal);
   const relateId = deathJd ? [deathJd] : [];
 
+  const timeUtc = document.getElementById('f-time').value.trim() || null;
   const rec = {
     jd,
     name,
@@ -358,7 +381,8 @@ document.getElementById('btn-add').addEventListener('click', () => {
     type: document.getElementById('f-type').value,
     lat: +document.getElementById('f-lat').value || null,
     lng: +document.getElementById('f-lng').value || null,
-    time_utc: document.getElementById('f-time').value.trim() || null,
+    time_utc: timeUtc,
+    lagna_sign: timeUtc ? calcLagna() : null,
     relate_id: relateId,
     source: document.getElementById('f-source').value.trim() || 'manual',
     confidence: +document.getElementById('f-conf').value || 0.95,
@@ -379,6 +403,7 @@ document.getElementById('btn-add').addEventListener('click', () => {
   document.getElementById('f-source').value = 'wikipedia';
   document.getElementById('jd-birth').textContent = 'JD: —';
   document.getElementById('jd-death').textContent = 'JD: —';
+  document.getElementById('lagna-display').textContent = 'ลัคนา: — (ต้องมีเวลาเกิด)';
   document.getElementById('wd-row').innerHTML = '<span class="wd-miss">เพิ่มแล้ว — เลือกรายการถัดไปได้เลย</span>';
 });
 
