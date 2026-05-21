@@ -4,6 +4,33 @@
 
 ---
 
+## หลักการออกแบบ: Autonomous by Design
+
+> **Data is Authority — ไม่ใช่มนุษย์**
+
+ระบบนี้ออกแบบให้ตัดสินใจด้วยตัวเองจากข้อมูลจริง ไม่ใช่จากความเห็นมนุษย์
+มนุษย์อยู่นอก loop การ validate เสมอ — เข้ามาได้แค่ 2 บทบาท:
+1. **เพิ่ม rule ใหม่** (creative work ที่มนุษย์ยังดีกว่า)
+2. **ดู summary report** (observe ไม่ใช่ control)
+
+```
+❌ Human validates record → ระบบพังถ้ามนุษย์ไม่ลงรอยกัน
+✅ Empirical data validates rule → ข้อมูลจริงเป็น ground truth เดียว
+
+ถ้า empirical_p < 0.45 → rule อ่อน (ระบบบอกเอง)
+ถ้า empirical_p > 0.70 → rule แข็ง (ระบบเชื่อเอง)
+ไม่มีมนุษย์มา confirm ทั้งสองกรณี
+```
+
+**Self-improving loop:**
+```
+Wikidata → JULIAN D1 → match_rules() → empirical_p → kb.json → BIBLE แม่นขึ้น
+    ↑                                                                    |
+    └──────────────────── ข้อมูลเพิ่มขึ้นเรื่อย ๆ ──────────────────────┘
+```
+
+---
+
 ## ภาพรวมระบบ — 1 ประโยค
 
 > เครื่องพยากรณ์โหราศาสตร์สุริยยาตร์ที่คำนวณแม่นยำ (HORATAD) + อธิบายเป็นภาษาคน (BIBLE) + ยืนยันด้วยข้อมูลจริง (JULIAN) + กระจายถึงคนผ่านทุกช่องทาง (PLATFORM)

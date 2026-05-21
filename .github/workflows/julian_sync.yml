@@ -6,7 +6,8 @@ name: JULIAN Data Sync
 
 on:
   schedule:
-    - cron: '0 2 * * *'      # 02:00 UTC ทุกคืน (~09:00 ไทย)
+    - cron: '0 2 * * *'      # 02:00 UTC ทุกคืน — scrape Wikidata
+    - cron: '0 3 * * 0'      # 03:00 UTC ทุกอาทิตย์ — empirical validation
   workflow_dispatch:           # กด Run manually ได้จาก GitHub UI
     inputs:
       rate:
@@ -100,6 +101,20 @@ jobs:
           gh workflow disable julian_sync.yml
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ─── Weekly: Empirical Validation → auto-update kb.json ────
+      - name: Empirical validation (weekly)
+        if: github.event.schedule == '0 3 * * 0' && env.CF_API_TOKEN != ''
+        run: |
+          node workers/julian_empirical.mjs
+          git config user.name  "JULIAN Bot"
+          git config user.email "julian-bot@horatad.com"
+          git add v3/kb.json || true
+          git commit -m "JULIAN empirical: auto-update kb.json empirical_p" || echo "No changes"
+          git push || true
+        env:
+          CF_API_TOKEN:          ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
       # ─── Summary ─────────────────────────────────────────────
       - name: Summary
