@@ -1,4 +1,4 @@
-// Version 3.0.1 | 2026-05-18
+// Version 3.0.2 | 2026-05-21
 // v3/typhoon.js — Typhoon API Connector
 // ห้าม hardcode ข้อความพยากรณ์
 // ห้าม hallucinate — ข้อความต้องมาจาก kb_context rules เท่านั้น
@@ -7,7 +7,6 @@
 import {
   compute_lagna_aspect,
   describe_planet_for_prompt,
-  describe_natal_payload,
 } from './interpretation.js';
 import {
   getStandards,
@@ -42,6 +41,46 @@ function _kbName(n){return KB_NAME_MAP[n]||n;}
 
 // aspect label ภาษาไทยสำหรับ tag matching
 const ASP_TH = {KUM:'กุม',LENG:'เล็ง',YOK:'โยค',TRI:'ตรีโกณ',NONE:''};
+
+// ── Condition-based rule matching helpers (M1) ────────────────────────────
+
+function _checkCondition(cond,pos,effectsMap,potentialsMap){
+  const{planet_id,quality_required,lagna_aspect_req}=cond;
+  const pid=parseInt(planet_id)||0;
+  if(!pid)return true;
+  const entry=effectsMap[pid]||potentialsMap[pid];
+  if(entry&&entry.manifestation<MIN_MANIFESTATION&&entry.aspect==='NONE')return false;
+  const pQualRaw=getStandards(pos,pid);
+  const pQuals=pQualRaw
+    ?pQualRaw.split('/').map(q=>QUAL_MAP[q]||q).filter(q=>QLABELS[q])
+    :[];
+  const pScore=pQuals.length>0?Math.max(...pQuals.map(q=>SCORE_MAP[q]||0)):0;
+  const qr=quality_required;
+  if(qr&&qr!=='any'&&qr!==''){
+    if(qr==='ดี'&&pScore<=0)return false;
+    if(qr==='เสีย'&&pScore>=0)return false;
+    if(qr==='ปกติ'&&pScore!==0)return false;
+    if(QLABELS[qr]&&!pQuals.includes(qr))return false;
+  }
+  const asp=entry?entry.aspect:'NONE';
+  const lar=lagna_aspect_req;
+  if(lar&&lar!=='any'&&lar!==''){
+    if(lar==='none'&&asp!=='NONE')return false;
+    if(lar!=='none'&&asp==='NONE')return false;
+    if(lar!=='none'&&asp!==lar)return false;
+  }
+  return true;
+}
+
+// ตรวจ conditions[] ของ rule — null=ใช้ tag matching, true=match, false=no match
+function _matchByConditions(r,pos,effectsMap,potentialsMap){
+  const conds=r.conditions||[];
+  if(!conds.length)return null;
+  for(const c of conds){
+    if(c.required!==false&&!_checkCondition(c,pos,effectsMap,potentialsMap))return false;
+  }
+  return true;
+}
 
 /**
  * match_rules(pos, ascSign, kbRules, transitPos?)
@@ -93,6 +132,8 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
     const hasAsp=asp!=='';
 
     kbRules.forEach(r=>{
+      // M1: rules ที่มี conditions[] (ไม่ใช่ transit) จัดการโดย conditions pass แยก
+      if(r.conditions&&r.conditions.length>0&&!(r.t||[]).includes('จร'))return;
       const ts=(r.t||[]).join(' ');
       const rtags=r.t||[];
       if(!ts.includes(pNameKB))return;
@@ -118,6 +159,13 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
       }
     });
   }
+
+  // ── conditions-based matching (M1 — natal rules ที่มี conditions[]) ─────
+  kbRules
+    .filter(r=>r.conditions&&r.conditions.length>0&&!(r.t||[]).includes('จร'))
+    .forEach(r=>{
+      if(_matchByConditions(r,pos,effectsMap,potentialsMap))addRule(r);
+    });
 
   // ── transit matching (Q&A mode) ───────────────────────────────────────
   if(transitPos&&natalPayload?._is_qa_mode){
@@ -155,11 +203,15 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
  * ห้ามใส่ข้อความพยากรณ์ใน prompt — rules จาก kb_context เท่านั้น
  */
 function build_prompt(natalPayload, matchedRules, isQA=false){
+  // M3: rule IDs สำหรับ validation ต้านการ hallucinate
   const rulesText=matchedRules
-    .map(r=>`• [${r.ch||'?'}] ${r.c} → ${r.p}`)
+    .map((r,i)=>`• [R${String(i+1).padStart(2,'0')}][${r.ch||'?'}] ${r.c} → ${r.p}`)
     .join('\n');
 
-  const chartSummary=describe_natal_payload(natalPayload);
+  // M2: ย่อ chart context เหลือแค่ lagna + overall strength
+  const chartSummary=
+    `ลัคนา: ${natalPayload?.lagna?.name||'?'}\n`+
+    `กำลังโดยรวม: ${natalPayload?.overall?.strength||'?'}`;
 
   const transitSection=isQA&&natalPayload.transit_context
     ?'\nดาวจร (เรียงตาม transit_weight):\n'+
@@ -172,19 +224,19 @@ function build_prompt(natalPayload, matchedRules, isQA=false){
     ?'(โหมด Q&A: พยากรณ์พื้นดวง + ดาวจร)'
     :'(โหมดพื้นดวง: พยากรณ์เฉพาะนาตาล)';
 
-  // SYSTEM INSTRUCTION ฝั่ง Typhoon — anti-hallucination rules
+  // SYSTEM INSTRUCTION ฝั่ง Typhoon — anti-hallucination + M3 structured output
   const systemPrompt=
 `คุณคือโหราจารย์ไทยระบบ Horatad ที่พยากรณ์ตามกฎโหราศาสตร์สุริยยาตร์ไทยเท่านั้น
 
 กฎเหล็ก:
-- ห้ามใส่ตัวเลข เลขลำดับ หรือเครื่องหมาย # นำหน้าทุกประโยคหรือหัวข้อ
-- ห้ามแสดงค่าตัวเลขทางเทคนิคใดๆ เช่น manifestation score, weight, index ในคำพยากรณ์
-- ห้ามสร้างข้อความพยากรณ์ใหม่ที่ไม่ได้มาจากกฎที่ให้มา
+- ตอบในรูปแบบ JSON เท่านั้น: {"predictions":[{"rule_id":"R01","text":"คำพยากรณ์"},…]}
+- rule_id ต้องมาจากรหัสกฎที่ให้มาเท่านั้น ห้ามสร้าง rule_id ที่ไม่มีในรายการ
+- ห้ามแสดงค่าตัวเลขทางเทคนิคใดๆ ในข้อความ text
+- ห้ามสร้างข้อความพยากรณ์ที่ไม่มาจากกฎที่ให้มา
 - ห้ามปลอบโยน ห้าม validate ความรู้สึก ห้ามสร้างความหวังเกินกฎ
-- เรียงพยากรณ์จากดาวที่แสดงออกมากที่สุดไปน้อยที่สุด ไม่ต้องระบุลำดับ
+- เรียงจากกฎที่ดาวแสดงออกเด่นชัดสุดก่อน
 - ถ้ากฎบอก "เชื่อคนง่าย" ให้บอกตรงๆ ไม่อ้อมค้อม
-- ใช้ภาษาไทยกระชับ ไม่เกิน 350 คำ ไม่ต้องระบุหมายเลขดาวหรือ index
-- ไม่ต้องมีคำนำหรือคำส่งท้ายเชิงสวัสดีหรืออวยพร`;
+- text แต่ละรายการไม่เกิน 40 คำ ภาษาไทยกระชับ ไม่มีคำนำ-คำส่งท้าย`;
 
   const userPrompt=
 `${modeNote}
@@ -195,7 +247,7 @@ ${chartSummary}${transitSection}
 กฎโหราศาสตร์ที่ตรงกับดวง (${matchedRules.length} กฎ):
 ${rulesText}
 
-เรียบเรียงคำพยากรณ์จากกฎเหล่านี้โดยเริ่มจากจุดที่แสดงออกเด่นชัดที่สุดก่อน`;
+ตอบในรูปแบบ JSON: {"predictions":[{"rule_id":"R01","text":"..."},…]}`;
 
   return{systemPrompt,userPrompt};
 }
@@ -254,16 +306,30 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   }
 
   // รองรับ OpenAI-compatible format
+  let raw=null;
   if(data.choices&&data.choices[0]?.message?.content){
-    return data.choices[0].message.content.trim();
+    raw=data.choices[0].message.content.trim();
+  }else if(data.content&&data.content[0]?.text){
+    raw=data.content[0].text.trim();
   }
-  // fallback format
-  if(data.content&&data.content[0]?.text){
-    return data.content[0].text.trim();
+  if(!raw){
+    const msg=data.error?.message||JSON.stringify(data).slice(0,100);
+    throw new Error('[Typhoon] response format ไม่รู้จัก: '+msg);
   }
 
-  const msg=data.error?.message||JSON.stringify(data).slice(0,100);
-  throw new Error('[Typhoon] response format ไม่รู้จัก: '+msg);
+  // M3: parse structured JSON + validate rule_ids ต้านการ hallucinate
+  const ruleIds=new Set(matchedRules.map((_,i)=>'R'+String(i+1).padStart(2,'0')));
+  try{
+    const m=raw.match(/\{[\s\S]*\}/);
+    const parsed=JSON.parse(m?m[0]:raw);
+    if(parsed.predictions&&Array.isArray(parsed.predictions)){
+      const texts=parsed.predictions
+        .filter(p=>ruleIds.has(p.rule_id)&&p.text)
+        .map(p=>p.text.trim());
+      if(texts.length>0)return texts.join('\n\n');
+    }
+  }catch(_){}
+  return raw; // fallback: แสดง raw text ถ้า JSON parse ไม่ได้
 }
 
 // ── Fallback renderer ──────────────────────────────────────────────────────

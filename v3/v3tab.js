@@ -1,4 +1,4 @@
-// Version 3.0.4 | 2026-05-20
+// Version 3.0.5 | 2026-05-21
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -122,19 +122,28 @@ async function v3Typhoon() {
   _clearResult();
   _showSpinner(true);
 
+  // M2: payload + matched ต้องอยู่นอก try เพื่อให้ fallback เข้าถึงได้
+  let payload = null, matched = null;
   try {
     const kbRules = await _loadKb();
     const pos = natal.pos;
     const ascSign = get_lagna(pos);
-    const payload = build_natal_payload(pos, ascSign);
-    const matched = match_rules(pos, ascSign, kbRules, null, payload);
+    payload = build_natal_payload(pos, ascSign);
+    matched = match_rules(pos, ascSign, kbRules, null, payload);
     const text = await send_to_typhoon(payload, matched);
     _showSpinner(false);
     _showResult(text, false, '🤖 พยากรณ์โดย Typhoon AI');
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
-    _showToastV3('Typhoon ไม่ตอบ: ' + err.message);
+    if (payload && matched) {
+      // M2: fallback อัตโนมัติ — แสดงกฎดิบแทน
+      const fallbackText = render_fallback(payload, matched);
+      _showResult(fallbackText, true, '⚠️ Typhoon ไม่ตอบ — แสดงกฎดิบ');
+      _showToastV3('Typhoon ไม่ตอบ — ใช้กฎดิบแทน');
+    } else {
+      _showToastV3('เกิดข้อผิดพลาด: ' + err.message);
+    }
   } finally {
     _v3Running = false;
     _el('v3-btn-typhoon').disabled = false;
