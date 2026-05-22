@@ -99,9 +99,11 @@ canvas{max-width:100%;height:auto}
 .tank-transfer-btn{background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
 .tank-transfer-btn:hover{background:#1f4c8b;}
 .julian-badge{font-size:10px;color:#8b949e;margin-left:4px;}
-.julian-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
+.julian-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px;}
+.julian-sub-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;padding-left:8px;border-left:2px solid #30363d;}
 .julian-tag-btn{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
 .julian-tag-btn.active{background:#1f4f2a;border-color:#3fb950;color:#3fb950;}
+.julian-sub-btn{font-size:10px;padding:2px 7px;border-radius:10px;}
 .julian-load-area{text-align:center;padding:10px 0;}
 .julian-load-btn{background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;font-family:'Sarabun',sans-serif;}
 .julian-load-hint{font-size:11px;color:#586069;margin-top:4px;}
@@ -473,6 +475,7 @@ canvas{max-width:100%;height:auto}
   </div>
   <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ..." autocomplete="off">
   <div id="julian-tag-row" class="julian-tag-row hidden"></div>
+  <div id="julian-sub-row" class="julian-sub-row hidden"></div>
   <div id="julian-load-area" class="julian-load-area hidden">
     <button onclick="loadJulian()" class="julian-load-btn">📥 โหลดข้อมูล JULIAN</button>
     <div class="julian-load-hint">41,079 รายการ · โหลดครั้งแรก ~5 วินาที</div>

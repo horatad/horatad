@@ -129,7 +129,8 @@ let _activeTank='private'; // 'private'|'qr'|'julian'
 let _julianCache=null; // null=not loaded, array=loaded
 let _julianFiltered=[]; // filtered slice for display
 let _julianPage=0;
-let _julianTag=''; // active event_label filter
+let _julianL1='all'; // active L1 group id
+let _julianL2=null;  // active L2 sub-group id (null=all in L1)
 let _db1Sort='jd_desc';
 let _evtSort='recent';
 let _numpadPrevValue='';
@@ -1864,6 +1865,7 @@ window.switchTank=function(tank){
   const isJulian=tank==='julian';
   document.getElementById('julian-load-area')?.classList.toggle('hidden',!isJulian||!!_julianCache);
   document.getElementById('julian-tag-row')?.classList.toggle('hidden',!isJulian||!_julianCache);
+  document.getElementById('julian-sub-row')?.classList.toggle('hidden',!isJulian);
   document.getElementById('julian-more-btn')?.classList.toggle('hidden',true);
   _updateTankCounts();
   const f=document.getElementById('memory-search')?.value||'';
@@ -1916,21 +1918,81 @@ window.loadJulian=async function(){
   }
 };
 
-function _buildJulianTagRow(){
-  const row=document.getElementById('julian-tag-row');
-  if(!row||!_julianCache)return;
-  const counts={};
-  for(const r of _julianCache){const l=r.event_label||'';counts[l]=(counts[l]||0)+1;}
-  const labels=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,12).map(e=>e[0]);
-  row.innerHTML=[
-    `<button class="julian-tag-btn ${_julianTag===''?'active':''}" onclick="julianSetTag('')">ทั้งหมด</button>`,
-    ...labels.map(l=>`<button class="julian-tag-btn ${_julianTag===l?'active':''}" onclick="julianSetTag('${_escHtml(l)}')">${_escHtml(l)}</button>`)
-  ].join('');
-  row.classList.remove('hidden');
+const _JULIAN_GROUPS=[
+  {id:'all',label:'ทั้งหมด',labels:null,sub:null},
+  {id:'thai',label:'🇹🇭 ไทย',
+   labels:['ดารา/นักร้องไทย','นักการเมืองไทย','นักกีฬาไทย','นายกรัฐมนตรีไทย','นักวิชาการ/นักวิทยาศาสตร์ไทย'],
+   sub:[
+     {id:'th_ent',label:'ดารา/นักร้อง',labels:['ดารา/นักร้องไทย']},
+     {id:'th_pol',label:'นักการเมือง',labels:['นักการเมืองไทย']},
+     {id:'th_spt',label:'นักกีฬา',labels:['นักกีฬาไทย']},
+     {id:'th_pm',label:'นายกรัฐมนตรี',labels:['นายกรัฐมนตรีไทย']},
+     {id:'th_sci',label:'นักวิชาการ',labels:['นักวิชาการ/นักวิทยาศาสตร์ไทย']},
+   ]},
+  {id:'leader',label:'🏛️ ผู้นำฯ',
+   labels:['ผู้นำโลก','ผู้นำอาเซียน','นักการเมืองญี่ปุ่น','นายกรัฐมนตรีอังกฤษ','ประธานาธิบดีสหรัฐ'],
+   sub:[
+     {id:'ld_world',label:'ผู้นำโลก',labels:['ผู้นำโลก']},
+     {id:'ld_asean',label:'ผู้นำอาเซียน',labels:['ผู้นำอาเซียน']},
+     {id:'ld_jp',label:'ญี่ปุ่น',labels:['นักการเมืองญี่ปุ่น']},
+     {id:'ld_uk',label:'อังกฤษ',labels:['นายกรัฐมนตรีอังกฤษ']},
+     {id:'ld_us',label:'สหรัฐ',labels:['ประธานาธิบดีสหรัฐ']},
+   ]},
+  {id:'award',label:'🎖️ รางวัลฯ',
+   labels:['ผู้ได้รับรางวัลโนเบล','นักวิทยาศาสตร์ชื่อดัง'],
+   sub:[
+     {id:'aw_nobel',label:'รางวัลโนเบล',labels:['ผู้ได้รับรางวัลโนเบล']},
+     {id:'aw_sci',label:'นักวิทยาศาสตร์',labels:['นักวิทยาศาสตร์ชื่อดัง']},
+   ]},
+  {id:'sport',label:'⚽ กีฬา',labels:['นักฟุตบอลชื่อดัง'],sub:null},
+  {id:'famous',label:'🌍 บุคคลสำคัญ',labels:null,isFamous:true,sub:null},
+];
+
+function _julianMatchGroup(r){
+  if(_julianL1==='all')return true;
+  const g=_JULIAN_GROUPS.find(g=>g.id===_julianL1);
+  if(!g)return true;
+  if(g.isFamous)return (r.event_label||'').startsWith('บุคคลสำคัญ');
+  const labels=_julianL2
+    ?(g.sub?.find(s=>s.id===_julianL2)?.labels||g.labels)
+    :g.labels;
+  return labels?labels.includes(r.event_label||''):true;
 }
 
-window.julianSetTag=function(tag){
-  _julianTag=tag;
+function _buildJulianTagRow(){
+  const row=document.getElementById('julian-tag-row');
+  const subRow=document.getElementById('julian-sub-row');
+  if(!row||!_julianCache)return;
+  row.innerHTML=_JULIAN_GROUPS.map(g=>
+    `<button class="julian-tag-btn${_julianL1===g.id?' active':''}" onclick="julianSetL1('${g.id}')">${g.label}</button>`
+  ).join('');
+  row.classList.remove('hidden');
+  const g1=_JULIAN_GROUPS.find(g=>g.id===_julianL1);
+  if(subRow){
+    const subs=g1?.sub;
+    if(subs&&subs.length){
+      subRow.innerHTML=[
+        `<button class="julian-tag-btn julian-sub-btn${_julianL2===null?' active':''}" onclick="julianSetL2(null)">ทั้งหมดใน ${_escHtml(g1.label)}</button>`,
+        ...subs.map(s=>`<button class="julian-tag-btn julian-sub-btn${_julianL2===s.id?' active':''}" onclick="julianSetL2('${s.id}')">${_escHtml(s.label)}</button>`)
+      ].join('');
+      subRow.classList.remove('hidden');
+    }else{
+      subRow.innerHTML='';
+      subRow.classList.add('hidden');
+    }
+  }
+}
+
+window.julianSetL1=function(id){
+  _julianL1=id;
+  _julianL2=null;
+  _julianPage=0;
+  _buildJulianTagRow();
+  _renderJulianTank(document.getElementById('memory-search')?.value||'');
+};
+
+window.julianSetL2=function(id){
+  _julianL2=id;
   _julianPage=0;
   _buildJulianTagRow();
   _renderJulianTank(document.getElementById('memory-search')?.value||'');
@@ -1948,8 +2010,7 @@ function _renderJulianTank(filter,append=false){
     return;
   }
   const f=(filter||'').trim().toLowerCase();
-  let filtered=_julianCache;
-  if(_julianTag)filtered=filtered.filter(r=>r.event_label===_julianTag);
+  let filtered=_julianCache.filter(_julianMatchGroup);
   if(f)filtered=filtered.filter(r=>(r.name||'').toLowerCase().includes(f));
   _julianFiltered=filtered;
   const total=filtered.length;
@@ -1966,7 +2027,7 @@ function _renderJulianTank(filter,append=false){
     const existing=list.querySelectorAll('.memory-item').length;
     list.insertAdjacentHTML('beforeend',items.slice(existing).join(''));
   }else{
-    list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f||_julianTag?'ไม่พบรายการ':'ไม่มีข้อมูล'}</div>`;
+    list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f||_julianL1!=='all'?'ไม่พบรายการ':'ไม่มีข้อมูล'}</div>`;
   }
   const moreBtn=document.getElementById('julian-more-btn');
   if(moreBtn)moreBtn.classList.toggle('hidden',end>=total);
@@ -2053,6 +2114,18 @@ window.confirmClearTank=function(tank){
   });
 };
 
+// API สำหรับ BIBLE ค้นหาข้อมูลทะลุ 3 ถัง (user search = เฉพาะถังที่เลือก)
+window.searchAllTanks=function(query){
+  const f=(query||'').trim().toLowerCase();
+  if(!f)return{private:[],qr:[],julian:[]};
+  const match=r=>(r.name||'').toLowerCase().includes(f)||(r.prov||'').toLowerCase().includes(f);
+  return{
+    private:_tankLoad(TANK_PRIVATE_KEY).filter(match),
+    qr:_tankLoad(TANK_QR_KEY).filter(match),
+    julian:_julianCache?_julianCache.filter(r=>(r.name||'').toLowerCase().includes(f)).slice(0,200):[],
+  };
+};
+
 function openMemory(section){
   _memSection=section;
   _editingMemKey=null;_editingMemSection=null;
@@ -2065,6 +2138,7 @@ function openMemory(section){
   const isJulian=_activeTank==='julian';
   document.getElementById('julian-load-area')?.classList.toggle('hidden',!isJulian||!!_julianCache);
   document.getElementById('julian-tag-row')?.classList.toggle('hidden',!isJulian||!_julianCache);
+  document.getElementById('julian-sub-row')?.classList.toggle('hidden',!isJulian);
   document.getElementById('julian-more-btn')?.classList.add('hidden');
   document.getElementById('tank-sort-bar')?.classList.toggle('hidden',isJulian);
   document.getElementById('mem-actions-private')?.classList.toggle('hidden',_activeTank!=='private');
