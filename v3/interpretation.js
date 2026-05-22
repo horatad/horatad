@@ -14,8 +14,10 @@ import {
   PLANET_NAMES_TH,
   ZODIAC_TH,
   KASET_MAP,
-  count_evil_lagna_aspects,
 } from './engine.js';
+import {
+  count_evil_lagna_aspects,
+} from './master_dict.js';
 
 // ── Constants ─────────────────────────────────────────────────────────────
 

@@ -15,13 +15,15 @@ import {
   PLANET_NAMES_TH,
   ZODIAC_TH,
   KASET_MAP,
+  get_tanu_lagna,
+} from './engine.js';
+import {
   planet_relation,
   aspect_to_planet,
   transit_to_natal_aspect,
   count_evil_lagna_aspects,
   house_name_to_idx,
-  get_tanu_lagna,
-} from './engine.js';
+} from './master_dict.js';
 
 // ── Config ────────────────────────────────────────────────────────────────
 const TYPHOON_WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
