@@ -5,23 +5,21 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.17 | **URL:** horatad.com
+**Version:** V3.3.19 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
-- 3-tank memory: Private / QR / JULIAN ✅ (V3.3.16)
-- JULIAN tree filter 2-ชั้น L1/L2 ✅ | window.searchAllTanks() API ✅ (V3.3.16)
-- Memory modal UX: search inline + sort type/dir buttons ✅ | scroll restore ✅ (V3.3.17)
-- 🆕 **Chart redesign spec M1-M6** ออกแบบครบแล้ว — รอ implement (V3.3.17)
-- ⚠️ btn-outer (toggle ดวงนอก/จร) อยู่ใน hidden container — ไม่มีผลกับ user จริง — ต้อง fix M2
+- 3-tank memory: Private / QR / JULIAN ✅ (V3.3.16-17)
+- Chart redesign M1+M2+M3 ✅ (V3.3.18-19):
+  - M1: state vars _compareMode/_outerDisplay/_transitCursor/_transitUnit + synastry/eventChart/transit buffers
+  - M2: T1/T2 buttons ใน chart-nav-header (btn-t1/btn-t2) + cycleCompareMode/cycleOuterDisplay
+  - M3: transit unit popup (fixed+planet) + sign-change algorithm + cursor helpers
+- ⚠️ M4 HIGH RISK: rename natal1→natal, natal2→synastry/eventChart/transit ทั้งไฟล์
 
 ### Next (Claude ทำได้)
-- [ ] **M1** — เพิ่ม state vars ใหม่ (_compareMode, _outerDisplay, _transitCursor, _transitUnit)
-- [ ] **M2+fix** — chart-nav-header T1/T2 buttons + ย้าย combined button ออกจาก hidden container
-- [ ] **M3** — transit unit popup + planet sign-change algorithm
-- [ ] **M4** — rename natal1→natal / natal2→synastry/eventChart/transit (HIGH RISK)
-- [ ] **M5** — eventChart full support + buildCompareReport unified
-- [ ] **M6** — localStorage persistence ของ cursor states
+- [ ] **M4** — rename natal1→natal / natal2→context-aware (HIGH RISK — search-replace ทั้งไฟล์)
+- [ ] **M5** — eventChart full support + buildCompareReport unified template
+- [ ] **M6** — localStorage persistence ของ _synastryIdx/_eventIdx/_transitCursor
 
 ### Blocked (รอ user)
 - [ ] [ทดลองใช้] ทดสอบ V3.3.17 บนมือถือ — memory modal UX ใหม่ + sort buttons
@@ -32,7 +30,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260522_v2.md`
+`handoffs/HORATAD_20260522_v3.md`
 
 ---
 
@@ -161,7 +159,7 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.17 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 pending |
+| Horatad PWA | HORATAD V3.3.19 | script.js, v3/*, index.html | 🟡 Pre-launch — M4-M6 pending |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
@@ -176,4 +174,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.17 | 3-tank memory + JULIAN tree filter + memory modal UX redesign | Chart redesign spec M1-M6 ออกแบบครบ รอ implement | handoffs/HORATAD_20260522_v2.md*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.19 | Chart redesign M1+M2+M3 เสร็จแล้ว (T1/T2 buttons + transit unit popup + sign-change algorithm) | M4-M6 pending | handoffs/HORATAD_20260522_v3.md*
