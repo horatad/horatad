@@ -63,11 +63,12 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | Records: 31,031/50,000 (รันทุก 6 ชั่วโมง)
+- Schema: ✅ | JD: ✅ | Records: **41,079/50,000** (82% ของ target) | Queries: **68/137 เสร็จ** (~50%)
 - Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
-- Astrotheme enrichment: ✅ เติม time_utc + lat/lng อัตโนมัติ
+- Astrotheme enrichment: ✅ 399 records มี time_utc แล้ว (เติมอัตโนมัติทุก run)
+- Tiers: 3,166 tier-1 + 37,913 tier-2
 
 ### Next (Claude ทำได้)
 (ไม่มี — automation ครบแล้ว รอข้อมูลสะสม)
@@ -76,7 +77,7 @@
 (ไม่มี — automation รันเองได้ทั้งหมด)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260522_v1.md`
+`handoffs/JULIAN_20260522_v2.md`
 
 ---
 
@@ -156,7 +157,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD V3.3.14 | script.js, v3/*, index.html | 🟡 Pre-launch |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Empirical DB | JULIAN 41,079/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
@@ -169,4 +170,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.14 | NOK Phase 1 deployed (ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab) | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.14 | NOK Phase 1 deployed (ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab) | JULIAN 41,079 records (68/137 queries, 399 มี time_utc) | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
