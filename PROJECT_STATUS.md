@@ -115,6 +115,26 @@
 
 ---
 
+## INFRA — Code Quality Tooling ✅ Setup เสร็จ (2026-05-22)
+**ผล:** ESLint + Prettier config + CI lint step — vanilla JS ทุก context (script/module/CF Worker)
+
+### เสร็จแล้ว
+- ✅ `package.json` + `eslint.config.mjs` (flat v9, ปรับ globals ต่อ context)
+- ✅ `.prettierrc.json` + `.prettierignore` (skip data/, handoffs/, CHANGELOG.md, KB JSON)
+- ✅ CI: เพิ่ม `npm ci` + `npx eslint` step (Node 22, cached) — errors block, warnings allow
+- ✅ DEPLOY.md อัปเดต `npm run lint` + first-time setup
+- ✅ Baseline lint: 0 errors / 58 warnings (เป็น dead code/unused vars จริง)
+
+### เก็บไว้เตือน (เมื่อจำเป็น)
+- [ ] **แก้ 58 lint warnings** — dead code/unused vars ใน script.js + v3/typhoon.js + workers/. Effort ปานกลาง (1 session). ทำเมื่อ refactor session
+- [ ] **Format baseline** — `npm run format` ครั้งแรก จะ diff ใหญ่ (script.js ~3500 บรรทัด). ทำเมื่อ user พร้อมรับ giant diff commit "chore: prettier baseline"
+- [ ] **Pre-commit hook (husky)** — ติดตั้งเมื่อ user dev ที่ local + อยาก auto-lint ก่อน push. Web session ไม่ต้อง
+- [ ] **แยก script.js → modules** — รอจน V3.3.12 mobile test ผ่าน + decide launch. Risk สูง (no test cover)
+- [ ] **Unit test engine.js** — value สูง (math correctness) แต่ต้อง user OK กับ Node test framework
+- [ ] **TypeScript migration** — ❌ ไม่แนะนำ (1-person + AI dev = overhead > benefit)
+
+---
+
 ## Quick Reference
 
 | Project | Version | ไฟล์หลัก | สถานะ |
@@ -124,6 +144,7 @@
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Docs cleanup | REORG | docs/*.md | ✅ Done 2026-05-22 |
+| Code quality | INFRA | eslint.config.mjs, package.json | ✅ Setup 2026-05-22 — 0 errors / 58 warnings |
 
 ---
 
@@ -133,4 +154,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | REORG ✅ docs cleanup เสร็จ (BEST_PRACTICES + SYSTEM_INSTRUCTION ลบ, HORATAD_MANUAL → HORATAD.md, CHANGELOG +14 entries) | WHY LOG ทุก project | handoffs/BIG_20260522_v1.md (priority queue ข้าม project)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | REORG ✅ docs cleanup | INFRA ✅ ESLint+Prettier setup (0 errors / 58 warnings เป็น dead code TODO) | CI Node 22 + npm ci + lint step*

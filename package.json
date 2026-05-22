@@ -1,0 +1,19 @@
+{
+  "name": "horatad",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Horatad — Thai astrology PWA (no build step; package.json for dev tooling only)",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "node scripts/check-version-sync.mjs && node --check script.js && node --check sw.js"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "@eslint/js": "^9.0.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.0.0"
+  }
+}

@@ -23,9 +23,17 @@ Worker       : horatad-ai (Typhoon proxy) + horatad-auth (PIN gate)
 node scripts/check-version-sync.mjs   # ต้องผ่าน — ไม่งั้นจะ flicker / cache miss
 node --check script.js                # syntax sanity
 node --check sw.js
+npm run lint                          # ESLint — errors block, warnings allow
 ```
 
-CI ก็รัน 2 ตัวนี้บนทุก push/PR — fail = block merge
+หรือใช้ shortcut: `npm run check` (sync + syntax 2 ไฟล์หลัก)
+
+CI รันทั้งหมดบนทุก push/PR — error = block merge (warning ไม่ block)
+
+**First-time setup:**
+```bash
+npm install   # eslint + prettier devDependencies (เก็บใน node_modules/ — gitignored)
+```
 
 ---
 

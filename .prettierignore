@@ -1,0 +1,10 @@
+# Auto-generated / vendored / data — ห้าม format
+node_modules/
+data/
+handoffs/
+docs/CHANGELOG.md
+*.min.js
+v3/kb*.json
+v3/kb_master.json
+v3/kb_skeletons.json
+package-lock.json
