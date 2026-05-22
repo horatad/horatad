@@ -5,18 +5,20 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.12 | **URL:** horatad.com
+**Version:** V3.3.13 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
 - M3+M8 fallback chain ครบ: Typhoon fail → throw → compose_local_prediction()
 - Capture: QR bundle local ✅ | toast บอก location ✅ (V3.3.11)
 - JULIAN import: ✅ data/julian_all.json มีใน repo (31,031 records) | empty message user-friendly ✅ (V3.3.12)
+- 🆕 **NOK voice integration**: ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab (V3.3.13)
 
 ### Next (Claude ทำได้)
 (ไม่มี — รอ user actions ทั้งหมด)
 
 ### Blocked (รอ user)
+- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.13 บนมือถือ — **NOK ปุ่มฟังคำพยากรณ์** (iOS Kanya + Android Google TH)
 - [ ] [ทดลองใช้] ทดสอบ V3.3.12 บนมือถือ — capture QR, toast location, about page full-screen, JULIAN download message
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker
 - [ ] [BLOCKED] cloud sync — รอ server confirm
@@ -78,6 +80,37 @@
 
 ---
 
+## NOK — Voice Narration Engine 🟢 Phase 1 deployed
+**เป้าหมาย:** แปลง text พยากรณ์ → เสียงพูด (TTS) — ฟรี, offline, mobile-first
+**Phase 1:** Web Speech API ใน HORATAD V3 tab ✅
+
+### สถานะ
+- `v3/tts.js` module ครบ — speak/stop/preload/hasThaiVoice
+- ปุ่ม 🔊 ฟังคำพยากรณ์ ใน V3 tab (deployed กับ HORATAD V3.3.13)
+- mobile-first: iOS Safari (Kanya) + Android Chrome (Google TH)
+- chunk-split text ยาว + strip emoji/markdown + ปุ่ม toggle pattern
+
+### Next (Claude ทำได้ — Phase 2)
+- [ ] เลือก voice (Kanya / Niwat / Google TH) — dropdown UI
+- [ ] ปรับความเร็ว slider (0.8x - 1.5x)
+- [ ] highlight ประโยคที่กำลังพูด (`utterance.onboundary`)
+- [ ] บันทึก voice preference ลง localStorage
+
+### Blocked (รอ user)
+- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.13 บนมือถือ — กดปุ่ม 🔊 → พูดออกเสียงไหม
+
+### Consumer
+- HORATAD V3 tab (Phase 1) ✅
+- PLATFORM Phase 3 QR scan → speak (อนาคต — code reuse ได้ทันที)
+
+### ไฟล์หลัก
+`v3/tts.js` | wired ใน `v3/v3tab.js` + `index.html` + `sw.js`
+
+### Handoff ล่าสุด
+`handoffs/NOK_20260522_v1.md`
+
+---
+
 ## PLATFORM — Training Center + Chatbot + Content 🔲 Vision (ยังไม่เริ่ม)
 **เป้าหมาย:** 1 คนดูแลทุกช่องทาง (LINE OA, YouTube, Facebook, online course, 1:1 consult) ด้วย automation
 
@@ -121,18 +154,19 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.12 | script.js, v3/*, index.html | 🟡 Pre-launch |
+| Horatad PWA | HORATAD V3.3.13 | script.js, v3/*, index.html | 🟡 Pre-launch |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
 
 ---
 
 ## วิธีเริ่ม session ใหม่
-1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / PLATFORM / REORG / BIG**
+1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / NOK / PLATFORM / REORG / BIG**
 2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` ล่าสุด
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.13 | NOK Phase 1 deployed (ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab) | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*

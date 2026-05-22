@@ -17,6 +17,7 @@
 | **HORATAD** | Horatad PWA | App หลัก — launch, UX, deploy (horatad.com) |
 | **BIBLE** | Prediction Wording Engine | KB rules → keywords → LLM wordings |
 | **JULIAN** | Empirical Astro Database | Julian Day + planet data + บุคคลสำคัญ |
+| **NOK** | Voice Narration Engine | text พยากรณ์ → เสียงพูด (Web Speech → cloud TTS → audio export) |
 | **PLATFORM** | Training + Chatbot + Content | กระจาย prediction ทุกช่องทาง (Phase 2+) |
 
 **Handoff files:** `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md`

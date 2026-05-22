@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.12 -->
-<!-- Version 3.3.12 | 2026-05-21 -->
+<!-- HORATAD:INDEX:3.3.13 -->
+<!-- Version 3.3.13 | 2026-05-21 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.12">
+<link rel="stylesheet" href="style.css?v=3.3.13">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -51,6 +51,13 @@ canvas{max-width:100%;height:auto}
 .v3-copy-btn{background:transparent;border:1px solid #2d2d4e;color:#8b949e;padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-family:'Sarabun',sans-serif;}
 .v3-copy-btn:hover{border-color:#b8860b;color:#b8860b;}
 .v3-copy-btn:disabled{opacity:.4;cursor:not-allowed;}
+/* NOK — voice narration button */
+.v3-action-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;}
+.v3-speak-btn{background:#b8860b;border:1px solid #b8860b;color:#1a1a2e;padding:.55rem 1rem;border-radius:6px;cursor:pointer;font-size:.9rem;font-weight:700;font-family:'Sarabun',sans-serif;display:inline-flex;align-items:center;gap:.3rem;min-height:38px;transition:background .2s;}
+.v3-speak-btn:hover{background:#d4a017;border-color:#d4a017;}
+.v3-speak-btn:disabled{background:transparent;border-color:#2d2d4e;color:#475569;cursor:not-allowed;}
+.v3-speak-btn.speaking{background:#dc2626;border-color:#dc2626;color:#fff;}
+.v3-speak-btn.speaking:hover{background:#ef4444;border-color:#ef4444;}
 /* V3 3-panel layout */
 .v3-panels{display:flex;flex-direction:column;gap:.6rem;margin-bottom:.5rem;}
 .v3-panel{border:1px solid #2d2d4e;border-radius:8px;overflow:hidden;}
@@ -86,7 +93,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.12</span>
+  <span class="brand-ver">V 3.3.13</span>
 </h1>
 
 <!-- Tab nav -->
@@ -238,7 +245,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.12</div>
+        <div class="about-version">V 3.3.13</div>
         <div class="about-update">อัปเดต 21 พ.ค. 2569 · แก้ JULIAN download + QR capture</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -758,7 +765,10 @@ canvas{max-width:100%;height:auto}
       <div class="v3-panel-bd open" id="v3-pd-output">
         <div id="v3-fallback-badge" class="v3-fallback-badge hidden">⚠️ Typhoon ไม่ตอบ — ใช้กฎดิบแทน</div>
         <div id="v3-result" class="v3-result" style="margin-bottom:.6rem;"></div>
-        <button id="v3-copy-btn" class="v3-copy-btn" disabled onclick="v3Copy()">📋 คัดลอก</button>
+        <div class="v3-action-row">
+          <button id="v3-speak-btn" class="v3-speak-btn" disabled onclick="v3Speak()" title="กดเพื่อฟังคำพยากรณ์">🔊 ฟังคำพยากรณ์</button>
+          <button id="v3-copy-btn" class="v3-copy-btn" disabled onclick="v3Copy()">📋 คัดลอก</button>
+        </div>
       </div>
     </div>
 
@@ -768,8 +778,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.3.12"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.12"></script>
+<script src="script.js?v=3.3.13"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.13"></script>
 
 <!-- V3 Dev Access Popup -->
 <div id="v3-dev-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">

@@ -137,10 +137,16 @@ LINE OA รับวันเกิดจาก user
 - **Dependency:** HORATAD engine (generate master_key)
 - **Output:** empirical_p per rule → BIBLE quality score
 
+### NOK — Voice (text → speech)
+- **หน้าที่:** แปลง text พยากรณ์ → เสียงพูด — ฟรี, offline, mobile-first
+- **Core:** `v3/tts.js` — Web Speech API wrapper (Phase 1) | future: cloud TTS, audio export
+- **Dependency:** BIBLE (text input) | host frontend อยู่ใน HORATAD V3 tab
+- **Consumer:** HORATAD V3 tab (Phase 1) → PLATFORM Phase 3 (อนาคต)
+
 ### PLATFORM — Distribution (reach users)
 - **หน้าที่:** กระจาย prediction ผ่านทุกช่องทาง — chatbot, video, course, consult
-- **Core:** LINE OA webhook, TTS, content automation
-- **Dependency:** HORATAD (chart) + BIBLE (wording) + JULIAN (personalized data)
+- **Core:** LINE OA webhook, content automation (audio ใช้จาก NOK)
+- **Dependency:** HORATAD (chart) + BIBLE (wording) + JULIAN (personalized data) + NOK (voice)
 - **Goal:** 1 คนดูแลทั้งหมดด้วย automation
 
 ---
@@ -190,9 +196,11 @@ LINE OA รับวันเกิดจาก user
 - PLATFORM: LINE OA webhook → CF Worker → BIBLE → reply auto
 - Target: รับวันเกิด → ส่งพยากรณ์ ใน 3 วินาที
 
-### 🔲 Phase 3 — Voice + QR
-- PLATFORM: Web Speech API TTS → พูดพยากรณ์ใน browser
-- HORATAD QR → PLATFORM scan → predict → speak → interactive Q&A
+### 🔄 Phase 3 — Voice + QR (NOK Phase 1 ✅ deployed)
+- ✅ NOK Phase 1: Web Speech API TTS → พูดพยากรณ์ใน HORATAD V3 tab (V3.3.13)
+- 🔲 NOK Phase 2: voice profile + speed + sentence highlight
+- 🔲 NOK Phase 3: Cloud TTS fallback (desktop ไม่มี Thai voice)
+- 🔲 PLATFORM: HORATAD QR → PLATFORM scan → predict → NOK speak → interactive Q&A
 
 ### 🔲 Phase 4 — Training Center + Content
 - PLATFORM: async course (สุริยยาตร์) + Calendly booking + 1:1 consult
@@ -234,7 +242,8 @@ LINE OA รับวันเกิดจาก user
 | Component | Tech | หมายเหตุ |
 |---|---|---|
 | LINE OA chatbot | LINE Messaging API | ฟรี 200 msg/เดือน |
-| TTS | Web Speech API | browser built-in, ฟรี |
+| TTS (NOK Phase 1) | Web Speech API | browser built-in, ฟรี, offline (`v3/tts.js`) |
+| TTS (NOK Phase 3) | Google Cloud TTS Neural2-Th | fallback desktop, ผ่าน CF Worker proxy |
 | Content schedule | Meta Business Suite | Facebook + IG |
 | Booking | Calendly | ฟรี tier |
 | Online course | Gumroad / Notion | ต้นทุนต่ำ |
@@ -260,11 +269,16 @@ HORATAD engine.js
 
 BIBLE kb.json
   ├── JULIAN (empirical validation → empirical_p)
+  ├── NOK (text input → speech)
   └── PLATFORM (wording output → TTS / LINE reply)
 
 JULIAN D1
   ├── BIBLE (query planets by JD, query persons for validation)
   └── PLATFORM (personalized data สำหรับ chatbot)
+
+NOK v3/tts.js
+  ├── HORATAD V3 tab (ปุ่ม 🔊 ฟังคำพยากรณ์)
+  └── PLATFORM (Phase 3 QR scan → speak; Phase 4 audio export)
 
 PLATFORM
   └── consumes all above (ไม่มี project อื่น depend on PLATFORM)
@@ -282,6 +296,7 @@ PLATFORM
 | HORATAD detail | `docs/HORATAD_MANUAL.md` + `handoffs/HORATAD_*.md` |
 | BIBLE detail | `docs/BIBLE_MISSION.md` + `handoffs/BIBLE_*.md` |
 | JULIAN detail | `docs/JULIAN_MISSION.md` + `handoffs/JULIAN_*.md` |
+| NOK detail | `handoffs/NOK_*.md` (Phase 1 deployed; voice/TTS roadmap) |
 | PLATFORM detail | `handoffs/JULIAN_20260521_v2.md` → section PLATFORM VISION |
 
 ---

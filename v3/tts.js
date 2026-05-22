@@ -1,5 +1,6 @@
 // Version 3.3.13 | 2026-05-22
 // v3/tts.js — Text-to-Speech via Web Speech API (mobile-first)
+// Project: NOK (Voice Narration) — Phase 1 MVP
 // ใช้ browser SpeechSynthesis (ฟรี, offline, ไม่มี API key)
 // iOS Safari: ต้อง trigger ใน user gesture | Android Chrome: ใช้ Google TH
 

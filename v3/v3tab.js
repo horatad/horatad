@@ -9,6 +9,7 @@
 import { get_lagna } from './engine.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
 import { match_rules, send_to_typhoon, _ruleId } from './typhoon.js';
+import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
 
 // ── M8: แปลง compose_local_prediction() output → display text ──────────────
 function _renderComposed(predictions) {
@@ -65,11 +66,32 @@ function _showResult(text, isFallback, label) {
   if (srcLabel) srcLabel.textContent = label || '';
   _el('v3-result-wrap').classList.remove('hidden');
   _el('v3-copy-btn').disabled = false;
+  _refreshSpeakBtn();
 }
 
 function _clearResult() {
   _el('v3-result-wrap').classList.add('hidden');
   _el('v3-copy-btn').disabled = true;
+  nokStop();
+  const sb = _el('v3-speak-btn');
+  if (sb) {
+    sb.disabled = true;
+    sb.textContent = '🔊 ฟังคำพยากรณ์';
+    sb.classList.remove('speaking');
+  }
+}
+
+// NOK: enable ปุ่ม ฟัง ตามความพร้อมของ Thai voice บนเครื่อง
+function _refreshSpeakBtn() {
+  const btn = _el('v3-speak-btn');
+  if (!btn) return;
+  if (nokHasThaiVoice()) {
+    btn.disabled = false;
+    btn.title = '';
+  } else {
+    btn.disabled = true;
+    btn.title = 'เครื่องนี้ไม่มีเสียงไทย — ติดตั้งใน Settings ของเครื่องก่อน';
+  }
 }
 
 // ── Panel helpers ────────────────────────────────────────────
@@ -280,6 +302,47 @@ async function v3Typhoon() {
   }
 }
 
+// ── NOK: Speak (Text-to-Speech) ──────────────────────────────
+function v3Speak() {
+  const btn = _el('v3-speak-btn');
+  const text = _el('v3-result') ? _el('v3-result').textContent : '';
+  if (!text) return;
+
+  // กดซ้ำขณะกำลังพูด → หยุด
+  if (nokIsSpeaking()) {
+    nokStop();
+    if (btn) {
+      btn.textContent = '🔊 ฟังคำพยากรณ์';
+      btn.classList.remove('speaking');
+    }
+    return;
+  }
+
+  if (!nokHasThaiVoice()) {
+    _showToastV3('เครื่องนี้ไม่มีเสียงไทย — ติดตั้งใน Settings ก่อน');
+    return;
+  }
+
+  nokSpeak(text, {
+    onState: (event, detail) => {
+      if (!btn) return;
+      if (event === 'start') {
+        btn.textContent = '⏸ หยุด';
+        btn.classList.add('speaking');
+      } else if (event === 'end') {
+        btn.textContent = '🔊 ฟังคำพยากรณ์';
+        btn.classList.remove('speaking');
+      } else if (event === 'error') {
+        btn.textContent = '🔊 ฟังคำพยากรณ์';
+        btn.classList.remove('speaking');
+        if (detail === 'no-thai-voice') _showToastV3('เครื่องนี้ไม่มีเสียงไทย');
+        else if (detail === 'not-supported') _showToastV3('เบราว์เซอร์นี้ไม่รองรับเสียงพูด');
+        else _showToastV3('เล่นเสียงไม่ได้');
+      }
+    }
+  });
+}
+
 // ── Copy ─────────────────────────────────────────────────────
 function v3Copy() {
   const text = _el('v3-result') ? _el('v3-result').textContent : '';
@@ -305,6 +368,7 @@ function _watchTab3() {
   if (!tab3) return;
   new MutationObserver(() => {
     if (!tab3.classList.contains('hidden')) _refreshNatalBar();
+    else nokStop(); // NOK: หยุดเสียงเมื่อ user สลับ tab ออก
   }).observe(tab3, { attributes: true, attributeFilter: ['class'] });
 }
 
@@ -312,6 +376,7 @@ function _watchTab3() {
 window.v3Local = v3Local;
 window.v3Typhoon = v3Typhoon;
 window.v3Copy = v3Copy;
+window.v3Speak = v3Speak;
 window.v3TogglePanel = v3TogglePanel;
 window.v3SetMode = v3SetMode;
 
@@ -319,4 +384,5 @@ window.v3SetMode = v3SetMode;
 document.addEventListener('DOMContentLoaded', () => {
   _watchTab3();
   _loadKb().catch(err => console.warn('[v3tab] kb preload failed:', err));
+  nokPreload(); // NOK: pre-warm voice list (iOS Safari load async)
 });
