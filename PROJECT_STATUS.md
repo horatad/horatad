@@ -34,27 +34,27 @@
 
 ---
 
-## BIBLE — Prediction Wording Engine 🟢 Active — รอ extraction run
+## BIBLE — Prediction Wording Engine 🟢 Active — Triple extraction running
 **เป้าหมาย:** rules → keywords → LLM wordings — ground-truth based, zero hallucination
 
 ### สถานะ
-- KB V2.3: 342 rules (Gemini extraction — lossy) | R171/R175/R247 ปิดแล้ว (false positive)
-- Engine 3.1.0: master_dict.js + V2.4 reader (typhoon.js + interpretation.js) ✅
-- Schema V2.4 DRAFT: `docs/BIBLE_KB_V2.4_SPEC.md`
-- ⚠️ **Max Plan Only policy**: ห้ามใช้ ANTHROPIC_API_KEY — extraction ต้อง Claude Code native
-- `workers/kb_extractor.mjs` — system prompt + schema reference ✅ แต่รัน script ไม่ได้
+- KB V2.3: 342 rules (ใช้งานอยู่) | Engine 3.1.0 ✅
+- Triple extraction pipeline: Groq (kb_v24-1) + Typhoon (kb_v24-2) + Claude queue (kb_v24-3)
+- kb_v24-1: **กำลังรัน** (browser tool) | kb_v24-2: รอรันหลัง Groq | kb_v24-3: รอ session queue
+- tools/kb_extract.html: เพิ่ม mode selector (Groq/Typhoon) แล้ว ✅
+- workers/claude_extraction_queue.json: สร้างแล้ว (102 บท pending) ✅
 
 ### Next (Claude ทำได้)
-(ไม่มี — pipeline พร้อมแล้ว รอ user รัน)
+- [ ] kb_v24-3: `session BIBLE` → Claude process 15 บท/session ×7 → v3/kb_v24-3.json
+- [ ] Comparison: หลัง 3 ไฟล์ครบ → `session BIBLE — compare` → v3/kb_v24.json final
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ⭐ **เพิ่ม GROQ_API_KEY ใน GitHub Secrets** → รัน "BIBLE KB V2.4 Extraction" workflow
-- [ ] [ทดลองใช้] รัน m0_hallucination_test.html — Groq score
+- [ ] [ทดลองใช้] ⭐ รอ browser tool Groq เสร็จ → download kb_v24-1.json → commit v3/kb_v24-1.json
+- [ ] [ทดลองใช้] รัน Typhoon mode ใน browser tool → download kb_v24-2.json → commit v3/kb_v24-2.json
 
 ### ไฟล์หลัก
-`v3/kb.json` (V2.3 current) | `v3/kb_v24.json` (V2.4 output — หลัง extraction)
-`v3/interpretation.js` | `v3/typhoon.js` | `v3/master_dict.js`
-`workers/kb_extractor.mjs` | `workers/_read_docx.py` | `docs/BIBLE_KB_V2.4_SPEC.md`
+`v3/kb.json` (V2.3 current) | `v3/kb_v24-1.json` `v3/kb_v24-2.json` `v3/kb_v24-3.json` (extraction outputs)
+`tools/kb_extract.html` | `workers/claude_extraction_queue.json` | `workers/kb_extract_gha.mjs`
 
 ### Handoff ล่าสุด
 `handoffs/BIBLE_20260522_v5.md`

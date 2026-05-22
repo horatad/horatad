@@ -47,17 +47,24 @@ h1 small{font-size:11px;color:#555;margin-left:8px}
 </style>
 </head>
 <body>
-<h1>📖 BIBLE KB Extractor <small>Groq LLaMA 3.3 70B + Typhoon (CF Worker) — V2.4 schema</small></h1>
+<h1>📖 BIBLE KB Extractor <small id="h1Sub">Groq LLaMA 3.3 70B → kb_v24-1.json | V2.4 schema</small></h1>
 
 <div class="cfg">
   <div>
+    <label>โหมด Extraction</label>
+    <select id="modeSelect" onchange="onModeChange()" style="background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;font-size:12px;min-width:260px">
+      <option value="groq">Groq เท่านั้น → kb_v24-1.json</option>
+      <option value="typhoon">Typhoon เท่านั้น → kb_v24-2.json</option>
+    </select>
+  </div>
+  <div id="groqKeyDiv">
     <label>Groq API Key <small style="color:#4caf87" id="keyStatus"></small></label>
     <input id="keyGroq" type="password" placeholder="gsk_..." oninput="saveKey()">
   </div>
   <div style="display:flex;gap:6px;align-items:flex-end">
     <button class="btn btn-run" id="btnRun" onclick="startExtraction()">▶ เริ่ม Extraction</button>
     <button class="btn btn-stop" id="btnStop" onclick="stopExtraction()" style="display:none">⏹ หยุด</button>
-    <button class="btn btn-dl" id="btnDl" onclick="downloadResult()" disabled>⬇ ดาวน์โหลด kb_v24.json</button>
+    <button class="btn btn-dl" id="btnDl" onclick="downloadResult()" disabled>⬇ ดาวน์โหลด</button>
     <button class="btn btn-reset" onclick="resetProgress()" title="ลบ progress ทั้งหมดแล้วเริ่มใหม่">↺ Reset</button>
   </div>
 </div>
@@ -74,9 +81,10 @@ h1 small{font-size:11px;color:#555;margin-left:8px}
 <div class="log" id="log">กำลังโหลดบทต่างๆ...</div>
 <div class="chapters" id="chapterGrid"></div>
 <div class="note">
-  ⚠️ Typhoon ผ่าน CF Worker (ไม่ต้อง key) — ถ้า CF Worker block จะใช้ Groq เท่านั้น (confidence: groq-only)<br>
-  ✅ Progress บันทึกใน localStorage — refresh หน้าเพื่อ resume ได้<br>
-  📋 download แล้ว commit <code>v3/kb_v24.json</code> ลง repo
+  🔵 <b>Groq mode</b>: ต้องใส่ Groq API Key — download <code>kb_v24-1.json</code> → commit เป็น <code>v3/kb_v24-1.json</code><br>
+  🟣 <b>Typhoon mode</b>: ไม่ต้อง key — ผ่าน CF Worker (horatad.com origin) — download <code>kb_v24-2.json</code> → commit เป็น <code>v3/kb_v24-2.json</code><br>
+  ✅ Progress แยก localStorage ต่อโหมด — resume ได้โดยไม่ปนกัน<br>
+  📋 หลัง 3 ไฟล์ครบ (kb_v24-1, -2, -3) → Claude เปรียบเทียบ + ออก kb_v24-final.json
 </div>
 
 <script>
@@ -88,13 +96,30 @@ const GROQ_MODEL    = 'llama-3.3-70b-versatile';
 const TYPHOON_MODEL = 'typhoon-v2.5-30b-a3b-instruct';
 const MAX_TOKENS    = 4096;
 const DELAY_MS      = 1200;
-const STATE_KEY     = 'bible_kb_extract_state';
+let STATE_KEY = 'bible_kb_extract_state_groq';
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let chapters = {};
 let state    = JSON.parse(localStorage.getItem(STATE_KEY) || '{"done":{},"rules":[],"review":[]}');
 if (!state.review) state.review = [];
 let running  = false;
+
+function getMode() { return document.getElementById('modeSelect')?.value || 'groq'; }
+
+function onModeChange() {
+  const mode = getMode();
+  STATE_KEY = mode === 'typhoon' ? 'bible_kb_extract_state_typhoon' : 'bible_kb_extract_state_groq';
+  state = JSON.parse(localStorage.getItem(STATE_KEY) || '{"done":{},"rules":[],"review":[]}');
+  if (!state.review) state.review = [];
+  document.getElementById('groqKeyDiv').style.display = mode === 'typhoon' ? 'none' : 'block';
+  document.getElementById('h1Sub').textContent = mode === 'typhoon'
+    ? 'Typhoon via CF Worker → kb_v24-2.json | V2.4 schema'
+    : 'Groq LLaMA 3.3 70B → kb_v24-1.json | V2.4 schema';
+  document.getElementById('btnDl').disabled = true;
+  renderGrid();
+  updateStats();
+  log(mode === 'typhoon' ? '🔄 โหมด Typhoon — STATE แยกจาก Groq (resume ได้ต่างหาก)' : '🔄 โหมด Groq');
+}
 
 function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
 
@@ -226,8 +251,9 @@ function setChapterUI(key, cls, countTxt, statusTxt) {
 
 // ── Main extraction loop ──────────────────────────────────────────────────────
 async function startExtraction() {
-  const key = document.getElementById('keyGroq').value.trim();
-  if (!key) { alert('กรุณาใส่ Groq API Key'); return; }
+  const mode = getMode();
+  const key  = document.getElementById('keyGroq').value.trim();
+  if (mode !== 'typhoon' && !key) { alert('กรุณาใส่ Groq API Key'); return; }
 
   running = true;
   document.getElementById('btnRun').style.display  = 'none';
@@ -245,43 +271,52 @@ async function startExtraction() {
     }
 
     setChapterUI(chKey, 'processing', '...', 'กำลังทำ...');
-    log(`📖 <span>${chKey}</span> (${text.length} chars) — เรียก Groq...`);
 
     try {
-      // Pass 1: Groq
-      let groqRules = null;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        try {
-          groqRules = await callGroq(chKey, text, key);
-          break;
-        } catch(e) {
-          if (e.message === 'rate_limit') {
-            log(`⏳ <span>${chKey}</span> rate limit — รอ 10s...`);
-            await sleep(10000);
-          } else throw e;
-        }
-      }
-      if (groqRules === null) throw new Error('parse failed');
-
-      log(`📖 <span>${chKey}</span> Groq: ${groqRules.length} rules — ทดสอบ Typhoon...`);
-
-      // Pass 2: Typhoon (optional)
-      const typhoonRules = await callTyphoon(chKey, text);
-
-      // Cross-validate
-      const { rules, review, groq, typhoon } = crossValidate(chKey, groqRules, typhoonRules);
-
-      if (review) {
-        state.review.push({ chapter: chKey, groq_count: groq.length, typhoon_count: typhoon.length, groq, typhoon });
-        state.done[chKey] = 0;
-        setChapterUI(chKey, 'done', '⚠️', '⚠️ ตรวจสอบ');
-        log(`⚠️ <span>${chKey}</span> Groq/Typhoon ต่างกัน — flag review`);
-      } else {
-        const tagged = rules.map(r => ({ ch: chKey, ...r }));
+      if (mode === 'typhoon') {
+        // ── Typhoon only (kb_v24-2) ────────────────────────────────────────
+        log(`📖 <span>${chKey}</span> (${text.length} chars) — เรียก Typhoon...`);
+        const typhoonRules = await callTyphoon(chKey, text);
+        if (typhoonRules === null) throw new Error('Typhoon blocked / no response');
+        const tagged = typhoonRules.map(r => ({ ch: chKey, ...r, confidence: 'typhoon' }));
         state.rules.push(...tagged);
-        state.done[chKey] = rules.length;
-        setChapterUI(chKey, 'done', rules.length, `✅ ${rules.length} rules`);
-        log(`✅ <span>${chKey}</span> — ${rules.length} rules (${rules[0]?.confidence||''})`);
+        state.done[chKey] = tagged.length;
+        setChapterUI(chKey, 'done', tagged.length, `✅ ${tagged.length} rules`);
+        log(`✅ <span>${chKey}</span> — ${tagged.length} rules (typhoon)`);
+
+      } else {
+        // ── Groq primary + optional Typhoon validate (kb_v24-1) ───────────
+        log(`📖 <span>${chKey}</span> (${text.length} chars) — เรียก Groq...`);
+        let groqRules = null;
+        for (let attempt = 0; attempt < 3; attempt++) {
+          try {
+            groqRules = await callGroq(chKey, text, key);
+            break;
+          } catch(e) {
+            if (e.message === 'rate_limit') {
+              log(`⏳ <span>${chKey}</span> rate limit — รอ 10s...`);
+              await sleep(10000);
+            } else throw e;
+          }
+        }
+        if (groqRules === null) throw new Error('parse failed');
+
+        log(`📖 <span>${chKey}</span> Groq: ${groqRules.length} rules — ทดสอบ Typhoon...`);
+        const typhoonRules = await callTyphoon(chKey, text);
+        const { rules, review, groq, typhoon } = crossValidate(chKey, groqRules, typhoonRules);
+
+        if (review) {
+          state.review.push({ chapter: chKey, groq_count: groq.length, typhoon_count: typhoon.length, groq, typhoon });
+          state.done[chKey] = 0;
+          setChapterUI(chKey, 'done', '⚠️', '⚠️ ตรวจสอบ');
+          log(`⚠️ <span>${chKey}</span> Groq/Typhoon ต่างกัน — flag review`);
+        } else {
+          const tagged = rules.map(r => ({ ch: chKey, ...r }));
+          state.rules.push(...tagged);
+          state.done[chKey] = rules.length;
+          setChapterUI(chKey, 'done', rules.length, `✅ ${rules.length} rules`);
+          log(`✅ <span>${chKey}</span> — ${rules.length} rules (${rules[0]?.confidence||''})`);
+        }
       }
 
       saveState();
@@ -321,6 +356,11 @@ function stopExtraction() {
 
 // ── Download ──────────────────────────────────────────────────────────────────
 function downloadResult() {
+  const mode = getMode();
+  const filename = mode === 'typhoon' ? 'kb_v24-2.json' : 'kb_v24-1.json';
+  const sourceLabel = mode === 'typhoon'
+    ? 'Typhoon via CF Worker (independent extraction)'
+    : 'Groq LLaMA 3.3 70B primary + Typhoon cross-validate';
   const allRules = state.rules.map((r, i) => ({
     id: `R${String(i+1).padStart(3,'0')}`,
     ...r
@@ -330,11 +370,11 @@ function downloadResult() {
     updated: new Date().toISOString().slice(0,10),
     total: allRules.length,
     engine_min_version: '3.1.0',
-    source: 'extracted via browser — Groq+Typhoon pipeline',
+    source: sourceLabel,
     rules: allRules
   };
   const blob = new Blob([JSON.stringify(kb, null, 2)], {type:'application/json'});
-  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'kb_v24.json'});
+  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download: filename});
   a.click();
   URL.revokeObjectURL(a.href);
 
