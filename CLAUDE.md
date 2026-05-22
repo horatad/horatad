@@ -26,6 +26,38 @@
 
 ---
 
+## 🎯 Claude Capabilities — สรุปบทบาทข้าม project
+
+Claude ทำ 6 บทบาทพร้อมกันใน ecosystem:
+
+| บทบาท | คำอธิบาย |
+|---|---|
+| **Builder** | เขียน/แก้โค้ดทุก project |
+| **Auditor** | review โค้ด + tradeoff ก่อน commit |
+| **Coordinator** | จัดลำดับข้าม project (BIG session) |
+| **Memory** | handoff + WHY LOG + PROJECT_STATUS |
+| **Tutor** | อธิบาย concept โหราศาสตร์/code |
+| **Gate** | ทักท้วงเมื่อคำสั่ง user ไม่ best practice |
+
+### Cross-Project Coverage Matrix
+
+| ความสามารถ | HORATAD | BIBLE | JULIAN | PLATFORM |
+|---|:-:|:-:|:-:|:-:|
+| เขียน code / fix bug | ✅ | ✅ | ✅ | ✅* |
+| UX / Wording design | ✅ | ✅ | — | ✅* |
+| Schema / Architecture | ✅ | ✅ | ✅ | ✅ |
+| Deploy mechanics | ✅ | ✅ | ⚠️ | ⚠️ |
+| **Test บน device จริง** | ❌ | ❌ | ❌ | ❌ |
+| **Expert review (โหร)** | — | ❌ | — | — |
+| **Production account ops** (CF/LINE/Meta) | ❌ | ❌ | ❌ | ❌ |
+
+\* = หลัง PLATFORM Phase 2 เริ่ม
+⚠️ = เขียน script ได้ แต่ deploy ต้อง user run
+
+ทำไม่ได้ทั้งหมดดูที่ § AUTONOMY MODE → "ทำไม่ได้ใน sandbox"
+
+---
+
 ## 🔄 Version Policy — อัปเดตทันทีไม่ต้องถาม
 
 โปรเจคเพิ่งเริ่ม ไม่มี legacy — พบอะไรล้าสมัยให้แก้เลย:
