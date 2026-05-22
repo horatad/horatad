@@ -1,0 +1,52 @@
+name: BIBLE KB V2.4 Extraction
+
+# รันด้วยมือ — ไม่ schedule อัตโนมัติ (ใช้ Groq quota)
+# ต้องการ GitHub Secret: GROQ_API_KEY
+# ไม่ต้องการ ANTHROPIC_API_KEY (Max Plan Only policy)
+# Typhoon ผ่าน CF Worker (horatad-ai.uchujaro5.workers.dev) — ไม่ต้อง key
+
+on:
+  workflow_dispatch:
+    inputs:
+      reset:
+        description: 'ลบ progress แล้วรันใหม่ทั้งหมด'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: ติดตั้ง python-docx
+        run: pip install python-docx
+
+      - name: ลบ progress (ถ้าเลือก reset)
+        if: ${{ inputs.reset == 'true' }}
+        run: rm -f workers/kb_extract_gha_progress.json
+
+      - name: รัน extraction pipeline (Groq + Typhoon)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: node workers/kb_extract_gha.mjs
+
+      - name: Commit ผลลัพธ์
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add v3/kb_v24.json workers/kb_v24_review.json workers/kb_extract_gha_progress.json || true
+          git diff --cached --quiet && echo "ไม่มีการเปลี่ยนแปลง" || \
+            git commit -m "BIBLE: extract KB V2.4 via Groq+Typhoon pipeline ($(date +%Y-%m-%d))"
+          git push || true
