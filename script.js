@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.13
-// Version 3.3.13 | 2026-05-21
+// HORATAD:SCRIPT:3.3.14
+// Version 3.3.14 | 2026-05-21
 // Changes: [V3.3.12] fix: JULIAN 404 — placeholder data/julian_all.json, ปรับ empty msg
 // Changes: [V3.3.11] fix: QR ใน capture — bundle qrcode.min.js, fix qrDiv pos, เพิ่ม toast location
 // Changes: [V3.3.10] fix(about): ลบ section ปรัชญาการพัฒนา, about page full-screen layout
@@ -14,7 +14,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.13';
+const APP_VERSION='3.3.14';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

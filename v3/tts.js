@@ -1,4 +1,4 @@
-// Version 3.3.13 | 2026-05-22
+// Version 3.3.14 | 2026-05-22
 // v3/tts.js — Text-to-Speech via Web Speech API (mobile-first)
 // Project: NOK (Voice Narration) — Phase 1 MVP
 // ใช้ browser SpeechSynthesis (ฟรี, offline, ไม่มี API key)
@@ -17,6 +17,7 @@ function _stripForTTS(text) {
     .replace(/^#+\s+/gm, '')
     .replace(/^\s*[•\-]\s*/gm, '')
     .replace(/[ \t]+/g, ' ')
+    .replace(/^[ \t]+/gm, '') // lstrip per-line (จัด leading space หลัง strip emoji)
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
@@ -41,7 +42,21 @@ function _splitChunks(text, maxLen = 180) {
     else cur += p;
   }
   if (cur) out.push(cur);
-  return out;
+  // Hard-split fallback: ถ้ายังมี chunk ใหญ่เกิน (ภาษาไทยอาจไม่มี boundary . ! ? ฯ)
+  // ตัดที่ใกล้ space ก่อน, ถ้าไม่มี space เลย ตัดตรง char boundary
+  const final = [];
+  for (const c of out) {
+    if (c.length <= maxLen) { final.push(c); continue; }
+    let rest = c;
+    while (rest.length > maxLen) {
+      let cut = rest.lastIndexOf(' ', maxLen);
+      if (cut < maxLen / 2) cut = maxLen; // ไม่มี space → ตัด char
+      final.push(rest.slice(0, cut));
+      rest = rest.slice(cut).trimStart();
+    }
+    if (rest) final.push(rest);
+  }
+  return final;
 }
 
 export function isSupported() {
