@@ -181,14 +181,21 @@ LINE OA รับวันเกิดจาก user
 - BIBLE: 342 rules, KB editor, LLM wording
 - JULIAN: keygen + scraper tools (local, no cloud yet)
 
-### 🔄 Phase 1 — Cloud + API (กำลังทำ)
-- JULIAN: CF D1 setup → import master_key (1700-2100) + internet records
-- JULIAN: CF Worker API `GET /julian?jd=XXX` → planets + persons
-- BIBLE: empirical_validator.html → validate rules ด้วยข้อมูลจริง
+### ✅ Phase 1 — Empirical Data Pipeline (เกือบเสร็จ — 2026-05-22)
+- ✅ JULIAN: GitHub Actions automation รัน 6 ชั่วโมงครั้ง (ไม่ต้อง CF D1 expose)
+- ✅ JULIAN: 31,031/50,000 records (62%) — Wikidata SPARQL + Astrotheme enrichment
+- ✅ JULIAN: export → `data/julian_all.json` (CORS-free GitHub raw) + GitHub Release
+- ✅ HORATAD: import "ดาวน์โหลดข้อมูลสาธารณะ" จาก JULIAN (V3.3.8)
+- ✅ BIBLE: M3+M8 fallback chain + keyword composition engine (V3.3.6)
+- ✅ BIBLE: rule taxonomy (rule_source + weight) — KB V2.3.0 (CS005)
+- 🔲 BIBLE: empirical_validator.html — match JULIAN persons → rules → empirical_p
+- 🔴 DEFERRED: master_key import (engine คำนวณ on-the-fly ได้ — CS007)
+- 🔴 DEFERRED: CF D1 + Worker API (ใช้ GitHub Releases แทน — CS007)
 
 ### 🔲 Phase 2 — Chatbot (ถัดไป)
 - PLATFORM: LINE OA webhook → CF Worker → BIBLE → reply auto
 - Target: รับวันเกิด → ส่งพยากรณ์ ใน 3 วินาที
+- Prerequisite: empirical_validator + 50K JULIAN records
 
 ### 🔲 Phase 3 — Voice + QR
 - PLATFORM: Web Speech API TTS → พูดพยากรณ์ใน browser

@@ -1,7 +1,77 @@
 # CASE STUDIES — Horatad Ecosystem
 # Format: CS<NNN> — <title> | <PROJECT> | <YYYYMMDD>
-# PROJECT: HORATAD / BIBLE / JULIAN
+# PROJECT: HORATAD / BIBLE / JULIAN / BIG
 # กฎ: Plan → Do → Check → Act ("Write what you will do, do what you write")
+
+---
+
+## CS010 — Doc Audit Pattern: Drift Prevention + De-dup | BIG | 2026-05-22
+
+### PLAN
+session BIG ครั้งแรกของ ecosystem — user ขอให้อ่านเอกสาร non-coding ทั้งหมด + วิเคราะห์
+ความสำคัญ, ความเชื่อมโยง, ความซ้ำซ้อน, ความคลุมเครือ
+
+### DO
+1. อ่าน 16 ไฟล์ active + 28 archive (CLAUDE.md, ECOSYSTEM, PROJECT_STATUS, docs/*, handoffs/*)
+2. ระบุปัญหา 9 ข้อ (3 รุนแรง / 3 ปานกลาง / 3 เล็ก) + priority
+3. user สั่ง "ทำหมด" → execute 8 phase cleanup:
+   - ย้าย legacy docs (SYSTEM_INSTRUCTION_V3-4, BEST_PRACTICES) → `docs/legacy/`
+   - แก้ broken ref ใน PROJECT_STATUS
+   - backfill CHANGELOG 18 versions (V3.2.7–V3.3.12)
+   - de-dup HORATAD_MANUAL (47% smaller) → ชี้ ECOSYSTEM/BIBLE_MISSION เป็น authority
+   - trim CLAUDE.md (35% smaller) — เฉพาะ Token efficiency section verbose
+   - ลบ ขยะ root (push.txt, test.txt)
+4. รอบสอง — เจอ drift ตกหล่น:
+   - JULIAN session commit 31K records แต่ไม่ update PROJECT_STATUS (ยังเขียน 436+)
+   - HORATAD_MANUAL section 5.2/7 OKR ยังพูด V3.2.7
+   - BIBLE_MISSION Priority table ยังพูด V3.3.0
+5. E1 — skeleton enrichment: ไม่ draft text (กัน hallucinate) แต่ enrich metadata
+   - 10 cold_start (ไม่มี reference) / 61 derivable (มี `_reference_rules`) / 19 duplicate
+
+### CHECK
+
+**Drift pattern ที่เจอ (root cause):**
+- session ปลายทำงาน commit data/code แต่**ไม่อัปเดต central status file ทันที**
+- กฎใน CLAUDE.md "PROJECT_STATUS.md version line → ทันทีทุก bump" ครอบคลุมเฉพาะ HORATAD app version
+- JULIAN records count, BIBLE KB stats — ไม่มีกฎบังคับ → drift จนกระทั่ง BIG audit เจอ
+
+**De-dup ที่ดีที่สุด:**
+- ลบ section ที่ซ้ำ → ใส่ pointer + warning ⚠️ บอก authority อยู่ที่ไหน
+- ไม่ใช่ลบทิ้งเฉยๆ — future Claude ต้องรู้ว่า "เคยอยู่ที่นี่ ย้ายไปไหน" กัน recreate ซ้ำ
+- ทำให้ HORATAD_MANUAL.md ลด 47% โดยไม่สูญเสีย information access
+
+**Skeleton enrichment — ปลอดภัยกว่า draft:**
+- Claude ไม่ใช่ผู้เชี่ยวชาญสุริยยาตร์ → draft p text จะ hallucinate
+- Enrich metadata (priority + reference_rules) ช่วย expert ทำงานเร็วขึ้น 3 เท่า:
+  - จาก "draft 90 rules จากศูนย์" → "ดู 3 reference rules + ปรับ polarity ตามคุณภาพ"
+
+### ACT — กฎที่ได้
+
+1. **Drift prevention: session ปลายอัปเดต PROJECT_STATUS ทันที**
+   ขยายกฎ CLAUDE.md จาก "version line bump" → "stats ทุก type ที่ session แตะ"
+   - JULIAN session commit data → update record count ใน PROJECT_STATUS ทันที
+   - BIBLE session แก้ KB → update conditions count + MISMATCH count ทันที
+   - HORATAD session bump version → update version line ทันที (เดิม)
+
+2. **De-dup rule: Architecture/Roadmap/Tech stack อยู่ที่ ECOSYSTEM.md ที่เดียว**
+   - HORATAD_MANUAL = HORATAD-specific เท่านั้น (Vision, KB, OKR, Partnership, Risks, V2/V3 tech)
+   - BIBLE_MISSION = M-series + KB schema เท่านั้น
+   - JULIAN_MISSION = Tables + tasks เท่านั้น
+   - ห้ามมี Architecture diagram / Tech Stack table / Roadmap ในไฟล์ MANUAL — ชี้ ECOSYSTEM แทน
+
+3. **BIG audit เป็น periodic task — ทุก major version (V3.X → V3.X+1) หรือทุก 30 sessions**
+   trigger ทำ BIG audit:
+   - PROJECT_STATUS หรือ handoffs ดูล้าสมัย
+   - มี doc 2 ไฟล์ที่บอกเรื่องเดียวกันแต่ตัวเลขไม่ตรง
+   - session ใหม่อ่าน CLAUDE.md/ECOSYSTEM แล้วถามว่า "ทำไม X ขัดกับ Y"
+
+4. **No-hallucinate rule: Claude ไม่ draft content ที่ต้อง domain expertise**
+   - โหราศาสตร์สุริยยาตร์ / กฎหมาย / การแพทย์ → Claude enrich metadata เท่านั้น
+   - หรือ generate template + mark `_claude_draft: true` ให้ expert ตัดสิน
+
+**สิ่งที่ยังต้องทำ:**
+- 🔲 ขยาย CLAUDE.md rule "PROJECT_STATUS update timing" — ครอบคลุม JULIAN records + BIBLE stats
+- 🔲 (อนาคต) สร้าง CI check ที่ scan markdown files หาตัวเลข version/count ที่ไม่ sync
 
 ---
 
