@@ -96,24 +96,22 @@
 
 ---
 
-## REORG — Docs Cleanup 🟢 Pending (Claude ทำได้)
-**เป้าหมาย:** ลด docs จาก 12 → 8 ไฟล์ ปรับ source of truth ให้ชัด
+## REORG — Docs Cleanup ✅ Done (2026-05-22)
+**เป้าหมาย:** ลด docs ที่ outdated/ขัดแย้ง — source of truth ชัด
 
-### สถานะ
-- BIG session ตรวจพบ docs ขัดแย้ง/outdated/ซ้ำซ้อน 4 critical issue
-- Migration plan + verification checklist เขียนครบใน `handoffs/REORG_20260522_v1.md`
+### Done (session REORG v1)
+- ✅ Task 1: ลบ `docs/BEST_PRACTICES.md` + `docs/SYSTEM_INSTRUCTION_V3-4.md` (outdated 100%)
+- ✅ Task 2: Rewrite `docs/HORATAD_MANUAL.md` → `docs/HORATAD.md` (498 → 295 บรรทัด, merge SW policy + UI/UX + QR specs จาก BEST_PRACTICES)
+- ✅ Task 3: Update `docs/CHANGELOG.md` เพิ่ม V3.2.7→V3.3.12 (14 entries)
+- ✅ Task 4: Fix `DEPLOY.md` + `ECOSYSTEM.md` + `CLAUDE.md` references
 
-### Next (Claude ทำได้ — session REORG)
-- [ ] Task 1: ลบ `docs/BEST_PRACTICES.md` + `docs/SYSTEM_INSTRUCTION_V3-4.md` (outdated 100%)
-- [ ] Task 2: Rewrite `docs/HORATAD_MANUAL.md` → `docs/HORATAD.md` (498 → ~250 บรรทัด)
-- [ ] Task 3: Update `docs/CHANGELOG.md` เพิ่ม V3.2.7-V3.3.12 (16 entries)
-- [ ] Task 4: Fix `DEPLOY.md` l.131 broken reference + ECOSYSTEM.md/CLAUDE.md references
-
-### เริ่ม session
-พิมพ์: `session REORG`
+### Deferred (รอบหน้า)
+- [ ] Trim CLAUDE.md — ย้าย HORATAD-specific (HTML Tools rule) → docs/HORATAD.md
+- [ ] Rename `BIBLE_MISSION.md` → `BIBLE.md` + `JULIAN_MISSION.md` → `JULIAN.md` (consistency)
+- [ ] ตรวจ + sync UI_LAYOUT.md กับ index.html
 
 ### Handoff ล่าสุด
-`handoffs/REORG_20260522_v1.md`
+`handoffs/REORG_20260522_v2.md`
 
 ---
 
@@ -125,7 +123,7 @@
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
-| Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
+| Docs cleanup | REORG | docs/*.md | ✅ Done 2026-05-22 |
 
 ---
 
@@ -135,4 +133,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | REORG ✅ done — docs/HORATAD.md (rewrite) + CHANGELOG ครบ V3.2.7→V3.3.12 + ลบ BEST_PRACTICES.md + SYSTEM_INSTRUCTION_V3-4.md | handoffs/REORG_20260522_v2.md*

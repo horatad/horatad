@@ -4,6 +4,83 @@
 
 ---
 
+## [3.3.12] — 2026-05-21
+### Fixed
+- JULIAN download 404 — สร้าง placeholder `data/julian_all.json` + ปรับ empty message ให้ user-friendly
+
+## [3.3.11] — 2026-05-21
+### Added
+- Capture: bundle `qrcode.min.js` local (เลิกพึ่ง CDN) + toast บอก save location
+### Fixed
+- QR ใน capture: fix qrDiv position (ขยาย 125→250 bottom-left x=28 y=820)
+
+## [3.3.10] — 2026-05-21
+### Changed
+- About page: ลบ section "ปรัชญาการพัฒนา" (ย้ายไป CLAUDE.md เท่านั้น)
+- About page: full-screen layout (เลิกใช้ modal)
+
+## [3.3.9] — 2026-05-21
+### Fixed
+- JULIAN URL → raw.githubusercontent (เลี่ยง CORS)
+- ลบ autofocus ใน search (ไม่ pop keyboard บนมือถือ)
+- Swap transit fn (โซลาร์/จันทรคติ)
+- Lunar restore R8 content
+
+## [3.3.8] — 2026-05-21
+### Added — UX batch (8 changes)
+- Import choice (เลือก natal vs memory)
+- DB1 sort options
+- Pin fix (ดาว pin ค้างถูกที่)
+- Tag delete (ลบ tag ได้)
+- Toggle buttons (ดวง/เหตุการณ์/กลุ่ม)
+- Nav view button
+- Lunar cleanup
+
+## [3.3.7] — 2026-05-21
+### Fixed
+- Memory modal ใช้ `dvh` แทน `vh` — virtual keyboard ไม่บัง Export/Import/ปิด บนมือถือ
+
+## [3.3.6] — 2026-05-21
+### Fixed
+- M3: Typhoon ตอบไม่ใช่ JSON หลัง retry → **throw** (เดิม return raw → ส่งให้ user) → caller catch แล้ว fallback ไป compose_local_prediction()
+- M3+M8 fallback chain ครบ — เริ่ม anti-hallucination guarantee
+
+## [3.3.4] — 2026-05-20
+### Added
+- V3 tab — 3-panel view (กฎ / Input Typhoon / Output) — Dev mode สำหรับ debug
+
+## [3.3.3] — 2026-05-20
+### Fixed — BIBLE match_rules
+- `house_lord_of` — dynamic เจ้าเรือนตาม lagna (เดิม hardcode)
+- REFERENCE filter — กรอง rule_type=REFERENCE ออกจาก prediction set
+- planet_id=0 bug — `||` แทน `||` เพื่อกัน falsy (planet 0 = SU)
+
+## [3.3.1] — 2026-05-20
+### Added
+- Wire M8 `compose_local_prediction` → `v3tab.js` (✅/⚠️/📋 grouped sections)
+- แทน `render_fallback` เดิม (string concat แบบไม่ structured)
+
+## [3.3.0] — 2026-05-20
+### Added — Mission M7 + M8
+- M8: Keyword composition engine — deterministic prediction จาก KB ไม่ใช้ LLM (100% anti-hallucination)
+  - `compose_local_prediction()` + `compose_summary_text()` ใน `v3/interpretation.js`
+- M7: Empirical schema — `_empirical_schema` ใน root, sample fields ใน 2 rules
+- `v3/kb_skeletons.json` — 90 rule skeletons รอ empirical data + expert text
+
+## [3.2.9] — 2026-05-20
+### Added — Anti-hallucination foundation
+- `match_rules()` ใช้ `conditions[]` แทน text matching
+- Structured JSON output + `rule_id` validation (เริ่ม anti-hallucination)
+- Multi-LLM benchmark: Gemini / Groq / Typhoon (เลือก best ตาม Thai astrology)
+
+## [3.2.8] — 2026-05-20
+### Added
+- `kb.json` V2.1 — 284/342 conditions[] (combine Typhoon fill 2 rounds, 83% coverage)
+
+## [3.2.7] — 2026-05-20
+### Added
+- `kb.json` V2 — 342 rules + conditions[] จาก Typhoon fill (initial — coverage จะเพิ่มใน V3.2.8)
+
 ## [3.2.6] — 2026-05-20
 ### Added
 - ปรัชญาการพัฒนา (Development Philosophy): Simple / Friendly / UX / Fast
