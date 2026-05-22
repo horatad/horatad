@@ -92,7 +92,8 @@
 - [ ] ตัดสินใจ Phase เริ่มต้น (แนะนำ: LINE OA chatbot ก่อน)
 
 ### รายละเอียด
-ดู `handoffs/JULIAN_20260521_v2.md` → section PLATFORM VISION
+ดู `ECOSYSTEM.md` → section "PLATFORM — Distribution" + Roadmap Phase 2–4
+(handoff เก่า `handoffs/archive/JULIAN_20260521_v2.md` มี early vision draft)
 
 ---
 

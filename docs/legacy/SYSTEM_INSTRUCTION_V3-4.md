@@ -1,3 +1,13 @@
+> ⚠️ **LEGACY — เก็บไว้อ้างอิงเท่านั้น**
+> เอกสารนี้จาก 2026-05-19 ก่อน restructure เป็น ECOSYSTEM/PROJECT_STATUS/handoffs
+> **Source of truth ปัจจุบัน:**
+> - Universal rules → `CLAUDE.md`
+> - HORATAD-specific (stack, V2/V3, version bump) → `docs/HORATAD_MANUAL.md`
+> - Deploy/version sync → `DEPLOY.md`
+> - V3 engine pipeline + Typhoon prompt + PWA SW policy → section ด้านล่างเป็น reference ที่ยังใช้ได้
+
+---
+
 # Horatad — System Instruction (ตั้งใน Claude Project)
 # Version 3.4 | 2026-05-19
 # always apply Sonnet 4.6 adaptive model

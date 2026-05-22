@@ -1,6 +1,9 @@
 # HORATAD — Working Manual
 ### โหราทาส: Thai Astrology Intelligence Platform
-**เวอร์ชัน:** 1.1 | **อัปเดต:** 2026-05-21 | **สถานะ:** Active Development
+**เวอร์ชัน:** 1.2 | **อัปเดต:** 2026-05-22 | **สถานะ:** Active Development
+
+> 📌 ไฟล์นี้เก็บ **HORATAD-specific** เท่านั้น (Vision, KB structure, OKR, Partnership, Risks, Glossary, V2/V3 tech reference)
+> Architecture / Roadmap / Tech stack / Sprint → ดู `ECOSYSTEM.md` + `PROJECT_STATUS.md`
 
 ---
 
@@ -29,19 +32,7 @@ Horatad เป็นแพลตฟอร์มโหราศาสตร์ไ
 
 ---
 
-# 3. PRODUCT OVERVIEW
-
-## 3.1 สิ่งที่ Horatad ทำ
-
-```
-Horatad = Event Timer (Alarm Clock) + Conversational AI
-```
-
-**Event Timer:** คำนวณตำแหน่งดาว → จับคู่กับกฎโหราศาสตร์ → แสดง timeline ของเหตุการณ์ที่คาดว่าจะเกิด พร้อมวันที่แม่น
-
-**Conversational AI:** อธิบาย timing นั้น, ตอบคำถาม, สนทนาเกี่ยวกับดวงชาตา โดยมีกฎเป็น ground truth
-
-## 3.2 จุดต่างจากโหราศาสตร์ทั่วไป
+# 3. PRODUCT OVERVIEW — จุดต่างจากโหราศาสตร์ทั่วไป
 
 | ระบบทั่วไป | Horatad |
 |---|---|
@@ -50,91 +41,15 @@ Horatad = Event Timer (Alarm Clock) + Conversational AI
 | LLM คาดเดาเอง | LLM craft wording จากกฎเท่านั้น |
 | ไม่มี feedback loop | สะสม data → ปรับปรุงกฎต่อเนื่อง |
 
+> Horatad = Event Timer (Alarm Clock) + Conversational AI
+
 ---
 
 # 4. SYSTEM ARCHITECTURE
 
-## 4.1 ภาพรวม 3 ชั้น
+ภาพรวม architecture, data flow, tech stack, cross-project dependencies → **`ECOSYSTEM.md`** (authoritative)
 
-```
-┌─────────────────────────────────────────────────────┐
-│  LAYER 3: APPLICATION                                │
-│  Horatad PWA — Mobile-first, Offline-capable         │
-│  Event Timeline / Conversation / Group Compare       │
-├─────────────────────────────────────────────────────┤
-│  LAYER 2: INTELLIGENCE                               │
-│  Calculation Engine + KB + LLM + Statistical Rules   │
-├─────────────────────────────────────────────────────┤
-│  LAYER 1: DATA                                       │
-│  Knowledge Base + Empirical DB + User Events         │
-└─────────────────────────────────────────────────────┘
-```
-
-## 4.2 Process Flow
-
-```
-INPUT: วันเกิด + เวลา + สถานที่
-         ↓
-  Julian Day Conversion
-         ↓
-  Ephemeris Calculation (engine.js)
-  → planets[10] + lagna  [deterministic]
-         ↓
-  Rule Matching (match_rules)
-  → KB lookup by conditions[]
-         ↓
-    ┌────┴────────────┐
-    ↓                 ↓
-  Timing Engine    LLM Layer (Typhoon)
-  → When?          → craft wording
-  [math only]      [from rules only]
-    └────────┬───────┘
-             ↓
-  OUTPUT: Timeline + Conversation
-  [provable, traceable, verifiable]
-```
-
-## 4.3 Data Structure หลัก
-
-```json
-// Knowledge Base Rule
-{
-  "id": 5009,
-  "rule_type": "TRUE_RULE",
-  "c": "ดาวอาทิตย์กุมลัคนา",
-  "p": "หยิ่งในศักดิ์ศรี รักหน้า อีโก้สูง",
-  "t": ["อาทิตย์", "ดี", "ลัคนา"],
-  "conditions": [
-    {"planet_id":"1","quality_required":"ANY","lagna_aspect_req":"กุมลัคนา","required":true}
-  ],
-  "pr": 1
-}
-
-// Empirical Record (Phase 2)
-{
-  "jd": 2451545.0,        // Julian Day — index หลัก
-  "lat": 13.7563,
-  "lng": 100.5018,
-  "type": "human",
-  "planets": [p0..p9],    // calculated deterministic
-  "event_label": "career_change",
-  "source": "wikipedia",
-  "confidence": 0.9
-}
-```
-
-## 4.4 Tech Stack
-
-| Component | Technology |
-|---|---|
-| Frontend | Vanilla JS, PWA (no build step) |
-| Calculation Engine | engine.js (custom ephemeris) |
-| Knowledge Base | kb.json (342 rules, structured) |
-| LLM / AI | Typhoon v2 (primary), Gemini/Groq (backup/benchmark) |
-| Auth | Cloudflare Workers (horatad-auth) |
-| AI Proxy | Cloudflare Workers (horatad-ai) |
-| Deploy | GitHub Pages (auto-deploy from main) |
-| Storage | localStorage + IndexedDB |
+> ⚠️ Layer diagram + Process flow + Tech stack table เคยอยู่ในนี้ — ย้ายไป ECOSYSTEM.md เพื่อกัน drift
 
 ---
 
@@ -166,54 +81,9 @@ INPUT: วันเกิด + เวลา + สถานที่
 
 # 6. ROADMAP
 
-## Phase 1 — Foundation & Launch ✅ (ปัจจุบัน)
-**เป้าหมาย:** App ทำงานได้ครบ, deploy แล้ว, เริ่มเก็บ user จริง
+Roadmap 5 phases (Phase 0–5+) + cross-project dependencies → **`ECOSYSTEM.md` → Roadmap section** (authoritative)
 
-| งาน | สถานะ |
-|---|---|
-| Calculation engine (natal + transit) | ✅ Done |
-| Knowledge Base V2 (342 rules + conditions) | ✅ Done V3.2.7 |
-| V3 Tab: Event timeline + Conversation | ✅ Done |
-| Group compare (สมพงศ์) | ✅ Done |
-| PWA offline-capable | ✅ Done |
-| Deploy GitHub Pages | ✅ Done |
-| **Remaining:** match_rules() ใช้ conditions[] | 🔲 Next |
-| **Remaining:** Structured LLM output (anti-hallucination) | 🔲 Next |
-
-## Phase 2 — Intelligence Layer (Q3–Q4 2026)
-**เป้าหมาย:** เพิ่มความแม่นยำ, กัน hallucination, เริ่มเก็บข้อมูล empirical
-
-| งาน | Priority | Status |
-|---|---|---|
-| อัปเดต match_rules() ใช้ conditions[] | ⭐ สูง | ✅ V3.2.9 |
-| Structured JSON output + rule_id validation | ⭐ สูง | ✅ V3.2.9 |
-| Multi-LLM benchmark (Gemini, Groq, Typhoon CF) | ⭐ สูง | ✅ V3.2.9 |
-| M8: Keyword composition engine (no-LLM prediction) | ⭐ สูง | ✅ V3.3.0 |
-| M7: Empirical schema + rule skeleton generator | สูง | ✅ V3.3.0 |
-| Known-rules cross-validation framework | สูง | 🔲 |
-| User event logging (opt-in) | กลาง | 🔲 |
-| Public figures scraper (Julian Day DB) | กลาง | 🔲 |
-
-## Phase 3 — Empirical & Validation (2027)
-**เป้าหมาย:** พิสูจน์ premise ด้วยข้อมูลจริง
-
-| งาน | หมายเหตุ |
-|---|---|
-| Empirical DB: บุคคลสำคัญ + events | Wikipedia API scraper |
-| Statistical analysis: P(event\|configuration) | Secondary rules |
-| Prediction tracking: before/after comparison | พิสูจน์ premise |
-| Benchmark framework ครบ 20+ known rules | extend จาก 6 ข้อ |
-
-## Phase 4 — Small LLM (2027–2028)
-**เป้าหมาย:** model เฉพาะทางโหราศาสตร์ไทย ประหยัดต้นทุน
-
-| งาน | Detail |
-|---|---|
-| Synthetic training data | Typhoon + Gemini สร้าง 2,000–5,000 คู่ |
-| Base model | Qwen2.5-3B-Instruct (Apache 2.0, ฟรี) |
-| Fine-tune method | LoRA/QLoRA บน Google Colab T4 |
-| ค่าใช้จ่ายประมาณ | $5–15 (data gen) + ฟรี (training) |
-| Deploy | HuggingFace Inference API |
+> ⚠️ Phase 1–4 + Sprint plan เคยอยู่ในนี้ — ย้ายไป ECOSYSTEM.md เพื่อกัน drift กับ PROJECT_STATUS.md
 
 ---
 
@@ -246,79 +116,21 @@ INPUT: วันเกิด + เวลา + สถานที่
 
 # 8. RESOURCE REQUIREMENTS
 
-## 8.1 Technology (ปัจจุบัน — ส่วนใหญ่ฟรี)
+Tech stack + Free/paid API matrix + Data requirements → **`ECOSYSTEM.md` → Technology Stack**
+Task list ปัจจุบัน + sprint priority → **`PROJECT_STATUS.md`**
 
-| Resource | Cost | Status |
-|---|---|---|
-| GitHub Pages hosting | ฟรี | ✅ Active |
-| Cloudflare Workers (auth + AI proxy) | ฟรีเทียร์ | ✅ Active |
-| Typhoon API | Pay-per-token | ✅ Active |
-| Gemini Flash API | ฟรี 1,500 req/วัน | 🔲 ต้องสมัคร |
-| Groq API (LLaMA 70B) | ฟรี 14,400 req/วัน | 🔲 ต้องสมัคร |
-| Chinda 4B (iApp, Thai) | ฟรี | 🔲 ต้องสมัคร |
-| Google Colab (fine-tune) | ฟรี T4 GPU | Phase 4 |
-
-## 8.2 Human Resources
-
-| Role | ต้องการ | มีแล้ว |
-|---|---|---|
-| Full-stack Developer | ✅ | ✅ (Claude + owner) |
-| Thai Astrology Expert | สำหรับ validate KB rules | 🔲 |
-| Data Annotator | สำหรับ label events (Phase 3) | 🔲 |
-| Business/Marketing | สำหรับ user acquisition | 🔲 |
-
-## 8.3 Data Requirements
-
-| Data | ปริมาณ | วิธีได้ |
-|---|---|---|
-| KB Rules ครบ | 342 rules (มีแล้ว 83%) | Typhoon fill + expert review |
-| Training pairs (fine-tune) | 2,000–5,000 | Synthetic generation |
-| Public figures (empirical) | ≥1,000 records | Wikipedia API scraper |
-| User events (opt-in) | ≥200 | In-app logging |
-| Hallucination benchmark | ≥20 questions | Expand from 6 existing |
+Human resources ที่ยังขาด:
+- Thai Astrology Expert — validate KB rules (BIBLE)
+- Data Annotator — label events (Phase 3)
+- Business/Marketing — user acquisition
 
 ---
 
 # 9. ACTIVITIES & ACTION PLAN
 
-## Sprint 1 — ทันที (พฤษภาคม–มิถุนายน 2026)
+Sprint backlog ที่ทันสมัย → **`PROJECT_STATUS.md`** + **`handoffs/<PROJECT>_*.md`** ล่าสุด
 
-| # | Activity | ใคร | เวลา |
-|---|---|---|---|
-| 1.1 | สมัคร Gemini + Groq + iApp API keys | User | 1 วัน |
-| 1.2 | อัปเดต match_rules() ใช้ conditions[] | Claude | 1 session |
-| 1.3 | Structured JSON output + rule_id validation | Claude | 1 session |
-| 1.4 | retry fill 59 rules ที่ยังว่าง | User (browser) | 1 ชั่วโมง |
-| 1.5 | ทดสอบ V3.2.7 บนมือถือจริง | User | 1 วัน |
-
-## Sprint 2 — ระยะสั้น (มิถุนายน–กรกฎาคม 2026)
-
-| # | Activity | ใคร | เวลา |
-|---|---|---|---|
-| 2.1 | Multi-LLM benchmark tool (ใช้ thai-astro-api-compare) | Claude | 1 session |
-| 2.2 | ขยาย hallucination test 6 → 20+ ข้อจาก KB | Claude | 1 session |
-| 2.3 | Cross-validation: Gemini + Groq เทียบ known rules | Claude | 1 session |
-| 2.4 | User event logging UI (opt-in) | Claude | 1 session |
-| 2.5 | CF Workers: เพิ่ม Gemini/Groq endpoint | Claude | 1 session |
-
-## Sprint 3 — ระยะกลาง (Q3 2026)
-
-| # | Activity | ใคร | เวลา |
-|---|---|---|---|
-| 3.1 | Public figures scraper (Wikipedia API → Julian Day DB) | Claude | 1–2 sessions |
-| 3.2 | Empirical DB schema + storage | Claude | 1 session |
-| 3.3 | KB expert review (validate conditions[]) | User + Expert | — |
-| 3.4 | Eval dataset 50 charts + expected rules | Claude + Expert | 1–2 sessions |
-| 3.5 | Prediction tracking: save before → check after | Claude | 1 session |
-
-## Sprint 4 — ระยะยาว (Q4 2026–2027)
-
-| # | Activity | ใคร | เวลา |
-|---|---|---|---|
-| 4.1 | Synthetic training data generation (2,000+ pairs) | Claude | หลาย sessions |
-| 4.2 | Fine-tune Qwen2.5-3B LoRA บน Colab | User + Claude | 1–2 วัน |
-| 4.3 | Deploy small model + A/B test กับ Typhoon | Claude | 1 session |
-| 4.4 | Statistical analysis: P(event\|configuration) | Claude | 1–2 sessions |
+> ⚠️ Sprint 1–4 (พ.ค. 2026 – Q4 2027) เคยอยู่ในนี้ — outdated เร็ว (V3.2.7 sprint plan ตอนนี้ผ่านมาแล้ว V3.3.12)
 
 ---
 
@@ -328,7 +140,7 @@ INPUT: วันเกิด + เวลา + สถานที่
 
 | สิ่ง | รายละเอียด |
 |---|---|
-| **Working product** | App live บน horatad.github.io, V3.2.7 |
+| **Working product** | App live บน horatad.com, V3.3.12 |
 | **Technical foundation** | Calculation engine แม่น + KB 342 rules structured |
 | **Unique premise** | Provable predictions — ตรวจสอบได้ ไม่ใช่แค่ rhetoric |
 | **Scalable architecture** | ออกแบบรองรับ empirical DB + fine-tune |
@@ -382,59 +194,11 @@ INPUT: วันเกิด + เวลา + สถานที่
 
 ---
 
----
+# 13. MISSION DETAIL
 
-# 13. MISSION DETAIL — M7 & M8
+รายละเอียด M0–M8 ทั้งหมด (Multi-LLM benchmark, KB foundation, structured output, empirical validation, keyword composition engine) **อยู่ใน `docs/BIBLE_MISSION.md`** — authoritative ไฟล์เดียว ไม่ duplicate
 
-## M7 — Empirical Validation Pipeline
-
-**เป้าหมาย:** พิสูจน์กฎด้วยข้อมูลบุคคลจริง → คำนวณ `empirical_p` ต่อ rule
-
-### Pipeline
-```
-Julian Day DB (บุคคลสำคัญ Wikipedia)
-      ↓ match_rules() กับแต่ละ person
-      ↓ ตรวจว่า event_label ตรง rule.p
-      ↓ นับ hit/miss
-      → empirical_p = hits / (hits + miss)
-      → เก็บลง kb.json rule.empirical_p
-```
-
-### Schema fields (optional — absent = no data yet)
-```json
-"empirical_p":    0.73,    // P(trait | config), null = ไม่มีข้อมูล
-"empirical_n":    47,      // sample size
-"empirical_refs": ["JD:2451545.0"],  // Julian Days ที่ verify แล้ว
-"secondary_obs":  ["มักเป็นผู้นำองค์กร"]  // observation เพิ่มเติม
-```
-
-### ไฟล์ที่เกี่ยวข้อง
-- `v3/kb_skeletons.json` — 90 rule skeletons รอ empirical data + expert text
-- `scripts/gen_rule_skeletons.mjs` — generator script
-
----
-
-## M8 — Keyword Composition Engine
-
-**เป้าหมาย:** Deterministic prediction จาก KB ไม่ใช้ LLM — 100% anti-hallucination
-
-### API (ใน `v3/interpretation.js`)
-
-```javascript
-// สร้าง predictions array จาก matched rules
-const preds = compose_local_prediction(matched_rules);
-// preds = [{rule_id, text, keywords, polarity, chapter, source:'local'}]
-
-// สรุป 1 paragraph
-const summary = compose_summary_text(preds);
-// → "ฉลาดเฉลียว มีเสน่ห์ แต่มีแนวโน้ม อีโก้สูง หยิ่งในศักดิ์ศรี"
-```
-
-### ข้อสังคัญ
-- `text` = `rule.p` ทั้งหมด (ground truth ไม่เปลี่ยน)
-- `keywords` = phrases แยกจาก `rule.p` ด้วย space/punctuation
-- `polarity` = `+`/`-`/`~` จาก `t[]` tags + `conditions[]` (ไม่ใช่ text analysis)
-- ใช้เป็น fallback เมื่อ Typhoon API ไม่พร้อม หรือ offline mode
+> ⚠️ เคยมี M7 + M8 detail ในนี้ — ย้ายไป BIBLE_MISSION.md เพื่อกัน drift
 
 ---
 

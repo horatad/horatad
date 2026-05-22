@@ -1,3 +1,12 @@
+> ⚠️ **LEGACY — เก็บไว้อ้างอิงเท่านั้น**
+> เอกสารนี้จาก 2026-05-19 ก่อน restructure
+> SESSION FLOW เก่า (อ่าน SYSTEM_INSTRUCTION + session_handoff_*.md + ChgLog19May.md) **ไม่ใช้แล้ว**
+> **ปัจจุบัน:** อ่าน `ECOSYSTEM.md` → `PROJECT_STATUS.md` → `handoffs/<PROJECT>_*.md` (ดู `CLAUDE.md`)
+>
+> UI/UX rules, QR payload, SW policy, NUCLEAR OPTIONS — ยังใช้ได้เป็น reference
+
+---
+
 # Horatad — Best Practices
 # Updated: 2026-05-19
 # ใช้คู่กับ SYSTEM_INSTRUCTION_V3-4.md (อันนี้เป็น quick reference สั้นๆ)

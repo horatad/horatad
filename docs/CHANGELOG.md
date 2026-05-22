@@ -4,6 +4,107 @@
 
 ---
 
+## [3.3.12] — 2026-05-21
+### Fixed
+- JULIAN download 404: สร้าง `data/julian_all.json` placeholder `[]` ใน repo
+- julian_sync.yml: Commit progress step merge JSONL → `data/julian_all.json` แม้ไม่มี CF token
+- `_importFromJulian`: empty message user-friendly ("กำลังรวบรวม รอ 1-2 วัน")
+### Docs
+- CLAUDE.md: เพิ่ม cross-project impact rule (📨 section แจ้ง project ปลายทาง)
+- Documentation audit: PROJECT_STATUS + handoffs สอดคล้องกับโค้ดจริง + archive rule
+
+## [3.3.11] — 2026-05-21
+### Fixed
+- Capture QR ใน share image:
+  - bundle `qrcode.min.js` ใน repo (./qrcode.min.js) + เพิ่ม `CORE_ASSETS` → offline ได้
+  - qrDiv: `position:fixed -9999px` → `opacity:0` on-screen (แก้ iOS Safari canvas ไม่ render)
+- saveChart/shareChart: toast บอก location (Photos/Files หรือ Downloads)
+
+## [3.3.10] — 2026-05-21
+### Changed
+- About page: ลบ section ปรัชญาการพัฒนา (Simple/Friendly/UX/Fast) — เป็น internal guideline
+- about-app → `justify-content:space-between` (full-screen layout, ไม่มี scroll feed)
+- ปุ่มทั้งสองห่อใน `.about-btn-group` (flex column, gap 8px)
+
+## [3.3.9] — 2026-05-21
+### Fixed
+- 5 fixes + R8 content restore (batch)
+
+## [3.3.8] — 2026-05-21
+### Added
+- UX: 8 changes batch (ปุ่ม "ดาวน์โหลดข้อมูลสาธารณะ" import JULIAN จาก HORATAD memory modal, etc.)
+
+## [3.3.7] — 2026-05-21
+### Fixed
+- Memory modal ใช้ `dvh` — keyboard ไม่บังปุ่ม Export/Import/ปิด บนมือถือ
+
+## [3.3.6] — 2026-05-21
+### Fixed
+- M3 fallback chain: typhoon.js throw Error แทน return raw string เมื่อ Typhoon ตอบไม่ใช่ JSON หลัง retry
+  → v3tab.js catch (line 267) → `compose_local_prediction()` ทำงานถูก
+  badge: "⚠️ Typhoon ไม่ตอบ — ใช้ keyword engine"
+
+## [3.3.5] — 2026-05-21
+### Added
+- Rule IDs R001–R342: ตรงกับ index ใน kb.json ทุก panel
+- Natal/Transit toggle ใน TAB 3: [🏠 ดวงเดิม] [🌐 ดวงจร] [⚡ ทั้งคู่]
+
+## [3.3.4] — 2026-05-21
+### Added
+- 3-panel V3 tab: กฎ / Input / Output (accordion, output expanded default)
+- kb_reviewer.html v2: mobile, patch, merge, master backup
+
+## [3.3.3] — 2026-05-21
+### Fixed
+- Garbage input cleanup: `house_lord_of` dynamic, REFERENCE rule filter, `planet_id=0` bug
+
+## [3.3.2] — 2026-05-21
+### Added
+- M8 keyword composition engine wired → v3tab.js (CS004)
+- tagged phrase cluster prompt: `[+ตัวตน] นุ่มนวล, เสน่ห์` ส่ง Typhoon
+
+## [3.3.1] — 2026-05-21
+### Added
+- `_renderComposed()` — format predictions array → ✅/⚠️/📋 polarity-grouped text
+- v3Local() + v3Typhoon() fallback: ใช้ `compose_local_prediction` แทน `render_fallback`
+- ลบ render_fallback import จาก v3tab.js
+
+## [3.3.0] — 2026-05-21
+### Added
+- M8 `compose_local_prediction()` + `compose_summary_text()` ใน `v3/interpretation.js`
+  - extract keywords จาก rule.p, classify polarity จาก t[] + conditions[]
+- M7 empirical schema: `_empirical_schema` field ใน kb.json root
+  - empirical_p, empirical_n, empirical_refs, secondary_obs (null placeholder ใน 2 sample TRUE_RULEs)
+- `scripts/gen_rule_skeletons.mjs` → `v3/kb_skeletons.json` (90 missing planet×quality combinations)
+### KB Schema
+- kb.json V2.3.0: เพิ่ม `rule_source` (major|minor|empirical|case_study) + `weight` ใน 342 rules (CS005)
+
+## [3.2.9] — 2026-05-21
+### Added
+- M1: `match_rules()` ใช้ structured `conditions[]` (เลิก string match `tags_raw`)
+- M2: `build_prompt()` ตัด chartSummary → lagna + overall.strength เท่านั้น
+- M2: `v3Typhoon()` fallback อัตโนมัติเมื่อ API error
+- M3: Typhoon prompt บังคับ output JSON `{"predictions":[{"rule_id":N,"text":"..."}]}`
+- M3: validation ตรวจ `rule_id` อยู่ใน matched rules → ตัดออกถ้าไม่ใช่
+- M0 hallucination benchmark tool: `m0_hallucination_test.html` (Groq + Gemini + Typhoon CF, 31 ข้อ KB ground truth)
+- M0 latency tool: `m0_latency_ping.html` (Mode B prefill-only + Mode C streaming SSE)
+### Fixed
+- `m0_hallucination_test.html`: Gemini 429 → delay 5000ms + countdown
+- `m0_hallucination_test.html`: iApp CORS → Typhoon CF Worker proxy แทน
+
+## [3.2.8] — 2026-05-20
+### Internal
+- ระหว่างทาง M0–M3 (ไม่ deploy หลัก)
+
+## [3.2.7] — 2026-05-20
+### Added
+- KB V2: 342 rules, **283/342 มี `conditions[]`** (83%)
+  - merge `kb_yaml_filled` → `kb.json` (104 TRUE_RULE + 49 TRANSIT_RULE + 122 CASE_STUDY + 50 HOUSE_CONCEPT)
+- `scripts/parse_yaml_kb.mjs` — แปลง YAML KB → `kb_yaml_import.json`
+- `fill_yaml_conditions.html` — Typhoon เติม `conditions[]` 140 rules ที่ยังว่าง
+
+---
+
 ## [3.2.6] — 2026-05-20
 ### Added
 - ปรัชญาการพัฒนา (Development Philosophy): Simple / Friendly / UX / Fast
