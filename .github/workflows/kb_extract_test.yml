@@ -1,0 +1,54 @@
+name: BIBLE Connection Test
+
+# ทดสอบ connectivity ก่อนรัน full extraction
+# ตรวจ: Groq API (direct) + CF Worker (Typhoon proxy)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: ทดสอบ Groq API
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          RESULT=$(curl -s -w "\n%{http_code}" -X POST "https://api.groq.com/openai/v1/chat/completions" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $GROQ_API_KEY" \
+            -d '{"model":"llama-3.3-70b-versatile","max_tokens":20,"messages":[{"role":"user","content":"ตอบว่า OK เท่านั้น"}]}' \
+            --max-time 15)
+          HTTP_CODE=$(echo "$RESULT" | tail -1)
+          BODY=$(echo "$RESULT" | head -1)
+          echo "HTTP: $HTTP_CODE"
+          echo "Body: $BODY"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Groq: OK"
+          else
+            echo "❌ Groq: FAIL ($HTTP_CODE)"
+            exit 1
+          fi
+
+      - name: ทดสอบ CF Worker (Typhoon proxy)
+        run: |
+          RESULT=$(curl -s -w "\n%{http_code}" -X POST "https://horatad-ai.uchujaro5.workers.dev" \
+            -H "Content-Type: application/json" \
+            -H "Origin: https://horatad.com" \
+            -d '{"model":"typhoon-v2.5-30b-a3b-instruct","max_tokens":20,"stream":false,"messages":[{"role":"user","content":"ตอบว่า OK เท่านั้น"}]}' \
+            --max-time 15)
+          HTTP_CODE=$(echo "$RESULT" | tail -1)
+          BODY=$(echo "$RESULT" | head -1)
+          echo "HTTP: $HTTP_CODE"
+          echo "Body: $BODY"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ CF Worker (Typhoon): OK"
+          else
+            echo "⚠️  CF Worker: $HTTP_CODE — extraction จะใช้ Groq อย่างเดียว"
+          fi
+          # ไม่ exit 1 — CF Worker optional (script fallback ได้)
+
+      - name: สรุปผล
+        run: echo "Test เสร็จ — ดู step ด้านบนว่า service ไหนใช้ได้บ้าง"
