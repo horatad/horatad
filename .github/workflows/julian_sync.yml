@@ -2,33 +2,30 @@ name: JULIAN Data Sync
 
 # รันทุก 6 ชั่วโมง — อิสระ ไม่ต้องพึ่ง Claude หรือ session ใด
 # หยุดอัตโนมัติเมื่อถึง TARGET_RECORDS ใน julian_config.mjs
-# Storage หลัก: GitHub (data/julian_all.json ใน repo + GitHub Release)
-# CF D1: optional — ใช้สำหรับ enrichment เท่านั้น ไม่ใช่ data path หลัก
+# Storage: data/julian_all.json (repo, CORS-free) + GitHub Release julian-data
 
 on:
   schedule:
-    - cron: '0 */6 * * *'    # ทุก 6 ชั่วโมง (00/06/12/18 UTC) — scrape Wikidata
+    - cron: '0 */6 * * *'    # ทุก 6 ชั่วโมง (00/06/12/18 UTC)
     - cron: '0 3 * * 0'      # 03:00 UTC ทุกอาทิตย์ — empirical validation
-  workflow_dispatch:           # กด Run manually ได้จาก GitHub UI
+  workflow_dispatch:
     inputs:
       rate:
-        description: 'ลด rate ถ้าต้องการ (0.25/0.5/0.75/1.0) — ขยายเกิน 1.0 ไม่ได้'
+        description: 'ลด rate ถ้าต้องการ (0.25/0.5/0.75/1.0)'
         required: false
         default: '1.0'
         type: choice
         options: ['1.0', '0.75', '0.5', '0.25']
 
 permissions:
-  contents: write              # สำหรับ commit progress
-  actions: write               # สำหรับ disable workflow เมื่อ target ถึง
+  contents: write
+  actions: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 55
     env:
-      CLOUDFLARE_API_TOKEN:            ${{ secrets.CF_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID:           ${{ secrets.CF_ACCOUNT_ID }}
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
@@ -62,134 +59,13 @@ jobs:
         id: scrape
         run: node workers/julian_scraper.mjs
 
-      # ─── Import to CF D1 — ซ่อนไว้ (Private data enrichment รอ CF setup) ──
-      - name: Import to CF D1
-        if: false  # disabled — เปิดเมื่อตั้ง CF_API_TOKEN + CF_ACCOUNT_ID secrets แล้ว
-        run: |
-          npm install -g wrangler@4 --silent
-          echo "wrangler version: $(wrangler --version)"
-          echo "── Token verify ──"
-          curl -sf "https://api.cloudflare.com/client/v4/user/tokens/verify" \
-            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
-            -o /tmp/tok.json && \
-            node -e "const d=JSON.parse(require('fs').readFileSync('/tmp/tok.json','utf8')); console.log('token status:', d.result?.status, '| success:', d.success)" \
-            || echo "token verify curl failed"
-          node workers/julian_import.mjs "${{ steps.scrape.outputs.out_file }}" > /tmp/import.sql
-          echo "SQL preview (first 3 lines):"
-          head -3 /tmp/import.sql
-          wrangler d1 execute julian \
-            --config workers/julian_wrangler.toml \
-            --file=/tmp/import.sql \
-            --remote \
-            --yes
-          echo "D1 import done: ${{ steps.scrape.outputs.record_count }} records"
-
-          echo "── Generate report ──"
-          wrangler d1 execute julian \
-            --config workers/julian_wrangler.toml \
-            --command="SELECT event_label, country, COUNT(*) as cnt FROM internet GROUP BY event_label, country ORDER BY cnt DESC" \
-            --remote --json > /tmp/report_cats.json || echo "[]" > /tmp/report_cats.json
-          wrangler d1 execute julian \
-            --config workers/julian_wrangler.toml \
-            --command="SELECT name, jd, event_label, country, confidence FROM internet ORDER BY id DESC LIMIT 100" \
-            --remote --json > /tmp/report_recent.json || echo "[]" > /tmp/report_recent.json
-          wrangler d1 execute julian \
-            --config workers/julian_wrangler.toml \
-            --command="SELECT COUNT(*) as total FROM internet" \
-            --remote --json > /tmp/report_total.json || echo "[]" > /tmp/report_total.json
-          node -e "
-            const cats   = JSON.parse(require('fs').readFileSync('/tmp/report_cats.json','utf8'));
-            const recent = JSON.parse(require('fs').readFileSync('/tmp/report_recent.json','utf8'));
-            const total  = JSON.parse(require('fs').readFileSync('/tmp/report_total.json','utf8'));
-            const out = {
-              generated: new Date().toISOString(),
-              total: total[0]?.results?.[0]?.total ?? 0,
-              by_category: cats[0]?.results ?? [],
-              recent: recent[0]?.results ?? []
-            };
-            require('fs').writeFileSync('workers/julian_report.json', JSON.stringify(out, null, 2));
-            console.log('Report: total=' + out.total + ' cats=' + out.by_category.length + ' recent=' + out.recent.length);
-          "
-        env:
-          CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-
-      # ─── Astrotheme enrichment — เพิ่ม time_utc + lat/lng จาก astrotheme.com ──
-      - name: Astrotheme enrichment
-        if: steps.scrape.outputs.status == 'ok'
-        run: |
-          echo "── Filter records without time_utc ──"
-          node -e "
-            const fs = require('fs');
-            let data = [];
-            try { data = JSON.parse(fs.readFileSync('data/julian_all.json', 'utf8')); } catch(e) {}
-            const noTime = data.filter(r => r && r.jd && r.name && !r.time_utc).slice(0, 200);
-            fs.writeFileSync('/tmp/no_time.jsonl', noTime.map(r => JSON.stringify(r)).join('\n'));
-            console.log('Records to enrich:', noTime.length);
-          "
-          if [ ! -s /tmp/no_time.jsonl ]; then
-            echo "All records have time_utc — skip"
-            exit 0
-          fi
-          node workers/julian_astrotheme.mjs /tmp/no_time.jsonl > /tmp/enriched.jsonl || true
-          echo "── Merge enrichment back into data/julian_all.json ──"
-          node -e "
-            const fs = require('fs');
-            const dataFile = 'data/julian_all.json';
-            let data = [];
-            try { data = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
-            const lines = fs.readFileSync('/tmp/enriched.jsonl', 'utf8').split('\n').filter(Boolean);
-            const enrichMap = new Map();
-            for (const l of lines) {
-              try { const r = JSON.parse(l); if (r.jd && r.name) enrichMap.set(r.jd+'|'+r.name, r); } catch(e) {}
-            }
-            let count = 0;
-            for (const r of data) {
-              const e = enrichMap.get(r.jd+'|'+r.name);
-              if (!e) continue;
-              if (!r.time_utc && e.time_utc) r.time_utc = e.time_utc;
-              if (!r.lat && e.lat) r.lat = e.lat;
-              if (!r.lng && e.lng) r.lng = e.lng;
-              if (e.confidence) r.confidence = Math.max(r.confidence || 0, e.confidence);
-              count++;
-            }
-            fs.writeFileSync(dataFile, JSON.stringify(data));
-            console.log('Applied enrichment to ' + count + ' records');
-          "
-
-      # ─── Export D1 → GitHub Release — ซ่อนไว้ (ใช้เมื่อมี CF D1) ──────────
-      - name: Export D1 to GitHub Release
-        if: false  # disabled — แทนที่ด้วย "Upload to GitHub Release" ข้างล่าง
-        run: |
-          echo "── Export internet table from D1 ──"
-          wrangler d1 execute julian \
-            --config workers/julian_wrangler.toml \
-            --command="SELECT id,jd,name,event_label,type,country,tier,lat,lng,time_utc,lagna_sign,relate_id,source,source_type,validated_count,confidence,notes FROM internet ORDER BY id LIMIT 100000" \
-            --remote --json > /tmp/internet_export.json
-          node -e "
-            const raw     = JSON.parse(require('fs').readFileSync('/tmp/internet_export.json','utf8'));
-            const records = raw[0]?.results ?? [];
-            require('fs').writeFileSync('/tmp/julian_all.json', JSON.stringify(records));
-            console.log('Export: ' + records.length + ' records');
-          "
-          gh release create julian-data \
-            --title 'JULIAN Database' \
-            --notes 'Auto-updated every 6 hours by julian_sync workflow' \
-            --latest 2>/dev/null || true
-          gh release upload julian-data /tmp/julian_all.json --clobber
-        env:
-          CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ─── Commit progress + data/julian_all.json (รันเสมอ ไม่ต้องมี CF token) ──
+      # ─── Commit progress + merge JSONL → data/julian_all.json ─
       - name: Commit progress
         if: steps.scrape.outputs.status == 'ok'
         run: |
           git config user.name  "JULIAN Bot"
           git config user.email "julian-bot@horatad.com"
           git add workers/julian_progress.json workers/julian_report.json || true
-          # merge JSONL เข้า data/julian_all.json เสมอ (ไม่ต้องรอ CF token)
           if [ -n "${{ steps.scrape.outputs.out_file }}" ]; then
             JULIAN_OUT_FILE="${{ steps.scrape.outputs.out_file }}" node -e "
               const fs = require('fs');
@@ -216,10 +92,61 @@ jobs:
           git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})" || echo "Nothing to commit"
           git pull --rebase origin main
           git push origin HEAD:main
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
 
-      # ─── Upload merged data → GitHub Release (primary public storage) ──────
+      # ─── Astrotheme enrichment — อ่าน data ที่ commit แล้ว ──────────────────
+      # รันหลัง Commit progress → ได้ enrich records จาก batch นี้ทันที
+      - name: Astrotheme enrichment
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          echo "── Filter records without time_utc ──"
+          node -e "
+            const fs = require('fs');
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync('data/julian_all.json', 'utf8')); } catch(e) {}
+            const noTime = data.filter(r => r && r.jd && r.name && !r.time_utc).slice(0, 200);
+            fs.writeFileSync('/tmp/no_time.jsonl', noTime.map(r => JSON.stringify(r)).join('\n'));
+            console.log('Records to enrich:', noTime.length);
+          "
+          if [ ! -s /tmp/no_time.jsonl ]; then
+            echo "All records have time_utc — skip"
+            exit 0
+          fi
+          node workers/julian_astrotheme.mjs /tmp/no_time.jsonl > /tmp/enriched.jsonl || true
+          echo "── Merge enrichment back into data/julian_all.json ──"
+          ENRICHED_COUNT=$(node -e "
+            const fs = require('fs');
+            const dataFile = 'data/julian_all.json';
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
+            const lines = fs.readFileSync('/tmp/enriched.jsonl', 'utf8').split('\n').filter(Boolean);
+            const enrichMap = new Map();
+            for (const l of lines) {
+              try { const r = JSON.parse(l); if (r.jd && r.name) enrichMap.set(r.jd+'|'+r.name, r); } catch(e) {}
+            }
+            let count = 0;
+            for (const r of data) {
+              const e = enrichMap.get(r.jd+'|'+r.name);
+              if (!e) continue;
+              if (!r.time_utc && e.time_utc) r.time_utc = e.time_utc;
+              if (!r.lat && e.lat) r.lat = e.lat;
+              if (!r.lng && e.lng) r.lng = e.lng;
+              if (e.confidence) r.confidence = Math.max(r.confidence || 0, e.confidence);
+              count++;
+            }
+            fs.writeFileSync(dataFile, JSON.stringify(data));
+            console.log(count);
+          ")
+          echo "Applied enrichment to ${ENRICHED_COUNT} records"
+          if [ "${ENRICHED_COUNT}" != "0" ]; then
+            git config user.name  "JULIAN Bot"
+            git config user.email "julian-bot@horatad.com"
+            git add data/julian_all.json
+            git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Astrotheme"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      # ─── Upload to GitHub Release ─────────────────────────────
       - name: Upload to GitHub Release
         if: steps.scrape.outputs.status == 'ok'
         run: |
@@ -244,15 +171,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ─── Weekly: Empirical Validation → auto-update kb.json ────
+      # ─── Weekly: Empirical Validation ────────────────────────
       - name: Empirical validation (weekly)
-        if: github.event.schedule == '0 3 * * 0' && env.CLOUDFLARE_API_TOKEN != ''
+        if: github.event.schedule == '0 3 * * 0'
         run: |
           node workers/julian_empirical.mjs
           git config user.name  "JULIAN Bot"
           git config user.email "julian-bot@horatad.com"
           git add v3/kb.json || true
           git commit -m "JULIAN empirical: auto-update kb.json empirical_p" || echo "No changes"
+          git pull --rebase origin main
           git push || true
         env:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
