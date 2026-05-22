@@ -196,11 +196,11 @@ jobs:
           git config user.name  "JULIAN Bot"
           git config user.email "julian-bot@horatad.com"
           git add workers/julian_progress.json workers/julian_report.json || true
-          # ถ้าไม่มี CF token → D1 export ไม่รัน → merge JSONL เข้า data/julian_all.json เอง
-          if [ "${{ env.CLOUDFLARE_API_TOKEN }}" == "" ] && [ -n "${{ steps.scrape.outputs.out_file }}" ]; then
-            node -e "
+          # merge JSONL เข้า data/julian_all.json เสมอ (ไม่ต้องรอ CF token)
+          if [ -n "${{ steps.scrape.outputs.out_file }}" ]; then
+            JULIAN_OUT_FILE="${{ steps.scrape.outputs.out_file }}" node -e "
               const fs = require('fs');
-              const outFile = process.argv[1];
+              const outFile = process.env.JULIAN_OUT_FILE;
               const dataFile = 'data/julian_all.json';
               let existing = [];
               try { existing = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
@@ -209,7 +209,7 @@ jobs:
               try {
                 const lines = fs.readFileSync(outFile, 'utf8').split('\n').filter(Boolean);
                 newRecs = lines.map(l => { try { return JSON.parse(l); } catch(e) { return null; } }).filter(Boolean);
-              } catch(e) {}
+              } catch(e) { console.error('JSONL read error:', e.message); }
               const map = new Map();
               for (const r of existing) if (r.jd && r.name) map.set(r.jd+'|'+r.name, r);
               for (const r of newRecs)  if (r.jd && r.name) map.set(r.jd+'|'+r.name, r);
@@ -217,7 +217,7 @@ jobs:
               fs.mkdirSync('data', {recursive:true});
               fs.writeFileSync(dataFile, JSON.stringify(merged));
               console.log('data/julian_all.json: total=' + merged.length + ' (+' + newRecs.length + ' batch)');
-            " "${{ steps.scrape.outputs.out_file }}"
+            "
             git add data/julian_all.json || true
           fi
           git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})" || echo "Nothing to commit"
