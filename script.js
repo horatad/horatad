@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.20
-// Version 3.3.20 | 2026-05-22
+// HORATAD:SCRIPT:3.3.21
+// Version 3.3.21 | 2026-05-22
+// Changes: [V3.3.21] feat(M5): eventChart full support — _compareMode===2 path, cycleMemory _eventIdx, _updateNavHeader compareMode-aware
 // Changes: [V3.3.20] refactor(M4): rename natal1→natal / natal2→synastry ทั้งไฟล์ (63 occurrences)
 // Changes: [V3.3.16] feat: 3-tank memory system (ส่วนตัว / QR / JULIAN) — แยก storage, tab UI, dedup dialog
 // Changes: [V3.3.12] fix: JULIAN 404 — placeholder data/julian_all.json, ปรับ empty msg
@@ -16,7 +17,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.20';
+const APP_VERSION='3.3.21';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -805,7 +806,7 @@ function aspectTransit(tpos,ns){
 }
 
 // [12][15] buildReport: no [ดวงที่N] label; transit for both views; ดาวจรสัมพันธ์ ณ
-function buildCompareReport(n1,n2){
+function buildCompareReport(n1,n2,outerLabel='ดวงนอก'){
   const pos1=n1.pos,vel1=n1.vel||[],pos2=n2.pos,vel2=n2.vel||[];
   const asc1=Math.trunc(pos1[0]/1800),asc2=Math.trunc(pos2[0]/1800);
   const y_ce1=_beToce(n1.y_be,n1.m),y_ce2=_beToce(n2.y_be,n2.m);
@@ -814,7 +815,7 @@ function buildCompareReport(n1,n2){
   let h='<table style="width:auto;margin:0;border-collapse:collapse;line-height:1.3;border-spacing:0">';
   h+=SEP;
   h+=`<tr><td colspan="5" style="padding:2px 0;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงใน</span>  ${_escHtml(n1.name||'—')}  ${n1.d}/${n1.m}/${n1.y_be}(${y_ce1})  ${n1.t}  ${_escHtml(n1.prov||'')}</td></tr>`;
-  h+=`<tr><td colspan="5" style="padding:1px 0 2px;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">ดวงนอก</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</td></tr>`;
+  h+=`<tr><td colspan="5" style="padding:1px 0 2px;color:#555;font-size:0.95em"><span style="color:#5b3fa0;font-weight:500">${_escHtml(outerLabel)}</span>  ${_escHtml(n2.name||'—')}  ${n2.d}/${n2.m}/${n2.y_be}(${y_ce2})  ${n2.t}  ${_escHtml(n2.prov||'')}</td></tr>`;
   h+=SEP;
   h+=`<tr style="color:#888;font-size:0.9em"><td style="padding:0 3px 0 0">ดาว</td><td colspan="2" style="padding:0 4px 0 0">ตำแหน่งดาวดวงใน</td><td colspan="2" style="padding:0">ตำแหน่งดาวดวงนอก</td></tr>`;
   for(let i=0;i<11;i++){
@@ -1127,16 +1128,12 @@ function cycleMemory(dir){
     else if(_transitUnit.type==='planet')_transitNextSignChange(dir,_transitUnit.value);
     return;
   }
-  if(_viewMode===1){
-    // ดวงนอก: cycle persons (สมพงศ์) → update synastry
+  if(_compareMode===1){
+    // cycle synastry (_synastryIdx)
     const buf=_dbPersons();
     if(!buf.length){_showToast('ยังไม่มีดวงในสมพงศ์ — กรอกดวงที่ 2 เพื่อเพิ่ม');return;}
-    const curKey=synastry?`${synastry.name}|${synastry.d}/${synastry.m}/${synastry.y_be}`:'';
-    const key=s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`;
-    let idx=buf.findIndex(s=>key(s)===curKey);
-    if(idx===-1)idx=dir>0?-1:buf.length;
-    const next=(idx+dir+buf.length*2)%buf.length;
-    const s=buf[next];
+    _synastryIdx=(_synastryIdx+dir+buf.length*2)%buf.length;
+    const s=buf[_synastryIdx];
     const y_be=s.y_be||0;
     const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
     const y_ce=_beToce(y_be,s.m);
@@ -1144,7 +1141,25 @@ function cycleMemory(dir){
     const pos=get_data(s.d,s.m,y_ce,hr,mn2,lng);
     synastry={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
     _playBeep(700);
-    _showToast(`สมพงศ์ ${next+1}/${buf.length} · ${s.name||'—'}`);
+    _showToast(`สมพงศ์ ${_synastryIdx+1}/${buf.length} · ${s.name||'—'}`);
+    _redraw();
+    return;
+  }
+  if(_compareMode===2){
+    // cycle eventChart (_eventIdx)
+    const buf=_dbEvents(natal?.uid||undefined);
+    if(!buf.length){_showToast('ยังไม่มีเหตุการณ์ที่เชื่อมกับดวงนี้');return;}
+    _eventIdx=(_eventIdx+dir+buf.length*2)%buf.length;
+    const s=buf[_eventIdx];
+    const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+    const y_ce=_beToce(s.y_be,s.m);
+    const[hr,mn2]=(s.t||'00:00').split(':').map(Number);
+    const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn2,lng);
+    const pos2=get_data(s.d,s.m,y_ce,hr+24,mn2,lng);
+    const vel=s.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
+    eventChart={name:s.name,gender:s.gender||'เหตุการณ์',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+    _playBeep(700);
+    _showToast(`เหตุการณ์ ${_eventIdx+1}/${buf.length} · ${s.name||'—'}`);
     _redraw();
     return;
   }
@@ -1187,13 +1202,15 @@ function _redraw(){
   const displayName=natal?.name||'ไม่ระบุ';
   const[,ts_id]=getIdentity(pos);
   const transitSrc=_transitDate||_chart2||null;
-  // isV2: outer ring shows synastry; otherwise shows transit overlay
-  const tposForOuter=isV2?(synastry?.pos||null):(transitSrc?.pos||null);
+  // outer ring: compareMode=1→synastry, compareMode=2→eventChart, else→transit
+  const outerChart=_compareMode===1?synastry:_compareMode===2?eventChart:null;
+  const tposForOuter=isV2?(outerChart?.pos||null):(transitSrc?.pos||null);
   drawChart(pos,vel,ts_id,tposForOuter,pos,isV2);
   const rp=document.getElementById('report-panel');
-  if(isV2&&synastry&&synastry.pos){
+  if(isV2&&outerChart&&outerChart.pos){
     if(rp)rp.classList.add('compare-mode');
-    document.getElementById('report').innerHTML=buildCompareReport(natal,synastry);
+    const outerLabel=_compareMode===2?'เหตุการณ์':'ดวงนอก';
+    document.getElementById('report').innerHTML=buildCompareReport(natal,outerChart,outerLabel);
   }else{
     if(rp)rp.classList.remove('compare-mode');
     document.getElementById('report').innerHTML=buildReport(
@@ -1284,10 +1301,11 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
   // outer ring — กฎ: isV2 override _outerState (mutual exclusion)
   ctx.textAlign='center';ctx.textBaseline='middle';
   const outerLabelColor=OUTER_LABEL_V1;
-  if(isV2&&synastry&&synastry.pos){
-    // ดวงนอก: เลขไทย synastry เท่านั้น — ไม่แสดง _outerState ใดๆ
+  const outerChartForDraw=_compareMode===1?synastry:_compareMode===2?eventChart:null;
+  if(isV2&&outerChartForDraw&&outerChartForDraw.pos){
+    // ดวงนอก: เลขไทย outerChart เท่านั้น — ไม่แสดง _outerState ใดๆ
     const THAI_NUM=['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙','๑๐'];
-    const n2pos=_chartTypeState===1?calcDrekkana(synastry.pos):_chartTypeState===2?calcNavamsa(synastry.pos):synastry.pos;
+    const n2pos=_chartTypeState===1?calcDrekkana(outerChartForDraw.pos):_chartTypeState===2?calcNavamsa(outerChartForDraw.pos):outerChartForDraw.pos;
     const showIdx=[...TRANSIT_SLOW,...TRANSIT_FAST];
     let groups=Array.from({length:12},()=>[]);
     for(let i of showIdx){let z=Math.trunc(n2pos[i]/1800);if(z>=0&&z<12)groups[z].push({lbl:THAI_NUM[i]||String(i),deg:n2pos[i]%1800});}
@@ -1401,7 +1419,7 @@ function _calcChart(num){
   else{
     // clear edit mode ถ้า user กด ผูกดวง 2 แทนที่จะกด 1 ขณะอยู่ใน edit mode
     if(_editingUid){_editingUid=null;_hideEditingIndicator();}
-    _chart2=chart;_calc2Done=true;_viewMode=1;
+    _chart2=chart;_calc2Done=true;_compareMode=1;_viewMode=1;
     // Step 4: set synastry ทันที + auto-save as type='person' ถ้าไม่ซ้ำ
     synastry={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
     const _bkey=`${chart.name}|${chart.d}/${chart.m}/${chart.y_be}`;
@@ -1488,7 +1506,7 @@ function calculateBoth(){
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
 function _updateShareButton(){
-  const hasData=(_viewMode===1&&synastry)||(_viewMode===0&&natal);
+  const hasData=(_viewMode===1&&(synastry||eventChart))||(_viewMode===0&&natal);
   const btnS=document.getElementById('btn-share');
   const btnSv=document.getElementById('btn-save');
   const btnIn=document.getElementById('btn-interpret');
@@ -2586,18 +2604,20 @@ function _updateNavHeader(){
   if(!hdr||!info)return;
   if(!natal){hdr.classList.add('hidden');return;}
   hdr.classList.remove('hidden');
-  if(_viewMode===1&&synastry){
-    // ดวงนอก: แสดง synastry + ตำแหน่งในสมพงศ์
+  if(_compareMode===1&&synastry){
+    // สมพงศ์: แสดง synastry + ตำแหน่ง N/M
     const buf=_dbPersons();
     const name=synastry.name||'ไม่ระบุ';
     const d=synastry.d,m=synastry.m,y=synastry.y_be;
-    let posStr='';
-    if(buf.length>1){
-      const key=e=>`${e.name}|${e.d}/${e.m}/${e.y_be}`;
-      const idx=buf.findIndex(e=>key(e)===`${name}|${d}/${m}/${y}`);
-      if(idx!==-1)posStr=` · ${idx+1}/${buf.length}`;
-    }
+    const posStr=buf.length>1?` · ${_synastryIdx+1}/${buf.length}`:'';
     info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
+  }else if(_compareMode===2&&eventChart){
+    // เหตุการณ์: แสดง eventChart + ตำแหน่ง N/M
+    const buf=_dbEvents(natal?.uid||undefined);
+    const name=eventChart.name||'ไม่ระบุ';
+    const d=eventChart.d,m=eventChart.m,y=eventChart.y_be;
+    const posStr=buf.length>1?` · ${_eventIdx+1}/${buf.length}`:'';
+    info.textContent=`เหตุการณ์ ${name} · ${d}/${m}/${y}${posStr}`;
   }else{
     // ดวงใน: แสดง natal + ตำแหน่งใน tank private
     const mem=_tankLoad(TANK_PRIVATE_KEY);
@@ -2699,7 +2719,7 @@ function _sompongLoadByUid(uid){
   const[hr,mn]=(s.t||'00:00').split(':').map(Number);
   const pos=get_data(s.d,s.m,y_ce,hr,mn,lng);
   synastry={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
-  _viewMode=1;_applyViewMode();_redraw();
+  _compareMode=1;_viewMode=1;_applyViewMode();_redraw();
   _closeSompongPopup();
   _showToast(`โหลดสมพงศ์ ${_escHtml(s.name||'—')} แล้ว`);
 }
@@ -2757,8 +2777,8 @@ function _eventSlotLoadRecord(s){
   const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn,lng);
   const pos2=get_data(s.d,s.m,y_ce,hr+24,mn,lng);
   const vel=s.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
-  synastry={name:s.name,gender:s.gender||'เหตุการณ์',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
-  _viewMode=1;_applyViewMode();_redraw();
+  eventChart={name:s.name,gender:s.gender||'เหตุการณ์',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
+  _compareMode=2;_viewMode=1;_applyViewMode();_redraw();
   _closeEventSlotsPopup();
   _showToast(`โหลดเหตุการณ์ "${_escHtml(s.name||'—')}" แล้ว`);
 }
@@ -3228,7 +3248,7 @@ function _groupLoadAsNatal2(natalUid){
   const[hr,mn]=(r.t||'00:00').split(':').map(Number);
   const pos=get_data(r.d,r.m,y_ce,hr,mn,lng);
   synastry={...r,pos,vel:[]};
-  _viewMode=1;_applyViewMode();_redraw();
+  _compareMode=1;_viewMode=1;_applyViewMode();_redraw();
   _closeGroupPopup();
   _showToast(`เปรียบเทียบกับ "${_escHtml(r.name||'—')}"`);
 }
