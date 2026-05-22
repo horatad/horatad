@@ -125,6 +125,11 @@ let _swRefreshing=false; // V2.1.5 prevent double reload on SW update
 let _soundLevel=1; // 0=🔇 off, 1-5 = 🔈🔉🔊 scale
 let _audioCtx=null;
 let _memSort='jd_desc'; // 'jd_desc'|'jd_asc'|'recent'|'asc'|'desc'
+let _activeTank='private'; // 'private'|'qr'|'julian'
+let _julianCache=null; // null=not loaded, array=loaded
+let _julianFiltered=[]; // filtered slice for display
+let _julianPage=0;
+let _julianTag=''; // active event_label filter
 let _db1Sort='jd_desc';
 let _evtSort='recent';
 let _numpadPrevValue='';
@@ -340,7 +345,7 @@ function _updateDbIndicator(section){
   const t=(document.getElementById('t'+s)||{}).value||'';
   const p=(document.getElementById('prov'+s)||{}).value||'';
   if(!name||!d||!m||!y||!t||!p){indicator.classList.add('hidden');return;}
-  const mem=_loadJSON(MEM_KEY)||[];
+  const mem=_tankLoad(TANK_PRIVATE_KEY);
   const k=`${name}|${d}/${m}/${y}|${t}|${p}`;
   const found=mem.some(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===k);
   indicator.classList.toggle('hidden',!found);
@@ -449,12 +454,12 @@ function _saveTagsToMemory(section){
   const p=(document.getElementById('prov'+s)||{}).value||'';
   if(!name||!d||!m||!y||!t||!p)return;
   const key=`${name}|${d}/${m}/${y}|${t}|${p}`;
-  const mem=_loadJSON(MEM_KEY)||[];
+  const mem=_tankLoad(TANK_PRIVATE_KEY);
   const i=mem.findIndex(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
   if(i<0)return;
   mem[i].groups=(_chartTags[s]||[]).slice();
   mem[i].savedAt=Date.now();
-  _saveJSON(MEM_KEY,mem);
+  _tankSave(TANK_PRIVATE_KEY,mem);
 }
 function _openAddTagModal(section){
   _addTagSection=String(section);
@@ -503,7 +508,7 @@ function _loadTagsForCurrentChart(section){
   const p=(document.getElementById('prov'+s)||{}).value||'';
   if(!name||!d||!m||!y||!t||!p){_chartTags[s]=[];return;}
   const key=`${name}|${d}/${m}/${y}|${t}|${p}`;
-  const mem=_loadJSON(MEM_KEY)||[];
+  const mem=_tankLoad(TANK_PRIVATE_KEY);
   const rec=mem.find(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
   _chartTags[s]=(rec&&Array.isArray(rec.groups))?rec.groups.slice():[];
 }
@@ -979,8 +984,8 @@ function cycleMemory(dir){
     _redraw();
     return;
   }
-  // ดวงใน: cycle MEM_KEY → load to chart 1
-  const mem=_loadJSON(MEM_KEY)||[];
+  // ดวงใน: cycle TANK_PRIVATE_KEY → load to chart 1
+  const mem=_tankLoad(TANK_PRIVATE_KEY);
   if(!mem.length){_showToast('ยังไม่มีดวงในความทรงจำ');return;}
   const curKey=`${natal1?.name||''}|${natal1?.d||''}/${natal1?.m||''}/${natal1?.y_be||''}`;
   const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}`;
@@ -1623,6 +1628,11 @@ function _numpadConfirm(){
 const STATE_KEY='horatad_state_v1';
 const MEM_KEY='horatad_memory_v1';
 const MEM_MAX=200;
+const TANK_PRIVATE_KEY='horatad_tank_private_v1';
+const TANK_QR_KEY='horatad_tank_qr_v1';
+const TANK_SHADOW_KEY='horatad_tank_shadow_v1'; // redundancy copy of private
+const TANK_PRIVATE_MAX=2000;
+const JULIAN_PAGE_SIZE=50;
 const EVENT_KEY='horatad_events_v1';
 const EVENT_MAX=20;
 const PROMPTPAY_ID='3102001951829';
@@ -1630,6 +1640,21 @@ const PROMPTPAY_NAME='นายสิทธิเดช ประเสริฐ
 
 function _loadJSON(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
 function _saveJSON(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+
+// ── 3-tank memory helpers ─────────────────────────────────
+// migrate MEM_KEY → TANK_PRIVATE_KEY once
+(function(){
+  if(localStorage.getItem(TANK_PRIVATE_KEY)!==null)return;
+  const old=_loadJSON(MEM_KEY)||[];
+  _saveJSON(TANK_PRIVATE_KEY,old);
+  _saveJSON(TANK_SHADOW_KEY,old); // safety shadow
+})();
+function _tankLoad(key){return _loadJSON(key)||[];}
+function _tankSave(key,arr){
+  _saveJSON(key,arr);
+  if(key===TANK_PRIVATE_KEY)_saveJSON(TANK_SHADOW_KEY,arr); // keep shadow in sync
+}
+const _tankKey=m=>`${m.name||''}|${m.d}/${m.m}/${m.y_be}|${m.t||''}|${m.prov||''}`;
 
 // ── V4 Unified Storage Layer ──────────────────────────────
 // type: 'natal' | 'person' | 'event' | 'group'
@@ -1774,7 +1799,7 @@ function _addMemory(entry,replaceKey){
   if(!entry||!entry.name)return null;
   const skip=['ดวงที่ 2','ไม่ระบุ',''];
   if(skip.includes(entry.name.trim()))return null;
-  let mem=_loadJSON(MEM_KEY)||[];
+  let mem=_tankLoad(TANK_PRIVATE_KEY);
   const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
   const k=key(entry);
   const isDup=mem.some(m=>key(m)===k);
@@ -1784,7 +1809,7 @@ function _addMemory(entry,replaceKey){
     jd:(entry.d&&entry.m&&entry.y_be)?_calcJD(entry.d,entry.m,entry.y_be):null,
     lat:(typeof entry.lat==='number')?entry.lat:(PROVINCES_LAT[entry.prov||'']||13.75),
     savedAt:Date.now()});
-  _saveJSON(MEM_KEY,mem.slice(0,MEM_MAX));
+  _tankSave(TANK_PRIVATE_KEY,mem.slice(0,TANK_PRIVATE_MAX));
   return(isDup||willReplaceOld)?'updated':'saved';
 }
 
@@ -1815,34 +1840,237 @@ function _sortByMode(arr,mode){
   return arr;
 }
 
-function _renderMemory(filter){
-  const raw=_loadJSON(MEM_KEY)||[];
+// ── 3-tank render functions ───────────────────────────────
+function _updateTankCounts(){
+  const pc=_tankLoad(TANK_PRIVATE_KEY).length;
+  const qc=_tankLoad(TANK_QR_KEY).length;
+  const el_p=document.getElementById('tank-cnt-private');
+  const el_q=document.getElementById('tank-cnt-qr');
+  if(el_p)el_p.textContent=pc?` (${pc})`:'';
+  if(el_q)el_q.textContent=qc?` (${qc})`:'';
+}
+
+window.switchTank=function(tank){
+  _activeTank=tank;
+  ['private','qr','julian'].forEach(t=>{
+    const btn=document.getElementById('tank-tab-'+t);
+    if(btn)btn.classList.toggle('tank-tab-active',t===tank);
+  });
+  const sortBar=document.getElementById('tank-sort-bar');
+  if(sortBar)sortBar.classList.toggle('hidden',tank==='julian');
+  document.getElementById('mem-actions-private')?.classList.toggle('hidden',tank!=='private');
+  document.getElementById('mem-actions-qr')?.classList.toggle('hidden',tank!=='qr');
+  document.getElementById('mem-actions-julian')?.classList.toggle('hidden',tank!=='julian');
+  const isJulian=tank==='julian';
+  document.getElementById('julian-load-area')?.classList.toggle('hidden',!isJulian||!!_julianCache);
+  document.getElementById('julian-tag-row')?.classList.toggle('hidden',!isJulian||!_julianCache);
+  document.getElementById('julian-more-btn')?.classList.toggle('hidden',true);
+  _updateTankCounts();
+  const f=document.getElementById('memory-search')?.value||'';
+  _renderTank(f);
+};
+
+function _renderTank(filter){
+  if(_activeTank==='julian'){_renderJulianTank(filter);return;}
+  const key=_activeTank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY;
+  const raw=_tankLoad(key);
   _memCache=_sortByMode(raw,_memSort);
   const list=document.getElementById('memory-list');
   const f=(filter||'').trim().toLowerCase();
   const items=[];
   _memCache.forEach((m,i)=>{
-    if(!f||(m.name||'').toLowerCase().includes(f)||(m.prov||'').toLowerCase().includes(f)){
-      const y_ce=_beToce(m.y_be,m.m);
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${m.d}/${m.m}/${m.y_be} (${y_ce})  ${m.t}  ${_escHtml(m.prov||'')}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
+    if(f&&!(m.name||'').toLowerCase().includes(f)&&!(m.prov||'').toLowerCase().includes(f))return;
+    const y_ce=_beToce(m.y_be,m.m);
+    const meta=`${m.d}/${m.m}/${m.y_be} (${y_ce}) · ${m.t} · ${_escHtml(m.prov||'')}`;
+    if(_activeTank==='qr'){
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
+    }else{
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
     }
   });
-  if(items.length===0){
-    list.innerHTML=`<div class="memory-empty">${f?'ไม่พบรายการ':'ยังไม่มีรายการในความทรงจำ'}</div>`;
-  }else{
-    list.innerHTML=items.join('');
-  }
+  list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f?'ไม่พบรายการ':(_activeTank==='qr'?'ยังไม่มี QR ที่นำเข้า':'ยังไม่มีรายการในความทรงจำ')}</div>`;
 }
+
+function _renderMemory(filter){
+  // backward compat — delegates to _renderTank
+  _renderTank(filter);
+}
+
+// ── JULIAN tank ───────────────────────────────────────────
+const _JULIAN_URL='https://raw.githubusercontent.com/horatad/horatad/main/data/julian_all.json';
+
+window.loadJulian=async function(){
+  const area=document.getElementById('julian-load-area');
+  const btn=area?.querySelector('button');
+  if(btn){btn.disabled=true;btn.textContent='⏳ กำลังโหลด...';}
+  try{
+    const resp=await fetch(_JULIAN_URL);
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+    _julianCache=await resp.json();
+    if(area)area.classList.add('hidden');
+    _buildJulianTagRow();
+    _renderJulianTank(document.getElementById('memory-search')?.value||'');
+  }catch(e){
+    if(btn){btn.disabled=false;btn.textContent='📥 โหลดข้อมูล JULIAN';}
+    _showToast('โหลดไม่ได้: '+e.message,true);
+  }
+};
+
+function _buildJulianTagRow(){
+  const row=document.getElementById('julian-tag-row');
+  if(!row||!_julianCache)return;
+  const counts={};
+  for(const r of _julianCache){const l=r.event_label||'';counts[l]=(counts[l]||0)+1;}
+  const labels=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,12).map(e=>e[0]);
+  row.innerHTML=[
+    `<button class="julian-tag-btn ${_julianTag===''?'active':''}" onclick="julianSetTag('')">ทั้งหมด</button>`,
+    ...labels.map(l=>`<button class="julian-tag-btn ${_julianTag===l?'active':''}" onclick="julianSetTag('${_escHtml(l)}')">${_escHtml(l)}</button>`)
+  ].join('');
+  row.classList.remove('hidden');
+}
+
+window.julianSetTag=function(tag){
+  _julianTag=tag;
+  _julianPage=0;
+  _buildJulianTagRow();
+  _renderJulianTank(document.getElementById('memory-search')?.value||'');
+};
+
+window.julianLoadMore=function(){
+  _julianPage++;
+  _renderJulianTank(document.getElementById('memory-search')?.value||'',true);
+};
+
+function _renderJulianTank(filter,append=false){
+  const list=document.getElementById('memory-list');
+  if(!_julianCache){
+    list.innerHTML='<div class="memory-empty">กด "โหลดข้อมูล JULIAN" เพื่อเริ่มต้น</div>';
+    return;
+  }
+  const f=(filter||'').trim().toLowerCase();
+  let filtered=_julianCache;
+  if(_julianTag)filtered=filtered.filter(r=>r.event_label===_julianTag);
+  if(f)filtered=filtered.filter(r=>(r.name||'').toLowerCase().includes(f));
+  _julianFiltered=filtered;
+  const total=filtered.length;
+  const end=(_julianPage+1)*JULIAN_PAGE_SIZE;
+  const slice=filtered.slice(0,end);
+  const items=slice.map((r,i)=>{
+    const{d,m:mo,y_ce}=_jdToGregorian(r.jd);
+    const y_be=y_ce+543;
+    const t=r.time_utc?String(r.time_utc).substring(0,5):'00:00';
+    const label=_escHtml(r.event_label||r.country||'');
+    return `<div class="memory-item julian-item"><div>${_escHtml(r.name||'')} <span class="julian-badge">${label}</span></div><div class="meta">${d}/${mo}/${y_be} · ${t}</div><button class="tank-transfer-btn" onclick="copyJulianToPrivate(${i})">📥 บันทึกลง ส่วนตัว</button></div>`;
+  });
+  if(append){
+    const existing=list.querySelectorAll('.memory-item').length;
+    list.insertAdjacentHTML('beforeend',items.slice(existing).join(''));
+  }else{
+    list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f||_julianTag?'ไม่พบรายการ':'ไม่มีข้อมูล'}</div>`;
+  }
+  const moreBtn=document.getElementById('julian-more-btn');
+  if(moreBtn)moreBtn.classList.toggle('hidden',end>=total);
+}
+
+// ── Dedup dialog ─────────────────────────────────────────
+let _dedupPending=null;
+function _showDedupDialog(record,onReplace,onSkip){
+  _dedupPending={onReplace,onSkip};
+  document.getElementById('dedup-body').textContent=`พบ "${record.name}" ใน ส่วนตัว แล้ว — แทนที่หรือข้ามไป?`;
+  document.getElementById('dedup-backdrop').classList.remove('hidden');
+  document.getElementById('dedup-dialog').classList.remove('hidden');
+}
+window._dedupReplace=function(){
+  document.getElementById('dedup-backdrop').classList.add('hidden');
+  document.getElementById('dedup-dialog').classList.add('hidden');
+  if(_dedupPending){_dedupPending.onReplace();_dedupPending=null;}
+};
+window._dedupSkip=function(){
+  document.getElementById('dedup-backdrop').classList.add('hidden');
+  document.getElementById('dedup-dialog').classList.add('hidden');
+  if(_dedupPending){_dedupPending.onSkip();_dedupPending=null;}
+};
+window._dedupCancel=function(){
+  document.getElementById('dedup-backdrop').classList.add('hidden');
+  document.getElementById('dedup-dialog').classList.add('hidden');
+  _dedupPending=null;
+};
+
+// ── Tank transfer functions ───────────────────────────────
+window.transferQRToPrivate=function(i){
+  const qrList=_tankLoad(TANK_QR_KEY);
+  const rec=_memCache[i];
+  if(!rec)return;
+  const privateList=_tankLoad(TANK_PRIVATE_KEY);
+  const existing=privateList.find(m=>_tankKey(m)===_tankKey(rec));
+  const doTransfer=()=>{
+    const newPrivate=privateList.filter(m=>_tankKey(m)!==_tankKey(rec));
+    newPrivate.unshift({...rec,savedAt:Date.now()});
+    _tankSave(TANK_PRIVATE_KEY,newPrivate.slice(0,TANK_PRIVATE_MAX));
+    const newQR=qrList.filter(m=>_tankKey(m)!==_tankKey(rec));
+    _tankSave(TANK_QR_KEY,newQR);
+    _updateTankCounts();
+    _renderTank(document.getElementById('memory-search')?.value||'');
+    _showToast(`ย้าย "${rec.name}" ไป ส่วนตัว แล้ว`);
+  };
+  if(existing){
+    _showDedupDialog(rec,()=>doTransfer(),()=>_showToast('ข้ามไป'));
+  }else{
+    doTransfer();
+  }
+};
+
+window.copyJulianToPrivate=function(i){
+  const r=_julianFiltered[i];
+  if(!r)return;
+  const{d,m:mo,y_ce}=_jdToGregorian(r.jd);
+  const y_be=y_ce+543;
+  const t=r.time_utc?String(r.time_utc).substring(0,5):'00:00';
+  const prov=(r.lat&&r.lng)?_latLngToProv(Number(r.lat),Number(r.lng)):'กรุงเทพมหานคร';
+  const rec={name:r.name,gender:'ชาย',d,m:mo,y_be,t,prov,jd:r.jd,source:'julian',savedAt:Date.now(),groups:[]};
+  const privateList=_tankLoad(TANK_PRIVATE_KEY);
+  const existing=privateList.find(m=>_tankKey(m)===_tankKey(rec));
+  const doSave=()=>{
+    const newList=privateList.filter(m=>_tankKey(m)!==_tankKey(rec));
+    newList.unshift(rec);
+    _tankSave(TANK_PRIVATE_KEY,newList.slice(0,TANK_PRIVATE_MAX));
+    _updateTankCounts();
+    _showToast(`บันทึก "${r.name}" ลง ส่วนตัว แล้ว`);
+  };
+  if(existing){
+    _showDedupDialog(rec,doSave,()=>_showToast('ข้ามไป'));
+  }else{
+    doSave();
+  }
+};
+
+window.confirmClearTank=function(tank){
+  const label=tank==='qr'?'QR':'ส่วนตัว';
+  _showConfirm(`ล้าง${label}ทั้งหมด`,`ลบทุกรายการใน${label}? ไม่สามารถกู้คืนได้`,()=>{
+    _tankSave(tank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY,[]);
+    _updateTankCounts();
+    _renderTank('');
+  });
+};
 
 function openMemory(section){
   _memSection=section;
   _editingMemKey=null;_editingMemSection=null;
-  document.querySelector('.memory-title').textContent=`เลือกสำหรับ ดวง ${section}`;
+  document.getElementById('memory-title-text').textContent=`เลือกสำหรับ ดวง ${section}`;
   const s=document.getElementById('memory-search');
   if(s)s.value='';
   const btn=document.getElementById('memory-sort-btn');
   if(btn)btn.textContent=_MEM_SORT_LABELS[_memSort];
-  _renderMemory('');
+  _updateTankCounts();
+  const isJulian=_activeTank==='julian';
+  document.getElementById('julian-load-area')?.classList.toggle('hidden',!isJulian||!!_julianCache);
+  document.getElementById('julian-tag-row')?.classList.toggle('hidden',!isJulian||!_julianCache);
+  document.getElementById('julian-more-btn')?.classList.add('hidden');
+  document.getElementById('tank-sort-bar')?.classList.toggle('hidden',isJulian);
+  document.getElementById('mem-actions-private')?.classList.toggle('hidden',_activeTank!=='private');
+  document.getElementById('mem-actions-qr')?.classList.toggle('hidden',_activeTank!=='qr');
+  document.getElementById('mem-actions-julian')?.classList.toggle('hidden',_activeTank!=='julian');
+  _renderTank('');
   document.getElementById('memory-backdrop').classList.remove('hidden');
   document.getElementById('memory-modal').classList.remove('hidden');
 }
@@ -1912,71 +2140,6 @@ function exportMemory(){
   document.body.appendChild(a);a.click();
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function _openImportChoice(){
-  const el=document.getElementById('import-choice');
-  if(el)el.classList.toggle('hidden');
-}
-function _closeImportChoice(){
-  const el=document.getElementById('import-choice');
-  if(el)el.classList.add('hidden');
-}
-const _JULIAN_URL='https://raw.githubusercontent.com/horatad/horatad/main/data/julian_all.json';
-async function _importFromJulian(){
-  _closeImportChoice();
-  _showToast('กำลังดาวน์โหลดข้อมูลสาธารณะ...');
-  try{
-    const resp=await fetch(_JULIAN_URL);
-    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
-    const records=await resp.json();
-    if(!Array.isArray(records)||!records.length){_showToast('JULIAN ยังไม่มีข้อมูล — ระบบกำลังรวบรวม รอ 1-2 วัน',true);return;}
-    const existing=_loadJSON(MEM_KEY)||[];
-    const keyFn=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
-    const map=new Map();
-    for(const m of existing)map.set(keyFn(m),m);
-    let added=0;
-    for(const r of records){
-      if(!r.jd||!r.name)continue;
-      const{d,m,y_ce}=_jdToGregorian(r.jd);
-      const y_be=y_ce+543;
-      const t=r.time_utc?String(r.time_utc).substring(0,5):'00:00';
-      const prov=(r.lat&&r.lng)?_latLngToProv(Number(r.lat),Number(r.lng)):'กรุงเทพมหานคร';
-      const entry={name:r.name,gender:'ชาย',d,m,y_be,t,prov,jd:r.jd,savedAt:Date.now()-added,groups:[]};
-      const k=keyFn(entry);
-      if(!map.has(k)){map.set(k,entry);added++;}
-    }
-    const merged=[...map.values()].sort((a,b)=>(b.jd||0)-(a.jd||0)).slice(0,MEM_MAX);
-    _saveJSON(MEM_KEY,merged);
-    _renderMemory(document.getElementById('memory-search')?.value||'');
-    _showToast(`นำเข้าสำเร็จ ${added} รายการใหม่จาก JULIAN`);
-  }catch(err){
-    console.warn('[importJulian]',err);
-    _showToast('ดาวน์โหลดไม่ได้: '+err.message,true);
-  }
-}
-function importMemory(event){
-  const file=event.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      let imported=Array.isArray(data)?data:Array.isArray(data.memories)?data.memories:null;
-      if(!imported){alert('รูปแบบไฟล์ไม่ถูกต้อง');return;}
-      const valid=imported.filter(m=>m&&m.name&&m.d&&m.m&&m.y_be);
-      if(!valid.length){alert('ไม่พบรายการที่ถูกต้องในไฟล์');return;}
-      const existing=_loadJSON(MEM_KEY)||[];
-      const key=m=>`${m.name}|${m.d}/${m.m}/${m.y_be}|${m.t}|${m.prov}`;
-      const map=new Map();
-      for(const m of existing)map.set(key(m),m);
-      for(const m of valid){const k=key(m);const ex=map.get(k);if(!ex||(m.savedAt||0)>(ex.savedAt||0))map.set(k,m);}
-      const merged=[...map.values()].sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,MEM_MAX);
-      _saveJSON(MEM_KEY,merged);
-      _renderMemory(document.getElementById('memory-search')?.value||'');
-      alert(`นำเข้าสำเร็จ ${valid.length} รายการ\nรวมในความทรงจำ ${merged.length} รายการ`);
-    }catch(err){console.warn('Memory import failed:',err);alert('ไม่สามารถอ่านไฟล์ได้');}
-  };
-  reader.readAsText(file);
-  event.target.value='';
 }
 
 // ── Events (เหตุการณ์จร) ─────────────────────────────────
