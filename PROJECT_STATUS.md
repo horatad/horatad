@@ -135,4 +135,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | CLAUDE.md +section 🎯 Claude Capabilities (BIG v2) | handoffs/REORG_20260522_v1.md (docs cleanup — รอ session REORG)*
