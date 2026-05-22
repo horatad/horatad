@@ -34,33 +34,35 @@
 
 ---
 
-## BIBLE — Prediction Wording Engine 🟢 Active
+## BIBLE — Prediction Wording Engine 🟢 Active — รอ extraction run
 **เป้าหมาย:** rules → keywords → LLM wordings — ground-truth based, zero hallucination
 
 ### สถานะ
-- KB: 342 rules, 284 มี conditions[] (83%), rule_source + weight ✅
-- M3+M8: fallback chain ครบแล้ว (V3.3.6) — Typhoon fail JSON → throw → compose_local_prediction()
-- tagged phrase cluster prompt ✅ | Rule IDs R001–R342 ✅ | natal/transit toggle ✅
-- 57 MISMATCH rules รอ expert review — kb_reviewer.html mobile-ready ✅
+- KB V2.3: 342 rules (Gemini extraction — lossy) | R171/R175/R247 ปิดแล้ว (false positive)
+- Engine 3.1.0: master_dict.js + V2.4 reader (typhoon.js + interpretation.js) ✅
+- Schema V2.4 DRAFT: `docs/BIBLE_KB_V2.4_SPEC.md`
+- 🆕 **Source extraction pipeline**: `workers/kb_extractor.mjs` พร้อมรัน
+  - อ่าน 102 บท (source/CH*.docx) → Claude API (Haiku) → v3/kb_v24.json
+  - cost ~$2-3 ครั้งเดียว | resume-capable
 
 ### Next (Claude ทำได้)
-(ไม่มี — รอ user review 57 MISMATCH rules ก่อน)
+(รอ user รัน kb_extractor.mjs และส่ง output มา review)
 
 ### Blocked (รอ user) — สำคัญที่สุด
-- [ ] [ทดลองใช้] ⭐ **รีวิว 57 MISMATCH rules** ผ่าน kb_reviewer.html
-  URL: https://horatad.github.io/horatad/tools/kb_reviewer.html
-  เสร็จแล้ว → ⬇ Full kb.json → upload ทับ v3/kb.json บน GitHub
-  backup: กด 🛟 Master backup ได้ตลอด (v3/kb_master.json)
+- [ ] [ทดลองใช้] ⭐ **รัน kb_extractor.mjs** — ต้องการ ANTHROPIC_API_KEY
+  ```
+  ANTHROPIC_API_KEY=sk-ant-xxx node workers/kb_extractor.mjs
+  ```
+  output: v3/kb_v24.json (ไม่ทับ kb.json เดิม)
 - [ ] [ทดลองใช้] รัน m0_hallucination_test.html — Groq score
-- [ ] [ทดลองใช้] Expert review v3/kb_skeletons.json — กรอก p field (90 rules ว่าง)
-  priority: จันทร์ (9) + ศุกร์ (6) ก่อน
 
 ### ไฟล์หลัก
-`v3/kb.json` | `v3/kb_master.json` | `v3/interpretation.js` | `v3/typhoon.js`
-`tools/kb_reviewer.html` | `docs/BIBLE_MISSION.md`
+`v3/kb.json` (V2.3 current) | `v3/kb_v24.json` (V2.4 output — หลัง extraction)
+`v3/interpretation.js` | `v3/typhoon.js` | `v3/master_dict.js`
+`workers/kb_extractor.mjs` | `workers/_read_docx.py` | `docs/BIBLE_KB_V2.4_SPEC.md`
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260522_v1.md`
+`handoffs/BIBLE_20260522_v3.md`
 
 ---
 
