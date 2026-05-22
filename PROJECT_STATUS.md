@@ -23,7 +23,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260521_v5.md`
+`handoffs/HORATAD_20260522_v1.md`
 
 ---
 
@@ -53,7 +53,7 @@
 `tools/kb_reviewer.html` | `docs/BIBLE_MISSION.md`
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260521_v4.md`
+`handoffs/BIBLE_20260522_v1.md`
 
 ---
 
@@ -74,7 +74,7 @@
 (ไม่มี — automation รันเองได้ทั้งหมด)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260521_v6.md`
+`handoffs/JULIAN_20260522_v1.md`
 
 ---
 
@@ -113,4 +113,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.12 | HORATAD JULIAN 404 fix + about page + capture | BIBLE รอ MISMATCH review | JULIAN automation running*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว*
