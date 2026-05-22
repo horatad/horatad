@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.3.17 */
+/* HORATAD:STYLE:3.3.18 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -381,6 +381,11 @@ body.about-active .logo-h1{display:none}
 .chart-nav-info{flex:1;min-width:0;text-align:center;font-size:12px;color:#8b949e;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
 .chart-nav-gear{flex:0 0 auto;width:28px;height:28px;padding:0;background:#2d333b;color:#c9d1d9;border:none;border-radius:4px;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center}
 .chart-nav-gear:hover{background:#444c56}
+/* M2: T1/T2 toggle buttons */
+.chart-nav-t1,.chart-nav-t2{flex:0 0 auto;height:28px;padding:0 8px;background:#2d333b;color:#8b949e;border:1px solid #444;border-radius:4px;cursor:pointer;font-size:11px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;line-height:1;white-space:nowrap}
+.chart-nav-t1:hover,.chart-nav-t2:hover{background:#3d444c}
+.chart-nav-t1.active{background:#3d2b5b;border-color:#5b3fa0;color:#c9b8f0}
+.chart-nav-t2.active{background:#1b3a2b;border-color:#2a7a4f;color:#7ee8a2}
 /* ── Main menu popup (Phase 1B Step 2) ──────────────────── */
 .main-menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1099}
 .main-menu-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1e2328;border:1px solid #444;border-radius:14px;padding:0;z-index:1100;width:min(400px,90vw);box-shadow:0 8px 32px rgba(0,0,0,0.7)}
