@@ -64,53 +64,71 @@ function readDocx(filepath) {
   }).trim();
 }
 
-// ── Extraction System Prompt (ใช้ทั้ง Groq และ Typhoon) ──────────────────────
+// ── Extraction System Prompt V2 (vocabulary-grounded) ────────────────────────
+// Source of truth: v3/master_dict.js → buildExtractionSystemPrompt()
+// อัปเดต prompt นี้พร้อมกันทุกครั้งที่แก้ master_dict.js
 const EXTRACT_SYSTEM = `\
 คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทย (สุริยยาตร์) ให้เป็น JSON
 
-## Planet IDs (อารบิก string)
-1=อาทิตย์ 2=จันทร์ 3=อังคาร 4=พุธ 5=พฤหัสบดี
-6=ศุกร์ 7=เสาร์ 8=ราหู 9=เกตุ 10=มฤตยู
-ลัคนา/ตนุลัคน์ = {"type":"tanu_lagna"}
-(ตัวเลขไทย ๑-๑๐ → แปลงเป็นอารบิกใน output เสมอ)
+## Planet IDs + Aliases (ใช้ตัวเลขอารบิกเท่านั้นใน output)
+1=อาทิตย์ (สุริยะ/สุริยน/รวิ/ทิวากร/พระอาทิตย์)
+2=จันทร์ (จันทรา/จันทรมา/ศศิ/ศศิธร/นิศากร/โสม/พระจันทร์)
+3=อังคาร (โลหิต/ภูมิ/ภอม/มังกล/พระอังคาร)
+4=พุธ (โสมย/สอม/โสมบุตร/พระพุธ)
+5=พฤหัสบดี (พฤหัส/คุรุ/ครู/ชีโว/ไชโว/เทวคุรุ/พระพฤหัส)
+6=ศุกร์ (ศุกรา/ภาร์กว/ภาร์กวะ/พระศุกร์)
+7=เสาร์ (สนิ/สนีศวร/มันท/กฤษณ/พระเสาร์)
+8=ราหู (พระราหู)
+9=เกตุ (พระเกตุ)
+10=มฤตยู (มฤตยูราช/พระมฤตยู)
+ลัคนา/ตนุลัคน์/เจ้าเรือน1 → {"type":"tanu_lagna"}
+ตัวเลขไทย ๑-๑๐ → แปลงเป็นอารบิกเสมอ
 
-## คู่มิตร: (1,5)(2,4)(3,6)(7,8)
-## คู่ศัตรู: (1,3)(2,5)(4,8)(6,7)
-## บาปเคราะห์: [3,7,8,10]
+## Planet Relations
+คู่มิตร: (1,5)(2,4)(3,6)(7,8) | คู่ศัตรู: (1,3)(2,5)(4,8)(6,7)
+คู่สมพล: (1,6)(2,8)(3,5)(4,7) | บาปเคราะห์: [3,7,8,10]
 
-## rule_use — สำคัญมาก
-"principle"  = abstract pattern ที่ derive จากหลายกรณีรวมกัน
-"case_study" = กรณีเฉพาะ/ตัวอย่างที่ตำรายกมา (ห้ามเป็น match)
-"match"      = กฎพยากรณ์จริง มีเงื่อนไข trigger ชัดเจน
-"reference"  = นิยาม concept
+## Position Predicates (กริยาบ่งบอก spatial relation)
+อยู่ใน/เสวย/ครอง/สถิตใน/ประจำ → planet in sign/house
+ทับ/ร่วม/รวม/อยู่ด้วยกัน/กุม → conjunction (0°)
+เล็ง/เผชิญ/ตรงข้าม → opposition (180°)
+ตรีโกณ/ไตรโกณ/สามเหลี่ยม → trine (120°)
+โยค/ยก → square (90°)
+เดิน/ผ่าน/โคจร/โคจรผ่าน → transit motion
 
-⚠️ ถ้าตำรายกกรณีที่ 1, 2, 3... → extract principle 1 ข้อ + case_study N ข้อ
-   อย่า copy แต่ละกรณีเป็น match rule แยก
+## Quality Terms → Polarity
+negative("-"): บาป/บาปเคราะห์/ร้าย/ทำลาย/เคราะห์/ทุกข์/ทุกขลาภ/พินาศ/วิบัติ/อันตราย
+positive("+"): สุภ/สุภเคราะห์/ดี/มงคล/โชค/ศุภ/รุ่งเรือง/เจริญ/ลาภ/ยศ/ชัยชนะ
+neutral("~"): กลาง/ปานกลาง/ทั่วไป/เป็นกลาง
+
+## Domain Compounds (อย่าตัดคำเหล่านี้)
+บาปเคราะห์/สุภเคราะห์/ตนุลัคน์/ลัคนา/เจ้าเรือน/คู่มิตร/คู่ศัตรู/ทุกขลาภ/โชคลาภ
+
+## Transit Markers (→ TRANSIT_NATAL, context:"transit")
+เมื่อ/ขณะที่/ตอนที่/ในปีที่/เมื่อดาว/โคจร/ดาวเดิน/ดาวโคจร
+
+## Anti-Pattern: Case Study ≠ Match Rule ⚠️
+ถ้าเห็น: กรณีที่/ตัวอย่างเช่น/เช่น/คนที่เกิด/บุคคลสำคัญ
+→ rule_use:"case_study" ห้ามเป็น "match"
+ถ้าตำรายกกรณี 1,2,3 (pattern เดียวกัน) → principle 1 ข้อ + case_study N ข้อ
 
 ## Rule type
-"NATAL_ATOMIC" | "NATAL_COMBINATION" | "TRANSIT_NATAL" | "DEFINITION" | "REFERENCE" | "PRINCIPLE"
+"NATAL_ATOMIC" = ดาวเดียวส่งผลคงที่ (tier 1)
+"NATAL_COMBINATION" = 2+ ดาว emergent meaning (tier 2+) — test: เอาดาวหนึ่งออก rule ยังมีความหมายไหม?
+"TRANSIT_NATAL" = transit × natal = timing (เห็น transit marker)
+"DEFINITION" | "REFERENCE" | "PRINCIPLE"
 
-## Tier (semantic independence)
-1 = ดาวเดียวอธิบายได้เอง | 2 = 2 ดวงสร้างความหมายใหม่ | 3 = 3 ดวงขึ้นไป
+## rule_use
+"match" | "principle" | "case_study" | "reference"
 
-## Schema output (JSON array)
-[
-  {
-    "rule_use": "match"|"principle"|"case_study"|"reference",
-    "type": "NATAL_ATOMIC"|"NATAL_COMBINATION"|"TRANSIT_NATAL"|"DEFINITION"|"REFERENCE"|"PRINCIPLE",
-    "tier": 1|2|3,
-    "c": "เงื่อนไข 1 ประโยค",
-    "meaning": "ความหมาย/คำพยากรณ์",
-    "polarity": "+"|"-"|"~",
-    "planet_ids": [1,2,...],
-    "contexts": ["natal"|"transit",...],
-    "domain": "ตัวตน"|"การเงิน"|"ความรัก"|"สุขภาพ"|"หน้าที่การงาน"|"ความสูญเสีย"|"ทั่วไป"
-  }
-]
-
-ส่ง JSON array เท่านั้น ไม่มีข้อความอื่น:
+## Output (JSON array เท่านั้น)
 \`\`\`json
-[...]
+[{
+  "rule_use":"match","type":"NATAL_ATOMIC","tier":1,
+  "c":"เงื่อนไข 1 ประโยค","meaning":"ความหมาย","polarity":"+",
+  "planet_ids":[1],"contexts":["natal"],
+  "domain":"ตัวตน|การเงิน|ความรัก|สุขภาพ|หน้าที่การงาน|ความสูญเสีย|ทั่วไป"
+}]
 \`\`\`
 ถ้าไม่มีกฎ: \`\`\`json\n[]\n\`\`\``;
 

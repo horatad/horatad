@@ -132,33 +132,68 @@ function onModeChange() {
 
 function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
 
-// ── Extraction System Prompt ──────────────────────────────────────────────────
+// ── Extraction System Prompt (V2 — vocabulary-grounded) ──────────────────────
 const SYSTEM_PROMPT = `คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทย (สุริยยาตร์) ให้เป็น JSON
 
-## Planet IDs (อารบิก string)
-1=อาทิตย์ 2=จันทร์ 3=อังคาร 4=พุธ 5=พฤหัสบดี 6=ศุกร์ 7=เสาร์ 8=ราหู 9=เกตุ 10=มฤตยู
-ลัคนา/ตนุลัคน์ = {"type":"tanu_lagna"} | ตัวเลขไทย ๑-๑๐ → แปลงเป็นอารบิกเสมอ
+## Planet IDs + Aliases (ใช้ตัวเลขอารบิกเท่านั้นใน output)
+1=อาทิตย์ (สุริยะ/สุริยน/รวิ/ทิวากร/พระอาทิตย์)
+2=จันทร์ (จันทรา/จันทรมา/ศศิ/ศศิธร/นิศากร/โสม/พระจันทร์)
+3=อังคาร (โลหิต/ภูมิ/ภอม/มังกล/พระอังคาร)
+4=พุธ (โสมย/สอม/โสมบุตร/พระพุธ)
+5=พฤหัสบดี (พฤหัส/คุรุ/ครู/ชีโว/ไชโว/เทวคุรุ/พระพฤหัส)
+6=ศุกร์ (ศุกรา/ภาร์กว/ภาร์กวะ/พระศุกร์)
+7=เสาร์ (สนิ/สนีศวร/มันท/กฤษณ/พระเสาร์)
+8=ราหู (พระราหู)
+9=เกตุ (พระเกตุ)
+10=มฤตยู (มฤตยูราช/พระมฤตยู)
+ลัคนา/ตนุลัคน์/เจ้าเรือน1 → {"type":"tanu_lagna"}
+ตัวเลขไทย ๑-๑๐ → แปลงเป็นอารบิกเสมอ
 
-คู่มิตร: (1,5)(2,4)(3,6)(7,8) | คู่ศัตรู: (1,3)(2,5)(4,8)(6,7) | บาปเคราะห์: [3,7,8,10]
+## Planet Relations (ground truth)
+คู่มิตร: (1,5)(2,4)(3,6)(7,8) | คู่ศัตรู: (1,3)(2,5)(4,8)(6,7)
+คู่สมพล: (1,6)(2,8)(3,5)(4,7) | บาปเคราะห์: [3,7,8,10]
 
-## rule_use
-"principle"  = abstract pattern derive จากหลายกรณีรวมกัน
-"case_study" = กรณีเฉพาะ/ตัวอย่างที่ตำรายกมา (ห้ามเป็น match)
-"match"      = กฎพยากรณ์จริง มีเงื่อนไข trigger ชัดเจน
-"reference"  = นิยาม concept
+## Position Predicates (กริยาบ่งบอก spatial relation)
+อยู่ใน sign/house: อยู่ใน/เสวย/ครอง/สถิตใน/อยู่ประจำ/ประจำ/สถิต
+ทับ conjunction(0°): ทับ/ร่วม/รวม/อยู่ด้วยกัน/สถิตร่วม/กุม
+เล็ง opposition(180°): เล็ง/เผชิญ/ตรงข้าม
+ตรีโกณ trine(120°): ตรีโกณ/ไตรโกณ/สามเหลี่ยม
+โยค square(90°): โยค/ยก
+เดิน transit: เดิน/ผ่าน/โคจร/โคจรผ่าน/เดินผ่าน/เดินมา
 
-⚠️ ถ้าตำรายกกรณีที่ 1,2,3... → extract principle 1 ข้อ + case_study N ข้อ (อย่า copy เป็น match แยก)
+## Quality Terms → Polarity
+negative("-"): บาป/บาปเคราะห์/ร้าย/ทำลาย/เคราะห์/ทุกข์/ทุกขลาภ/พินาศ/วิบัติ/อันตราย
+positive("+"): สุภ/สุภเคราะห์/ดี/มงคล/โชค/ศุภ/รุ่งเรือง/เจริญ/ลาภ/ยศ/ชัยชนะ
+neutral("~"): กลาง/ปานกลาง/ทั่วไป/เป็นกลาง
+
+## Domain Compounds (อย่าตัดคำเหล่านี้)
+บาปเคราะห์/สุภเคราะห์/ตนุลัคน์/ลัคนา/เจ้าเรือน/คู่มิตร/คู่ศัตรู/คู่สมพล/ทุกขลาภ/โชคลาภ
+
+## Transit Markers (→ context:"transit", type:TRANSIT_NATAL)
+เมื่อ/ขณะที่/ตอนที่/ในปีที่/ในช่วงที่/เมื่อดาว/เมื่อพระ/โคจร/ดาวเดิน/ดาวโคจร
+
+## Anti-Pattern: Case Study ≠ Match Rule ⚠️
+ถ้าเห็น: กรณีที่/ตัวอย่างเช่น/เช่น/อย่างเช่น/คนที่เกิด/บุคคลสำคัญ
+→ rule_use:"case_study" ห้ามเป็น "match"
+
+⚠️ ถ้าตำรายกกรณี 1,2,3... (pattern เดียวกัน) → สกัด principle 1 ข้อ + case_study N ข้อ
+อย่า copy กรณีแต่ละข้อเป็น match rule แยก — นั่นคือผิด
+
+## Principle Test (CH036 ground truth)
+Input: transit X → natal Y (คู่มิตร) กรณี 1,2,3...
+output ถูก: principle "N คู่มิตร activated พร้อมกัน → โชคใหญ่"
+output ผิด: N match rules copy กรณีทีละอัน
 
 ## Rule type
-"NATAL_ATOMIC"|"NATAL_COMBINATION"|"TRANSIT_NATAL"|"DEFINITION"|"REFERENCE"|"PRINCIPLE"
-
-## Tier
-1=ดาวเดียวอธิบายได้เอง | 2=2ดวงสร้างความหมายใหม่ | 3=3ดวงขึ้นไป
+"NATAL_ATOMIC" = ดาวเดียวส่งผลคงที่ (tier 1)
+"NATAL_COMBINATION" = 2+ ดาวสร้าง emergent meaning (tier 2+) — test: เอาดาวหนึ่งออก rule ยังมีความหมายไหม?
+"TRANSIT_NATAL" = transit × natal = timing เหตุการณ์
+"DEFINITION" | "REFERENCE" | "PRINCIPLE"
 
 ## Output (JSON array เท่านั้น)
 \`\`\`json
-[{"rule_use":"match","type":"NATAL_ATOMIC","tier":1,"c":"เงื่อนไข","meaning":"ความหมาย","polarity":"+",
-  "planet_ids":[1],"contexts":["natal"],"domain":"ทั่วไป"}]
+[{"rule_use":"match","type":"NATAL_ATOMIC","tier":1,"c":"เงื่อนไข","meaning":"ความหมาย",
+  "polarity":"+","planet_ids":[1],"contexts":["natal"],"domain":"ทั่วไป"}]
 \`\`\`
 ถ้าไม่มีกฎ: \`\`\`json\n[]\n\`\`\``;
 
