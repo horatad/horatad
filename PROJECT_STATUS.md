@@ -45,9 +45,10 @@
 - `workers/kb_extractor.mjs` — system prompt + schema reference ✅ แต่รัน script ไม่ได้
 
 ### Next (Claude ทำได้)
-- [ ] ⭐ **สร้าง Claude Code native extraction flow** — template + batch CH001-CH010 ก่อน
+(ไม่มี — pipeline พร้อมแล้ว รอ user รัน)
 
 ### Blocked (รอ user)
+- [ ] [ทดลองใช้] ⭐ **เพิ่ม GROQ_API_KEY ใน GitHub Secrets** → รัน "BIBLE KB V2.4 Extraction" workflow
 - [ ] [ทดลองใช้] รัน m0_hallucination_test.html — Groq score
 
 ### ไฟล์หลัก
