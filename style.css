@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.3.16 */
+/* HORATAD:STYLE:3.3.17 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -188,6 +188,14 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 .memory-search{margin-top:0;margin-bottom:8px;height:32px;font-size:13px;padding:4px 10px;background:#0d1117;color:#c9d1d9;border:0.5px solid #444;border-radius:6px;outline:none;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;width:100%}
 .memory-search:focus{border-color:#666}
 .memory-search::placeholder{color:#666}
+.mem-search-row{display:flex;align-items:center;gap:4px;margin-bottom:6px}
+.memory-search-inline{flex:1;min-width:0;height:30px;font-size:12px;padding:3px 8px;background:#0d1117;color:#c9d1d9;border:0.5px solid #444;border-radius:6px;outline:none;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.memory-search-inline:focus{border-color:#666}
+.memory-search-inline::placeholder{color:#666}
+.mem-sort-btns{display:flex;gap:3px;flex-shrink:0}
+.memory-sort-type-btn{height:30px;padding:0 8px;background:#2d333b;color:#c9d1d9;border:1px solid #444;border-radius:6px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:11px;white-space:nowrap}
+.memory-sort-type-btn:hover{background:#3d444c}
+.memory-sort-dir-btn{height:30px;width:30px;background:#2d333b;color:#c9d1d9;border:1px solid #444;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
 .memory-list{flex:1;overflow-y:auto;background:#0d1117;border-radius:8px;padding:2px;min-height:120px}
 .memory-item{position:relative;padding:8px 68px 8px 12px;cursor:pointer;color:#c9d1d9;font-size:12px;border-bottom:0.5px solid #2d333b;line-height:1.4;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
 .memory-item:last-child{border-bottom:none}

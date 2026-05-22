@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.16 -->
-<!-- Version 3.3.16 | 2026-05-22 -->
+<!-- HORATAD:INDEX:3.3.17 -->
+<!-- Version 3.3.17 | 2026-05-22 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.16">
+<link rel="stylesheet" href="style.css?v=3.3.17">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -117,7 +117,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.16</span>
+  <span class="brand-ver">V 3.3.17</span>
 </h1>
 
 <!-- Tab nav -->
@@ -269,7 +269,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.16</div>
+        <div class="about-version">V 3.3.17</div>
         <div class="about-update">อัปเดต 22 พ.ค. 2569 · 3-tank memory (ส่วนตัว / QR / JULIAN)</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -398,7 +398,7 @@ canvas{max-width:100%;height:auto}
       <button class="chart-nav-btn" onclick="cycleMemory(-1)" title="ดวงก่อนหน้า">◀</button>
       <div id="chart-nav-info" class="chart-nav-info">—</div>
       <button class="chart-nav-btn" onclick="cycleMemory(1)" title="ดวงถัดไป">▶</button>
-      <button id="btn-view-nav" class="chart-nav-view" onclick="toggleView()">ดวงใน</button>
+      <button id="btn-view-nav" class="chart-nav-view hidden" onclick="toggleView()">ดวงใน</button>
       <button class="chart-nav-gear" onclick="_openMainMenu()" title="ตั้งค่า">⚙️</button>
     </div>
     <canvas id="chart-canvas" width="1000" height="1000" style="width:100%;height:auto;border-radius:6px;display:block"></canvas>
@@ -419,7 +419,7 @@ canvas{max-width:100%;height:auto}
       <button id="btn-view-prev" onclick="cycleMemory(-1)" class="btn-sm btn-nav" title="ดวงก่อนหน้า">◀</button>
       <button id="btn-view"       onclick="toggleView()"           class="btn-sm btn-view-center hidden">ดวงที่ 1</button>
       <button id="btn-view-next" onclick="cycleMemory(1)" class="btn-sm btn-nav" title="ดวงถัดไป">▶</button>
-      <button id="btn-outer"      onclick="toggleOuter()"          class="btn-sm hidden">ราศี</button>
+      <button id="btn-outer"      onclick="toggleOuterView()"       class="btn-sm hidden">ดวงใน</button>
       <button id="btn-chart-type" onclick="toggleChartType()"      class="btn-sm hidden">ราศี</button>
       <button id="btn-transit"    onclick="toggleReportTransit()"  class="btn-sm hidden">รายงานจร</button>
     </div>
@@ -469,11 +469,13 @@ canvas{max-width:100%;height:auto}
     <button id="tank-tab-qr" class="tank-tab" onclick="switchTank('qr')">📷 QR<span id="tank-cnt-qr" class="tank-cnt"></span></button>
     <button id="tank-tab-julian" class="tank-tab" onclick="switchTank('julian')">🌐 JULIAN</button>
   </div>
-  <div class="memory-header" id="tank-sort-bar">
-    <div class="memory-title" id="memory-title-text">เลือกจากความทรงจำ</div>
-    <button id="memory-sort-btn" class="memory-sort-btn" onclick="cycleMemorySort()">📅 ใหม่→เก่า</button>
+  <div class="mem-search-row">
+    <input id="memory-search" class="memory-search-inline" placeholder="ค้นหา..." autocomplete="off">
+    <div id="tank-sort-bar" class="mem-sort-btns">
+      <button id="memory-sort-type-btn" class="memory-sort-type-btn" onclick="cycleSortType()">วันเกิด</button>
+      <button id="memory-sort-dir-btn" class="memory-sort-dir-btn" onclick="toggleSortDir()">↓</button>
+    </div>
   </div>
-  <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ..." autocomplete="off">
   <div id="julian-tag-row" class="julian-tag-row hidden"></div>
   <div id="julian-sub-row" class="julian-sub-row hidden"></div>
   <div id="julian-load-area" class="julian-load-area hidden">
@@ -827,8 +829,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.3.16"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.16"></script>
+<script src="script.js?v=3.3.17"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.17"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>

@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.16
-// Version 3.3.16 | 2026-05-22
+// HORATAD:SCRIPT:3.3.17
+// Version 3.3.17 | 2026-05-22
 // Changes: [V3.3.16] feat: 3-tank memory system (ส่วนตัว / QR / JULIAN) — แยก storage, tab UI, dedup dialog
 // Changes: [V3.3.12] fix: JULIAN 404 — placeholder data/julian_all.json, ปรับ empty msg
 // Changes: [V3.3.11] fix: QR ใน capture — bundle qrcode.min.js, fix qrDiv pos, เพิ่ม toast location
@@ -15,7 +15,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.16';
+const APP_VERSION='3.3.17';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -124,7 +124,9 @@ let _swRefreshing=false; // V2.1.5 prevent double reload on SW update
 // V2.1.9
 let _soundLevel=1; // 0=🔇 off, 1-5 = 🔈🔉🔊 scale
 let _audioCtx=null;
-let _memSort='jd_desc'; // 'jd_desc'|'jd_asc'|'recent'|'asc'|'desc'
+let _memSortType='jd'; // 'jd'|'name'|'saved'
+let _memSortDir='desc';  // 'asc'|'desc'
+let _memScrollKey='';   // key of last selected item for scroll restore
 let _activeTank='private'; // 'private'|'qr'|'julian'
 let _julianCache=null; // null=not loaded, array=loaded
 let _julianFiltered=[]; // filtered slice for display
@@ -902,19 +904,21 @@ function deg2rad(d){return d*Math.PI/180}
 function _applyViewMode(){
   const isV2=_viewMode===1;
   const btnView=document.getElementById('btn-view');
-  const btnOuter=document.getElementById('btn-outer');
-  btnView.textContent=VIEW_LABELS[_viewMode];
-  if(isV2){
-    btnView.classList.add('view-outer');
-    btnOuter.classList.add('hidden');
-    document.getElementById('btn-view-prev').classList.add('view-outer');
-    document.getElementById('btn-view-next').classList.add('view-outer');
-  }else{
-    btnView.classList.remove('view-outer');
-    btnOuter.classList.remove('hidden');
-    document.getElementById('btn-view-prev').classList.remove('view-outer');
-    document.getElementById('btn-view-next').classList.remove('view-outer');
+  if(btnView){
+    btnView.textContent=VIEW_LABELS[_viewMode];
+    btnView.classList.toggle('view-outer',isV2);
   }
+  document.getElementById('btn-view-prev')?.classList.toggle('view-outer',isV2);
+  document.getElementById('btn-view-next')?.classList.toggle('view-outer',isV2);
+  // combined ดวงนอก/จร button
+  const btnOuter=document.getElementById('btn-outer');
+  if(btnOuter){
+    btnOuter.textContent=VIEW_LABELS[_viewMode];
+    btnOuter.classList.toggle('btn-active',isV2);
+    btnOuter.classList.remove('hidden');
+  }
+  const vn=document.getElementById('btn-view-nav');
+  if(vn){vn.textContent=VIEW_LABELS[_viewMode];vn.classList.toggle('active',isV2);}
 }
 function toggleView(){
   _viewMode=(_viewMode+1)%2;
@@ -923,17 +927,23 @@ function toggleView(){
   _playBeep(700);
   _redraw();
   _updateShareButton();
-  const vn=document.getElementById('btn-view-nav');
-  if(vn){vn.textContent=VIEW_LABELS[_viewMode];vn.classList.toggle('active',_viewMode===1);}
 }
-function toggleOuter(){
-  _outerState=(_outerState+1)%5;
-  document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
-  // V2.2.23: sync รายงานตาม outerState — ถ้ากราฟิกแสดงดาวจร รายงานสลับตาม
-  const showTransit=_outerState===2||_outerState===3;
-  _reportTransitShow=showTransit;
+// combined button: ดวงนอก/ดวงใน + จรแสดง/จรซ่อน (2 states)
+function toggleOuterView(){
+  if(_viewMode===0){
+    _viewMode=1;
+    if(!natal2&&natal1)natal2={...natal1};
+    _outerState=2;
+    _reportTransitShow=true;
+  }else{
+    _viewMode=0;
+    _outerState=0;
+    _reportTransitShow=false;
+  }
+  _applyViewMode();
   _playBeep(700);
   _redraw();
+  _updateShareButton();
 }
 function toggleChartType(){
   _chartTypeState=(_chartTypeState+1)%3;
@@ -994,6 +1004,7 @@ function cycleMemory(dir){
   if(idx===-1)idx=dir>0?-1:mem.length;
   const next=(idx+dir+mem.length*2)%mem.length;
   const m=mem[next];
+  _memScrollKey=_tankKey(m); // track position for memory modal scroll
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   _setField('name-1',m.name||'');
   const g=document.getElementById('gender1');if(g)g.value=m.gender||'ชาย';
@@ -1822,23 +1833,32 @@ let _memCache=[];
 let _editingMemKey=null;
 let _editingMemSection=null;
 
-// V2.2.23: sort memory by current mode (added jd_desc/jd_asc)
-const _MEM_SORT_LABELS={'jd_desc':'📅 ใหม่→เก่า','jd_asc':'📅 เก่า→ใหม่','recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
-function cycleMemorySort(){
-  const order=['jd_desc','jd_asc','recent','asc','desc'];
-  _memSort=order[(order.indexOf(_memSort)+1)%order.length];
-  const btn=document.getElementById('memory-sort-btn');
-  if(btn)btn.textContent=_MEM_SORT_LABELS[_memSort];
-  _playBeep(700);
-  _renderMemory(document.getElementById('memory-search')?.value||'');
+const _SORT_TYPE_LABELS={jd:'วันเกิด',name:'ชื่อ',saved:'บันทึก'};
+function _updateSortBtns(){
+  const t=document.getElementById('memory-sort-type-btn');
+  const d=document.getElementById('memory-sort-dir-btn');
+  if(t)t.textContent=_SORT_TYPE_LABELS[_memSortType];
+  if(d)d.textContent=_memSortDir==='desc'?'↓':'↑';
 }
+window.cycleSortType=function(){
+  const order=['jd','name','saved'];
+  _memSortType=order[(order.indexOf(_memSortType)+1)%order.length];
+  _updateSortBtns();
+  _renderTank(document.getElementById('memory-search')?.value||'');
+};
+window.toggleSortDir=function(){
+  _memSortDir=_memSortDir==='desc'?'asc':'desc';
+  _updateSortBtns();
+  _renderTank(document.getElementById('memory-search')?.value||'');
+};
 function _sortByMode(arr,mode){
   if(mode==='jd_desc')return arr.slice().sort((a,b)=>(b.jd||0)-(a.jd||0));
   if(mode==='jd_asc')return arr.slice().sort((a,b)=>(a.jd||0)-(b.jd||0));
-  if(mode==='recent')return arr.slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
-  if(mode==='asc')return arr.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','th'));
-  if(mode==='desc')return arr.slice().sort((a,b)=>(b.name||'').localeCompare(a.name||'','th'));
-  return arr;
+  if(mode==='saved_desc'||mode==='recent')return arr.slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+  if(mode==='saved_asc')return arr.slice().sort((a,b)=>(a.savedAt||0)-(b.savedAt||0));
+  if(mode==='name_asc'||mode==='asc')return arr.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||'','th'));
+  if(mode==='name_desc'||mode==='desc')return arr.slice().sort((a,b)=>(b.name||'').localeCompare(a.name||'','th'));
+  return arr.slice();
 }
 
 // ── 3-tank render functions ───────────────────────────────
@@ -1876,14 +1896,14 @@ function _renderTank(filter){
   if(_activeTank==='julian'){_renderJulianTank(filter);return;}
   const key=_activeTank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY;
   const raw=_tankLoad(key);
-  _memCache=_sortByMode(raw,_memSort);
+  _memCache=_sortByMode(raw,`${_memSortType}_${_memSortDir}`);
   const list=document.getElementById('memory-list');
   const f=(filter||'').trim().toLowerCase();
   const items=[];
   _memCache.forEach((m,i)=>{
     if(f&&!(m.name||'').toLowerCase().includes(f)&&!(m.prov||'').toLowerCase().includes(f))return;
     const y_ce=_beToce(m.y_be,m.m);
-    const meta=`${m.d}/${m.m}/${m.y_be} (${y_ce}) · ${m.t} · ${_escHtml(m.prov||'')}`;
+    const meta=`${m.d}/${m.m}/${m.y_be} (${y_ce}) · ${m.t}`;
     if(_activeTank==='qr'){
       items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
     }else{
@@ -1891,6 +1911,18 @@ function _renderTank(filter){
     }
   });
   list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f?'ไม่พบรายการ':(_activeTank==='qr'?'ยังไม่มี QR ที่นำเข้า':'ยังไม่มีรายการในความทรงจำ')}</div>`;
+  if(_memScrollKey){
+    requestAnimationFrame(()=>{
+      const allItems=list?.querySelectorAll('.memory-item[data-i]');
+      if(!allItems)return;
+      for(const el of allItems){
+        if(_tankKey(_memCache[parseInt(el.dataset.i)]||{})===_memScrollKey){
+          el.scrollIntoView({block:'nearest',behavior:'instant'});
+          break;
+        }
+      }
+    });
+  }
 }
 
 function _renderMemory(filter){
@@ -2129,11 +2161,9 @@ window.searchAllTanks=function(query){
 function openMemory(section){
   _memSection=section;
   _editingMemKey=null;_editingMemSection=null;
-  document.getElementById('memory-title-text').textContent=`เลือกสำหรับ ดวง ${section}`;
   const s=document.getElementById('memory-search');
   if(s)s.value='';
-  const btn=document.getElementById('memory-sort-btn');
-  if(btn)btn.textContent=_MEM_SORT_LABELS[_memSort];
+  _updateSortBtns();
   _updateTankCounts();
   const isJulian=_activeTank==='julian';
   document.getElementById('julian-load-area')?.classList.toggle('hidden',!isJulian||!!_julianCache);
@@ -2160,6 +2190,7 @@ function _pickMemory(i){
   const section=_memSection;
   // V2.2.38: tap (not ✏️) = pick only — clear any pending edit flag
   _editingMemKey=null;_editingMemSection=null;
+  _memScrollKey=_tankKey(m); // remember position for scroll restore
   if(section==='1'){
     _setField('name-1',m.name||'');
     document.getElementById('gender1').value=m.gender||'ชาย';
@@ -3697,7 +3728,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   });
 
   // init button labels
-  document.getElementById('btn-outer').textContent=OUTER_LABELS[_outerState];
+  document.getElementById('btn-outer').textContent=VIEW_LABELS[_viewMode];
   document.getElementById('btn-transit').textContent=REPORT_TRANSIT_LABELS[0];
   document.getElementById('btn-chart-type').textContent=CHART_TYPE_LABELS[_chartTypeState];
 
