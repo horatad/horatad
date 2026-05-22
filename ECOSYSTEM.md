@@ -279,6 +279,7 @@ PLATFORM
 | ภาพรวม + architecture | `ECOSYSTEM.md` (ไฟล์นี้) |
 | งานที่ต้องทำวันนี้ | `PROJECT_STATUS.md` |
 | Claude instructions | `CLAUDE.md` |
+| Claude ช่วยอะไรได้บ้าง | `docs/CLAUDE_CAPABILITIES.md` |
 | HORATAD detail | `docs/HORATAD_MANUAL.md` + `handoffs/HORATAD_*.md` |
 | BIBLE detail | `docs/BIBLE_MISSION.md` + `handoffs/BIBLE_*.md` |
 | JULIAN detail | `docs/JULIAN_MISSION.md` + `handoffs/JULIAN_*.md` |
