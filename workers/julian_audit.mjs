@@ -22,6 +22,15 @@ import { readFileSync, writeFileSync } from 'fs';
 const PATH = process.argv.find(a => a.endsWith('.json')) || 'data/julian_all.json';
 const APPLY = process.argv.includes('--clean');
 
+// ── Known fictional Wikidata QIDs — ลบทันทีที่เจอ ──────────────────────────
+// เก็บ list manual เพราะ SPARQL filter กันได้แค่ run ถัดไป
+// list นี้ขยายได้เมื่อพบ fictional เพิ่ม (sed -i แก้ที่นี่)
+const FICTIONAL_QIDS = new Set([
+  'Q988925',   // Ellen Ripley (Alien franchise)
+  'Q2079562',  // SHODAN (System Shock)
+  'Q2570349',  // Spike Spiegel (Cowboy Bebop)
+]);
+
 const records = JSON.parse(readFileSync(PATH, 'utf8'));
 
 // ── 1. ตรวจสถิติ time_utc ──────────────────────────────────────────────────
@@ -60,27 +69,39 @@ for (const r of records) {
 // ── 3. Apply cleanup ───────────────────────────────────────────────────────
 let timeDropped = 0;
 let confLowered = 0;
+let fictionalRemoved = 0;
 
-const cleaned = records.map(r => {
-  const out = { ...r };
-  const reasons = [];
+// Filter ออก fictional QIDs ก่อน
+const cleaned = records
+  .filter(r => {
+    const qid = (r.source || '').replace(/^wikidata:/, '');
+    if (FICTIONAL_QIDS.has(qid)) {
+      console.log(`  ✗ remove fictional: ${r.name} (${r.source})`);
+      fictionalRemoved++;
+      return false;
+    }
+    return true;
+  })
+  .map(r => {
+    const out = { ...r };
+    const reasons = [];
 
-  if (out.time_utc && suspicious.has(out.time_utc)) {
-    reasons.push(`time_cluster_${timeCount[out.time_utc]}x`);
-    out.time_utc = null;
-    timeDropped++;
-  }
+    if (out.time_utc && suspicious.has(out.time_utc)) {
+      reasons.push(`time_cluster_${timeCount[out.time_utc]}x`);
+      out.time_utc = null;
+      timeDropped++;
+    }
 
-  if (reasons.length) {
-    out.confidence = Math.min(out.confidence ?? 0.9, 0.7);
-    out.notes = out.notes
-      ? `${out.notes}|audit:${reasons.join(',')}`
-      : `audit:${reasons.join(',')}`;
-    confLowered++;
-  }
+    if (reasons.length) {
+      out.confidence = Math.min(out.confidence ?? 0.9, 0.7);
+      out.notes = out.notes
+        ? `${out.notes}|audit:${reasons.join(',')}`
+        : `audit:${reasons.join(',')}`;
+      confLowered++;
+    }
 
-  return out;
-});
+    return out;
+  });
 
 // ── Report ─────────────────────────────────────────────────────────────────
 console.log('## JULIAN Data Audit Report');
@@ -110,9 +131,11 @@ for (const r of futureRecords.slice(0, 5)) {
 
 console.log('');
 console.log(`## Cleanup summary:`);
+console.log(`  fictional removed:    ${fictionalRemoved} (QID blocklist)`);
 console.log(`  time_utc dropped:     ${timeDropped}`);
 console.log(`  confidence lowered:   ${confLowered}`);
 console.log(`  time_utc remaining:   ${hasTime - timeDropped} (after cleanup)`);
+console.log(`  records remaining:    ${cleaned.length} (after cleanup)`);
 
 if (APPLY) {
   writeFileSync(PATH, JSON.stringify(cleaned, null, 2));
