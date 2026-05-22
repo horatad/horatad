@@ -100,6 +100,15 @@ let STATE_KEY = 'bible_kb_extract_state_groq';
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let chapters = {};
+
+// migrate: ถ้ามี state เก่า (ไม่มี suffix) ให้ย้ายมา key ใหม่
+(function migrateLegacyState() {
+  const legacy = localStorage.getItem('bible_kb_extract_state');
+  if (legacy && !localStorage.getItem('bible_kb_extract_state_groq')) {
+    localStorage.setItem('bible_kb_extract_state_groq', legacy);
+  }
+})();
+
 let state    = JSON.parse(localStorage.getItem(STATE_KEY) || '{"done":{},"rules":[],"review":[]}');
 if (!state.review) state.review = [];
 let running  = false;
