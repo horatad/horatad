@@ -1,5 +1,35 @@
 // JULIAN Automation Config — แก้ที่นี่ที่เดียว ไม่ต้องแตะ logic
 
+// ── Astrotheme query generator — 1800-2010, 5-ปีต่อ chunk ───────────────────
+// ดึงคนที่ Wikidata มี P3447 (Astrotheme ID) → แน่นอนว่ามีอยู่ใน astrotheme.com
+// Astrotheme enrichment step จะ fetch เวลาเกิดโดยใช้ path ตรงๆ ไม่ต้อง guess
+function astrothemeQuery(y1, y2) {
+  const from = `${y1}-01-01T00:00:00Z`;
+  const to   = `${y2}-01-01T00:00:00Z`;
+  return {
+    id:      `astro_${y1}_${y2}`,
+    label:   `Astrotheme ${y1}–${y2}`,
+    country: null,
+    tier:    1,
+    sparql: `
+      SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?astroId WHERE {
+        ?person wdt:P3447 ?astroId.
+        ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+        FILTER(?birthPrec >= 11)
+        FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
+        OPTIONAL {
+          ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+          FILTER(?deathPrec >= 11)
+        }
+        OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
+      } LIMIT 500`,
+  };
+}
+
+const ASTROTHEME_SERIES = [];
+for (let y = 1800; y < 2010; y += 5) ASTROTHEME_SERIES.push(astrothemeQuery(y, y + 5));
+
 // ── Era query generator — 1700-2100, 20-ปีต่อ chunk ─────────────────────────
 // ดึงบุคคลสำคัญ (sitelinks >= 5) ที่มีวันเดือนปีเกิดครบ (precision=day)
 // ไม่จำกัดอาชีพ — ครอบคลุมทุกสาขา ทุกประเทศ
@@ -314,6 +344,9 @@ export const CONFIG = {
           SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
         } LIMIT 500`,
     },
+    // ── Astrotheme series: P3447 — มี path ตรง → เวลาเกิดแม่นยำสูง ─────────
+    ...ASTROTHEME_SERIES,
+
     // ── Era series: บุคคลสำคัญ 1700-2100 (generate อัตโนมัติ) ────────────
     ...ERA_SERIES,
   ],

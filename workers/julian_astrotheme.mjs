@@ -88,7 +88,10 @@ function parseAstrotheme(html, name) {
 
 // ── Fetch + parse 1 person ────────────────────────────────────────────────────
 async function enrichOne(record) {
-  const path = nameToPath(record.name);
+  // ถ้า source มี astrotheme: prefix → ใช้ path ตรงจาก Wikidata P3447 (แม่นกว่า guess ชื่อ)
+  const path = record.source?.startsWith('astrotheme:')
+    ? record.source.slice('astrotheme:'.length)
+    : nameToPath(record.name);
   if (!path) return null;
 
   const url = `${BASE_URL}${encodeURIComponent(path)}`;

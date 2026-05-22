@@ -155,6 +155,7 @@ async function processQuery(query, progress, batchFile, today) {
       ? birthVal.slice(tIdx + 1, tIdx + 6)
       : null;
 
+    const astroId = b.astroId?.value || null;
     records.push({
       jd: birth.jd, name,
       event_label: query.label, type: 'human',
@@ -162,7 +163,8 @@ async function processQuery(query, progress, batchFile, today) {
       tier: query.tier, lat: null, lng: null,
       time_utc, lagna_sign: null,
       relate_id: death ? [death.jd] : null,
-      source: `wikidata:${qid}`, source_type: 'internet',
+      source: astroId ? `astrotheme:${astroId}` : `wikidata:${qid}`,
+      source_type: 'internet',
       validated_count: 0,
       confidence: time_utc ? 0.95 : 0.85,
       notes: null,
