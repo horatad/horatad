@@ -4,6 +4,90 @@
 
 ---
 
+## [3.3.12] — 2026-05-22
+### Fixed
+- JULIAN download 404: ลบ link ไป CF Worker → ใช้ `data/julian_all.json` (placeholder ใน repo)
+- ปุ่ม "ดาวน์โหลดข้อมูลสาธารณะ" + empty message user-friendly
+
+## [3.3.11] — 2026-05-21
+### Fixed
+- QR ใน capture pane ไม่เจน: bundle `qrcode.min.js` ใน repo (เลิกพึ่ง CDN)
+- Fix `qrDiv` position calc — ตำแหน่งตรงทุก scroll
+### Added
+- Toast แจ้ง location ตอน save image — "บันทึกที่ Photos แล้ว ✓"
+
+## [3.3.10] — 2026-05-21
+### Changed
+- ลบ section "ปรัชญาการพัฒนา" ออกจากหน้าเกี่ยวกับ (ย้ายไป CLAUDE.md)
+- About page → full-screen layout (max-width ลบ, padding ปรับ)
+
+## [3.3.9] — 2026-05-21
+### Fixed
+- JULIAN URL → raw.githubusercontent (เร็วกว่า GitHub Pages)
+- ไม่ autofocus search ใน DB1 popup (keyboard บนมือถือไม่เด้งโดยไม่จำเป็น)
+- Swap transit function name → semantic ถูก
+- Restore R8 lunar content (เคย override โดยไม่ตั้งใจ)
+
+## [3.3.8] — 2026-05-21
+### Added (8 changes batch)
+- Import choice modal: เลือกแหล่ง — Paste / Photo / URL
+- DB1 list sort: 🕐 / ก-ฮ / ฮ-ก toggle
+- Tag delete: long-press tag chip → confirm → ลบ
+- Toggle buttons: View, Transit เป็น toggle state (highlight active)
+- Nav view button: สลับ chart view เร็วขึ้น
+### Fixed
+- Pin auth fix: edge case PIN ตรงแต่ Worker timeout → graceful retry
+### Changed
+- Lunar info cleanup: ลด clutter, ใส่เฉพาะข้อมูลที่ used
+
+## [3.3.7] — 2026-05-21
+### Fixed
+- Memory modal ใช้ `dvh` แทน `vh` — keyboard ขึ้นไม่บังปุ่ม Export/Import/ปิด บนมือถือ
+
+## [3.3.6] — 2026-05-21
+### Fixed (M3 fallback chain)
+- Typhoon API: throw error แทน return raw text เมื่อตอบไม่ใช่ JSON หลัง retry
+- ทำให้ M8 fallback (`compose_local_prediction`) ทำงานเสมอเมื่อ M3 fail → zero hallucination guaranteed
+
+## [3.3.4] — 2026-05-21
+### Added
+- V3 tab → 3-panel view (กฎที่ matched / Input Typhoon prompt / Output text)
+- Debug-friendly: เห็นทั้ง rule list + Typhoon I/O ในหน้าจอเดียว
+
+## [3.3.3] — 2026-05-21
+### Fixed (BIBLE match_rules)
+- `house_lord_of`: dynamic เจ้าเรือน per natal (เคย hardcode planet_id)
+- REFERENCE filter: exclude `rule_type:'REFERENCE'` จาก predictive output
+- `planet_id=0` bug: SU (id=0) เคย match ไม่ได้เพราะ falsy check
+
+## [3.3.1] — 2026-05-21
+### Added
+- Wire M8 `compose_local_prediction` → `v3tab.js` fallback path
+- Grouped output: ✅ ดี / ⚠️ ระวัง / 📋 อื่นๆ (แทน flat render_fallback เก่า)
+
+## [3.3.0] — 2026-05-20
+### Added (M8 — Keyword Composition Engine)
+- `compose_local_prediction()` ใน `v3/interpretation.js` — deterministic prediction จาก KB (no LLM)
+- `compose_summary_text()` — สรุป predictions เป็น 1 paragraph
+- 100% anti-hallucination — text มาจาก `rule.p` ทั้งหมด ไม่แต่งเติม
+
+## [3.2.9] — 2026-05-20
+### Changed
+- `match_rules()`: ใช้ `conditions[]` (structured) แทน text matching
+- Structured JSON output จาก Typhoon + `rule_id` validation 100%
+### Added
+- Multi-LLM benchmark hook (Gemini, Groq, Typhoon CF) — เตรียมเทียบคุณภาพ
+
+## [3.2.8] — 2026-05-20
+### Added
+- `kb.json` V2.1 — combine 2 Typhoon fill rounds → 284/342 rules มี `conditions[]` (83%)
+
+## [3.2.7] — 2026-05-20
+### Added
+- `kb.json` V2 — 342 rules + `conditions[]` structured (จาก Typhoon initial fill, 83% coverage)
+- `_empirical_schema` ใน root + sample fields ใน 2 rules
+- `v3/kb_skeletons.json` — 90 planet×quality combinations รอ empirical data
+
 ## [3.2.6] — 2026-05-20
 ### Added
 - ปรัชญาการพัฒนา (Development Philosophy): Simple / Friendly / UX / Fast

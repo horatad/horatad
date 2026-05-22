@@ -128,7 +128,7 @@ scripts/check-version-sync.mjs     — validator
 scripts/bump-version.mjs           — bumper (ใช้ทุก release)
 CLAUDE.md                          — project conventions + standing instructions
 DEPLOY.md                          — ไฟล์นี้
-session_handoff_*.md               — log work + pending list (1 ต่อ session)
+handoffs/<PROJECT>_*.md            — session state per project (HORATAD/BIBLE/JULIAN/PLATFORM/BIG/REORG)
 bump_version.ps1                   — legacy Windows wrapper (delegate ไป node)
 push.bat / push.bat1               — Windows local push helpers (user-only)
 netlify.toml + _headers            — Netlify config (staging/backup)
