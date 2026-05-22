@@ -63,7 +63,7 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | Records: **41,079/100,000** (41% — target ขยายจาก 50K → 100K)
+- Schema: ✅ | JD: ✅ | Records: **41,076/100,000** (41% — target ขยายจาก 50K → 100K, ลบ fictional 3)
 - Queries: **68/140 เสร็จ** (~49%) — เพิ่ม 3 category: musicians + actors + writers
 - Automation: ✅ 140 queries | cron ทุก 6 ชม. | MAX_PER_RUN 500→1000
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
@@ -166,7 +166,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD V3.3.14 | script.js, v3/*, index.html | 🟡 Pre-launch |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN 41,079/100,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Empirical DB | JULIAN 41,076/100,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
