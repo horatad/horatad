@@ -113,4 +113,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-21 | V3.3.12 | HORATAD JULIAN 404 fix + about page + capture | BIBLE รอ MISMATCH review | JULIAN automation running*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | BIG session: priority queue + Windows guide + UI_LAYOUT.md → PDF | ทุก project รอ user action*
