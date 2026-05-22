@@ -1,5 +1,5 @@
 // HORATAD:SW:3.3.16
-// Version 3.3.15 | 2026-05-22
+// Version 3.3.16 | 2026-05-22
 // Service Worker — cache-first for same-origin static assets, network fallback.
 // Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
 // version.json bypass cache → ต้อง network สด เพื่อ version check
