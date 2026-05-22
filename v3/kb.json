@@ -4361,7 +4361,8 @@
       ],
       "rule_type": "CASE_STUDY",
       "rule_source": "major",
-      "weight": 1
+      "weight": 1,
+      "rule_use": "case_study"
     },
     {
       "ch": "chapter_47",
@@ -4498,7 +4499,8 @@
       ],
       "rule_type": "CASE_STUDY",
       "rule_source": "major",
-      "weight": 1
+      "weight": 1,
+      "rule_use": "case_study"
     },
     {
       "ch": "chapter_48",
@@ -6475,7 +6477,8 @@
       ],
       "rule_type": "TRANSIT_RULE",
       "rule_source": "major",
-      "weight": 1
+      "weight": 1,
+      "rule_use": "case_study"
     },
     {
       "ch": "chapter_68",
