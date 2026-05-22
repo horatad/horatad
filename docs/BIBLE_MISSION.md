@@ -235,10 +235,15 @@ Julian Day DB (บุคคลสำคัญ) → คำนวณ planets[] →
 - ✅ เพิ่ม empirical fields (null placeholder) ใน 2 sample TRUE_RULEs (rules[9], rules[10])
 - ✅ สร้าง `scripts/gen_rule_skeletons.mjs` — พบ 90 missing planet×quality combinations
 
+### ✅ เสร็จแล้ว (2026-05-22 BIG cleanup)
+- ✅ `scripts/enrich_skeletons.mjs` + `v3/kb_skeletons_enriched.json` — 90 skeletons enriched ด้วย:
+  - `_priority`: cold_start (10) / derivable (61) / duplicate (19)
+  - `_reference_rules`: rule IDs ของ planet เดียวกันให้ expert ดูเทียบ
+  - sort ตาม priority: cold_start ทำก่อน (ไม่มี reference) → derivable → duplicate (พิจารณาลบ)
+
 ### 🔲 ต้องทำต่อ
-- 🔲 สร้าง Wikipedia scraper tool → Julian Day DB
-- 🔲 สร้าง empirical_validator.html — match persons → rules → count hit/miss
-- 🔴 CF KV/D1 storage สำหรับ empirical DB (รอ user setup)
+- 🔲 สร้าง empirical_validator.html — match JULIAN persons (31,031 records) → rules → count hit/miss
+- 🔴 CF KV/D1 storage สำหรับ empirical DB (รอ user setup — แต่ JULIAN export GitHub Release ใช้แทนได้)
 
 ---
 
@@ -262,29 +267,34 @@ matched_rules → extract keywords จาก rule.p (deterministic)
   - combine positive + negative keywords
   - คืน Thai summary text (deterministic)
 
-### 🔲 ต้องทำต่อ
-- 🔲 เชื่อม `compose_local_prediction()` กับ v3tab.js — ใช้แทน Typhoon fallback
-- 🔲 เพิ่ม keyword expansion: synonym map สำหรับ Thai astrology terms
-- 🔲 เพิ่ม house context: กำหนด theme ของแต่ละภพ (H1=ตัวตน, H2=การเงิน, ...)
+### ✅ เสร็จแล้ว (V3.3.1–V3.3.6)
+- ✅ เชื่อม `compose_local_prediction()` กับ v3tab.js เป็น fallback (V3.3.1, CS004)
+- ✅ M3 throw Error → trigger M8 fallback chain (V3.3.6)
+- ✅ tagged phrase cluster prompt (V3.3.2)
+
+### 🔲 ต้องทำต่อ (DEFERRED — รอ LLM test จริง)
+- 🔲 keyword expansion (synonym map) — รอ benchmark ผล Groq
+- 🔲 house context theme (H1=ตัวตน, H2=การเงิน, ...) — รอ data feedback
 
 ---
 
-## Priority รวม (อัปเดต V3.3.0)
+## Priority รวม (อัปเดต V3.3.12 / KB V2.3.0)
 
 | ลำดับ | Mission | ใครทำ | Blocked? | Status |
 |---|---|---|---|---|
-| 1 | M0: Multi-LLM benchmark tool | User (browser) | ไม่ | ✅ V3.2.9 |
+| 1 | M0: Multi-LLM benchmark tool | Claude | ไม่ | ✅ V3.2.9 |
 | 2 | M1: match_rules() ใช้ conditions[] | Claude | ไม่ | ✅ V3.2.9 |
 | 3 | M2: build_prompt() trim + fallback | Claude | ไม่ | ✅ V3.2.9 |
-| 4 | M3: Structured JSON output + validation | Claude | ไม่ | ✅ V3.2.9 |
-| 5 | M8: Keyword composition engine | Claude | ไม่ | ✅ V3.3.0 |
+| 4 | M3: Structured JSON output + validation | Claude | ไม่ | ✅ V3.2.9 → throw V3.3.6 |
+| 5 | M8: Keyword composition engine | Claude | ไม่ | ✅ V3.3.0 → wired V3.3.1 |
 | 6 | M7: Empirical schema + skeleton generator | Claude | ไม่ | ✅ V3.3.0 |
-| 7 | M0: รัน benchmark + เลือก best LLM | User (browser) | ไม่ | 🔲 |
-| 8 | M1: retry fill 59 rules ว่าง | User (browser) | ไม่ | 🔲 |
-| 9 | M8: เชื่อม compose_local_prediction → v3tab | Claude | ไม่ | 🔲 |
-| 10 | M7: Wikipedia scraper → Julian Day DB | Claude | ไม่ | 🔲 |
-| 11 | M4: CF KV/D1 empirical DB storage | User + Claude | รอ CF setup | 🔴 |
-| 12 | M5: Eval dataset | Claude + Expert | รอ domain expert | 🔴 |
+| 7 | Rule taxonomy (rule_source + weight) | Claude | ไม่ | ✅ KB V2.3.0 (CS005) |
+| 8 | JULIAN data pipeline (Wikidata scraper) | Claude | ไม่ | ✅ 31,031/50,000 records |
+| 9 | M0: รัน benchmark + เลือก best LLM | User (browser) | ไม่ | 🔴 รอ user |
+| 10 | M1: retry fill 59 rules ว่าง / รีวิว 57 MISMATCH | User (browser + expert) | ไม่ | 🔴 รอ user |
+| 11 | M7: empirical_validator.html — match JULIAN persons → rules | Claude | ไม่ | 🔲 พร้อมทำเมื่อ data ครบ |
+| 12 | M4: CF KV/D1 empirical DB storage | User + Claude | รอ CF setup | 🔴 |
+| 13 | M5: Eval dataset | Claude + Expert | รอ domain expert | 🔴 |
 | 13 | M6: Fine-tune Qwen2.5-3B | User + Claude | รอ data | 🔴 |
 
 ---

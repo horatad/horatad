@@ -1,0 +1,4172 @@
+{
+  "count": 90,
+  "generated": "2026-05-22",
+  "source": "v3/kb_skeletons.json",
+  "enriched_by": "scripts/enrich_skeletons.mjs",
+  "stats": {
+    "cold_start": 10,
+    "derivable": 61,
+    "duplicate": 19
+  },
+  "legend": {
+    "cold_start": "ไม่มี rule ของ planet ใน kb — expert draft จากศูนย์ (priority สูงสุด)",
+    "derivable": "มี rule ของ planet (คุณภาพอื่น) — derive ความหมายได้ ดู _reference_rules",
+    "duplicate": "มี rule ที่มี planet+quality ตรงกันใน kb — พิจารณาลบ skeleton หรือ specialize"
+  },
+  "skeletons": [
+    {
+      "id": 9080,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ เกษตร",
+      "c": "ดาวมฤตยู คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9081,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ ประเกษตร",
+      "c": "ดาวมฤตยู คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9082,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ อุจ",
+      "c": "ดาวมฤตยู คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9083,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ นิจ",
+      "c": "ดาวมฤตยู คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9084,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ มหาจักร",
+      "c": "ดาวมฤตยู คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9085,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ จุลจักร",
+      "c": "ดาวมฤตยู คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9086,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ ราชาโชค",
+      "c": "ดาวมฤตยู คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9087,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ เทวีโชค",
+      "c": "ดาวมฤตยู คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9088,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ อุจจาวิลาส",
+      "c": "ดาวมฤตยู คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9089,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] มฤตยู คุณภาพ อุจจาภิมุข",
+      "c": "ดาวมฤตยู คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "มฤตยู",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "10",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "cold_start",
+      "_no_reference": true,
+      "_note": "มฤตยู ไม่มีกฎใดใน kb — expert ต้อง draft จากศูนย์"
+    },
+    {
+      "id": 9000,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ เกษตร",
+      "c": "ดาวอาทิตย์ คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ เกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9001,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ ประเกษตร",
+      "c": "ดาวอาทิตย์ คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ ประเกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9003,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ นิจ",
+      "c": "ดาวอาทิตย์ คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9004,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ มหาจักร",
+      "c": "ดาวอาทิตย์ คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ มหาจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9005,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ จุลจักร",
+      "c": "ดาวอาทิตย์ คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9006,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ ราชาโชค",
+      "c": "ดาวอาทิตย์ คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ ราชาโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9007,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ เทวีโชค",
+      "c": "ดาวอาทิตย์ คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9008,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ อุจจาวิลาส",
+      "c": "ดาวอาทิตย์ คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ อุจจาวิลาส\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9009,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ อุจจาภิมุข",
+      "c": "ดาวอาทิตย์ คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R010",
+        "R082",
+        "R092",
+        "R093",
+        "R121"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R010",
+          "c": "ดาวอาทิตย์(๑) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง อีโก้สูง"
+        },
+        {
+          "rid": "R082",
+          "c": "ดาว 6 ดีมาก + ดาว 1 หรือ 3 ดีสัมพันธ์ลัคนาพร้อมกัน",
+          "p": "กำหนัดสูงมาก เจ้าชู้หรือสำส่อนได้ — ระวัง"
+        },
+        {
+          "rid": "R092",
+          "c": "ดาว 1 (อาทิตย์) เสีย สัมพันธ์ลัคนา",
+          "p": "หยิ่งไม่เข้าท่า (หยิ่งโง่ๆ) แต่มีข้อดีคือกลัวเสียหน้าจึงไม่กล้าโกง"
+        }
+      ],
+      "_note": "derive ความหมาย \"อาทิตย์ อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9010,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ ประเกษตร",
+      "c": "ดาวจันทร์ คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ ประเกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9012,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ นิจ",
+      "c": "ดาวจันทร์ คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9014,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ จุลจักร",
+      "c": "ดาวจันทร์ คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9015,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ ราชาโชค",
+      "c": "ดาวจันทร์ คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ ราชาโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9016,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ เทวีโชค",
+      "c": "ดาวจันทร์ คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9017,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ อุจจาวิลาส",
+      "c": "ดาวจันทร์ คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ อุจจาวิลาส\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9018,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ อุจจาภิมุข",
+      "c": "ดาวจันทร์ คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R011",
+        "R045",
+        "R084",
+        "R094",
+        "R095"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R011",
+          "c": "ดาวจันทร์(๒) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "กริยามารยาทนุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตแบบผู้หญิง"
+        },
+        {
+          "rid": "R045",
+          "c": "ดาว 2 ดวงอยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+          "p": "กลายเป็นอนุเกษตรทั้งคู่ ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิดแต่อาจช้ากว่าเกษตร"
+        },
+        {
+          "rid": "R084",
+          "c": "ทารกเพศหญิง และดาว 2 ไม่สัมพันธ์ลัคนา",
+          "p": "ขาดเสน่ห์ อาจเป็นทอมบอย — ควรวางลัคนาให้ดาว 2 สัมพันธ์ลัคนาก่อนเสมอ"
+        }
+      ],
+      "_note": "derive ความหมาย \"จันทร์ อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9019,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ เกษตร",
+      "c": "ดาวอังคาร คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R012",
+        "R055",
+        "R071",
+        "R096",
+        "R097"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R012",
+          "c": "ดาวอังคาร(๓) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ มีตรรกะ ทักษะช่าง"
+        },
+        {
+          "rid": "R055",
+          "c": "ตนุลัคน์คือ ๓ (อังคาร) ตกภพมรณะ และมีมฤตยู(0) สัมพันธ์",
+          "p": "น่าเป็นห่วงมากกว่าดวงเปราะทั่วไป — มีปัญหาสุขภาพตลอดชีวิต อาจเป็นปัญหาใหญ่ได้ตลอดเวลา"
+        },
+        {
+          "rid": "R071",
+          "c": "ดาว 0 สัมพันธ์ลัคนา หรือสัมพันธ์ตนุลัคน์ หรือสัมพันธ์ดาว 3",
+          "p": "วิถีชีวิตแปรปรวน ปัญหาสุขภาพและอุบัติเหตุตลอดชีวิต — ห้ามวางในตำแหน่งนี้"
+        }
+      ],
+      "_note": "derive ความหมาย \"อังคาร เกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9020,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ ประเกษตร",
+      "c": "ดาวอังคาร คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R012",
+        "R055",
+        "R071",
+        "R096",
+        "R097"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R012",
+          "c": "ดาวอังคาร(๓) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ มีตรรกะ ทักษะช่าง"
+        },
+        {
+          "rid": "R055",
+          "c": "ตนุลัคน์คือ ๓ (อังคาร) ตกภพมรณะ และมีมฤตยู(0) สัมพันธ์",
+          "p": "น่าเป็นห่วงมากกว่าดวงเปราะทั่วไป — มีปัญหาสุขภาพตลอดชีวิต อาจเป็นปัญหาใหญ่ได้ตลอดเวลา"
+        },
+        {
+          "rid": "R071",
+          "c": "ดาว 0 สัมพันธ์ลัคนา หรือสัมพันธ์ตนุลัคน์ หรือสัมพันธ์ดาว 3",
+          "p": "วิถีชีวิตแปรปรวน ปัญหาสุขภาพและอุบัติเหตุตลอดชีวิต — ห้ามวางในตำแหน่งนี้"
+        }
+      ],
+      "_note": "derive ความหมาย \"อังคาร ประเกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9024,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ จุลจักร",
+      "c": "ดาวอังคาร คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R012",
+        "R055",
+        "R071",
+        "R096",
+        "R097"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R012",
+          "c": "ดาวอังคาร(๓) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ มีตรรกะ ทักษะช่าง"
+        },
+        {
+          "rid": "R055",
+          "c": "ตนุลัคน์คือ ๓ (อังคาร) ตกภพมรณะ และมีมฤตยู(0) สัมพันธ์",
+          "p": "น่าเป็นห่วงมากกว่าดวงเปราะทั่วไป — มีปัญหาสุขภาพตลอดชีวิต อาจเป็นปัญหาใหญ่ได้ตลอดเวลา"
+        },
+        {
+          "rid": "R071",
+          "c": "ดาว 0 สัมพันธ์ลัคนา หรือสัมพันธ์ตนุลัคน์ หรือสัมพันธ์ดาว 3",
+          "p": "วิถีชีวิตแปรปรวน ปัญหาสุขภาพและอุบัติเหตุตลอดชีวิต — ห้ามวางในตำแหน่งนี้"
+        }
+      ],
+      "_note": "derive ความหมาย \"อังคาร จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9026,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ เทวีโชค",
+      "c": "ดาวอังคาร คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R012",
+        "R055",
+        "R071",
+        "R096",
+        "R097"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R012",
+          "c": "ดาวอังคาร(๓) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ มีตรรกะ ทักษะช่าง"
+        },
+        {
+          "rid": "R055",
+          "c": "ตนุลัคน์คือ ๓ (อังคาร) ตกภพมรณะ และมีมฤตยู(0) สัมพันธ์",
+          "p": "น่าเป็นห่วงมากกว่าดวงเปราะทั่วไป — มีปัญหาสุขภาพตลอดชีวิต อาจเป็นปัญหาใหญ่ได้ตลอดเวลา"
+        },
+        {
+          "rid": "R071",
+          "c": "ดาว 0 สัมพันธ์ลัคนา หรือสัมพันธ์ตนุลัคน์ หรือสัมพันธ์ดาว 3",
+          "p": "วิถีชีวิตแปรปรวน ปัญหาสุขภาพและอุบัติเหตุตลอดชีวิต — ห้ามวางในตำแหน่งนี้"
+        }
+      ],
+      "_note": "derive ความหมาย \"อังคาร เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9027,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ อุจจาวิลาส",
+      "c": "ดาวอังคาร คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R012",
+        "R055",
+        "R071",
+        "R096",
+        "R097"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R012",
+          "c": "ดาวอังคาร(๓) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ มีตรรกะ ทักษะช่าง"
+        },
+        {
+          "rid": "R055",
+          "c": "ตนุลัคน์คือ ๓ (อังคาร) ตกภพมรณะ และมีมฤตยู(0) สัมพันธ์",
+          "p": "น่าเป็นห่วงมากกว่าดวงเปราะทั่วไป — มีปัญหาสุขภาพตลอดชีวิต อาจเป็นปัญหาใหญ่ได้ตลอดเวลา"
+        },
+        {
+          "rid": "R071",
+          "c": "ดาว 0 สัมพันธ์ลัคนา หรือสัมพันธ์ตนุลัคน์ หรือสัมพันธ์ดาว 3",
+          "p": "วิถีชีวิตแปรปรวน ปัญหาสุขภาพและอุบัติเหตุตลอดชีวิต — ห้ามวางในตำแหน่งนี้"
+        }
+      ],
+      "_note": "derive ความหมาย \"อังคาร อุจจาวิลาส\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9028,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ อุจจาภิมุข",
+      "c": "ดาวอังคาร คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R012",
+        "R055",
+        "R071",
+        "R096",
+        "R097"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R012",
+          "c": "ดาวอังคาร(๓) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ขยัน แข็งกร้าว ไม่ยอมคน โผงผาง ใจร้อน กล้าหาญ มีตรรกะ ทักษะช่าง"
+        },
+        {
+          "rid": "R055",
+          "c": "ตนุลัคน์คือ ๓ (อังคาร) ตกภพมรณะ และมีมฤตยู(0) สัมพันธ์",
+          "p": "น่าเป็นห่วงมากกว่าดวงเปราะทั่วไป — มีปัญหาสุขภาพตลอดชีวิต อาจเป็นปัญหาใหญ่ได้ตลอดเวลา"
+        },
+        {
+          "rid": "R071",
+          "c": "ดาว 0 สัมพันธ์ลัคนา หรือสัมพันธ์ตนุลัคน์ หรือสัมพันธ์ดาว 3",
+          "p": "วิถีชีวิตแปรปรวน ปัญหาสุขภาพและอุบัติเหตุตลอดชีวิต — ห้ามวางในตำแหน่งนี้"
+        }
+      ],
+      "_note": "derive ความหมาย \"อังคาร อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9029,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ เกษตร",
+      "c": "ดาวพุธ คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ เกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9031,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ อุจ",
+      "c": "ดาวพุธ คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ อุจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9032,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ นิจ",
+      "c": "ดาวพุธ คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9033,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ มหาจักร",
+      "c": "ดาวพุธ คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ มหาจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9034,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ จุลจักร",
+      "c": "ดาวพุธ คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9035,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ ราชาโชค",
+      "c": "ดาวพุธ คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ ราชาโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9036,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ เทวีโชค",
+      "c": "ดาวพุธ คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9037,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ อุจจาวิลาส",
+      "c": "ดาวพุธ คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ อุจจาวิลาส\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9038,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ อุจจาภิมุข",
+      "c": "ดาวพุธ คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R013",
+        "R102",
+        "R103",
+        "R104",
+        "R105"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R013",
+          "c": "ดาวพุธ(๔) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การสื่อสาร"
+        },
+        {
+          "rid": "R102",
+          "c": "ดาว 3 + ดาว 4 คุณภาพดี สัมพันธ์ลัคนา",
+          "p": "มีเหตุผล (ตรรกะ) และความละเอียดอ่อน เป็นพื้นฐานการเรียนรู้และตัดสินใจที่ดี"
+        },
+        {
+          "rid": "R103",
+          "c": "ดาว 4 (พุธ) สัมพันธ์ลัคนา",
+          "p": "ช่างพูด พูดเก่ง — ใช้สอบลัคนาเป็นอันดับแรก"
+        }
+      ],
+      "_note": "derive ความหมาย \"พุธ อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9040,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ ประเกษตร",
+      "c": "ดาวพฤหัส คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี ประเกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9042,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ นิจ",
+      "c": "ดาวพฤหัส คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9043,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ มหาจักร",
+      "c": "ดาวพฤหัส คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี มหาจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9044,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ จุลจักร",
+      "c": "ดาวพฤหัส คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9045,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ ราชาโชค",
+      "c": "ดาวพฤหัส คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี ราชาโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9046,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ เทวีโชค",
+      "c": "ดาวพฤหัส คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9048,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ อุจจาภิมุข",
+      "c": "ดาวพฤหัส คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R014",
+        "R067",
+        "R068",
+        "R078",
+        "R079"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R014",
+          "c": "ดาวพฤหัส(๕) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีคุณธรรม ใจอ่อน เมตตา ขี้สงสาร มองโลกในแง่ดี มีสติยั้งคิดเสมอ"
+        },
+        {
+          "rid": "R067",
+          "c": "ราหู(๘) ดี + พฤหัส(๕) แรงกว่า สัมพันธ์ลัคนา",
+          "p": "ฉลาดเล่ห์เหลี่ยมมากๆแต่ไม่โกง ถูกโฉลกทั้งทางธรรมทางโลก เล่นหุ้น ปล่อยกู้ สิ่งมึนเมาดีเยี่ยม — ต้องระ"
+        },
+        {
+          "rid": "R068",
+          "c": "ดาวราหู(๘) แรง + ดาวพฤหัส(๕) กุมลัคนาด้วยกัน (ทั้งโจรทั้งพระ)",
+          "p": "มีสองขั้วในคนเดียว — ดาวใดแรงกว่าก็ออกทางนั้น พฤหัส(๕)เกษตรให้ผลช้าจึงอายุมากขึ้นถึงจะดี ช่วงต้นมักล"
+        }
+      ],
+      "_note": "derive ความหมาย \"พฤหัสบดี อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9049,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ศุกร์ คุณภาพ นิจ",
+      "c": "ดาวศุกร์ คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ศุกร์",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "6",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R015",
+        "R042",
+        "R043",
+        "R070",
+        "R082"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R015",
+          "c": "ดาวศุกร์(๖) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีทักษะศิลปะ จินตนาการ เพ้อฝัน ชอบรื่นเริง ของสวยงาม และกำหนัดความใคร่"
+        },
+        {
+          "rid": "R042",
+          "c": "ดาวเกษตร 2 ดวงอยู่ราศีตรงข้ามกัน (เล็งกัน)",
+          "p": "กลายเป็นประเกษตรทั้งคู่ — ดีก่อน ภายหลังเสื่อมถอย (กฎลบ-ลบ=บวก)"
+        },
+        {
+          "rid": "R043",
+          "c": "ดาวประเกษตร 2 ดวงเล็งกัน",
+          "p": "กลายเป็นเกษตรทั้งคู่ — ไม่ดีก่อน ภายหลังจึงดี"
+        }
+      ],
+      "_note": "derive ความหมาย \"ศุกร์ นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9050,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ศุกร์ คุณภาพ จุลจักร",
+      "c": "ดาวศุกร์ คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ศุกร์",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "6",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R015",
+        "R042",
+        "R043",
+        "R070",
+        "R082"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R015",
+          "c": "ดาวศุกร์(๖) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีทักษะศิลปะ จินตนาการ เพ้อฝัน ชอบรื่นเริง ของสวยงาม และกำหนัดความใคร่"
+        },
+        {
+          "rid": "R042",
+          "c": "ดาวเกษตร 2 ดวงอยู่ราศีตรงข้ามกัน (เล็งกัน)",
+          "p": "กลายเป็นประเกษตรทั้งคู่ — ดีก่อน ภายหลังเสื่อมถอย (กฎลบ-ลบ=บวก)"
+        },
+        {
+          "rid": "R043",
+          "c": "ดาวประเกษตร 2 ดวงเล็งกัน",
+          "p": "กลายเป็นเกษตรทั้งคู่ — ไม่ดีก่อน ภายหลังจึงดี"
+        }
+      ],
+      "_note": "derive ความหมาย \"ศุกร์ จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9053,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ศุกร์ คุณภาพ อุจจาวิลาส",
+      "c": "ดาวศุกร์ คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ศุกร์",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "6",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R015",
+        "R042",
+        "R043",
+        "R070",
+        "R082"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R015",
+          "c": "ดาวศุกร์(๖) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "มีทักษะศิลปะ จินตนาการ เพ้อฝัน ชอบรื่นเริง ของสวยงาม และกำหนัดความใคร่"
+        },
+        {
+          "rid": "R042",
+          "c": "ดาวเกษตร 2 ดวงอยู่ราศีตรงข้ามกัน (เล็งกัน)",
+          "p": "กลายเป็นประเกษตรทั้งคู่ — ดีก่อน ภายหลังเสื่อมถอย (กฎลบ-ลบ=บวก)"
+        },
+        {
+          "rid": "R043",
+          "c": "ดาวประเกษตร 2 ดวงเล็งกัน",
+          "p": "กลายเป็นเกษตรทั้งคู่ — ไม่ดีก่อน ภายหลังจึงดี"
+        }
+      ],
+      "_note": "derive ความหมาย \"ศุกร์ อุจจาวิลาส\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9057,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ อุจ",
+      "c": "ดาวเสาร์ คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ อุจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9058,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ นิจ",
+      "c": "ดาวเสาร์ คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9059,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ มหาจักร",
+      "c": "ดาวเสาร์ คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ มหาจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9060,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ จุลจักร",
+      "c": "ดาวเสาร์ คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9061,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ ราชาโชค",
+      "c": "ดาวเสาร์ คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ ราชาโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9062,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ เทวีโชค",
+      "c": "ดาวเสาร์ คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9064,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ อุจจาภิมุข",
+      "c": "ดาวเสาร์ คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R016",
+        "R080",
+        "R081",
+        "R107",
+        "R116"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R016",
+          "c": "ดาวเสาร์(๗) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "คิดมาก ไตร่ตรองรอบคอบ ทำงานเชื่องช้า อดทนสูง ทำงานหนัก เกษตรกรรม"
+        },
+        {
+          "rid": "R080",
+          "c": "ดาว 7 คุณภาพดี กุมหรือเล็งลัคนา",
+          "p": "เชื่องช้า คิดมากเกินไป — ไม่ควรวางในตำแหน่งนี้"
+        },
+        {
+          "rid": "R081",
+          "c": "ดาว 7 คุณภาพดี สัมพันธ์ลัคนา (ไม่กุม/เล็ง) วางในภพลาภะ",
+          "p": "ไตร่ตรองรอบคอบ อดทน ถูกโฉลกทำงานหนัก รู้จักใช้จ่ายเงิน — ตำแหน่งดีที่สุดสำหรับดาว 7"
+        }
+      ],
+      "_note": "derive ความหมาย \"เสาร์ อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9066,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ราหู คุณภาพ นิจ",
+      "c": "ดาวราหู คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ราหู",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "8",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R017",
+        "R056",
+        "R057"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R017",
+          "c": "ดาวราหู(๘) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ลุ่มหลงมัวเมา เล่ห์เหลี่ยม หลอกลวง กล้าเสี่ยง ชอบหุ้นหวย อบายมุข"
+        }
+      ],
+      "_note": "derive ความหมาย \"ราหู นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9067,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ราหู คุณภาพ จุลจักร",
+      "c": "ดาวราหู คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ราหู",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "8",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R017",
+        "R056",
+        "R057"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R017",
+          "c": "ดาวราหู(๘) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ลุ่มหลงมัวเมา เล่ห์เหลี่ยม หลอกลวง กล้าเสี่ยง ชอบหุ้นหวย อบายมุข"
+        }
+      ],
+      "_note": "derive ความหมาย \"ราหู จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9068,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ราหู คุณภาพ เทวีโชค",
+      "c": "ดาวราหู คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ราหู",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "8",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R017",
+        "R056",
+        "R057"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R017",
+          "c": "ดาวราหู(๘) กุมลัคนาหรือสัมพันธ์ลัคนา",
+          "p": "ลุ่มหลงมัวเมา เล่ห์เหลี่ยม หลอกลวง กล้าเสี่ยง ชอบหุ้นหวย อบายมุข"
+        }
+      ],
+      "_note": "derive ความหมาย \"ราหู เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9070,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ เกษตร",
+      "c": "ดาวเกตุ คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ เกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9071,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ ประเกษตร",
+      "c": "ดาวเกตุ คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ ประเกษตร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9072,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ อุจ",
+      "c": "ดาวเกตุ คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ อุจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9073,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ นิจ",
+      "c": "ดาวเกตุ คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ นิจ\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9074,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ มหาจักร",
+      "c": "ดาวเกตุ คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ มหาจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9075,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ จุลจักร",
+      "c": "ดาวเกตุ คุณภาพ จุลจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "จุลจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "จุลจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ จุลจักร\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9076,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ ราชาโชค",
+      "c": "ดาวเกตุ คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ ราชาโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9077,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ เทวีโชค",
+      "c": "ดาวเกตุ คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ เทวีโชค\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9078,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ อุจจาวิลาส",
+      "c": "ดาวเกตุ คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ อุจจาวิลาส\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9079,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เกตุ คุณภาพ อุจจาภิมุข",
+      "c": "ดาวเกตุ คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เกตุ",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "9",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "derivable",
+      "_reference_rules": [
+        "R005",
+        "R006",
+        "R018",
+        "R019",
+        "R086"
+      ],
+      "_reference_sample": [
+        {
+          "rid": "R005",
+          "c": "ดาวราหู(๘) และเกตุ(๙) โคจร",
+          "p": "โคจรทวนดาวอื่น คือตามเข็มนาฬิกา — ราหู เกตุ มฤตยู เป็นดาวสมมุติ ไม่มีจริง สร้างขึ้นเพื่อเพิ่มความแม่"
+        },
+        {
+          "rid": "R006",
+          "c": "ดาวเกตุ(๙) ราหู(๘) มฤตยู(0)",
+          "p": "ไม่มีตำแหน่งเกษตร ไม่เป็นดาวเจ้าเรือนในราศีใด"
+        },
+        {
+          "rid": "R018",
+          "c": "ดาวเกตุ(๙) สัมพันธ์กับดาวดี",
+          "p": "ทวีคูณให้ดียิ่งขึ้น ถ้าร่วมกับดาวดีและสัมพันธ์ถึงลัคนา = อายุยืน"
+        }
+      ],
+      "_note": "derive ความหมาย \"เกตุ อุจจาภิมุข\" จาก reference rules — ปรับ polarity ตามคุณภาพ"
+    },
+    {
+      "id": 9002,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อาทิตย์ คุณภาพ อุจ",
+      "c": "ดาวอาทิตย์ คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อาทิตย์",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "1",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R166"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9011,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ อุจ",
+      "c": "ดาวจันทร์ คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R315"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9013,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] จันทร์ คุณภาพ มหาจักร",
+      "c": "ดาวจันทร์ คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "จันทร์",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "2",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R314"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9021,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ อุจ",
+      "c": "ดาวอังคาร คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R100"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9022,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ นิจ",
+      "c": "ดาวอังคาร คุณภาพ นิจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "นิจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "นิจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R169",
+        "R182"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9023,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ มหาจักร",
+      "c": "ดาวอังคาร คุณภาพ มหาจักร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "มหาจักร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "มหาจักร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R101",
+        "R144",
+        "R331"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9025,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] อังคาร คุณภาพ ราชาโชค",
+      "c": "ดาวอังคาร คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "อังคาร",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "3",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R303"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9030,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พุธ คุณภาพ ประเกษตร",
+      "c": "ดาวพุธ คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พุธ",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "4",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R132"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9039,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ เกษตร",
+      "c": "ดาวพฤหัส คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R078",
+        "R130"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9041,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ อุจ",
+      "c": "ดาวพฤหัส คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R139",
+        "R140",
+        "R167",
+        "R184",
+        "R214",
+        "R274"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9047,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] พฤหัส คุณภาพ อุจจาวิลาส",
+      "c": "ดาวพฤหัส คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "พฤหัส",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "5",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R111",
+        "R175"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9051,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ศุกร์ คุณภาพ ราชาโชค",
+      "c": "ดาวศุกร์ คุณภาพ ราชาโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ศุกร์",
+        "ราชาโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "6",
+          "quality_required": "ราชาโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R227"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9052,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ศุกร์ คุณภาพ เทวีโชค",
+      "c": "ดาวศุกร์ คุณภาพ เทวีโชค",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ศุกร์",
+        "เทวีโชค"
+      ],
+      "conditions": [
+        {
+          "planet_id": "6",
+          "quality_required": "เทวีโชค",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R227"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9054,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ศุกร์ คุณภาพ อุจจาภิมุข",
+      "c": "ดาวศุกร์ คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ศุกร์",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "6",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R342"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9055,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ เกษตร",
+      "c": "ดาวเสาร์ คุณภาพ เกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "เกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "เกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R280"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9056,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ ประเกษตร",
+      "c": "ดาวเสาร์ คุณภาพ ประเกษตร",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "ประเกษตร"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "ประเกษตร",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R164"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9063,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] เสาร์ คุณภาพ อุจจาวิลาส",
+      "c": "ดาวเสาร์ คุณภาพ อุจจาวิลาส",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "เสาร์",
+        "อุจจาวิลาส"
+      ],
+      "conditions": [
+        {
+          "planet_id": "7",
+          "quality_required": "อุจจาวิลาส",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R136"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9065,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ราหู คุณภาพ อุจ",
+      "c": "ดาวราหู คุณภาพ อุจ",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ราหู",
+        "อุจ"
+      ],
+      "conditions": [
+        {
+          "planet_id": "8",
+          "quality_required": "อุจ",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R172",
+        "R214"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    },
+    {
+      "id": 9069,
+      "ch": "chapter_skeleton",
+      "ct": "[SKELETON] ราหู คุณภาพ อุจจาภิมุข",
+      "c": "ดาวราหู คุณภาพ อุจจาภิมุข",
+      "p": "",
+      "pr": 3,
+      "t": [
+        "ราหู",
+        "อุจจาภิมุข"
+      ],
+      "conditions": [
+        {
+          "planet_id": "8",
+          "quality_required": "อุจจาภิมุข",
+          "lagna_aspect_req": "ANY",
+          "required": true
+        }
+      ],
+      "rule_type": "TRUE_RULE",
+      "empirical_p": null,
+      "empirical_n": null,
+      "empirical_refs": [],
+      "secondary_obs": [],
+      "_skeleton": true,
+      "_generated": "2026-05-21",
+      "_priority": "duplicate",
+      "_duplicate_of": [
+        "R139",
+        "R176",
+        "R177"
+      ],
+      "_note": "ซ้ำ rule ที่มี planet+quality เดียวกัน — expert ตัดสิน: ลบ skeleton หรือ specialize"
+    }
+  ]
+}

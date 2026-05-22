@@ -62,15 +62,17 @@ Horatad เป็นแพลตฟอร์มโหราศาสตร์ไ
 2. `fill_yaml_conditions.html` — ให้ AI เติม structured conditions
 3. `dictionary_builder_v3.html` — UI สำหรับ edit/review/export
 
-## 5.2 สถานะปัจจุบัน (V3.3.0)
+## 5.2 สถานะปัจจุบัน (KB V2.3.0 / App V3.3.12)
 
 | | |
 |---|---|
 | Rules ทั้งหมด | 342 rules |
 | มี conditions[] | 284/342 (83%) |
 | Rule types | TRUE_RULE: 104, TRANSIT_RULE: 49, CASE_STUDY: 122, HOUSE_CONCEPT: 50 |
-| Empirical schema | `_empirical_schema` ใน root, sample fields ใน 2 rules |
+| Taxonomy | `rule_source` (major/minor/empirical/case_study) + `weight` — 342/342 ✅ |
+| Empirical schema | `_empirical_schema` ใน root, fields รอ JULIAN data |
 | Missing combinations | 90 planet×quality combinations ขาดกฎ (ดู `v3/kb_skeletons.json`) |
+| MISMATCH รอ review | 57 rules (conditions vs tag ไม่ตรง — รอ expert) |
 
 ## 5.3 KB Quality Tiers
 
@@ -89,13 +91,14 @@ Roadmap 5 phases (Phase 0–5+) + cross-project dependencies → **`ECOSYSTEM.md
 
 # 7. OBJECTIVES & KEY RESULTS (OKR)
 
-## Phase 1 OKR (ปัจจุบัน)
+## Phase 1 OKR (ปัจจุบัน — V3.3.12)
 | Objective | Key Result | สถานะ |
 |---|---|---|
 | KB ครบถ้วน | 342 rules, ≥80% มี conditions | ✅ 83% |
 | App พร้อมใช้ | PWA + offline + mobile | ✅ |
-| Deploy | GitHub Pages live | ✅ V3.2.7 |
-| LLM grounded | match_rules() ใช้ conditions[] | 🔲 |
+| Deploy | horatad.com (GitHub Pages) live | ✅ V3.3.12 |
+| LLM grounded | match_rules() ใช้ conditions[] | ✅ V3.2.9 |
+| Anti-hallucination | structured JSON output + M8 keyword fallback | ✅ V3.3.0–V3.3.6 |
 
 ## Phase 2 OKR
 | Objective | Key Result |
