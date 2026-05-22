@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIBLE KB Extractor — Horatad</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;background:#0f1117;color:#e0e0e0;font-size:14px;line-height:1.5}
+h1{padding:14px 20px;background:#1a1d27;border-bottom:1px solid #2a2d3a;font-size:17px;color:#fff}
+h1 small{font-size:11px;color:#555;margin-left:8px}
+.cfg{display:flex;gap:10px;padding:12px 20px;background:#13151f;border-bottom:1px solid #2a2d3a;flex-wrap:wrap;align-items:flex-end}
+.cfg label{font-size:11px;color:#888;display:block;margin-bottom:3px}
+.cfg input{background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;width:300px;font-size:12px;font-family:monospace}
+.btn{padding:7px 14px;border-radius:5px;border:none;cursor:pointer;font-size:13px;font-weight:600;transition:opacity .15s}
+.btn-run{background:#4f6ef7;color:#fff}.btn-run:hover{opacity:.85}
+.btn-stop{background:#c0392b;color:#fff}.btn-stop:hover{opacity:.85}
+.btn-dl{background:#27ae60;color:#fff}.btn-dl:hover{opacity:.85}
+.btn-reset{background:#2a2d3a;color:#e05555}.btn-reset:hover{background:#333647}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.stats{display:flex;gap:10px;padding:10px 20px;background:#13151f;border-bottom:1px solid #2a2d3a;flex-wrap:wrap}
+.scard{background:#1a1d27;border:1px solid #2a2d3a;border-radius:6px;padding:8px 12px;min-width:120px}
+.scard .name{font-size:10px;color:#666;margin-bottom:2px}
+.scard .val{font-size:20px;font-weight:700;color:#4f6ef7}
+.scard.green .val{color:#4caf87}
+.scard.yellow .val{color:#e0b04f}
+.scard.red .val{color:#e05555}
+.prog{height:3px;background:#1e2130;margin:0 20px 0}
+.prog-bar{height:3px;background:#4f6ef7;border-radius:2px;transition:width .3s;width:0}
+.log{padding:6px 20px;font-size:11px;color:#555;min-height:20px}
+.log span{color:#4f6ef7}
+.chapters{padding:10px 20px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.ch{background:#1a1d27;border:1px solid #2a2d3a;border-radius:5px;padding:7px 10px;font-size:12px;transition:border-color .2s}
+.ch.done{border-color:#2e5e3e}
+.ch.processing{border-color:#4f6ef7;animation:pulse 1s infinite}
+.ch.error{border-color:#5e2e2e}
+.ch.skip{opacity:.4}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.ch-key{color:#888;font-size:10px}
+.ch-count{color:#4caf87;font-weight:700}
+.ch-status{font-size:10px;margin-top:2px}
+.ch.done .ch-status{color:#4caf87}
+.ch.error .ch-status{color:#e05555}
+.ch.processing .ch-status{color:#4f6ef7}
+.ch.skip .ch-status{color:#555}
+.note{padding:8px 20px;font-size:11px;color:#555;border-top:1px solid #1e2130}
+</style>
+</head>
+<body>
+<h1>📖 BIBLE KB Extractor <small>Groq LLaMA 3.3 70B + Typhoon (CF Worker) — V2.4 schema</small></h1>
+
+<div class="cfg">
+  <div>
+    <label>Groq API Key <small style="color:#4caf87" id="keyStatus"></small></label>
+    <input id="keyGroq" type="password" placeholder="gsk_..." oninput="saveKey()">
+  </div>
+  <div style="display:flex;gap:6px;align-items:flex-end">
+    <button class="btn btn-run" id="btnRun" onclick="startExtraction()">▶ เริ่ม Extraction</button>
+    <button class="btn btn-stop" id="btnStop" onclick="stopExtraction()" style="display:none">⏹ หยุด</button>
+    <button class="btn btn-dl" id="btnDl" onclick="downloadResult()" disabled>⬇ ดาวน์โหลด kb_v24.json</button>
+    <button class="btn btn-reset" onclick="resetProgress()" title="ลบ progress ทั้งหมดแล้วเริ่มใหม่">↺ Reset</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="scard"><div class="name">บทที่โหลดแล้ว</div><div class="val" id="statTotal">—</div></div>
+  <div class="scard green"><div class="name">เสร็จแล้ว</div><div class="val" id="statDone">0</div></div>
+  <div class="scard"><div class="name">Rules รวม</div><div class="val" id="statRules">0</div></div>
+  <div class="scard yellow"><div class="name">ต้องตรวจสอบ</div><div class="val" id="statReview">0</div></div>
+  <div class="scard red"><div class="name">Error</div><div class="val" id="statErr">0</div></div>
+</div>
+
+<div class="prog"><div class="prog-bar" id="progBar"></div></div>
+<div class="log" id="log">กำลังโหลดบทต่างๆ...</div>
+<div class="chapters" id="chapterGrid"></div>
+<div class="note">
+  ⚠️ Typhoon ผ่าน CF Worker (ไม่ต้อง key) — ถ้า CF Worker block จะใช้ Groq เท่านั้น (confidence: groq-only)<br>
+  ✅ Progress บันทึกใน localStorage — refresh หน้าเพื่อ resume ได้<br>
+  📋 download แล้ว commit <code>v3/kb_v24.json</code> ลง repo
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const CHAPTERS_URL  = '../workers/chapter_texts.json';
+const CF_WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
+const GROQ_URL      = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_MODEL    = 'llama-3.3-70b-versatile';
+const TYPHOON_MODEL = 'typhoon-v2.5-30b-a3b-instruct';
+const MAX_TOKENS    = 4096;
+const DELAY_MS      = 1200;
+const STATE_KEY     = 'bible_kb_extract_state';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let chapters = {};
+let state    = JSON.parse(localStorage.getItem(STATE_KEY) || '{"done":{},"rules":[],"review":[]}');
+if (!state.review) state.review = [];
+let running  = false;
+
+function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
+
+// ── Extraction System Prompt ──────────────────────────────────────────────────
+const SYSTEM_PROMPT = `คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทย (สุริยยาตร์) ให้เป็น JSON
+
+## Planet IDs (อารบิก string)
+1=อาทิตย์ 2=จันทร์ 3=อังคาร 4=พุธ 5=พฤหัสบดี 6=ศุกร์ 7=เสาร์ 8=ราหู 9=เกตุ 10=มฤตยู
+ลัคนา/ตนุลัคน์ = {"type":"tanu_lagna"} | ตัวเลขไทย ๑-๑๐ → แปลงเป็นอารบิกเสมอ
+
+คู่มิตร: (1,5)(2,4)(3,6)(7,8) | คู่ศัตรู: (1,3)(2,5)(4,8)(6,7) | บาปเคราะห์: [3,7,8,10]
+
+## rule_use
+"principle"  = abstract pattern derive จากหลายกรณีรวมกัน
+"case_study" = กรณีเฉพาะ/ตัวอย่างที่ตำรายกมา (ห้ามเป็น match)
+"match"      = กฎพยากรณ์จริง มีเงื่อนไข trigger ชัดเจน
+"reference"  = นิยาม concept
+
+⚠️ ถ้าตำรายกกรณีที่ 1,2,3... → extract principle 1 ข้อ + case_study N ข้อ (อย่า copy เป็น match แยก)
+
+## Rule type
+"NATAL_ATOMIC"|"NATAL_COMBINATION"|"TRANSIT_NATAL"|"DEFINITION"|"REFERENCE"|"PRINCIPLE"
+
+## Tier
+1=ดาวเดียวอธิบายได้เอง | 2=2ดวงสร้างความหมายใหม่ | 3=3ดวงขึ้นไป
+
+## Output (JSON array เท่านั้น)
+\`\`\`json
+[{"rule_use":"match","type":"NATAL_ATOMIC","tier":1,"c":"เงื่อนไข","meaning":"ความหมาย","polarity":"+",
+  "planet_ids":[1],"contexts":["natal"],"domain":"ทั่วไป"}]
+\`\`\`
+ถ้าไม่มีกฎ: \`\`\`json\n[]\n\`\`\``;
+
+// ── Parse rules from LLM response ─────────────────────────────────────────────
+function parseRules(text) {
+  try {
+    const m = text.match(/```json\n([\s\S]+?)\n```/);
+    const r = JSON.parse(m ? m[1] : text.trim());
+    return Array.isArray(r) ? r : [];
+  } catch { return null; }
+}
+
+// ── Call Groq ─────────────────────────────────────────────────────────────────
+async function callGroq(chKey, text, key) {
+  const resp = await fetch(GROQ_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body: JSON.stringify({
+      model: GROQ_MODEL, max_tokens: MAX_TOKENS, temperature: 0.1,
+      messages: [{role:'system',content:SYSTEM_PROMPT},{role:'user',content:`บทนี้: ${chKey}\n\n${text}`}]
+    })
+  });
+  if (resp.status === 429) throw new Error('rate_limit');
+  if (!resp.ok) throw new Error('Groq HTTP '+resp.status);
+  const data = await resp.json();
+  return parseRules(data.choices[0].message.content || '');
+}
+
+// ── Call Typhoon via CF Worker ────────────────────────────────────────────────
+async function callTyphoon(chKey, text) {
+  try {
+    const resp = await fetch(CF_WORKER_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: TYPHOON_MODEL, max_tokens: MAX_TOKENS, stream: false,
+        messages: [{role:'system',content:SYSTEM_PROMPT},{role:'user',content:`บทนี้: ${chKey}\n\n${text}`}]
+      })
+    });
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    const raw = data.choices?.[0]?.message?.content || data.content?.[0]?.text || '';
+    return parseRules(raw);
+  } catch { return null; }
+}
+
+// ── Cross-validate ────────────────────────────────────────────────────────────
+function crossValidate(chKey, groq, typhoon) {
+  if (!typhoon) return { rules: (groq||[]).map(r=>({...r,confidence:'groq-only'})), review: false };
+  const g = groq?.length||0, t = typhoon?.length||0;
+  const ratio = g&&t ? Math.min(g,t)/Math.max(g,t) : 0;
+  if (ratio >= 0.5) return { rules: (groq||[]).map(r=>({...r,confidence:'validated'})), review: false };
+  return { rules: [], review: true, groq, typhoon };
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function log(msg) { document.getElementById('log').innerHTML = msg; }
+
+function updateStats() {
+  const keys = Object.keys(chapters);
+  const done  = Object.keys(state.done).length;
+  const total = Object.keys(chapters).length;
+  const rules = state.rules.length;
+  const rev   = state.review.length;
+  const errs  = Object.values(state.done).filter(v=>v==='error').length;
+  document.getElementById('statTotal').textContent = total||'—';
+  document.getElementById('statDone').textContent  = done;
+  document.getElementById('statRules').textContent = rules;
+  document.getElementById('statReview').textContent= rev;
+  document.getElementById('statErr').textContent   = errs;
+  const pct = total ? (done/total*100) : 0;
+  document.getElementById('progBar').style.width = pct+'%';
+  if (done > 0 && done === total) document.getElementById('btnDl').disabled = false;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('chapterGrid');
+  grid.innerHTML = '';
+  for (const [key, text] of Object.entries(chapters)) {
+    const s = state.done[key];
+    const cls = !s ? '' : s==='skip' ? 'skip' : s==='error' ? 'error' : s==='proc' ? 'processing' : 'done';
+    const count = typeof s === 'number' ? s+' rules' : s||'รอ';
+    const isSkip = text.length < 80;
+    grid.innerHTML += `<div class="ch ${cls}" id="ch-${key}">
+      <div class="ch-key">${key}</div>
+      <div class="ch-count" id="count-${key}">${typeof s==='number'?s:'—'}</div>
+      <div class="ch-status" id="status-${key}">${isSkip?'ข้าม (สั้นเกิน)':s==='error'?'❌ error':s==='proc'?'กำลังทำ...':typeof s==='number'?'✅ เสร็จ':'รอ'}</div>
+    </div>`;
+  }
+}
+
+function setChapterUI(key, cls, countTxt, statusTxt) {
+  const el = document.getElementById('ch-'+key);
+  if (!el) return;
+  el.className = 'ch '+cls;
+  document.getElementById('count-'+key).textContent  = countTxt;
+  document.getElementById('status-'+key).textContent = statusTxt;
+}
+
+// ── Main extraction loop ──────────────────────────────────────────────────────
+async function startExtraction() {
+  const key = document.getElementById('keyGroq').value.trim();
+  if (!key) { alert('กรุณาใส่ Groq API Key'); return; }
+
+  running = true;
+  document.getElementById('btnRun').style.display  = 'none';
+  document.getElementById('btnStop').style.display = 'inline-block';
+
+  const entries = Object.entries(chapters);
+  for (const [chKey, text] of entries) {
+    if (!running) break;
+    if (state.done[chKey] !== undefined && state.done[chKey] !== 'error') continue;
+
+    if (text.length < 80) {
+      state.done[chKey] = 'skip';
+      setChapterUI(chKey, 'skip', '—', 'ข้าม (สั้นเกิน)');
+      continue;
+    }
+
+    setChapterUI(chKey, 'processing', '...', 'กำลังทำ...');
+    log(`📖 <span>${chKey}</span> (${text.length} chars) — เรียก Groq...`);
+
+    try {
+      // Pass 1: Groq
+      let groqRules = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          groqRules = await callGroq(chKey, text, key);
+          break;
+        } catch(e) {
+          if (e.message === 'rate_limit') {
+            log(`⏳ <span>${chKey}</span> rate limit — รอ 10s...`);
+            await sleep(10000);
+          } else throw e;
+        }
+      }
+      if (groqRules === null) throw new Error('parse failed');
+
+      log(`📖 <span>${chKey}</span> Groq: ${groqRules.length} rules — ทดสอบ Typhoon...`);
+
+      // Pass 2: Typhoon (optional)
+      const typhoonRules = await callTyphoon(chKey, text);
+
+      // Cross-validate
+      const { rules, review, groq, typhoon } = crossValidate(chKey, groqRules, typhoonRules);
+
+      if (review) {
+        state.review.push({ chapter: chKey, groq_count: groq.length, typhoon_count: typhoon.length, groq, typhoon });
+        state.done[chKey] = 0;
+        setChapterUI(chKey, 'done', '⚠️', '⚠️ ตรวจสอบ');
+        log(`⚠️ <span>${chKey}</span> Groq/Typhoon ต่างกัน — flag review`);
+      } else {
+        const tagged = rules.map(r => ({ ch: chKey, ...r }));
+        state.rules.push(...tagged);
+        state.done[chKey] = rules.length;
+        setChapterUI(chKey, 'done', rules.length, `✅ ${rules.length} rules`);
+        log(`✅ <span>${chKey}</span> — ${rules.length} rules (${rules[0]?.confidence||''})`);
+      }
+
+      saveState();
+      updateStats();
+
+    } catch(err) {
+      state.done[chKey] = 'error';
+      setChapterUI(chKey, 'error', 'err', '❌ '+err.message.slice(0,30));
+      log(`❌ <span>${chKey}</span> — ${err.message}`);
+      saveState();
+      updateStats();
+    }
+
+    await sleep(DELAY_MS);
+  }
+
+  running = false;
+  document.getElementById('btnRun').style.display  = 'inline-block';
+  document.getElementById('btnStop').style.display = 'none';
+
+  const done = Object.keys(state.done).length;
+  const total = Object.keys(chapters).length;
+  if (done >= total) {
+    log(`🎉 เสร็จทั้งหมด — ${state.rules.length} rules | กด ⬇ ดาวน์โหลด`);
+    document.getElementById('btnDl').disabled = false;
+  } else {
+    log(`⏹ หยุดแล้ว — กด ▶ เพื่อ resume`);
+  }
+}
+
+function stopExtraction() {
+  running = false;
+  document.getElementById('btnRun').style.display  = 'inline-block';
+  document.getElementById('btnStop').style.display = 'none';
+  log('⏹ หยุดแล้ว — กด ▶ เพื่อ resume');
+}
+
+// ── Download ──────────────────────────────────────────────────────────────────
+function downloadResult() {
+  const allRules = state.rules.map((r, i) => ({
+    id: `R${String(i+1).padStart(3,'0')}`,
+    ...r
+  }));
+  const kb = {
+    version: '2.4.0',
+    updated: new Date().toISOString().slice(0,10),
+    total: allRules.length,
+    engine_min_version: '3.1.0',
+    source: 'extracted via browser — Groq+Typhoon pipeline',
+    rules: allRules
+  };
+  const blob = new Blob([JSON.stringify(kb, null, 2)], {type:'application/json'});
+  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:'kb_v24.json'});
+  a.click();
+  URL.revokeObjectURL(a.href);
+
+  if (state.review.length > 0) {
+    const b2 = new Blob([JSON.stringify(state.review, null, 2)], {type:'application/json'});
+    const a2 = Object.assign(document.createElement('a'), {href:URL.createObjectURL(b2), download:'kb_v24_review.json'});
+    setTimeout(() => { a2.click(); URL.revokeObjectURL(a2.href); }, 500);
+  }
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+function resetProgress() {
+  if (!confirm('ลบ progress ทั้งหมดแล้วเริ่มใหม่?')) return;
+  state = { done: {}, rules: [], review: [] };
+  saveState();
+  document.getElementById('btnDl').disabled = true;
+  renderGrid();
+  updateStats();
+  log('↺ Reset แล้ว — กด ▶ เพื่อเริ่ม');
+}
+
+// ── Key storage ───────────────────────────────────────────────────────────────
+function saveKey() {
+  const k = document.getElementById('keyGroq').value.trim();
+  localStorage.setItem('bible_groq_key', k);
+  document.getElementById('keyStatus').textContent = k ? '✅ saved' : '';
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function init() {
+  // Restore key
+  const savedKey = localStorage.getItem('bible_groq_key');
+  if (savedKey) {
+    document.getElementById('keyGroq').value = savedKey;
+    document.getElementById('keyStatus').textContent = '✅ saved';
+  }
+
+  // Load chapters
+  try {
+    log('กำลังโหลด chapter_texts.json...');
+    const resp = await fetch(CHAPTERS_URL);
+    if (!resp.ok) throw new Error('HTTP '+resp.status);
+    chapters = await resp.json();
+    log(`✅ โหลด ${Object.keys(chapters).length} บทแล้ว — กด ▶ เพื่อเริ่ม`);
+  } catch(e) {
+    log('❌ โหลด chapters ไม่ได้: '+e.message);
+    return;
+  }
+
+  renderGrid();
+  updateStats();
+}
+
+init();
+</script>
+</body>
+</html>
