@@ -1,9 +1,9 @@
-// HORATAD:SW:3.3.14
-// Version 3.3.14 | 2026-05-21
+// HORATAD:SW:3.3.15
+// Version 3.3.15 | 2026-05-22
 // Service Worker — cache-first for same-origin static assets, network fallback.
 // Cross-origin requests (fonts, promptpay.io QR) bypass cache → live always.
 // version.json bypass cache → ต้อง network สด เพื่อ version check
-const CACHE_NAME='horatad-v3.3.14';
+const CACHE_NAME='horatad-v3.3.15';
 const V=CACHE_NAME.split('-').pop();
 const CORE_ASSETS=[
   './',

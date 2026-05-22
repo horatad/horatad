@@ -1,4 +1,4 @@
-// Version 3.0.9 | 2026-05-21
+// Version 3.0.10 | 2026-05-22
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -87,12 +87,28 @@ function _refreshSpeakBtn() {
   if (!btn) return;
   if (nokHasThaiVoice()) {
     btn.disabled = false;
+    btn.classList.remove('no-voice');
     btn.title = '';
   } else {
-    btn.disabled = true;
-    btn.title = 'เครื่องนี้ไม่มีเสียงไทย — ติดตั้งใน Settings ของเครื่องก่อน';
+    btn.disabled = false;
+    btn.classList.add('no-voice');
+    btn.title = 'แตะเพื่อดูวิธีเปิดเสียงภาษาไทย';
   }
 }
+
+function _showTTSGuide() {
+  const bd = document.getElementById('v3-tts-guide-backdrop');
+  const md = document.getElementById('v3-tts-guide');
+  if (bd) bd.classList.remove('hidden');
+  if (md) md.classList.remove('hidden');
+}
+
+window.closeTTSGuide = function() {
+  const bd = document.getElementById('v3-tts-guide-backdrop');
+  const md = document.getElementById('v3-tts-guide');
+  if (bd) bd.classList.add('hidden');
+  if (md) md.classList.add('hidden');
+};
 
 // ── Panel helpers ────────────────────────────────────────────
 function v3TogglePanel(id) {
@@ -319,7 +335,7 @@ function v3Speak() {
   }
 
   if (!nokHasThaiVoice()) {
-    _showToastV3('เครื่องนี้ไม่มีเสียงไทย — ติดตั้งใน Settings ก่อน');
+    _showTTSGuide();
     return;
   }
 
