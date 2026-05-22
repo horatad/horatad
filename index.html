@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- HORATAD:INDEX:3.3.16 -->
-<!-- Version 3.3.15 | 2026-05-22 -->
+<!-- Version 3.3.16 | 2026-05-22 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -90,6 +90,23 @@ canvas{max-width:100%;height:auto}
 .v3-mode-toggle{display:flex;gap:4px;padding:8px 0 4px;}
 .v3-mode-btn{flex:1;padding:5px 4px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#64748b;font-size:.75rem;cursor:pointer;}
 .v3-mode-btn.on{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd;font-weight:600;}
+/* 3-tank memory system */
+.tank-tabs{display:flex;gap:4px;margin-bottom:8px;}
+.tank-tab{flex:1;background:#21262d;border:1px solid #30363d;border-radius:6px;color:#8b949e;padding:6px 2px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;transition:background .15s;}
+.tank-tab-active{background:#1a3c6b;border-color:#388bfd;color:#79c0ff;}
+.tank-cnt{font-size:10px;margin-left:2px;opacity:.75;}
+.tank-item-actions{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:4px;}
+.tank-transfer-btn{background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
+.tank-transfer-btn:hover{background:#1f4c8b;}
+.julian-badge{font-size:10px;color:#8b949e;margin-left:4px;}
+.julian-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
+.julian-tag-btn{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
+.julian-tag-btn.active{background:#1f4f2a;border-color:#3fb950;color:#3fb950;}
+.julian-load-area{text-align:center;padding:10px 0;}
+.julian-load-btn{background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:8px;padding:9px 16px;font-size:13px;cursor:pointer;font-family:'Sarabun',sans-serif;}
+.julian-load-hint{font-size:11px;color:#586069;margin-top:4px;}
+.julian-more{background:#21262d;color:#c9d1d9;border:1px solid #30363d;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:'Sarabun',sans-serif;}
+.julian-item .tank-transfer-btn{margin-top:4px;}
 </style>
 </head>
 <body>
@@ -445,24 +462,48 @@ canvas{max-width:100%;height:auto}
 <!-- ── Memory popup ──────────────────────────────────────── -->
 <div id="memory-backdrop" class="memory-backdrop hidden" onclick="closeMemory()"></div>
 <div id="memory-modal" class="memory-modal hidden">
-  <div class="memory-header">
-    <div class="memory-title">เลือกจากความทรงจำ</div>
-    <button id="memory-sort-btn" class="memory-sort-btn" onclick="cycleMemorySort()">🕐 ล่าสุด</button>
+  <div class="tank-tabs">
+    <button id="tank-tab-private" class="tank-tab tank-tab-active" onclick="switchTank('private')">👤 ส่วนตัว<span id="tank-cnt-private" class="tank-cnt"></span></button>
+    <button id="tank-tab-qr" class="tank-tab" onclick="switchTank('qr')">📷 QR<span id="tank-cnt-qr" class="tank-cnt"></span></button>
+    <button id="tank-tab-julian" class="tank-tab" onclick="switchTank('julian')">🌐 JULIAN</button>
+  </div>
+  <div class="memory-header" id="tank-sort-bar">
+    <div class="memory-title" id="memory-title-text">เลือกจากความทรงจำ</div>
+    <button id="memory-sort-btn" class="memory-sort-btn" onclick="cycleMemorySort()">📅 ใหม่→เก่า</button>
   </div>
   <input id="memory-search" class="memory-search" placeholder="ค้นหาชื่อ..." autocomplete="off">
+  <div id="julian-tag-row" class="julian-tag-row hidden"></div>
+  <div id="julian-load-area" class="julian-load-area hidden">
+    <button onclick="loadJulian()" class="julian-load-btn">📥 โหลดข้อมูล JULIAN</button>
+    <div class="julian-load-hint">41,079 รายการ · โหลดครั้งแรก ~5 วินาที</div>
+  </div>
   <div id="memory-list" class="memory-list"></div>
-  <div class="memory-actions">
+  <div id="julian-more-btn" class="hidden" style="text-align:center;padding:6px 0">
+    <button onclick="julianLoadMore()" class="julian-more">แสดงเพิ่ม 50</button>
+  </div>
+  <div id="mem-actions-private" class="memory-actions">
     <button onclick="exportMemory()" class="memory-action-btn">📤 Export</button>
-    <button onclick="_openImportChoice()" class="memory-action-btn">📥 Import</button>
+    <button onclick="document.getElementById('memory-import-input').click()" class="memory-action-btn">📥 Import ไฟล์</button>
     <button onclick="confirmClearMemory()" class="memory-action-btn memory-action-danger">🗑️ ล้าง</button>
   </div>
-  <div id="import-choice" class="import-choice hidden">
-    <button onclick="_importFromJulian()" class="import-choice-btn">🌐 ข้อมูลสาธารณะ (JULIAN)</button>
-    <button onclick="document.getElementById('memory-import-input').click()" class="import-choice-btn">📁 ข้อมูลส่วนตัว (ไฟล์)</button>
-    <button onclick="_closeImportChoice()" class="import-choice-cancel">ยกเลิก</button>
+  <div id="mem-actions-qr" class="memory-actions hidden">
+    <button onclick="confirmClearTank('qr')" class="memory-action-btn memory-action-danger">🗑️ ล้าง QR ทั้งหมด</button>
   </div>
+  <div id="mem-actions-julian" class="hidden"></div>
   <input id="memory-import-input" type="file" accept=".json,application/json" style="display:none" onchange="importMemory(event)">
   <button onclick="closeMemory()" class="memory-close">ปิด</button>
+</div>
+
+<!-- ── Dedup confirm dialog ───────────────────────────────── -->
+<div id="dedup-backdrop" class="memory-backdrop hidden"></div>
+<div id="dedup-dialog" class="memory-modal hidden">
+  <div class="memory-title">⚠️ พบรายการซ้ำ</div>
+  <div id="dedup-body" style="font-family:'Sarabun','Noto Sans Thai',sans-serif;font-size:13px;color:#c9d1d9;line-height:1.7;margin-bottom:12px"></div>
+  <div style="display:flex;gap:8px">
+    <button onclick="_dedupReplace()" style="flex:1;background:#1a6b3c;color:#fff;border:none;border-radius:6px;padding:9px;font-size:13px;cursor:pointer;font-family:inherit">แทนที่</button>
+    <button onclick="_dedupSkip()" style="flex:1;background:#3d444c;color:#c9d1d9;border:none;border-radius:6px;padding:9px;font-size:13px;cursor:pointer;font-family:inherit">ข้ามไป</button>
+  </div>
+  <button onclick="_dedupCancel()" class="memory-close" style="margin-top:8px">ยกเลิก</button>
 </div>
 
 <!-- ── Events popup ──────────────────────────────────────── -->

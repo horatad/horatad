@@ -2114,32 +2114,64 @@ function _editMemory(i){
 }
 function _confirmDeleteMemory(i){
   const m=_memCache[i];if(!m)return;
-  _showConfirm('ลบรายการ',`ลบ "${m.name}" จากความทรงจำ?`,()=>{
-    // V2.1.9: key-based delete (safe after sort)
-    const key=v=>`${v.name}|${v.d}/${v.m}/${v.y_be}|${v.t}|${v.prov}`;
-    const mk=key(m);
-    const mem=(_loadJSON(MEM_KEY)||[]).filter(v=>key(v)!==mk);
-    _saveJSON(MEM_KEY,mem);
-    _renderMemory(document.getElementById('memory-search')?.value||'');
+  const tankKey=_activeTank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY;
+  _showConfirm('ลบรายการ',`ลบ "${m.name}" ?`,()=>{
+    const mk=_tankKey(m);
+    const arr=_tankLoad(tankKey).filter(v=>_tankKey(v)!==mk);
+    _tankSave(tankKey,arr);
+    _updateTankCounts();
+    _renderTank(document.getElementById('memory-search')?.value||'');
   });
 }
 function confirmClearMemory(){
-  _showConfirm('ล้างความทรงจำทั้งหมด','ลบทุกรายการ? ไม่สามารถกู้คืนได้',()=>{
-    _saveJSON(MEM_KEY,[]);
-    _renderMemory('');
+  _showConfirm('ล้างความทรงจำทั้งหมด','ลบทุกรายการใน ส่วนตัว? ไม่สามารถกู้คืนได้',()=>{
+    _tankSave(TANK_PRIVATE_KEY,[]);
+    _updateTankCounts();
+    _renderTank('');
   });
 }
 function exportMemory(){
-  const mem=_loadJSON(MEM_KEY)||[];
-  const data={version:'2.1',exportedAt:Date.now(),memories:mem};
+  const priv=_tankLoad(TANK_PRIVATE_KEY);
+  const qr=_tankLoad(TANK_QR_KEY);
+  const data={version:'3.0',exportedAt:Date.now(),private:priv,qr,julian_note:'JULIAN ไม่ export — โหลดจาก GitHub ได้เสมอ'};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  const ts=new Date().toISOString().slice(0,10);
-  a.href=url;a.download=`horatad_memory_${ts}.json`;
+  a.href=url;a.download=`horatad_backup_${new Date().toISOString().slice(0,10)}.json`;
   document.body.appendChild(a);a.click();
   document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function importMemory(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      let imported=Array.isArray(data)?data
+        :Array.isArray(data.private)?data.private
+        :Array.isArray(data.memories)?data.memories:null;
+      if(!imported){_showToast('รูปแบบไฟล์ไม่ถูกต้อง',true);return;}
+      const valid=imported.filter(m=>m&&m.name&&m.d&&m.m&&m.y_be);
+      if(!valid.length){_showToast('ไม่พบรายการที่ถูกต้องในไฟล์',true);return;}
+      const existing=_tankLoad(TANK_PRIVATE_KEY);
+      const map=new Map();
+      for(const m of existing)map.set(_tankKey(m),m);
+      let added=0;
+      for(const m of valid){
+        const k=_tankKey(m);
+        const ex=map.get(k);
+        if(!ex||(m.savedAt||0)>(ex.savedAt||0)){map.set(k,m);if(!ex)added++;}
+      }
+      const merged=[...map.values()].sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,TANK_PRIVATE_MAX);
+      _tankSave(TANK_PRIVATE_KEY,merged);
+      _updateTankCounts();
+      _renderTank(document.getElementById('memory-search')?.value||'');
+      _showToast(`นำเข้าสำเร็จ ${added} รายการใหม่ · รวม ${merged.length} รายการ`);
+    }catch(err){_showToast('ไม่สามารถอ่านไฟล์ได้',true);}
+  };
+  reader.readAsText(file);
+  event.target.value='';
 }
 
 // ── Events (เหตุการณ์จร) ─────────────────────────────────
@@ -2309,8 +2341,8 @@ function _updateNavHeader(){
     }
     info.textContent=`${name} · ${d}/${m}/${y}${posStr}`;
   }else{
-    // ดวงใน: แสดง natal1 + ตำแหน่งใน mem
-    const mem=_loadJSON(MEM_KEY)||[];
+    // ดวงใน: แสดง natal1 + ตำแหน่งใน tank private
+    const mem=_tankLoad(TANK_PRIVATE_KEY);
     const name=natal1.name||'ไม่ระบุ';
     const d=natal1.d,m=natal1.m,y=natal1.y_be;
     let posStr='';
@@ -3106,11 +3138,18 @@ async function _doQRImportFromText(text){
   }else{
     _showToast('⚠️ QR รุ่นเก่า — รับไว้แต่ไม่ได้ยืนยัน');
   }
+  // บันทึกลง QR tank
+  const qrRec={name:data.name,gender:data.gender,d:data.d,m:data.m,y_be:data.y_be,t:data.t,prov:data.prov,lat:data.lat,lng:data.lng,savedAt:Date.now(),groups:[]};
+  const qrList=_tankLoad(TANK_QR_KEY);
+  if(!qrList.some(r=>_tankKey(r)===_tankKey(qrRec))){
+    qrList.unshift(qrRec);
+    _tankSave(TANK_QR_KEY,qrList);
+  }
   _closeQRImportPopup();
   _fillFormFromImport(data);
   switchTab(0);
   calculateChart1();
-  if(data._ver==='H2')_showToast(`นำเข้า "${data.name}" สำเร็จ ✓`);
+  if(data._ver==='H2')_showToast(`นำเข้า "${data.name}" สำเร็จ ✓ · บันทึกใน QR tab`);
 }
 async function _doQRImport(){
   const ta=document.getElementById('qr-import-textarea');
@@ -3403,12 +3442,12 @@ function _copyInterpretation(){
 function _renderQuickMemory(){
   const el=document.getElementById('quick-memory-chips');
   if(!el)return;
-  const mem=(_loadJSON(MEM_KEY)||[]).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,5);
+  const mem=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,5);
   el.innerHTML=mem.map((m,i)=>`<button class="qm-chip" onclick="_quickLoad(${i})">${_escHtml(m.name||'—')}</button>`).join('');
 }
 function _quickLoad(i){
   _editingMemKey=null;_editingMemSection=null;
-  const mem=(_loadJSON(MEM_KEY)||[]).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+  const mem=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
   const m=mem[i];if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   _setField('name-1',m.name);_setField('gender1',m.gender||'');_setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
@@ -3498,7 +3537,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // memory search
   document.getElementById('memory-search')?.addEventListener('input',e=>{
-    _renderMemory(e.target.value);
+    _renderTank(e.target.value);
   });
 
   // event list click + long-press delete delegation
