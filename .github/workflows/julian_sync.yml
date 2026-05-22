@@ -1,8 +1,9 @@
 name: JULIAN Data Sync
 
-# รันทุกคืน 02:00 UTC — อิสระ ไม่ต้องพึ่ง Claude หรือ session ใด
+# รันทุก 6 ชั่วโมง — อิสระ ไม่ต้องพึ่ง Claude หรือ session ใด
 # หยุดอัตโนมัติเมื่อถึง TARGET_RECORDS ใน julian_config.mjs
-# D1 import ข้ามถ้า CF_API_TOKEN ยังไม่ได้ตั้ง (JSONL เก็บใน repo รอ import ทีหลัง)
+# Storage หลัก: GitHub (data/julian_all.json ใน repo + GitHub Release)
+# CF D1: optional — ใช้สำหรับ enrichment เท่านั้น ไม่ใช่ data path หลัก
 
 on:
   schedule:
@@ -61,12 +62,9 @@ jobs:
         id: scrape
         run: node workers/julian_scraper.mjs
 
-      # ─── Import to CF D1 (ข้ามถ้ายังไม่มี secret) ────────────
+      # ─── Import to CF D1 — ซ่อนไว้ (Private data enrichment รอ CF setup) ──
       - name: Import to CF D1
-        if: |
-          steps.scrape.outputs.status == 'ok' &&
-          steps.scrape.outputs.out_file != '' &&
-          env.CLOUDFLARE_API_TOKEN != ''
+        if: false  # disabled — เปิดเมื่อตั้ง CF_API_TOKEN + CF_ACCOUNT_ID secrets แล้ว
         run: |
           npm install -g wrangler@4 --silent
           echo "wrangler version: $(wrangler --version)"
@@ -116,11 +114,9 @@ jobs:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
-      # ─── Astrotheme enrichment (เพิ่ม time_utc + lat/lng) ────────────────
+      # ─── Astrotheme enrichment — ซ่อนไว้ (เติม time_utc + lat/lng ผ่าน D1) ──
       - name: Astrotheme enrichment
-        if: |
-          steps.scrape.outputs.status == 'ok' &&
-          env.CLOUDFLARE_API_TOKEN != ''
+        if: false  # disabled — ต้องมี CF D1 ก่อน
         run: |
           echo "── Query records without time_utc ──"
           wrangler d1 execute julian \
@@ -152,11 +148,9 @@ jobs:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
-      # ─── Export D1 → GitHub Release (HORATAD ดาวน์โหลดจากที่นี่) ────────
-      - name: Export to GitHub Release
-        if: |
-          steps.scrape.outputs.status == 'ok' &&
-          env.CLOUDFLARE_API_TOKEN != ''
+      # ─── Export D1 → GitHub Release — ซ่อนไว้ (ใช้เมื่อมี CF D1) ──────────
+      - name: Export D1 to GitHub Release
+        if: false  # disabled — แทนที่ด้วย "Upload to GitHub Release" ข้างล่าง
         run: |
           echo "── Export internet table from D1 ──"
           wrangler d1 execute julian \
@@ -169,21 +163,11 @@ jobs:
             require('fs').writeFileSync('/tmp/julian_all.json', JSON.stringify(records));
             console.log('Export: ' + records.length + ' records');
           "
-          echo "── Upload to GitHub Release (overwrite) ──"
           gh release create julian-data \
             --title 'JULIAN Database' \
             --notes 'Auto-updated every 6 hours by julian_sync workflow' \
             --latest 2>/dev/null || true
           gh release upload julian-data /tmp/julian_all.json --clobber
-          echo "── Commit to repo (for CORS-friendly access via raw.githubusercontent.com) ──"
-          mkdir -p data
-          cp /tmp/julian_all.json data/julian_all.json
-          git config user.name  "JULIAN Bot"
-          git config user.email "julian-bot@horatad.com"
-          git add data/julian_all.json
-          git commit -m "JULIAN data: ${{ steps.scrape.outputs.total }} records [skip ci]" || echo "No data change"
-          git push origin HEAD:main
-          echo "Release updated: julian-data/julian_all.json (${{ steps.scrape.outputs.total }} total records)"
         env:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
@@ -225,6 +209,20 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
 
+      # ─── Upload merged data → GitHub Release (primary public storage) ──────
+      - name: Upload to GitHub Release
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          gh release create julian-data \
+            --title 'JULIAN Database' \
+            --notes 'Auto-updated every 6 hours by julian_sync workflow' \
+            --latest 2>/dev/null || true
+          gh release upload julian-data data/julian_all.json --clobber
+          TOTAL=$(node -e "try{const d=JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));console.log(d.length)}catch(e){console.log(0)}")
+          echo "Release updated: ${TOTAL} records | tag: julian-data"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # ─── Disable workflow เมื่อ target ถึง หรือ queries หมด ────
       - name: Disable when done
         if: |
@@ -257,5 +255,5 @@ jobs:
           echo "## JULIAN Sync Summary" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ steps.scrape.outputs.status }}" >> $GITHUB_STEP_SUMMARY
           echo "- Records this run: ${{ steps.scrape.outputs.record_count || 0 }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Total: ${{ steps.scrape.outputs.total || '?' }}/500" >> $GITHUB_STEP_SUMMARY
-          echo "- D1 import: ${{ env.CLOUDFLARE_API_TOKEN != '' && 'yes' || 'skipped (no token)' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Total: ${{ steps.scrape.outputs.total || '?' }}/50000" >> $GITHUB_STEP_SUMMARY
+          echo "- Storage: data/julian_all.json (repo) + GitHub Release julian-data" >> $GITHUB_STEP_SUMMARY
