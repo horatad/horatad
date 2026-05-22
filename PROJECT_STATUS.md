@@ -5,27 +5,34 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.14 | **URL:** horatad.com
+**Version:** V3.3.17 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
-- M3+M8 fallback chain ครบ: Typhoon fail → throw → compose_local_prediction()
-- Capture: QR bundle local ✅ | toast บอก location ✅ (V3.3.11)
-- JULIAN import: ✅ data/julian_all.json มีใน repo (31,031 records) | empty message user-friendly ✅ (V3.3.12)
-- 🆕 **NOK voice integration**: ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab (V3.3.14)
+- 3-tank memory: Private / QR / JULIAN ✅ (V3.3.16)
+- JULIAN tree filter 2-ชั้น L1/L2 ✅ | window.searchAllTanks() API ✅ (V3.3.16)
+- Memory modal UX: search inline + sort type/dir buttons ✅ | scroll restore ✅ (V3.3.17)
+- 🆕 **Chart redesign spec M1-M6** ออกแบบครบแล้ว — รอ implement (V3.3.17)
+- ⚠️ btn-outer (toggle ดวงนอก/จร) อยู่ใน hidden container — ไม่มีผลกับ user จริง — ต้อง fix M2
 
 ### Next (Claude ทำได้)
-(ไม่มี — รอ user actions ทั้งหมด)
+- [ ] **M1** — เพิ่ม state vars ใหม่ (_compareMode, _outerDisplay, _transitCursor, _transitUnit)
+- [ ] **M2+fix** — chart-nav-header T1/T2 buttons + ย้าย combined button ออกจาก hidden container
+- [ ] **M3** — transit unit popup + planet sign-change algorithm
+- [ ] **M4** — rename natal1→natal / natal2→synastry/eventChart/transit (HIGH RISK)
+- [ ] **M5** — eventChart full support + buildCompareReport unified
+- [ ] **M6** — localStorage persistence ของ cursor states
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.14 บนมือถือ — **NOK ปุ่มฟังคำพยากรณ์** (iOS Kanya + Android Google TH)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.12 บนมือถือ — capture QR, toast location, about page full-screen, JULIAN download message
+- [ ] [ทดลองใช้] ทดสอบ V3.3.17 บนมือถือ — memory modal UX ใหม่ + sort buttons
+- [ ] [ทดลองใช้] ทดสอบ V3.3.16 — 3-tank system + JULIAN tree filter
+- [ ] [ทดลองใช้] ทดสอบ NOK TTS guide บน Android Chrome
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260522_v1.md`
+`handoffs/HORATAD_20260522_v2.md`
 
 ---
 
@@ -154,7 +161,7 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.14 | script.js, v3/*, index.html | 🟡 Pre-launch |
+| Horatad PWA | HORATAD V3.3.17 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 pending |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
@@ -169,4 +176,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.14 | NOK Phase 1 deployed (ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab) | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.17 | 3-tank memory + JULIAN tree filter + memory modal UX redesign | Chart redesign spec M1-M6 ออกแบบครบ รอ implement | handoffs/HORATAD_20260522_v2.md*
