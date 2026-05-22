@@ -63,15 +63,20 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 
 ### สถานะ
-- Schema: ✅ | JD: ✅ | Records: **41,079/50,000** (82% ของ target) | Queries: **68/137 เสร็จ** (~50%)
-- Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
+- Schema: ✅ | JD: ✅ | Records: **41,079/100,000** (41% — target ขยายจาก 50K → 100K)
+- Queries: **68/140 เสร็จ** (~49%) — เพิ่ม 3 category: musicians + actors + writers
+- Automation: ✅ 140 queries | cron ทุก 6 ชม. | MAX_PER_RUN 500→1000
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
-- Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
+- Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE)
 - **Strict data validation** (V2 — 2026-05-22):
-  - SPARQL fictional filter ทุก 137 queries (กัน Ellen Ripley, SHODAN, ฯลฯ)
+  - SPARQL fictional filter ทุก 140 queries (กัน Ellen Ripley, SHODAN, ฯลฯ)
   - Astrotheme parser: context-aware + cross-validate + blacklist + cluster detection
   - Audit script `workers/julian_audit.mjs` รันทุก workflow → drop bad time_utc
-  - **Audit ครั้งแรก: drop 398/399 bad time_utc** (เหลือ 1 legitimate) — root cause: scraper clock leak
+  - Audit ครั้งแรก: drop 398/399 bad time_utc (เหลือ 1 legitimate)
+- **Data loss protection** (V3 — 2026-05-22):
+  - Sanity check (drop > 5% → workflow abort)
+  - Milestone backup: `backup/julian-data-{10,25,50,75,100}k` auto branch
+  - 3 layers: git history + GitHub Release + backup branches
 - Tiers: 3,166 tier-1 + 37,913 tier-2
 
 ### Next (Claude ทำได้)
@@ -81,7 +86,7 @@
 (ไม่มี — automation รันเองได้ทั้งหมด)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260522_v3.md`
+`handoffs/JULIAN_20260522_v4.md`
 
 ---
 
@@ -161,7 +166,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD V3.3.14 | script.js, v3/*, index.html | 🟡 Pre-launch |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN 41,079/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Empirical DB | JULIAN 41,079/100,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |

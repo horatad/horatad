@@ -79,8 +79,18 @@ for (let y = 1700; y < 2100; y += 5) ERA_SERIES.push(eraQuery(y, y + 5));
 export const CONFIG = {
 
   // ── Target ────────────────────────────────────────────────────
-  TARGET_RECORDS: 50000,    // เพดานสูงสุด (หยุดก่อนถ้า queries หมด)
-  MAX_PER_RUN: 500,         // เพดาน records ต่อ 1 query ใน run เดียว
+  // Optimum point analysis (BIBLE rule statistical power):
+  //   50K:  avg 150 records/rule = good baseline
+  //   100K: avg 300 records/rule = excellent — sweet spot (V/T ratio สูงสุด)
+  //   200K: avg 600/rule = overkill, marginal return drop sharply
+  TARGET_RECORDS: 100000,   // expand จาก 50K → 100K (Phase 2)
+  MAX_PER_RUN: 1000,        // เพดาน records ต่อ 1 query ใน run เดียว (เพิ่ม 500→1000)
+
+  // Milestone-based safety checkpoints
+  MILESTONES: [10000, 25000, 50000, 75000, 100000],
+
+  // Data loss protection: ถ้า commit ใหม่ลด records > THRESHOLD% → abort
+  SANITY_CHECK_DROP_PCT: 5,
 
   // ── Rate Limits ───────────────────────────────────────────────
   WIKIDATA_DELAY_MS: 1500,      // หน่วงระหว่าง queries (礼儀 polite gap)
@@ -360,6 +370,65 @@ export const CONFIG = {
           SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
         } LIMIT 500`,
     },
+    // ── Phase 2 expansion: ขยาย dataset 50K → 100K ────────────────
+    {
+      id: 'global_musicians',
+      label: 'นักดนตรีระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P106 ?occ.
+          VALUES ?occ { wd:Q639669 wd:Q177220 wd:Q488205 wd:Q36834 }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 1000`,
+    },
+    {
+      id: 'global_actors',
+      label: 'นักแสดงระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P106 ?occ.
+          VALUES ?occ { wd:Q33999 wd:Q10800557 wd:Q10798782 }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 1000`,
+    },
+    {
+      id: 'global_writers',
+      label: 'นักเขียน/นักหนังสือพิมพ์ระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P106 ?occ.
+          VALUES ?occ { wd:Q36180 wd:Q1930187 wd:Q49757 wd:Q6625963 }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 1000`,
+    },
+
     // ── Astrotheme series: P3447 — มี path ตรง → เวลาเกิดแม่นยำสูง ─────────
     ...ASTROTHEME_SERIES,
 

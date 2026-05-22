@@ -93,6 +93,23 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
+      # ─── Data loss protection: sanity check ────────────────────
+      # ถ้า records ลด > SANITY_CHECK_DROP_PCT% → abort workflow
+      - name: Sanity check (data loss protection)
+        if: steps.scrape.outputs.status == 'ok'
+        run: node workers/julian_backup.mjs sanity
+
+      # ─── Milestone backup branch ───────────────────────────────
+      # ข้าม 25K/50K/75K/100K → สร้าง branch backup/julian-data-NK
+      - name: Milestone backup
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          BRANCH=$(node workers/julian_backup.mjs milestone)
+          if [ -n "$BRANCH" ]; then
+            echo "Creating milestone backup: $BRANCH"
+            git push origin HEAD:refs/heads/$BRANCH || echo "Backup branch already exists"
+          fi
+
       # ─── Astrotheme enrichment — อ่าน data ที่ commit แล้ว ──────────────────
       # รันหลัง Commit progress → ได้ enrich records จาก batch นี้ทันที
       - name: Astrotheme enrichment
