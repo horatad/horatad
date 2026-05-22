@@ -14,6 +14,7 @@ import {
   PLANET_NAMES_TH,
   ZODIAC_TH,
   KASET_MAP,
+  count_evil_lagna_aspects,
 } from './engine.js';
 
 // ── Constants ─────────────────────────────────────────────────────────────
@@ -337,27 +338,100 @@ export function get_rule_domain(rule, natal_payload){
 }
 
 /**
- * compose_local_prediction(matched_rules, natal_payload?)
+ * evaluate_applies_when(expr, natalPos, transitPos, ascSign, natalPayload)
+ * V2.4 mini-DSL for predictions[].applies_when
+ * grammar:
+ *   "default" | "principle"                         → always true
+ *   <op> <cmp> <N>   where op in (evil_count)
+ *   <flag>           where flag in (no_friend_aspect, has_friend_aspect, tanu_strong, tanu_weak)
+ * unknown → true (forward-compat, don't filter)
+ */
+export function evaluate_applies_when(expr, natalPos, transitPos, ascSign, natalPayload){
+  if(!expr||expr==='default'||expr==='principle')return true;
+
+  // op comparator number
+  const m=expr.match(/^(evil_count)\s*(>=|<=|>|<|==)\s*(\d+)$/);
+  if(m){
+    const[,op,cmp,nStr]=m;
+    const n=parseInt(nStr);
+    let val=0;
+    if(op==='evil_count'){
+      val=count_evil_lagna_aspects(transitPos||natalPos,ascSign,'LENG');
+    }
+    if(cmp==='>=')return val>=n;
+    if(cmp==='<=')return val<=n;
+    if(cmp==='>') return val>n;
+    if(cmp==='<') return val<n;
+    if(cmp==='==')return val===n;
+  }
+
+  if(expr==='tanu_strong'||expr==='tanu_weak'){
+    const mn=natalPayload?.tanu_lagna?.manifestation||0;
+    return expr==='tanu_strong'?mn>=0.4:mn<0.25;
+  }
+
+  // no_friend_aspect / has_friend_aspect — not yet implemented
+  // unknown → true (don't filter)
+  return true;
+}
+
+/**
+ * compose_local_prediction(matched_rules, natal_payload?, opts?)
  * Keyword composition engine — deterministic, no LLM
  * คืน structured array ของ predictions จาก KB rules โดยตรง
  *
+ * V2.4: ถ้า rule มี predictions[] → ใช้ entry ที่ applies_when ผ่าน
+ * ถ้าไม่มี predictions[] → fallback อ่าน rule.p (V2.3)
+ *
  * @param {Object[]} matched_rules - output จาก match_rules()
- * @param {Object|null} natal_payload - จาก build_natal_payload() (optional, ใช้หา domain)
- * @returns {Array<{rule_id,text,keywords,polarity,domain,chapter,source}>}
+ * @param {Object|null} natal_payload - จาก build_natal_payload()
+ * @param {Object} opts - {natalPos, transitPos, ascSign} สำหรับ DSL evaluate
+ * @returns {Array<{rule_id,text,keywords,polarity,domain,chapter,source,applies_when?}>}
  */
-export function compose_local_prediction(matched_rules, natal_payload=null){
+export function compose_local_prediction(matched_rules, natal_payload=null, opts={}){
   if(!matched_rules?.length)return[];
-  return matched_rules
-    .filter(r=>r.p)
-    .map((r,i)=>({
-      rule_id:'R'+String(i+1).padStart(2,'0'),
-      text:r.p,
-      keywords:_extractKeywords(r.p),
-      polarity:_classifyRulePolarity(r),
-      domain:get_rule_domain(r,natal_payload),
-      chapter:r.ch||'',
-      source:'local',
-    }));
+  const{natalPos,transitPos,ascSign}=opts;
+  const out=[];
+  matched_rules.forEach((r,i)=>{
+    const rid='R'+String(i+1).padStart(2,'0');
+    const dom=get_rule_domain(r,natal_payload);
+    const ch=r.ch||'';
+
+    // V2.4: predictions[] array
+    if(Array.isArray(r.predictions)&&r.predictions.length>0){
+      for(const pred of r.predictions){
+        const applies=natalPos
+          ?evaluate_applies_when(pred.applies_when,natalPos,transitPos,ascSign,natal_payload)
+          :pred.applies_when==='default'||!pred.applies_when;
+        if(!applies)continue;
+        out.push({
+          rule_id:rid,
+          text:pred.text,
+          keywords:_extractKeywords(pred.text),
+          polarity:pred.polarity||_classifyRulePolarity(r),
+          domain:pred.domain||dom,
+          chapter:ch,
+          applies_when:pred.applies_when||'default',
+          source:'local',
+        });
+      }
+      return;
+    }
+
+    // V2.3 fallback: rule.p blob
+    if(r.p){
+      out.push({
+        rule_id:rid,
+        text:r.p,
+        keywords:_extractKeywords(r.p),
+        polarity:_classifyRulePolarity(r),
+        domain:dom,
+        chapter:ch,
+        source:'local',
+      });
+    }
+  });
+  return out;
 }
 
 /**

@@ -15,6 +15,12 @@ import {
   PLANET_NAMES_TH,
   ZODIAC_TH,
   KASET_MAP,
+  planet_relation,
+  aspect_to_planet,
+  transit_to_natal_aspect,
+  count_evil_lagna_aspects,
+  house_name_to_idx,
+  get_tanu_lagna,
 } from './engine.js';
 
 // ── Config ────────────────────────────────────────────────────────────────
@@ -45,54 +51,169 @@ function _kbName(n){return KB_NAME_MAP[n]||n;}
 // aspect label ภาษาไทยสำหรับ tag matching
 const ASP_TH = {KUM:'กุม',LENG:'เล็ง',YOK:'โยค',TRI:'ตรีโกณ',NONE:''};
 
-// ── Condition-based rule matching helpers (M1) ────────────────────────────
+// ── Condition-based rule matching helpers (M1 + V2.4) ─────────────────────
 
-// ascSign ส่งผ่านมาเพื่อคำนวณ house_lord_of
-function _checkCondition(cond,pos,effectsMap,potentialsMap,ascSign){
-  const{quality_required,lagna_aspect_req}=cond;
+// แปลง lagna_aspect_req เก่า (ไทย) → ENG canonical
+const LAR_NORMALIZE = {
+  'กุมลัคนา':'KUM','เล็งลัคนา':'LENG','โยคลัคนา':'YOK','ตรีโกณลัคนา':'TRI',
+  'สัมพันธ์ลัคนา':'ANY_ASPECT','ไม่สัมพันธ์ลัคนา':'NONE',
+  'none':'NONE',
+};
 
-  // house_lord_of: คำนวณ planet_id จาก lagna ณ เวลา runtime แทนที่จะ hardcode
-  let pid;
+// ใน V2.4 condition.planet_id อาจเป็น object {type:'tanu_lagna'|'h10_owner'}
+function _resolvePlanetId(cond,ascSign){
   if(cond.house_lord_of!==undefined){
-    const houseSign=(ascSign+cond.house_lord_of-1)%12;
-    pid=KASET_MAP[houseSign];
-  } else {
-    // planet_id ธรรมดา — "0" = มฤตยู (ต้องใช้ isNaN ไม่ใช่ ||0 เพราะ 0 คือดาวจริง)
-    if(!cond.planet_id||cond.planet_id==='ANY')return true;
-    pid=parseInt(cond.planet_id);
-    if(isNaN(pid)||pid<0)return true;
+    return KASET_MAP[(ascSign+cond.house_lord_of-1)%12];
+  }
+  const pid=cond.planet_id;
+  if(pid==null||pid==='ANY')return null;       // null = skip (match any)
+  if(typeof pid==='object'){
+    if(pid.type==='tanu_lagna')return KASET_MAP[ascSign];
+    if(pid.type==='h10_owner')return KASET_MAP[(ascSign+9)%12];
+    return null;
+  }
+  const n=parseInt(pid);
+  return(isNaN(n)||n<0)?null:n;
+}
+
+// คำนวณ aspect ของ planet ใน pos → ลัคนา
+function _aspectToLagna(pos,pid,ascSign){
+  const h=(Math.trunc(pos[pid]/1800)-ascSign+12)%12+1;
+  if(h===1)return'KUM';
+  if(h===7)return'LENG';
+  if(h===4||h===10)return'YOK';
+  if(h===5||h===9)return'TRI';
+  return'NONE';
+}
+
+// ascSign ส่งผ่านมาเพื่อคำนวณ house_lord_of + V2.4 fields ใหม่
+function _checkCondition(cond,natalPos,transitPos,effectsMap,potentialsMap,ascSign){
+  const context=cond.context||'natal';
+  if(context==='transit'&&!transitPos)return false;
+  const pos=context==='transit'?transitPos:natalPos;
+
+  const pid=_resolvePlanetId(cond,ascSign);
+  if(pid==null)return true;  // ANY — skip checks
+
+  // manifestation gate (เฉพาะ natal เพราะ transit ไม่มี manifestation map)
+  if(context==='natal'){
+    const entry=effectsMap[pid]||potentialsMap[pid];
+    if(entry&&entry.manifestation<MIN_MANIFESTATION&&entry.aspect==='NONE')return false;
   }
 
-  const entry=effectsMap[pid]||potentialsMap[pid];
-  if(entry&&entry.manifestation<MIN_MANIFESTATION&&entry.aspect==='NONE')return false;
+  // quality_required
   const pQualRaw=getStandards(pos,pid);
   const pQuals=pQualRaw
     ?pQualRaw.split('/').map(q=>QUAL_MAP[q]||q).filter(q=>QLABELS[q])
     :[];
   const pScore=pQuals.length>0?Math.max(...pQuals.map(q=>SCORE_MAP[q]||0)):0;
-  const qr=quality_required;
+  const qr=cond.quality_required;
   if(qr&&qr!=='any'&&qr!=='ANY'&&qr!==''){
-    if(qr==='ดี'&&pScore<=0)return false;
-    if(qr==='เสีย'&&pScore>=0)return false;
-    if(qr==='ปกติ'&&pScore!==0)return false;
-    if(QLABELS[qr]&&!pQuals.includes(qr))return false;
+    if(typeof qr==='object'){
+      if(qr.std_score_min!==undefined&&pScore<qr.std_score_min)return false;
+      if(Array.isArray(qr.in)&&!qr.in.some(q=>pQuals.includes(q)))return false;
+    } else {
+      if(qr==='ดี'&&pScore<=0)return false;
+      if(qr==='เสีย'&&pScore>=0)return false;
+      if(qr==='ปกติ'&&pScore!==0)return false;
+      if(QLABELS[qr]&&!pQuals.includes(qr))return false;
+    }
   }
-  const asp=entry?entry.aspect:'NONE';
-  const lar=lagna_aspect_req;
+
+  // lagna_aspect_req
+  const asp=context==='natal'
+    ?(effectsMap[pid]?.aspect||potentialsMap[pid]?.aspect||'NONE')
+    :_aspectToLagna(pos,pid,ascSign);
+  const lar=cond.lagna_aspect_req;
   if(lar&&lar!=='any'&&lar!=='ANY'&&lar!==''){
-    if(lar==='none'&&asp!=='NONE')return false;
-    if(lar!=='none'&&asp==='NONE')return false;
-    if(lar!=='none'&&asp!==lar)return false;
+    if(typeof lar==='object'&&Array.isArray(lar.in)){
+      const norm=lar.in.map(x=>LAR_NORMALIZE[x]||x);
+      if(!norm.includes(asp))return false;
+    } else {
+      const larN=LAR_NORMALIZE[lar]||lar;
+      if(larN==='ANY_ASPECT'&&asp==='NONE')return false;
+      else if(larN==='NONE'&&asp!=='NONE')return false;
+      else if(larN!=='ANY_ASPECT'&&larN!=='NONE'&&asp!==larN)return false;
+    }
   }
+
+  // V2.4: house_required / house_name
+  let houseIdx=cond.house_required;
+  if(!houseIdx&&cond.house_name)houseIdx=house_name_to_idx(cond.house_name);
+  if(houseIdx){
+    const h=(Math.trunc(pos[pid]/1800)-ascSign+12)%12+1;
+    if(h!==houseIdx)return false;
+  }
+
+  // V2.4: sign_required
+  if(cond.sign_required!==undefined){
+    const s=Math.trunc(pos[pid]/1800);
+    if(s!==cond.sign_required)return false;
+  }
+
+  // V2.4: aspect_to_planet
+  if(cond.aspect_to_planet){
+    const at=cond.aspect_to_planet;
+    let targetId;
+    if(typeof at.id==='object'){
+      if(at.id.type==='tanu_lagna')targetId=KASET_MAP[ascSign];
+      else if(at.id.type==='h10_owner')targetId=KASET_MAP[(ascSign+9)%12];
+      else return false;
+    } else {
+      targetId=parseInt(at.id);
+      if(isNaN(targetId))return false;
+    }
+    const targetPos=at.scope==='transit'?transitPos:natalPos;
+    if(!targetPos)return false;
+    const sP=Math.trunc(pos[pid]/1800),sT=Math.trunc(targetPos[targetId]/1800);
+    const dist=((sP-sT)+12)%12;
+    const asp2=dist===0?'KUM':dist===6?'LENG':(dist===3||dist===9)?'YOK':(dist===4||dist===8)?'TRI':'NONE';
+    if(at.type==='ANY_ASPECT'){if(asp2==='NONE')return false;}
+    else if(asp2!==at.type)return false;
+  }
+
+  // V2.4: relation_to
+  if(cond.relation_to){
+    const rt=cond.relation_to;
+    const targetId=parseInt(rt.id);
+    if(isNaN(targetId))return false;
+    const rel=planet_relation(pid,targetId);
+    if(rt.type==='ANY_FRIEND'){if(rel!=='มิตร')return false;}
+    else if(rt.type==='ANY_ENEMY'){if(rel!=='ศัตรู')return false;}
+    else if(rel!==rt.type)return false;
+  }
+
   return true;
 }
 
-// ตรวจ conditions[] ของ rule — null=ใช้ tag matching, true=match, false=no match
-function _matchByConditions(r,pos,effectsMap,potentialsMap,ascSign){
+// V2.4: rule-level global conditions (ไม่ผูก planet เฉพาะ)
+function _checkGlobalCondition(gc,natalPos,transitPos,ascSign,natalPayload){
+  if(gc.type==='evil_planet_count'){
+    const pos=gc.scope==='transit'?transitPos:natalPos;
+    if(!pos)return false;
+    const min=gc.min||1;
+    const aspectMin=gc.aspect_min==='ANY_ASPECT'?'TRI':(gc.aspect_min||'LENG');
+    return count_evil_lagna_aspects(pos,ascSign,aspectMin)>=min;
+  }
+  if(gc.type==='overall_strength'){
+    const labels=['อ่อนแอมาก','อ่อนแอ','ปานกลาง','แข็งแกร่ง','แข็งแกร่งมาก'];
+    const cur=natalPayload?.overall?.strength;
+    if(!cur)return false;
+    return labels.indexOf(cur)>=labels.indexOf(gc.min);
+  }
+  return true;   // unknown type → pass (forward-compat)
+}
+
+// ตรวจ conditions[] + global_conditions[] ของ rule
+function _matchByConditions(r,natalPos,transitPos,effectsMap,potentialsMap,ascSign,natalPayload){
   const conds=r.conditions||[];
   if(!conds.length)return null;
   for(const c of conds){
-    if(c.required!==false&&!_checkCondition(c,pos,effectsMap,potentialsMap,ascSign))return false;
+    if(c.required!==false&&!_checkCondition(c,natalPos,transitPos,effectsMap,potentialsMap,ascSign))return false;
+  }
+  // V2.4: global_conditions[]
+  for(const gc of(r.global_conditions||[])){
+    if(!_checkGlobalCondition(gc,natalPos,transitPos,ascSign,natalPayload))return false;
   }
   return true;
 }
@@ -118,10 +239,16 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
     if(!seen.has(k)){seen.add(k);res.push({...r,_isTransit:isTransit});}
   }
 
-  // กรอง REFERENCE rules ออก + แนบ _kbIdx (index ใน kb.json) ให้ทุก rule
+  // กรอง REFERENCE + V2.4 rule_use=case_study/reference ออก + แนบ _kbIdx
   const predRules=kbRules
     .map((r,i)=>({...r,_kbIdx:i}))
-    .filter(r=>r.rule_type!=='REFERENCE');
+    .filter(r=>r.rule_type!=='REFERENCE')
+    .filter(r=>{
+      const ru=r.rule_use;
+      // V2.4 explicit filter
+      if(ru==='case_study'||ru==='reference')return false;
+      return true;
+    });
 
   // build planet aspect map จาก natalPayload ถ้ามี (เร็วกว่า re-compute)
   const effectsMap={};
@@ -180,14 +307,23 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
     });
   }
 
-  // ── conditions-based matching (M1 — natal rules ที่มี conditions[]) ─────
+  // ── conditions-based matching (M1 + V2.4 — natal rules ที่มี conditions[]) ─
   predRules
     .filter(r=>r.conditions&&r.conditions.length>0&&!(r.t||[]).includes('จร'))
     .forEach(r=>{
-      if(_matchByConditions(r,pos,effectsMap,potentialsMap,ascSign))addRule(r);
+      if(_matchByConditions(r,pos,transitPos,effectsMap,potentialsMap,ascSign,natalPayload))addRule(r);
     });
 
-  // ── transit matching (Q&A mode หรือ _include_transit) ────────────────
+  // ── V2.4 transit rules ที่มี conditions[] (context:'transit') ────────────
+  if(transitPos){
+    predRules
+      .filter(r=>r.conditions&&r.conditions.some(c=>c.context==='transit'))
+      .forEach(r=>{
+        if(_matchByConditions(r,pos,transitPos,effectsMap,potentialsMap,ascSign,natalPayload))addRule(r,true);
+      });
+  }
+
+  // ── transit matching (Q&A mode หรือ _include_transit) — legacy tag-based ──
   if(transitPos&&(natalPayload?._is_qa_mode||natalPayload?._include_transit)){
     const TRANSIT_PLANETS=[10,7,3,8,5]; // MR,SA,MA,RA,JU
     for(const i of TRANSIT_PLANETS){
@@ -195,7 +331,7 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
       const pNameKB=_kbName(pName);
       const asp=compute_lagna_aspect(transitPos,i,ascSign);
       if(asp==='NONE')continue;
-      kbRules
+      predRules
         .filter(r=>{
           const ts=(r.t||[]).join(' ');
           return ts.includes('จร')&&ts.includes(pNameKB);
@@ -205,7 +341,7 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
   }
 
   // foundation rules (priority 1 + core chapters)
-  kbRules
+  predRules
     .filter(r=>r.pr===1&&['chapter_04','chapter_06','chapter_08','chapter_09','chapter_13'].includes(r.ch))
     .slice(0,6)
     .forEach(r=>addRule(r));

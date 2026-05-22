@@ -329,13 +329,41 @@ V2.4 schema **ต้องอ่านได้ทั้ง V2.3 และ V2.4*
 
 ---
 
-## 9. Open questions (ต้อง user ตอบ)
+## 9. Decided answers (locked 2026-05-22)
 
-- [ ] `polarity` ของ `predictions[]` แต่ละ entry — Claude infer ได้ไหม? หรือ expert ระบุเองทุก entry?
-- [ ] `applies_when` — ใช้ string format อะไร? DSL หรือ free-form?
-- [ ] ทุก rule_use=case_study ออกจาก Typhoon prompt จริงหรือ? — ผู้ใช้อาจอยากเห็นเคสที่ match
-- [ ] `global_conditions` `evil_planet_count.aspect_min` default ควรเป็น `LENG` หรือ `ANY_ASPECT`?
-- [ ] `engine_min_version` กลไก enforce — แสดง warning หรือ refuse load?
+### 9.1 `polarity` per prediction entry → **Claude infer + expert review เฉพาะ flagged**
+- Claude tag `polarity` + `confidence: "high"|"low"` ทุก entry ตอน migration
+- Expert review เฉพาะ `confidence: "low"` (~20%)
+- UI: เห็น `?` ตอนยังไม่ confirm
+
+### 9.2 `applies_when` → **DSL (mini)** — engine evaluable
+DSL grammar:
+```
+applies_when := "default"          // ใช้เสมอ (default if omitted)
+              | "principle"        // ใช้เสมอ — เฉพาะ rule_use=principle
+              | <op> <comparator> <number>
+              | <flag>
+
+<op>          := "evil_count" | "friend_count" | "enemy_count"
+<comparator>  := ">=" | ">" | "<=" | "<" | "=="
+<flag>        := "no_friend_aspect" | "has_friend_aspect"
+              | "tanu_strong" | "tanu_weak"
+```
+ตัวอย่าง: `"evil_count>=3"`, `"no_friend_aspect"`, `"default"`
+Engine evaluator อยู่ใน `v3/interpretation.js` → ฟังก์ชัน `evaluate_applies_when(expr, pos, transitPos, ascSign)`
+
+### 9.3 `rule_use=case_study` → **ออกจาก Typhoon prompt + แสดงในแท็บแยก "เคสเทียบเคียง"**
+- `match_rules()` filter `case_study` ออกจาก main matched list
+- คืนใน field แยก `case_study_matches[]` ให้ UI render เป็น collapsible card
+- ไม่ส่งเข้า Typhoon prompt
+
+### 9.4 `evil_planet_count.aspect_min` default → **`LENG`** (strict)
+- เตือนเฉพาะดาวร้ายเล็งลัคนา (aspect แรงสุด)
+- หาก rule ต้องการครอบคลุมกว่า ระบุ `aspect_min: "ANY_ASPECT"` ใน global_conditions เอง
+
+### 9.5 `engine_min_version` mismatch → **refuse load + auto-reload via service worker**
+- `kb.json` มี `engine_min_version`; loader check → ถ้าเก่ากว่า throw + show banner "กำลังโหลดเวอร์ชั่นใหม่..."
+- Service worker `skipWaiting()` + page reload
 
 ---
 
