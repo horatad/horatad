@@ -1,4 +1,4 @@
-// HORATAD:SCRIPT:3.3.18
+// HORATAD:SCRIPT:3.3.19
 // Version 3.3.17 | 2026-05-22
 // Changes: [V3.3.16] feat: 3-tank memory system (ส่วนตัว / QR / JULIAN) — แยก storage, tab UI, dedup dialog
 // Changes: [V3.3.12] fix: JULIAN 404 — placeholder data/julian_all.json, ปรับ empty msg
@@ -982,6 +982,116 @@ function cycleOuterDisplay(){
   _playBeep(700);
   _redraw();
 }
+
+// ── M3: Transit cursor helpers ───────────────────────────
+// step hours per planet for sign-change iteration
+const PLANET_STEP_HOURS={moon:1,sun:24,mercury:24,venus:24,mars:24,jupiter:168,saturn:336,ketu:336,rahu:336,mrityu:720};
+const PLANET_IDX={moon:1,sun:0,mercury:2,venus:3,mars:4,jupiter:5,saturn:6,ketu:7,rahu:8,mrityu:9};
+// unit display labels
+const TRANSIT_UNIT_LABELS={day:'วัน',month:'เดือน','1y':'1ปี','5y':'5ปี','10y':'10ปี','50y':'50ปี','100y':'100ปี',moon:'จันทร์',sun:'อาทิตย์',mercury:'พุธ',venus:'ศุกร์',mars:'อังคาร',jupiter:'พฤหัส',saturn:'เสาร์',ketu:'เกตุ',rahu:'ราหู',mrityu:'มฤตยู'};
+// reduced-JD boundaries (CE 1 and CE 2700)
+const JD_LIMIT_MIN=_calcJD(1,1,544);   // Jan 1, CE 1 (y_be=544)
+const JD_LIMIT_MAX=_calcJD(1,1,3243);  // Jan 1, CE 2700 (y_be=3243)
+
+function _addHoursToCursor(cursor,hours){
+  const jd0=_calcJD(parseInt(cursor.d),parseInt(cursor.m),parseInt(cursor.y_be));
+  const[hr,mn]=(cursor.t||'12:00').split(':').map(Number);
+  const totalMins=hr*60+mn+hours*60;
+  const dayOff=Math.floor(totalMins/1440);
+  const jd1=jd0+dayOff;
+  const minsOfDay=((totalMins%1440)+1440)%1440;
+  const nhr=Math.floor(minsOfDay/60),nmn=minsOfDay%60;
+  const t1=`${String(nhr).padStart(2,'0')}:${String(nmn).padStart(2,'0')}`;
+  const{d,m,y_ce}=_jdToGregorian(jd1);
+  return{d:String(d),m:String(m),y_be:String(y_ce+543),t:t1};
+}
+function _cursorToJD(cursor){
+  return _calcJD(parseInt(cursor.d),parseInt(cursor.m),parseInt(cursor.y_be));
+}
+function _getPlanetSign(cursor,pIdx){
+  const d=parseInt(cursor.d),m=parseInt(cursor.m),y_be=parseInt(cursor.y_be);
+  const y_ce=_beToce(y_be,m);
+  const[hr,mn]=(cursor.t||'12:00').split(':').map(Number);
+  const pos=get_data(d,m,y_ce,hr,mn,100.50);
+  return Math.trunc(pos[pIdx]/1800);
+}
+function _recalcTransit(){
+  if(!_transitCursor)return;
+  const d=parseInt(_transitCursor.d),m=parseInt(_transitCursor.m),y_be=parseInt(_transitCursor.y_be);
+  const y_ce=_beToce(y_be,m);
+  const[hr,mn]=(_transitCursor.t||'12:00').split(':').map(Number);
+  const pos=get_data(d,m,y_ce,hr,mn,100.50);
+  transit={name:'จร',pos,vel:[],d,m,y_be,t:_transitCursor.t};
+  // sync to transit strip inputs
+  const tsD=document.getElementById('ts-d');if(tsD)tsD.value=d;
+  const tsM=document.getElementById('ts-m');if(tsM)tsM.value=m;
+  const tsY=document.getElementById('ts-y');if(tsY)tsY.value=y_be;
+  const tsT=document.getElementById('ts-t');if(tsT)tsT.value=_transitCursor.t;
+  _redraw();
+}
+// step fixed units → hours
+function _fixedUnitToHours(unit){
+  if(unit==='day')return 24;
+  if(unit==='month')return 24*30;
+  if(unit==='1y')return 24*365;
+  if(unit==='5y')return 24*365*5;
+  if(unit==='10y')return 24*365*10;
+  if(unit==='50y')return 24*365*50;
+  if(unit==='100y')return 24*365*100;
+  return 24;
+}
+function _moveCursorByFixed(dir){
+  if(!_transitCursor)return;
+  const h=_fixedUnitToHours(_transitUnit.value)*dir;
+  const next=_addHoursToCursor(_transitCursor,h);
+  const jdN=_cursorToJD(next);
+  if(jdN<JD_LIMIT_MIN){_showToast('เกินขอบเขต ค.ศ. 0');return;}
+  if(jdN>JD_LIMIT_MAX){_showToast('เกินขอบเขต ค.ศ. 2700');return;}
+  _transitCursor=next;
+  _recalcTransit();
+}
+function _transitNextSignChange(dir,planet){
+  if(!_transitCursor)return;
+  const pIdx=PLANET_IDX[planet];
+  const stepH=PLANET_STEP_HOURS[planet];
+  let cursor={..._transitCursor};
+  const startSign=_getPlanetSign(cursor,pIdx);
+  let safety=0;
+  while(safety++<10000){
+    cursor=_addHoursToCursor(cursor,dir*stepH);
+    const jdC=_cursorToJD(cursor);
+    if(jdC<JD_LIMIT_MIN){_showToast('เกินขอบเขต ค.ศ. 0');return;}
+    if(jdC>JD_LIMIT_MAX){_showToast('เกินขอบเขต ค.ศ. 2700');return;}
+    if(_getPlanetSign(cursor,pIdx)!==startSign){
+      _transitCursor=cursor;_recalcTransit();return;
+    }
+  }
+  _showToast('ไม่พบการย้ายราศีในขอบเขต');
+}
+// M3: transit unit popup
+function _openTransitUnitPopup(){
+  const pop=document.getElementById('transit-unit-popup');
+  const bd=document.getElementById('transit-unit-backdrop');
+  if(!pop||!bd)return;
+  // sync active state
+  pop.querySelectorAll('.tup-btn').forEach(btn=>{
+    btn.classList.toggle('tup-btn-active',btn.dataset.type===_transitUnit.type&&btn.dataset.val===_transitUnit.value);
+  });
+  pop.classList.remove('hidden');
+  bd.classList.remove('hidden');
+}
+function _closeTransitUnitPopup(){
+  document.getElementById('transit-unit-popup')?.classList.add('hidden');
+  document.getElementById('transit-unit-backdrop')?.classList.add('hidden');
+}
+function _setTransitUnit(type,value){
+  _transitUnit={type,value};
+  const lbl=TRANSIT_UNIT_LABELS[value]||value;
+  const btn=document.getElementById('ts-unit-btn');
+  if(btn)btn.textContent=lbl;
+  _closeTransitUnitPopup();
+}
+
 function toggleChartType(){
   _chartTypeState=(_chartTypeState+1)%3;
   document.getElementById('btn-chart-type').textContent=CHART_TYPE_LABELS[_chartTypeState];
@@ -1011,6 +1121,12 @@ function toggleReportTransit(){
 // V2.1.9: cycle memory items into current viewMode slot
 // dir: -1=prev, +1=next
 function cycleMemory(dir){
+  // M3: compareMode=3 → move transit cursor by selected unit
+  if(_compareMode===3){
+    if(_transitUnit.type==='fixed')_moveCursorByFixed(dir);
+    else if(_transitUnit.type==='planet')_transitNextSignChange(dir,_transitUnit.value);
+    return;
+  }
   if(_viewMode===1){
     // ดวงนอก: cycle persons (สมพงศ์) → update natal2
     const buf=_dbPersons();
@@ -2890,19 +3006,17 @@ let _tsInited=false; // ป้องกัน reset ค่า date ทุกค�
 function _updateTransitStrip(){
   const strip=document.getElementById('transit-strip');
   if(!strip)return;
-  if(!natal1){strip.classList.add('hidden');_tsInited=false;return;}
+  // M3: transit strip แสดงเฉพาะ compareMode=3
+  if(!natal1||_compareMode!==3){strip.classList.add('hidden');_tsInited=false;return;}
   strip.classList.remove('hidden');
-  const toggle=document.getElementById('ts-toggle');
-  if(toggle){
-    toggle.textContent=_reportTransitShow?'จร แสดง':'จร ซ่อน';
-    toggle.classList.toggle('active',_reportTransitShow);
-  }
+  // update unit-btn label
+  const ub=document.getElementById('ts-unit-btn');
+  if(ub)ub.textContent=TRANSIT_UNIT_LABELS[_transitUnit.value]||_transitUnit.value;
   if(!_tsInited){
-    const saved=_loadJSON(TS_DATE_KEY);
-    const ref=saved||_nowStr();
-    const tsD=document.getElementById('ts-d');if(tsD)tsD.value=ref.d||ref.d;
+    const ref=_transitCursor||_nowStr();
+    const tsD=document.getElementById('ts-d');if(tsD)tsD.value=ref.d;
     const tsM=document.getElementById('ts-m');if(tsM)tsM.value=ref.m;
-    const tsY=document.getElementById('ts-y');if(tsY)tsY.value=saved?ref.y_be:ref.y;
+    const tsY=document.getElementById('ts-y');if(tsY)tsY.value=ref.y_be||ref.y;
     const tsT=document.getElementById('ts-t');if(tsT)tsT.value=ref.t;
     _tsInited=true;
   }

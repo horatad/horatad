@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.3.18 */
+/* HORATAD:STYLE:3.3.19 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -420,3 +420,15 @@ body.about-active .logo-h1{display:none}
 .ts-calc:hover{background:#2d4a7b}
 .ts-reset{background:#2d333b;color:#8b949e;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap}
 .ts-reset:hover{background:#3d444c;color:#c9d1d9}
+/* M3: ts-unit-btn (แทน ts-toggle) */
+.ts-unit-btn{background:#2d333b;color:#c9b8f0;border:1px solid #5b3fa0;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:inherit;white-space:nowrap;font-weight:600}
+.ts-unit-btn:hover{background:#3d2b5b}
+/* M3: transit unit popup */
+.transit-unit-backdrop{position:fixed;inset:0;z-index:1199}
+.transit-unit-popup{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e2328;border:1px solid #444;border-radius:10px;padding:12px 14px;z-index:1200;min-width:260px;max-width:92vw;box-shadow:0 6px 24px rgba(0,0,0,0.7);font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
+.tup-section-label{font-size:11px;color:#586069;margin-bottom:6px;margin-top:4px}
+.tup-section-label:first-child{margin-top:0}
+.tup-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tup-btn{background:#2d333b;color:#8b949e;border:1px solid #444;border-radius:5px;padding:4px 9px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.tup-btn:hover{background:#3d444c;color:#c9d1d9}
+.tup-btn.tup-btn-active{background:#3d2b5b;border-color:#5b3fa0;color:#c9b8f0;font-weight:600}

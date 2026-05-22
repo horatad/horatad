@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.18 -->
-<!-- Version 3.3.18 | 2026-05-22 -->
+<!-- HORATAD:INDEX:3.3.19 -->
+<!-- Version 3.3.19 | 2026-05-22 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.18">
+<link rel="stylesheet" href="style.css?v=3.3.19">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -403,9 +403,9 @@ canvas{max-width:100%;height:auto}
       <button class="chart-nav-gear" onclick="_openMainMenu()" title="ตั้งค่า">⚙️</button>
     </div>
     <canvas id="chart-canvas" width="1000" height="1000" style="width:100%;height:auto;border-radius:6px;display:block"></canvas>
-    <!-- Phase 13: Transit Strip — ใต้แผนผัง ก่อน btn-chart-row -->
+    <!-- M3: Transit Strip — แสดงเฉพาะ compareMode=3 -->
     <div id="transit-strip" class="transit-strip hidden">
-      <button id="ts-toggle" class="ts-toggle" onclick="_tsToggle()">จร</button>
+      <button id="ts-unit-btn" class="ts-unit-btn" onclick="_openTransitUnitPopup()" title="เลือกหน่วยเลื่อน">วัน</button>
       <input type="number" id="ts-d" class="ts-num" min="1" max="31" placeholder="วัน">
       <input type="number" id="ts-m" class="ts-num" min="1" max="12" placeholder="ด">
       <input type="number" id="ts-y" class="ts-num ts-year" min="1" max="9999" placeholder="ปี">
@@ -415,6 +415,33 @@ canvas{max-width:100%;height:auto}
         <option value="">— เหตุการณ์ —</option>
       </select>
       <button class="ts-calc" onclick="_tsCalc()">คำนวณจร</button>
+    </div>
+    <!-- M3: Transit unit popup -->
+    <div id="transit-unit-backdrop" class="transit-unit-backdrop hidden" onclick="_closeTransitUnitPopup()"></div>
+    <div id="transit-unit-popup" class="transit-unit-popup hidden">
+      <div class="tup-section-label">ระยะเวลา</div>
+      <div class="tup-row" id="tup-fixed-row">
+        <button class="tup-btn tup-btn-active" data-type="fixed" data-val="day" onclick="_setTransitUnit('fixed','day')">วัน</button>
+        <button class="tup-btn" data-type="fixed" data-val="month" onclick="_setTransitUnit('fixed','month')">เดือน</button>
+        <button class="tup-btn" data-type="fixed" data-val="1y" onclick="_setTransitUnit('fixed','1y')">1ปี</button>
+        <button class="tup-btn" data-type="fixed" data-val="5y" onclick="_setTransitUnit('fixed','5y')">5ปี</button>
+        <button class="tup-btn" data-type="fixed" data-val="10y" onclick="_setTransitUnit('fixed','10y')">10ปี</button>
+        <button class="tup-btn" data-type="fixed" data-val="50y" onclick="_setTransitUnit('fixed','50y')">50ปี</button>
+        <button class="tup-btn" data-type="fixed" data-val="100y" onclick="_setTransitUnit('fixed','100y')">100ปี</button>
+      </div>
+      <div class="tup-section-label">ย้ายราศี</div>
+      <div class="tup-row" id="tup-planet-row">
+        <button class="tup-btn" data-type="planet" data-val="moon" onclick="_setTransitUnit('planet','moon')">จันทร์</button>
+        <button class="tup-btn" data-type="planet" data-val="sun" onclick="_setTransitUnit('planet','sun')">อาทิตย์</button>
+        <button class="tup-btn" data-type="planet" data-val="mercury" onclick="_setTransitUnit('planet','mercury')">พุธ</button>
+        <button class="tup-btn" data-type="planet" data-val="venus" onclick="_setTransitUnit('planet','venus')">ศุกร์</button>
+        <button class="tup-btn" data-type="planet" data-val="mars" onclick="_setTransitUnit('planet','mars')">อังคาร</button>
+        <button class="tup-btn" data-type="planet" data-val="jupiter" onclick="_setTransitUnit('planet','jupiter')">พฤหัส</button>
+        <button class="tup-btn" data-type="planet" data-val="saturn" onclick="_setTransitUnit('planet','saturn')">เสาร์</button>
+        <button class="tup-btn" data-type="planet" data-val="ketu" onclick="_setTransitUnit('planet','ketu')">เกตุ</button>
+        <button class="tup-btn" data-type="planet" data-val="rahu" onclick="_setTransitUnit('planet','rahu')">ราหู</button>
+        <button class="tup-btn" data-type="planet" data-val="mrityu" onclick="_setTransitUnit('planet','mrityu')">มฤตยู</button>
+      </div>
     </div>
     <div class="btn-chart-row hidden" id="btn-chart-row">
       <button id="btn-view-prev" onclick="cycleMemory(-1)" class="btn-sm btn-nav" title="ดวงก่อนหน้า">◀</button>
@@ -830,7 +857,7 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script src="script.js?v=3.3.18"></script>
+<script src="script.js?v=3.3.19"></script>
 <script type="module" src="v3/v3tab.js?v=3.3.17"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
