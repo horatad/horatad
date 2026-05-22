@@ -96,6 +96,27 @@
 
 ---
 
+## REORG — Docs Cleanup 🟢 Pending (Claude ทำได้)
+**เป้าหมาย:** ลด docs จาก 12 → 8 ไฟล์ ปรับ source of truth ให้ชัด
+
+### สถานะ
+- BIG session ตรวจพบ docs ขัดแย้ง/outdated/ซ้ำซ้อน 4 critical issue
+- Migration plan + verification checklist เขียนครบใน `handoffs/REORG_20260522_v1.md`
+
+### Next (Claude ทำได้ — session REORG)
+- [ ] Task 1: ลบ `docs/BEST_PRACTICES.md` + `docs/SYSTEM_INSTRUCTION_V3-4.md` (outdated 100%)
+- [ ] Task 2: Rewrite `docs/HORATAD_MANUAL.md` → `docs/HORATAD.md` (498 → ~250 บรรทัด)
+- [ ] Task 3: Update `docs/CHANGELOG.md` เพิ่ม V3.2.7-V3.3.12 (16 entries)
+- [ ] Task 4: Fix `DEPLOY.md` l.131 broken reference + ECOSYSTEM.md/CLAUDE.md references
+
+### เริ่ม session
+พิมพ์: `session REORG`
+
+### Handoff ล่าสุด
+`handoffs/REORG_20260522_v1.md`
+
+---
+
 ## Quick Reference
 
 | Project | Version | ไฟล์หลัก | สถานะ |
@@ -104,13 +125,14 @@
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
+| Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
 
 ---
 
 ## วิธีเริ่ม session ใหม่
-1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / PLATFORM**
+1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / PLATFORM / REORG / BIG**
 2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` ล่าสุด
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project)*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.12 | JULIAN 31,031 records | JULIAN workflow: ลบ CF + Astrotheme reorder + P3447 series | WHY LOG ทุก project | docs/UI_LAYOUT.md สร้างแล้ว | handoffs/BIG_20260522_v1.md (priority queue ข้าม project) | handoffs/REORG_20260522_v1.md (docs cleanup rountine — รอ session REORG)*
