@@ -214,6 +214,7 @@ jobs:
             git add data/julian_all.json || true
           fi
           git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})" || echo "Nothing to commit"
+          git pull --rebase origin main
           git push origin HEAD:main
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
