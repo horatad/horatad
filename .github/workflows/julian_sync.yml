@@ -146,6 +146,24 @@ jobs:
             git push origin HEAD:main
           fi
 
+      # ─── Data audit — scan + clean suspicious time_utc ──────────
+      # นโยบาย "unsure → null" — drop ทุก time ที่เป็น cluster (>3x) หรือ default
+      - name: Data audit
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          node workers/julian_audit.mjs --clean
+          # commit ถ้ามี change จริง (audit เปลี่ยนข้อมูล)
+          if ! git diff --quiet data/julian_all.json; then
+            git config user.name  "JULIAN Bot"
+            git config user.email "julian-bot@horatad.com"
+            git add data/julian_all.json
+            git commit -m "JULIAN audit: drop suspicious time_utc (cluster + defaults)"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          else
+            echo "No audit changes — data already clean"
+          fi
+
       # ─── Upload to GitHub Release ─────────────────────────────
       - name: Upload to GitHub Release
         if: steps.scrape.outputs.status == 'ok'

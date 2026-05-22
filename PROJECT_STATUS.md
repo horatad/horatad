@@ -67,7 +67,11 @@
 - Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
-- Astrotheme enrichment: ✅ 399 records มี time_utc แล้ว (เติมอัตโนมัติทุก run)
+- **Strict data validation** (V2 — 2026-05-22):
+  - SPARQL fictional filter ทุก 137 queries (กัน Ellen Ripley, SHODAN, ฯลฯ)
+  - Astrotheme parser: context-aware + cross-validate + blacklist + cluster detection
+  - Audit script `workers/julian_audit.mjs` รันทุก workflow → drop bad time_utc
+  - **Audit ครั้งแรก: drop 398/399 bad time_utc** (เหลือ 1 legitimate) — root cause: scraper clock leak
 - Tiers: 3,166 tier-1 + 37,913 tier-2
 
 ### Next (Claude ทำได้)
@@ -77,7 +81,7 @@
 (ไม่มี — automation รันเองได้ทั้งหมด)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260522_v2.md`
+`handoffs/JULIAN_20260522_v3.md`
 
 ---
 

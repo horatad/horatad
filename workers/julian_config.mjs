@@ -1,5 +1,21 @@
 // JULIAN Automation Config — แก้ที่นี่ที่เดียว ไม่ต้องแตะ logic
 
+// ── Fictional filter — exclude Wikidata fictional characters ─────────────────
+// Wikidata classifies fictional characters with instance_of: human (Q5) บางครั้ง
+// → ต้อง FILTER NOT EXISTS เพื่อกัน (e.g. Ellen Ripley, SHODAN)
+// QIDs:
+//   Q15632617 = fictional human
+//   Q95074    = fictional character
+//   Q15773347 = literary character
+//   P1441     = present in narrative work (Alien franchise ฯลฯ)
+//   P1080     = from narrative universe
+const FICTIONAL_FILTER = `
+        FILTER NOT EXISTS { ?person wdt:P31 wd:Q15632617. }
+        FILTER NOT EXISTS { ?person wdt:P31 wd:Q95074. }
+        FILTER NOT EXISTS { ?person wdt:P31 wd:Q15773347. }
+        FILTER NOT EXISTS { ?person wdt:P1441 ?_work. }
+        FILTER NOT EXISTS { ?person wdt:P1080 ?_universe. }`;
+
 // ── Astrotheme query generator — 1800-2010, 5-ปีต่อ chunk ───────────────────
 // ดึงคนที่ Wikidata มี P3447 (Astrotheme ID) → แน่นอนว่ามีอยู่ใน astrotheme.com
 // Astrotheme enrichment step จะ fetch เวลาเกิดโดยใช้ path ตรงๆ ไม่ต้อง guess
@@ -15,7 +31,7 @@ function astrothemeQuery(y1, y2) {
       SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?astroId WHERE {
         ?person wdt:P3447 ?astroId.
         ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-        FILTER(?birthPrec >= 11)
+        FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
         FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
         OPTIONAL {
           ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
@@ -45,7 +61,7 @@ function eraQuery(y1, y2) {
       SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
         ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
         ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-        FILTER(?birthPrec >= 11)
+        FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
         FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
         OPTIONAL {
           ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
@@ -85,7 +101,7 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P27 wd:Q869; wdt:P106 wd:Q82955.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -103,7 +119,7 @@ export const CONFIG = {
           { ?person wdt:P39 wd:Q216360. }
           UNION { ?person wdt:P39 ?pos. ?pos wdt:P17 wd:Q869; wdt:P31 wd:Q4164871. }
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -119,7 +135,7 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P27 wd:Q869; wdt:P106 wd:Q2066131.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -136,7 +152,7 @@ export const CONFIG = {
           ?person wdt:P27 wd:Q869.
           { ?person wdt:P106 wd:Q177220. } UNION { ?person wdt:P106 wd:Q33999. }
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -152,7 +168,7 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P27 wd:Q869; wdt:P53 wd:Q1077839.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -169,7 +185,7 @@ export const CONFIG = {
           ?person wdt:P27 wd:Q869.
           { ?person wdt:P106 wd:Q901. } UNION { ?person wdt:P106 wd:Q1622272. }
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -188,7 +204,7 @@ export const CONFIG = {
           VALUES ?pos { wd:Q30461 wd:Q48352 wd:Q35234 }
           ?person wdt:P39 ?pos.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -205,7 +221,7 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P39 wd:Q11696.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -221,7 +237,7 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P39 wd:Q14211.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -237,7 +253,7 @@ export const CONFIG = {
         SELECT DISTINCT ?person ?personLabel ?birth ?death WHERE {
           ?person wdt:P27 wd:Q17; wdt:P106 wd:Q82955.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -254,7 +270,7 @@ export const CONFIG = {
           VALUES ?country { wd:Q869 wd:Q836 wd:Q819 wd:Q424 wd:Q833 wd:Q928 wd:Q334 wd:Q574 wd:Q686 wd:Q881 }
           ?person wdt:P27 ?country; wdt:P106 wd:Q82955.
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -274,7 +290,7 @@ export const CONFIG = {
           ?person wdt:P166 ?medal.
           VALUES ?medal { wd:Q15123426 wd:Q15123427 wd:Q15123428 }
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -293,7 +309,7 @@ export const CONFIG = {
           ?person wdt:P21 wd:Q6581097.
           ?person wikibase:sitelinks ?links. FILTER(?links > 20)
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -317,7 +333,7 @@ export const CONFIG = {
           { ?person wdt:P166 wd:Q76250. } UNION
           { ?person wdt:P166 wd:Q47170. }
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
@@ -335,7 +351,7 @@ export const CONFIG = {
           ?person wdt:P106 wd:Q901.
           ?person wikibase:sitelinks ?links. FILTER(?links > 30)
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
-          FILTER(?birthPrec >= 11)
+          FILTER(?birthPrec >= 11)${FICTIONAL_FILTER}
           OPTIONAL {
             ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
             FILTER(?deathPrec >= 11)
