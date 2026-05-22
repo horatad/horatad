@@ -114,39 +114,48 @@ jobs:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
-      # ─── Astrotheme enrichment — ซ่อนไว้ (เติม time_utc + lat/lng ผ่าน D1) ──
+      # ─── Astrotheme enrichment — เพิ่ม time_utc + lat/lng จาก astrotheme.com ──
       - name: Astrotheme enrichment
-        if: false  # disabled — ต้องมี CF D1 ก่อน
+        if: steps.scrape.outputs.status == 'ok'
         run: |
-          echo "── Query records without time_utc ──"
-          wrangler d1 execute julian \
-            --config workers/julian_wrangler.toml \
-            --command="SELECT jd,name,event_label,type,country,tier,relate_id,source FROM internet WHERE time_utc IS NULL ORDER BY confidence DESC LIMIT 200" \
-            --remote --json > /tmp/no_time.json
+          echo "── Filter records without time_utc ──"
           node -e "
-            const raw = JSON.parse(require('fs').readFileSync('/tmp/no_time.json','utf8'));
-            const rows = raw[0]?.results ?? [];
-            require('fs').writeFileSync('/tmp/no_time.jsonl', rows.map(r => JSON.stringify(r)).join('\n'));
-            console.log('Records without time_utc:', rows.length);
+            const fs = require('fs');
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync('data/julian_all.json', 'utf8')); } catch(e) {}
+            const noTime = data.filter(r => r && r.jd && r.name && !r.time_utc).slice(0, 200);
+            fs.writeFileSync('/tmp/no_time.jsonl', noTime.map(r => JSON.stringify(r)).join('\n'));
+            console.log('Records to enrich:', noTime.length);
           "
-          if [ -s /tmp/no_time.jsonl ]; then
-            node workers/julian_astrotheme.mjs /tmp/no_time.jsonl > /tmp/enriched.jsonl 2>&1 || true
-            ENRICHED=$(wc -l < /tmp/enriched.jsonl || echo 0)
-            echo "Enriched: ${ENRICHED} records"
-            if [ "$ENRICHED" -gt "0" ]; then
-              node workers/julian_import.mjs /tmp/enriched.jsonl > /tmp/enrich.sql
-              wrangler d1 execute julian \
-                --config workers/julian_wrangler.toml \
-                --file=/tmp/enrich.sql \
-                --remote --yes
-              echo "Astrotheme enrichment imported: ${ENRICHED} records"
-            fi
-          else
-            echo "All records already have time_utc — skip enrichment"
+          if [ ! -s /tmp/no_time.jsonl ]; then
+            echo "All records have time_utc — skip"
+            exit 0
           fi
-        env:
-          CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          node workers/julian_astrotheme.mjs /tmp/no_time.jsonl > /tmp/enriched.jsonl || true
+          echo "── Merge enrichment back into data/julian_all.json ──"
+          node -e "
+            const fs = require('fs');
+            const dataFile = 'data/julian_all.json';
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
+            const lines = fs.readFileSync('/tmp/enriched.jsonl', 'utf8').split('\n').filter(Boolean);
+            const enrichMap = new Map();
+            for (const l of lines) {
+              try { const r = JSON.parse(l); if (r.jd && r.name) enrichMap.set(r.jd+'|'+r.name, r); } catch(e) {}
+            }
+            let count = 0;
+            for (const r of data) {
+              const e = enrichMap.get(r.jd+'|'+r.name);
+              if (!e) continue;
+              if (!r.time_utc && e.time_utc) r.time_utc = e.time_utc;
+              if (!r.lat && e.lat) r.lat = e.lat;
+              if (!r.lng && e.lng) r.lng = e.lng;
+              if (e.confidence) r.confidence = Math.max(r.confidence || 0, e.confidence);
+              count++;
+            }
+            fs.writeFileSync(dataFile, JSON.stringify(data));
+            console.log('Applied enrichment to ' + count + ' records');
+          "
 
       # ─── Export D1 → GitHub Release — ซ่อนไว้ (ใช้เมื่อมี CF D1) ──────────
       - name: Export D1 to GitHub Release
