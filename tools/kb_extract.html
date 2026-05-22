@@ -173,9 +173,21 @@ async function callGroq(chKey, text, key) {
     })
   });
   if (resp.status === 429) throw new Error('rate_limit');
+  if (resp.status === 503 || resp.status === 502) throw new Error('rate_limit'); // Groq overload
   if (!resp.ok) throw new Error('Groq HTTP '+resp.status);
   const data = await resp.json();
-  return parseRules(data.choices[0].message.content || '');
+  const content = data.choices?.[0]?.message?.content || '';
+  // ตรวจว่า Groq ส่ง rate-limit error ใน body (เกิดได้แม้ HTTP 200)
+  if (content.includes('rate_limit') || content.includes('tokens per') || content.includes('quota')) {
+    throw new Error('rate_limit');
+  }
+  const rules = parseRules(content);
+  if (rules === null) {
+    // log raw response (50 chars) เพื่อ debug
+    console.warn(`[${chKey}] parse fail — raw: ${content.slice(0,80)}`);
+    throw new Error('parse_fail:' + content.slice(0,40).replace(/\n/g,' '));
+  }
+  return rules;
 }
 
 // ── Call Typhoon via CF Worker ────────────────────────────────────────────────
@@ -288,18 +300,20 @@ async function startExtraction() {
         // ── Groq primary + optional Typhoon validate (kb_v24-1) ───────────
         log(`📖 <span>${chKey}</span> (${text.length} chars) — เรียก Groq...`);
         let groqRules = null;
-        for (let attempt = 0; attempt < 3; attempt++) {
+        for (let attempt = 0; attempt < 5; attempt++) {
           try {
             groqRules = await callGroq(chKey, text, key);
             break;
           } catch(e) {
-            if (e.message === 'rate_limit') {
-              log(`⏳ <span>${chKey}</span> rate limit — รอ 10s...`);
-              await sleep(10000);
+            const isRateLimit = e.message === 'rate_limit' || e.message.startsWith('parse_fail');
+            if (isRateLimit) {
+              const wait = attempt < 2 ? 15000 : 45000; // 15s → 15s → 45s → 45s → 45s
+              log(`⏳ <span>${chKey}</span> rate limit / parse — รอ ${wait/1000}s... (attempt ${attempt+1}/5)`);
+              await sleep(wait);
             } else throw e;
           }
         }
-        if (groqRules === null) throw new Error('parse failed');
+        if (groqRules === null) throw new Error('parse failed — Groq ไม่ตอบหลัง 5 attempts');
 
         log(`📖 <span>${chKey}</span> Groq: ${groqRules.length} rules — ทดสอบ Typhoon...`);
         const typhoonRules = await callTyphoon(chKey, text);
