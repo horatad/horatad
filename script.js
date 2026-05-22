@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.21
-// Version 3.3.21 | 2026-05-22
+// HORATAD:SCRIPT:3.3.22
+// Version 3.3.22 | 2026-05-22
+// Changes: [V3.3.22] feat(M6): localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync cursor
 // Changes: [V3.3.21] feat(M5): eventChart full support — _compareMode===2 path, cycleMemory _eventIdx, _updateNavHeader compareMode-aware
 // Changes: [V3.3.20] refactor(M4): rename natal1→natal / natal2→synastry ทั้งไฟล์ (63 occurrences)
 // Changes: [V3.3.16] feat: 3-tank memory system (ส่วนตัว / QR / JULIAN) — แยก storage, tab UI, dedup dialog
@@ -17,7 +18,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.21';
+const APP_VERSION='3.3.22';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1049,6 +1050,7 @@ function _moveCursorByFixed(dir){
   if(jdN<JD_LIMIT_MIN){_showToast('เกินขอบเขต ค.ศ. 0');return;}
   if(jdN>JD_LIMIT_MAX){_showToast('เกินขอบเขต ค.ศ. 2700');return;}
   _transitCursor=next;
+  localStorage.setItem('horatad_transit_cursor',JSON.stringify(_transitCursor));
   _recalcTransit();
 }
 function _transitNextSignChange(dir,planet){
@@ -1064,7 +1066,7 @@ function _transitNextSignChange(dir,planet){
     if(jdC<JD_LIMIT_MIN){_showToast('เกินขอบเขต ค.ศ. 0');return;}
     if(jdC>JD_LIMIT_MAX){_showToast('เกินขอบเขต ค.ศ. 2700');return;}
     if(_getPlanetSign(cursor,pIdx)!==startSign){
-      _transitCursor=cursor;_recalcTransit();return;
+      _transitCursor=cursor;localStorage.setItem('horatad_transit_cursor',JSON.stringify(_transitCursor));_recalcTransit();return;
     }
   }
   _showToast('ไม่พบการย้ายราศีในขอบเขต');
@@ -1133,6 +1135,7 @@ function cycleMemory(dir){
     const buf=_dbPersons();
     if(!buf.length){_showToast('ยังไม่มีดวงในสมพงศ์ — กรอกดวงที่ 2 เพื่อเพิ่ม');return;}
     _synastryIdx=(_synastryIdx+dir+buf.length*2)%buf.length;
+    localStorage.setItem('horatad_synastry_idx',_synastryIdx);
     const s=buf[_synastryIdx];
     const y_be=s.y_be||0;
     const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
@@ -1150,6 +1153,7 @@ function cycleMemory(dir){
     const buf=_dbEvents(natal?.uid||undefined);
     if(!buf.length){_showToast('ยังไม่มีเหตุการณ์ที่เชื่อมกับดวงนี้');return;}
     _eventIdx=(_eventIdx+dir+buf.length*2)%buf.length;
+    localStorage.setItem('horatad_event_idx',_eventIdx);
     const s=buf[_eventIdx];
     const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
     const y_ce=_beToce(s.y_be,s.m);
@@ -3088,6 +3092,8 @@ function _tsCalc(){
   const pos=get_data(d,m,y_ce,hr,mn,lng);
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
+  _transitCursor={d,m,y_be,t:tStr};
+  localStorage.setItem('horatad_transit_cursor',JSON.stringify(_transitCursor));
   _transitDate={pos,vel,d,m,y_be,t:tStr,prov};
   localStorage.setItem(TS_DATE_KEY,JSON.stringify({d,m,y_be,t:tStr}));
   if(!_reportTransitShow){
@@ -3918,7 +3924,11 @@ window.addEventListener('DOMContentLoaded',()=>{
     _setField('name-1','ตัวอย่าง');
   }
   resetTransit();
-  _transitCursor=_nowStr(); // M1: init transit cursor = วันนี้
+  _transitCursor=_nowStr();
+  // M6: restore persisted cursor + indices (override วันนี้ด้วยค่าที่บันทึกไว้)
+  try{const _tc=localStorage.getItem('horatad_transit_cursor');if(_tc)_transitCursor=JSON.parse(_tc);}catch(e){}
+  const _si=parseInt(localStorage.getItem('horatad_synastry_idx'));if(!isNaN(_si)&&_si>=0)_synastryIdx=_si;
+  const _ei=parseInt(localStorage.getItem('horatad_event_idx'));if(!isNaN(_ei)&&_ei>=0)_eventIdx=_ei;
   _applyEraStyle();
   switchTab(1);
   calculateChart1();calculateChart2();calculateTransit();
