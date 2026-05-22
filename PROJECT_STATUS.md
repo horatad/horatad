@@ -41,19 +41,13 @@
 - KB V2.3: 342 rules (Gemini extraction — lossy) | R171/R175/R247 ปิดแล้ว (false positive)
 - Engine 3.1.0: master_dict.js + V2.4 reader (typhoon.js + interpretation.js) ✅
 - Schema V2.4 DRAFT: `docs/BIBLE_KB_V2.4_SPEC.md`
-- 🆕 **Source extraction pipeline**: `workers/kb_extractor.mjs` ✅ rewrite เสร็จแล้ว
-  - อ่าน 103 บท (source/CH*.docx) → Claude Sonnet (taxonomy-aware) → v3/kb_v24.json
-  - cost ~$1.50 ครั้งเดียว | resume-capable | Typhoon plug-in ผ่าน TYPHOON_API_KEY
+- ⚠️ **Max Plan Only policy**: ห้ามใช้ ANTHROPIC_API_KEY — extraction ต้อง Claude Code native
+- `workers/kb_extractor.mjs` — system prompt + schema reference ✅ แต่รัน script ไม่ได้
 
 ### Next (Claude ทำได้)
-(ไม่มี — รอ user รัน extractor)
+- [ ] ⭐ **สร้าง Claude Code native extraction flow** — template + batch CH001-CH010 ก่อน
 
-### Blocked (รอ user) — สำคัญที่สุด
-- [ ] [ทดลองใช้] ⭐ **รัน kb_extractor.mjs** — ต้องการ ANTHROPIC_API_KEY
-  ```
-  ANTHROPIC_API_KEY=sk-ant-xxx node workers/kb_extractor.mjs
-  ```
-  output: v3/kb_v24.json (ไม่ทับ kb.json เดิม) | ตรวจ CH036 มี principle "คู่มิตร N คู่" ไหม
+### Blocked (รอ user)
 - [ ] [ทดลองใช้] รัน m0_hallucination_test.html — Groq score
 
 ### ไฟล์หลัก
