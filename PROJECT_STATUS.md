@@ -131,6 +131,38 @@
 
 ---
 
+## CIA — Confidentiality · Integrity · Availability + Performance 🟢 Phase 0 Pending
+**เป้าหมาย:** ตรวจสอบ + เฝ้าระวัง security (กันขโมย source / hack / spam) + ประสิทธิภาพ (ความเร็ว/ตอบสนอง) ของ horatad.com ทั้งระบบ — ยึด benefit/risk trade-off
+
+### สถานะ
+- Charter ครบ: `docs/CIA_MISSION.md` — 3 pillars + risk register R-01..R-14 + Phase 0-4 roadmap + SOPs
+- Threat model: A1-A5 (source thief / casual abuser / supply chain / account takeover / data scraper)
+- Phase 0 (Discovery) ยังไม่เริ่ม — pure audit, ไม่กระทบ code
+
+### Next (Claude ทำได้ — Phase 0 Discovery)
+- [ ] **CIA-P0-A** — XSS surface audit (innerHTML/eval/Function ทุกไฟล์) → `docs/cia/xss_surface_audit_*.md`
+- [ ] **CIA-P0-B** — Secret leak history audit (`git log --all -p`) → `docs/cia/secret_audit_*.md`
+- [ ] **CIA-P0-C** — External resource + supply chain audit → `docs/cia/supply_chain_*.md`
+- [ ] **CIA-P0-D** — Security headers gap analysis + draft `_headers` → `docs/cia/headers_draft_*.md`
+- [ ] **CIA-P0-E** — Bundle size + render-blocking baseline (Lighthouse run ต้อง user)
+- [ ] **CIA-P0-F** — GitHub Actions security audit → `docs/cia/gha_audit_*.md`
+
+### Blocked (รอ user — Phase 0)
+- [ ] [ทดลองใช้] รัน Lighthouse mobile + desktop บน horatad.com → ส่ง HTML report ให้ Claude
+- [ ] [ทดลองใช้] GitHub Settings: 2FA + branch protection main + Dependabot + secret scanning
+- [ ] [ทดลองใช้] Cloudflare dashboard: Rate Limiting rule 30 req/min/IP สำหรับ Worker endpoints
+
+### เริ่ม session
+พิมพ์: `session CIA`
+
+### Handoff ล่าสุด
+`handoffs/CIA_20260522_v1.md`
+
+### Charter (ต้องอ่านก่อน session CIA ทุกครั้ง)
+`docs/CIA_MISSION.md`
+
+---
+
 ## REORG — Docs Cleanup 🟢 Pending (Claude ทำได้)
 **เป้าหมาย:** ลด docs จาก 12 → 8 ไฟล์ ปรับ source of truth ให้ชัด
 
@@ -161,14 +193,15 @@
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
+| Security + Perf | CIA Phase 0 | docs/CIA_MISSION.md | 🟢 Pending — รอ session CIA |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
 
 ---
 
 ## วิธีเริ่ม session ใหม่
-1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / NOK / PLATFORM / REORG / BIG**
+1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / NOK / PLATFORM / CIA / REORG / BIG**
 2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` ล่าสุด
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.19 | Chart redesign M1+M2+M3 เสร็จแล้ว (T1/T2 buttons + transit unit popup + sign-change algorithm) | M4-M6 pending | handoffs/HORATAD_20260522_v3.md*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.19 | Chart redesign M1+M2+M3 เสร็จแล้ว | M4-M6 pending | + CIA project initiated (security+perf+trade-off) → docs/CIA_MISSION.md | handoffs/CIA_20260522_v1.md*

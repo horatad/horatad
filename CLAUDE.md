@@ -19,6 +19,7 @@
 | **JULIAN** | Empirical Astro Database | Julian Day + planet data + บุคคลสำคัญ |
 | **NOK** | Voice Narration Engine | text พยากรณ์ → เสียงพูด (Web Speech → cloud TTS → audio export) |
 | **PLATFORM** | Training + Chatbot + Content | กระจาย prediction ทุกช่องทาง (Phase 2+) |
+| **CIA** | Security + Performance Watchdog | ตรวจสอบ+เฝ้าระวัง ปลอดภัย+เร็ว ทั้ง ecosystem (cross-cutting) — charter: `docs/CIA_MISSION.md` |
 
 **Handoff files:** `handoffs/<PROJECT>_<YYYYMMDD>_v<n>.md`
 - ตัวอย่าง: `handoffs/HORATAD_20260521_v2.md`, `handoffs/BIBLE_20260522_v1.md`
