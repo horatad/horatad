@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Dict Editor — Horatad</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d2e; --border: #2d3154;
+    --text: #e8eaf6; --muted: #7986cb; --accent: #5c6bc0;
+    --pos: #4caf50; --neg: #f44336; --neu: #ff9800;
+    --save: #66bb6a; --load: #42a5f5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; font-size: 14px; min-height: 100vh; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  header h1 { font-size: 16px; font-weight: 600; color: var(--muted); }
+  header h1 span { color: var(--text); }
+  .badge { background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.85; }
+  .btn-load { background: var(--load); color: #fff; }
+  .btn-save { background: var(--save); color: #fff; }
+  .btn-sm { padding: 3px 10px; font-size: 12px; }
+  .spacer { flex: 1; }
+  .status { font-size: 12px; color: var(--muted); }
+  .status.ok { color: var(--pos); }
+  .status.err { color: var(--neg); }
+
+  nav { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; }
+  nav button { padding: 10px 18px; border: none; background: none; color: var(--muted); cursor: pointer; font-size: 13px; white-space: nowrap; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  nav button.active { color: var(--text); border-bottom-color: var(--accent); background: rgba(92,107,192,0.1); }
+  nav button:hover:not(.active) { color: var(--text); }
+
+  .tab-content { display: none; padding: 20px; }
+  .tab-content.active { display: block; }
+
+  .search-bar { margin-bottom: 16px; display: flex; gap: 8px; }
+  .search-bar input { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+  .search-bar input:focus { outline: none; border-color: var(--accent); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--surface); color: var(--muted); padding: 8px 12px; text-align: left; font-size: 12px; font-weight: 500; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid var(--border); }
+  td { padding: 6px 12px; border-bottom: 1px solid rgba(45,49,84,0.5); vertical-align: top; }
+  tr:hover td { background: rgba(92,107,192,0.05); }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin: 1px; }
+  .pill-fire { background: rgba(244,67,54,0.2); color: #ef9a9a; }
+  .pill-wind { background: rgba(255,152,0,0.2); color: #ffcc80; }
+  .pill-water { background: rgba(33,150,243,0.2); color: #90caf9; }
+  .pill-earth { background: rgba(76,175,80,0.2); color: #a5d6a7; }
+  .pill-bap { background: rgba(244,67,54,0.15); color: #ef9a9a; }
+  .pill-sup { background: rgba(76,175,80,0.15); color: #a5d6a7; }
+  .pill-neutral { background: rgba(158,158,158,0.15); color: #bdbdbd; }
+  .pill-kw { background: rgba(92,107,192,0.2); color: #9fa8da; }
+  .planet-id { font-size: 18px; font-weight: 700; color: var(--accent); }
+
+  .editable { border: 1px solid transparent; border-radius: 4px; padding: 2px 4px; cursor: text; min-width: 60px; display: inline-block; }
+  .editable:hover { border-color: var(--border); background: rgba(255,255,255,0.03); }
+  .editable:focus { outline: none; border-color: var(--accent); background: rgba(92,107,192,0.1); }
+  .editable.modified { border-color: var(--neu); }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 3px; }
+  .tag-edit { background: transparent; border: none; color: var(--text); font-size: 12px; padding: 0; width: 100%; min-height: 40px; resize: vertical; }
+  .tag-edit:focus { outline: none; }
+  textarea.tag-edit { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 4px; }
+  textarea.tag-edit:focus { border-color: var(--accent); }
+
+  .quality-graph { font-family: monospace; color: var(--muted); }
+  .strength-bar { height: 6px; background: var(--border); border-radius: 3px; margin-top: 4px; }
+  .strength-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+
+  .domain-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+  .domain-card h3 { font-size: 14px; color: var(--accent); margin-bottom: 6px; }
+
+  .json-preview { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-family: 'Courier New', monospace; font-size: 12px; color: #90caf9; overflow-x: auto; white-space: pre; max-height: 400px; overflow-y: auto; }
+
+  .empty { color: var(--muted); font-style: italic; padding: 20px; text-align: center; }
+  .loader { text-align: center; padding: 40px; color: var(--muted); }
+
+  .url-input { width: 100%; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-family: monospace; margin-bottom: 8px; }
+  .url-input:focus { outline: none; border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Horatad / <span>Master Dict Editor</span></h1>
+  <span class="badge">bible memory</span>
+  <div class="spacer"></div>
+  <span class="status" id="statusText">ยังไม่ได้โหลดข้อมูล</span>
+  <button class="btn btn-load" onclick="showLoadDialog()">โหลด JSON</button>
+  <button class="btn btn-save" onclick="exportJSON()">ดาวน์โหลด JSON</button>
+</header>
+
+<nav>
+  <button class="active" onclick="switchTab('planets', this)">ดาว (Planets)</button>
+  <button onclick="switchTab('houses', this)">ภพ (Houses)</button>
+  <button onclick="switchTab('qualities', this)">คุณภาพ (Quality)</button>
+  <button onclick="switchTab('domains', this)">โดเมน (Domains)</button>
+  <button onclick="switchTab('preview', this)">JSON Preview</button>
+</nav>
+
+<!-- LOAD DIALOG -->
+<div id="loadDialog" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:100; align-items:center; justify-content:center;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px; max-width:500px; width:90%;">
+    <h3 style="margin-bottom:12px; color:var(--text);">โหลด master_dict_meanings.json</h3>
+    <p style="color:var(--muted); font-size:12px; margin-bottom:8px;">URL (GitHub raw หรือ local URL)</p>
+    <input type="text" class="url-input" id="loadUrl"
+      value="https://raw.githubusercontent.com/horatad/horatad/main/v3/master_dict_meanings.json"
+      placeholder="https://raw.githubusercontent.com/...">
+    <p style="color:var(--muted); font-size:12px; margin:8px 0;">หรือเลือกไฟล์จากเครื่อง</p>
+    <input type="file" id="fileInput" accept=".json" style="color:var(--text);">
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn btn-load" onclick="loadFromUrl()">โหลดจาก URL</button>
+      <button class="btn btn-load" onclick="loadFromFile()">โหลดจากไฟล์</button>
+      <button class="btn" style="background:var(--border);" onclick="hideLoadDialog()">ยกเลิก</button>
+    </div>
+    <p id="loadError" style="color:var(--neg); font-size:12px; margin-top:8px; display:none;"></p>
+  </div>
+</div>
+
+<!-- PLANETS TAB -->
+<div class="tab-content active" id="tab-planets">
+  <div class="search-bar">
+    <input type="text" placeholder="ค้นหาดาว..." id="planetSearch" oninput="filterPlanets()">
+  </div>
+  <div id="planetContent"><div class="empty">กด "โหลด JSON" เพื่อเริ่มต้น</div></div>
+</div>
+
+<!-- HOUSES TAB -->
+<div class="tab-content" id="tab-houses">
+  <div id="houseContent"><div class="empty">กด "โหลด JSON" เพื่อเริ่มต้น</div></div>
+</div>
+
+<!-- QUALITIES TAB -->
+<div class="tab-content" id="tab-qualities">
+  <div id="qualityContent"><div class="empty">กด "โหลด JSON" เพื่อเริ่มต้น</div></div>
+</div>
+
+<!-- DOMAINS TAB -->
+<div class="tab-content" id="tab-domains">
+  <div id="domainContent"><div class="empty">กด "โหลด JSON" เพื่อเริ่มต้น</div></div>
+</div>
+
+<!-- JSON PREVIEW TAB -->
+<div class="tab-content" id="tab-preview">
+  <div style="margin-bottom:12px; display:flex; gap:8px; align-items:center;">
+    <span style="color:var(--muted); font-size:13px;">JSON ปัจจุบัน (รวมการแก้ไข)</span>
+    <button class="btn btn-save btn-sm" onclick="copyJSON()">คัดลอก</button>
+  </div>
+  <div class="json-preview" id="jsonPreview">{ ยังไม่มีข้อมูล }</div>
+</div>
+
+<script>
+let data = null;
+let modified = false;
+
+function setStatus(msg, type='') {
+  const el = document.getElementById('statusText');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'preview') updatePreview();
+}
+
+function showLoadDialog() {
+  document.getElementById('loadDialog').style.display = 'flex';
+  document.getElementById('loadError').style.display = 'none';
+}
+function hideLoadDialog() {
+  document.getElementById('loadDialog').style.display = 'none';
+}
+
+async function loadFromUrl() {
+  const url = document.getElementById('loadUrl').value.trim();
+  if (!url) return;
+  try {
+    setStatus('กำลังโหลด...', '');
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    data = await res.json();
+    hideLoadDialog();
+    renderAll();
+    setStatus('โหลดสำเร็จ — ' + url.split('/').pop(), 'ok');
+  } catch(e) {
+    const el = document.getElementById('loadError');
+    el.textContent = 'โหลดไม่ได้: ' + e.message;
+    el.style.display = 'block';
+    setStatus('โหลดไม่ได้', 'err');
+  }
+}
+
+function loadFromFile() {
+  const file = document.getElementById('fileInput').files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      data = JSON.parse(e.target.result);
+      hideLoadDialog();
+      renderAll();
+      setStatus('โหลดจากไฟล์: ' + file.name, 'ok');
+    } catch(err) {
+      const el = document.getElementById('loadError');
+      el.textContent = 'JSON ผิดรูปแบบ: ' + err.message;
+      el.style.display = 'block';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderAll() {
+  renderPlanets();
+  renderHouses();
+  renderQualities();
+  renderDomains();
+}
+
+const elementClass = {'ไฟ':'fire','ลม':'wind','น้ำ':'water','ดิน':'earth'};
+const natureClass = {'บาป':'bap','สุภ':'sup'};
+
+function renderPlanets() {
+  if (!data || !data.planets) return;
+  const cont = document.getElementById('planetContent');
+  let html = '<table><thead><tr><th>#</th><th>ชื่อ</th><th>ธาตุ / สภาวะ</th><th>แทน (represents)</th><th>คำ + (keywords)</th><th>คำ − (keywords)</th><th>อาชีพ</th></tr></thead><tbody>';
+  Object.entries(data.planets).forEach(([id, p]) => {
+    const el = elementClass[p.element] || 'neutral';
+    const nat = Object.keys(natureClass).find(k => p.nature && p.nature.startsWith(k));
+    const natCls = nat ? natureClass[nat] : 'neutral';
+    html += `<tr data-planet="${id}">
+      <td><span class="planet-id">${id}</span></td>
+      <td>
+        <strong>${p.name}</strong><br>
+        <small style="color:var(--muted)">${p.name_en||''}</small>
+      </td>
+      <td>
+        <span class="pill pill-${el}">${p.element||'?'}</span>
+        <span class="pill pill-${natCls}">${p.nature||'?'}</span>
+      </td>
+      <td>${(p.represents||[]).map(r=>`<span class="pill pill-neutral">${r}</span>`).join('')}</td>
+      <td>${(p.positive_keywords||[]).map(k=>`<span class="pill pill-sup">+${k}</span>`).join('')}</td>
+      <td>${(p.negative_keywords||[]).map(k=>`<span class="pill pill-bap">−${k}</span>`).join('')}</td>
+      <td>${(p.career_areas||[]).map(c=>`<span class="pill pill-kw">${c}</span>`).join('')}</td>
+    </tr>`;
+    if (p.special_note) {
+      html += `<tr data-planet="${id}"><td colspan="7" style="color:var(--neu); font-size:12px; padding:4px 12px;">⚠️ ${p.special_note}</td></tr>`;
+    }
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+function filterPlanets() {
+  const q = document.getElementById('planetSearch').value.toLowerCase();
+  document.querySelectorAll('#planetContent tr[data-planet]').forEach(row => {
+    row.style.display = !q || row.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function renderHouses() {
+  if (!data || !data.houses) return;
+  const cont = document.getElementById('houseContent');
+  let html = '<table><thead><tr><th>ภพ</th><th>ชื่อ</th><th>แทน (represents)</th><th>Keywords</th></tr></thead><tbody>';
+  Object.entries(data.houses).forEach(([id, h]) => {
+    html += `<tr>
+      <td><span class="planet-id">${id}</span></td>
+      <td><strong>${h.name}</strong></td>
+      <td>${(h.represents||[]).map(r=>`<span class="pill pill-neutral">${r}</span>`).join('')}</td>
+      <td>${(h.keywords||[]).map(k=>`<span class="pill pill-kw">${k}</span>`).join('')}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+function renderQualities() {
+  if (!data || !data.qualities) return;
+  const cont = document.getElementById('qualityContent');
+  let html = '<table><thead><tr><th>คุณภาพ</th><th>คำอธิบาย</th><th>กำลัง</th><th>Pattern</th><th>กราฟ</th><th>หมายเหตุ</th></tr></thead><tbody>';
+  Object.entries(data.qualities).forEach(([name, q]) => {
+    html += `<tr>
+      <td><strong style="color:var(--accent)">${name}</strong></td>
+      <td style="font-size:12px">${q.description||''}</td>
+      <td style="font-size:12px; color:var(--muted)">${q.strength||''}</td>
+      <td style="font-size:12px">${q.pattern||''}</td>
+      <td class="quality-graph">${q.graph||''}</td>
+      <td style="font-size:12px; color:var(--neu)">${q.note||''}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  cont.innerHTML = html;
+}
+
+function renderDomains() {
+  if (!data || !data.domains) return;
+  const cont = document.getElementById('domainContent');
+  let html = '';
+  Object.entries(data.domains).forEach(([name, d]) => {
+    html += `<div class="domain-card">
+      <h3>${name} <small style="color:var(--muted); font-size:12px;">(${d.en||''})</small></h3>
+      <p style="font-size:13px; color:var(--muted)">${d.description||''}</p>
+    </div>`;
+  });
+  if (!html) html = '<div class="empty">ไม่มีข้อมูล</div>';
+  cont.innerHTML = html;
+}
+
+function updatePreview() {
+  const el = document.getElementById('jsonPreview');
+  if (!data) { el.textContent = '{ ยังไม่มีข้อมูล }'; return; }
+  el.textContent = JSON.stringify(data, null, 2);
+}
+
+function exportJSON() {
+  if (!data) { alert('ยังไม่ได้โหลดข้อมูล'); return; }
+  data._meta = data._meta || {};
+  data._meta.updated = new Date().toISOString().slice(0,10);
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'master_dict_meanings.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  setStatus('ดาวน์โหลดแล้ว — commit ลง repo เพื่อ sync', 'ok');
+}
+
+function copyJSON() {
+  if (!data) return;
+  navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+    .then(() => setStatus('คัดลอกแล้ว', 'ok'));
+}
+</script>
+</body>
+</html>

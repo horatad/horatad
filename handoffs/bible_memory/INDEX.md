@@ -1,6 +1,6 @@
 # BIBLE Memory — INDEX
 # อ่านไฟล์นี้ก่อนทุก BIBLE session (แทน BIBLE_memory.md เดิม)
-# Last updated: 2026-05-23
+# Last updated: 2026-05-23 (added PROMPTS.md)
 
 ## ไฟล์ย่อย
 
@@ -11,15 +11,17 @@
 | [HOUSES.md](HOUSES.md) | ภพ 12, aspects, priority, disambiguation | Reference | extract / Q&A ภพ |
 | [QUALITY.md](QUALITY.md) | คุณภาพดาว, กฎลบ-ลบ=บวก, อุจ vs มหาจักร | Reference | extract / Q&A |
 | [SYNTAX.md](SYNTAX.md) | extraction logic, rule types, polarity | Reference | extraction session |
+| [TAXONOMY.md](TAXONOMY.md) | rule JSON schema spec สำหรับ LLM (Typhoon/Groq/Claude) | Reference | extraction session |
 | [VOCAB.md](VOCAB.md) | compound words, key concepts, domain keywords | Reference | extraction session |
 | [CHAPTERS.md](CHAPTERS.md) | chapter map, extraction progress | Editable | check progress |
+| [PROMPTS.md](PROMPTS.md) | extraction prompt templates (Template 1-4), QC checklist, tuning log | Reference | extraction session |
 | **[LOG.md](LOG.md)** | **session log — append-only, date-time** | **Append-only** | **ทุก session** |
 
 ## Session Start Protocol
 
 ### BIBLE extraction session
 ```
-อ่าน: INDEX.md → LOG.md → SYNTAX.md → VOCAB.md
+อ่าน: INDEX.md → LOG.md → SYNTAX.md → TAXONOMY.md → VOCAB.md → PROMPTS.md
 ```
 
 ### BIBLE Q&A session (ตอบคำถามโหราศาสตร์)
