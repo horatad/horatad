@@ -4,30 +4,30 @@
 
 > **Source of truth:**
 > - Charter risks (R-01..R-14): `docs/GUARD_MISSION.md` § 3.2
-> - Extended risks + status: `handoffs/GUARD_20260523_v1.md`
+> - Extended risks + status: `handoffs/GUARD_20260523_v2.md`
 
 ## Risk register (18 risks)
 
 | ID | Risk | Priority/Status | Source |
 |---|---|---|---|
-| R-01 | Secret leak in commit | P0 | ✅ history clean; control gap (gitleaks) → P1-A |
-| R-02 | Worker quota burn | P1 | open — [ทดลองใช้] CF rate limit + T-02 |
-| R-03 | XSS via user input | P1 | F1 found (low-med) → P1-D patch; CSP P1-B as backstop |
-| R-04 | GitHub/CF account takeover | P0 | open ([ทดลองใช้]) |
-| R-05 | Stale SW cache | done ✅ | — |
-| R-06 | Source code "theft" | N/A | accepted (open by design) |
-| R-07 | QR URL user-data scrape | P1 | scoped — Option C recommended → P1-E |
-| R-08 | LCP > 4s mobile | P0 measure | blocked on user Lighthouse run |
+| R-01 | Secret leak ใน commit | medium | high | gitleaks CI + audit | **P0** | low |
+| R-02 | Worker quota burn | medium | medium | CF rate limit | **P1** | low |
+| R-03 | XSS via user input (form ชื่อ) | low | medium | CSP + sanitize on render | **P1** | low |
+| R-04 | Account takeover GitHub/CF | low | catastrophic | 2FA + branch protection | **P0** | very low |
+| R-05 | Stale SW cache after deploy | low | medium | no-store header (มีแล้ว) | ✅ done | — |
+| R-06 | Source code "ถูกขโมย" | high | very low | accepted (public by design) | **N/A** | — |
+| R-07 | User data scrape via QR URL | medium | low | privacy notice + opt-in clear share | **P1** | low |
+| R-08 | LCP > 4s บน 3G mobile | high (?) | medium | measure → optimize | **P0 measure, P1 fix** | medium |
 | R-09 | Spam form submit | low | low | accepted (form is local-only, no server side-effect) | **N/A** | — |
-| R-10 | Supply chain | P0 enable | static excellent ✅; Dependabot = user task |
-| R-11 | Missing CSP/clickjacking | P1 | drafted → P1-B apply |
-| R-12 | GHA fork abuse | P0 | ✅ mitigated by trigger design |
+| R-10 | Supply chain (npm dep compromise) | low | high | minimal deps (vanilla JS) ✅ + Dependabot | **P0 enable, P3 audit** | low |
+| R-11 | Missing CSP / clickjacking | medium | low-medium | CSP + X-Frame-Options ใน `_headers` | **P1** | very low |
+| R-12 | GitHub Action runs arbitrary code from PRs | low | high | disable PR workflow trigger from forks | **P0** | very low |
 | R-13 | localStorage XSS data theft | low | medium | CSP gates XSS surface | covered by R-03 | — |
-| R-14 | julian_all.json 15MB | P2 | confirmed on-demand only (not initial); repo bloat noted |
-| R-15 | Stale long-lived API token | P1 | scheduled in SECRETS.md → P1-F automation |
-| R-16 | Wikidata scrape compliance | P1 | ✅ COMPLIANT |
-| R-17 | horatad-auth hardening | P1 | client OK; Worker source blocked → [ทดลองใช้] |
-| R-18 | Secret sprawl & inventory drift | P1 | docs/SECRETS.md created; rotation automation → P1-F |
+| R-14 | julian_all.json 15MB slow first-load | high | medium | shard or lazy-fetch | **P2** | medium |
+| R-15 | Stale long-lived API token (CF/Groq/Typhoon) | medium | high | quarterly rotation + GH issue auto-create | **P1** | low |
+| R-16 | Wikidata SPARQL scrape compliance | low | medium | UA + backoff + 1500ms gap (verified COMPLIANT 2026-05-23) | **P1 ✅ closed** | — |
+| R-17 | horatad-auth Worker hardening | medium | high | client gate cosmetic; Worker source review required | **P1** | medium |
+| R-18 | Secret sprawl & inventory drift | medium | medium | docs/SECRETS.md + rotation reminder workflow | **P1** | low |
 
 ## Transferred items (T-NN → R-NN cross-link)
 
@@ -37,7 +37,7 @@ _(no T-NN transfers found)_
 
 1. **อ่านไฟล์นี้** — overview risks + status
 2. `docs/GUARD_MISSION.md` — full context (threat model, decision framework, SOPs)
-3. `handoffs/GUARD_20260523_v1.md` — live task state, blocked/pending/done
+3. `handoffs/GUARD_20260523_v2.md` — live task state, blocked/pending/done
 
 ## คำสั่ง maintenance
 
@@ -46,7 +46,7 @@ _(no T-NN transfers found)_
 node scripts/admin/gen_risk_register.mjs
 
 # ตรวจ handoff format
-node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260523_v1.md
+node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260523_v2.md
 
 # BIG overview
 node scripts/admin/big_status.mjs --verbose
