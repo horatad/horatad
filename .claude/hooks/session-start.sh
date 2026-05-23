@@ -40,10 +40,12 @@ if [ -d handoffs ]; then
   echo ""
   echo "Latest handoffs:"
   for P in HORATAD BIBLE JULIAN NOK PLATFORM CIA REORG BIG; do
-    LATEST=$(ls -1 handoffs/${P}_*.md 2>/dev/null | sort -r | head -1)
+    LATEST=$(ls -1 handoffs/${P}_[0-9]*_v[0-9]*.md 2>/dev/null | sort -r | head -1)
     if [ -n "$LATEST" ]; then
-      P_COUNT=$(grep -c '^\[ \]' "$LATEST" 2>/dev/null || echo 0)
-      B_COUNT=$(grep -c '\[BLOCKED\]' "$LATEST" 2>/dev/null || echo 0)
+      P_COUNT=$(grep -c '^\[ \]' "$LATEST" 2>/dev/null | head -1)
+      B_COUNT=$(grep -c '\[BLOCKED\]' "$LATEST" 2>/dev/null | head -1)
+      P_COUNT=${P_COUNT:-0}
+      B_COUNT=${B_COUNT:-0}
       printf "  %-9s %s  (pending=%s blocked=%s)\n" "$P" "${LATEST#handoffs/}" "$P_COUNT" "$B_COUNT"
     fi
   done
