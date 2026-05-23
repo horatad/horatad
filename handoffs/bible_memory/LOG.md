@@ -38,6 +38,17 @@
 - Q&A mode: ตอบคำถามโหราศาสตร์จาก KB 290 rules → flag KB gap → candidate rule ใหม่
 - CLAUDE.md อัปเดตชี้ไปที่ bible_memory/INDEX.md + LOG.md แทนเดิม
 
+## 2026-05-23 — Quality review R200-R290 findings
+
+### Schema issues พบและแก้แล้ว
+- `contexts` field schema drift: R001-R100 ถูกต้อง (['natal']/['transit']); R101-R290 เปลี่ยนเป็น keyword tags โดยไม่ตั้งใจ → แก้ 135 rules แล้ว
+- `polarity="~"` = valid value ตลอด KB (111/290 rules) หมายถึง conditional/mixed — ไม่ใช่ error → บันทึกใน TAXONOMY.md
+- `domain` taxonomy: KB ใช้ domain รวมกว่า TAXONOMY.md (นิสัย, หลักการ, ดาวจร, โชคลาภ, ความสัมพันธ์) → update TAXONOMY.md
+
+### Meaning/semantic: ผ่านทั้งหมด
+- R200-R290: เนื้อหาสมเหตุสมผล ตรงกับหลักสุริยยาตร์
+- ไม่พบ semantic error หรือ polarity ผิดอย่างชัดเจน
+
 ## 2026-05-23 — Extraction infrastructure + Master Dict architecture
 
 ### ไฟล์ใหม่ที่สร้าง
