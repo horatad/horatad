@@ -32,7 +32,7 @@
 - [ ] [ทดลองใช้] ทดสอบ NOK TTS guide บน Android Chrome
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker → **GUARD T-02 owns rate-limit policy**
 - [ ] [BLOCKED] cloud sync — รอ server confirm
-- [ ] [BLOCKED] QR URL privacy — รอ Option A/B → **GUARD T-01 / R-07 owner** (GUARD แนะนำ Option C: friendly disclosure)
+- [ ] [BLOCKED] QR URL privacy — รอ Option A/B/C → **GUARD R-07 owner**
 
 ### Handoff ล่าสุด
 `handoffs/HORATAD_20260523_v3.md`
