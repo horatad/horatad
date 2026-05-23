@@ -34,8 +34,11 @@ for i in $(seq 1 $MAX_RETRY); do
   # ลอง ff main ตรง
   if git push origin "$BRANCH:main" 2>/dev/null; then
     echo "✓ ff main สำเร็จ (attempt $i/$MAX_RETRY)"
-    # sync remote feature branch ด้วย — ป้องกัน stop-hook แจ้ง "N unpushed"
-    # (rebase เปลี่ยน SHA ของ feature branch → remote branch ค้าง SHA เก่า)
+    # reset feature branch ให้ตรงกับ main — "clean branch" pattern
+    # เหตุผล: feature branch คือ staging ชั่วคราว ไม่ใช่ long-running branch
+    #         reset ทำให้ครั้งต่อไปเป็น ff ตรงเสมอ (ไม่ต้อง rebase)
+    #         และป้องกัน commits จาก session อื่นติดมาทาง rebase
+    git reset --hard origin/main 2>/dev/null || true
     git push --force-with-lease origin "$BRANCH" 2>/dev/null || true
     exit 0
   fi

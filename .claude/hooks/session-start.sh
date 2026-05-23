@@ -31,6 +31,24 @@ else
   echo "✓ main = HEAD (synced)"
 fi
 
+# ตรวจ cross-project commit contamination บน branch
+# branch ควรมีเฉพาะ commits ของ project เดียว
+if [ "$PENDING" != "0" ] && [ "$BRANCH" != "main" ]; then
+  # ดึง prefix จาก branch name เช่น claude/bible-XXX → BIBLE
+  BRANCH_PROJECT=$(echo "$BRANCH" | grep -oiE '(bible|horatad|julian|nok|guard|reorg|platform|big)' | head -1 | tr '[:lower:]' '[:upper:]')
+  if [ -n "$BRANCH_PROJECT" ]; then
+    # หา commits ที่ prefix ไม่ตรง project ของ branch
+    FOREIGN=$(git log origin/main..HEAD --oneline 2>/dev/null \
+      | grep -iv "$BRANCH_PROJECT" | grep -v "^$" | wc -l | tr -d ' ')
+    if [ "$FOREIGN" -gt 0 ]; then
+      echo "⚠ พบ commits ต่าง project บน branch นี้ ($FOREIGN commits ไม่ใช่ $BRANCH_PROJECT):"
+      git log origin/main..HEAD --oneline 2>/dev/null \
+        | grep -iv "$BRANCH_PROJECT" | head -3 | sed 's/^/   /'
+      echo "   → รัน bash scripts/admin/ff_main.sh เพื่อ clean branch"
+    fi
+  fi
+fi
+
 if [ "$UNCOMMITTED" != "0" ]; then
   echo "⚠ uncommitted files: $UNCOMMITTED"
 fi
