@@ -1,0 +1,27 @@
+{
+  "_doc": {
+    "purpose": "Manual seed data — records ที่ user/อาจารย์เติมเอง (accuracy A/B/C) — supplement Wikidata scraper",
+    "policy": "ห้ามใส่ time_utc ที่ไม่มี source verify — accuracy=A ต้องเป็นสูจิบัตร จริง, B=ครอบครัว, C=สาธารณะ cite source",
+    "merge_rule": "manual seed > Wikidata scraped (เพราะ accuracy สูงกว่า) — workflow merge แทนที่ records ที่ jd+name ตรง",
+    "schema": {
+      "jd": "Julian Day (integer)",
+      "name": "ชื่อบุคคล (Thai หรือ English)",
+      "event_label": "label เพื่อ filter (e.g. 'พระมหากษัตริย์ไทย', 'นักการเมืองไทย')",
+      "type": "human | event",
+      "country": "ISO-3166 alpha-2 (TH, US, ...)",
+      "tier": "1 = บุคคลสำคัญ tier 1 | 2 = ทั่วไป",
+      "lat": "latitude (decimal, optional)",
+      "lng": "longitude (decimal, optional)",
+      "time_utc": "HH:MM (UTC) — null ถ้าไม่ทราบ",
+      "lagna_sign": "ลัคนาราศี 0-11 (optional)",
+      "relate_id": "JD array ของ death/marriage/event ที่เกี่ยวข้อง",
+      "source": "ที่มาของข้อมูล — ระบุ URL หรือชื่อสูจิบัตร",
+      "source_type": "manual | official | family | public",
+      "accuracy": "A สูจิบัตร | B คนใกล้ชิด | C สาธารณะ verified | D date only | F unknown",
+      "validated_count": 0,
+      "confidence": "0.0-1.0",
+      "notes": "เพิ่มเติม — citation URL, จังหวัด, รายละเอียด"
+    }
+  },
+  "records": []
+}

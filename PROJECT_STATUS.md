@@ -67,29 +67,31 @@
 
 ### สถานะ (2026-05-23)
 - Schema: ✅ + `accuracy` field A/B/C/D/F | JD: ✅
-- **Records: 47,508 / 100,000 (47.5%)** | distinct jd: 20,813 (dedup rate 56%)
-- Accuracy distribution: A=0 B=0 C=588 D=46,910 F=10
+- **Records: 53,148 / 100,000 (53.1%)** — workflow run #21 +5,640
+- Accuracy distribution: A=0 B=0 C=588 D=52,550 F=10
 - Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
-- Astrotheme enrichment: ⚠️ time_utc ทำงาน (1.24% match) | lat/lng = 0 (parser ไม่ได้ extract — pending fix)
+- Astrotheme enrichment: ⚠️ time_utc ทำงาน (1.24% match) | lat/lng = 0 (parser ไม่ได้ extract)
+- Wikipedia TH enrichment: ⚠️ run แล้วได้ 0 records — รอ debug
+- **Manual seed input tool ใหม่**: `tools/julian_seed_input.html` + workflow merge step
 
 ### Accuracy grades
-- **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user seed)
+- **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user เติมผ่าน tool)
 - **B** คนใกล้ชิด / family testimony — ครอบครัวยืนยัน (ยังไม่มี)
 - **C** สาธารณะ verified — Astrotheme + Wikipedia cite source (588 records)
-- **D** สาธารณะ unverified — Wikidata date only, no time (46,910 records)
+- **D** สาธารณะ unverified — Wikidata date only, no time (52,550 records)
 - **F** unknown — placeholder default (10 records)
 
 ### Next (Claude ทำได้)
-- [ ] Debug Astrotheme lat/lng parser — ไม่ critical แต่ดี (parser มี selector ไม่ตรง)
-- [ ] เพิ่ม distinct birthdate diversity — query ใหม่เน้น profession variety (ไม่ใช่แค่ era cron)
-- [ ] manual seed list คนไทย (accuracy A/B) — รอ user provide
+- [ ] Debug Wikipedia TH step — 0 records enriched (ดู log JULIAN Data Sync run)
+- [ ] Debug Astrotheme lat/lng parser — selector ไม่ตรง coord field
+- [ ] Astro-Databank scraper (astro.com) — Rodden Rating AA/A/B/C/DD → accuracy A/B/C/D/F
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] Trigger workflow run ครั้งแรกหลังเปลี่ยน target 100K
+- [ ] ⭐ **เปิด `tools/julian_seed_input.html`** กรอก records accuracy A/B/C ของคนใกล้ตัว → export JSON → commit
 - [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ"
-- [ ] [BLOCKED] รอ user provide seed list คนไทย accuracy A/B (สูจิบัตร/ครอบครัว)
+- [ ] [ทดลองใช้] ดู workflow log step "Wikipedia TH enrichment" → ส่งให้ Claude debug
 
 ### Handoff ล่าสุด
 `handoffs/JULIAN_20260523_v1.md`
@@ -223,7 +225,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD V3.3.19 | script.js, v3/*, index.html | 🟡 Pre-launch — M4-M6 pending |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN 47,508/100,000 (distinct jd 20,813) | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Empirical DB | JULIAN 53,148/100,000 | workers/julian_scraper.mjs, workers/julian_seed_merge.mjs, tools/julian_seed_input.html | 🟢 Automation + manual seed tool ready |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Security + Perf | GUARD Phase 1 6/7 done | docs/GUARD_MISSION.md + docs/cia/* + docs/SECRETS.md + _headers + auth-pin.js | 🟢 P1-A/B/C/D/F/G ✅ — P1-E blocked on user |

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>JULIAN Seed Input — เพิ่มบุคคลสำคัญด้วยมือ</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", "Sarabun", sans-serif; max-width: 760px; margin: 1rem auto; padding: 0 1rem; background: #fafafa; color: #222; }
+  h1 { margin: 0.5rem 0; font-size: 1.25rem; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+  label { display: block; margin: 0.5rem 0 0.25rem; font-size: 0.9rem; color: #555; }
+  input, select, textarea { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; font-family: inherit; }
+  textarea { min-height: 60px; resize: vertical; }
+  .row { display: flex; gap: 0.5rem; }
+  .row > * { flex: 1; }
+  button { padding: 0.5rem 1rem; border: 0; border-radius: 4px; background: #2563eb; color: #fff; cursor: pointer; font-size: 0.95rem; }
+  button.secondary { background: #6b7280; }
+  button.danger { background: #dc2626; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .accuracy-help { font-size: 0.8rem; color: #666; line-height: 1.4; }
+  .grade { display: inline-block; padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: bold; margin-right: 0.3rem; }
+  .grade-A { background: #16a34a; color: #fff; }
+  .grade-B { background: #84cc16; color: #fff; }
+  .grade-C { background: #facc15; color: #333; }
+  .grade-D { background: #fb923c; color: #fff; }
+  .grade-F { background: #94a3b8; color: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th, td { padding: 0.4rem; text-align: left; border-bottom: 1px solid #eee; }
+  th { background: #f3f4f6; font-weight: 600; }
+  .actions { display: flex; gap: 0.5rem; margin: 1rem 0; flex-wrap: wrap; }
+  #status { padding: 0.5rem; background: #fff7ed; border-left: 3px solid #fb923c; margin: 1rem 0; font-size: 0.9rem; display: none; }
+  #status.ok { background: #f0fdf4; border-color: #16a34a; }
+  #status.err { background: #fef2f2; border-color: #dc2626; }
+  small { color: #666; }
+</style>
+</head>
+<body>
+
+<h1>📥 JULIAN Seed Input</h1>
+<p style="color:#555;font-size:0.9rem">เติมข้อมูลบุคคลสำคัญ accuracy A/B/C ที่ Wikidata ไม่มี — export เป็น JSON แล้ว commit ลง <code>data/julian_thai_seed.json</code></p>
+
+<div id="status"></div>
+
+<div class="card">
+  <h2 style="font-size:1.05rem;margin-top:0">Accuracy A/B/C/D/F</h2>
+  <div class="accuracy-help">
+    <span class="grade grade-A">A</span> สูจิบัตร / official document — เชื่อถือได้สูงสุด<br>
+    <span class="grade grade-B">B</span> ครอบครัว / คนใกล้ชิด — รายงานปากเปล่ายืนยัน<br>
+    <span class="grade grade-C">C</span> สาธารณะ verified — Wikipedia ที่อ้างอิงแหล่ง, ข่าวที่ระบุเวลาเกิด<br>
+    <span class="grade grade-D">D</span> สาธารณะ unverified — รู้แค่วัน ไม่มีเวลา<br>
+    <span class="grade grade-F">F</span> unknown — ไม่มีแหล่งข้อมูล (placeholder)
+  </div>
+</div>
+
+<div class="card">
+  <h2 style="font-size:1.05rem;margin-top:0">➕ เพิ่มบุคคลใหม่</h2>
+  <label>ชื่อ <small>(Thai หรือ English)</small></label>
+  <input id="f-name" placeholder="เช่น ปรีดี พนมยงค์">
+
+  <label>ป้ายกำกับ (event_label)</label>
+  <input id="f-label" placeholder="เช่น นักการเมืองไทย, ราชวงศ์, ศิลปินแห่งชาติ">
+
+  <div class="row">
+    <div>
+      <label>ประเทศ</label>
+      <input id="f-country" value="TH" maxlength="2">
+    </div>
+    <div>
+      <label>Tier</label>
+      <select id="f-tier">
+        <option value="1">1 = สำคัญสูง</option>
+        <option value="2">2 = ทั่วไป</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>วันเกิด (Gregorian)</label>
+      <input id="f-date" type="date">
+    </div>
+    <div>
+      <label>เวลาเกิด <small>(UTC, optional)</small></label>
+      <input id="f-time" type="time">
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Latitude</label>
+      <input id="f-lat" type="number" step="0.0001" placeholder="13.7563">
+    </div>
+    <div>
+      <label>Longitude</label>
+      <input id="f-lng" type="number" step="0.0001" placeholder="100.5018">
+    </div>
+  </div>
+
+  <label>Accuracy</label>
+  <select id="f-accuracy">
+    <option value="A">A — สูจิบัตร</option>
+    <option value="B">B — คนใกล้ชิด</option>
+    <option value="C" selected>C — สาธารณะ verified</option>
+    <option value="D">D — date only (no time)</option>
+    <option value="F">F — unknown</option>
+  </select>
+
+  <label>Source <small>(URL หรือ citation)</small></label>
+  <input id="f-source" placeholder="เช่น https://th.wikipedia.org/wiki/ปรีดี_พนมยงค์ หรือ 'สูจิบัตรเลขที่ ...'">
+
+  <label>Notes <small>(จังหวัด, อาชีพ, รายละเอียด)</small></label>
+  <textarea id="f-notes" placeholder="birth_province:กรุงเทพ"></textarea>
+
+  <div style="display:flex;gap:0.5rem;margin-top:1rem">
+    <button onclick="addRecord()">บันทึก</button>
+    <button class="secondary" onclick="clearForm()">ล้าง</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2 style="font-size:1.05rem;margin-top:0">📋 รายการที่เพิ่มแล้ว (<span id="count">0</span>)</h2>
+  <div class="actions">
+    <button onclick="exportJSON()">⬇️ Export JSON</button>
+    <button class="secondary" onclick="importJSON()">⬆️ Import JSON</button>
+    <button class="danger" onclick="clearAll()" id="btn-clear-all">ล้างทั้งหมด</button>
+  </div>
+  <table id="list">
+    <thead><tr><th>ชื่อ</th><th>JD</th><th>วัน</th><th>เวลา</th><th>Acc</th><th></th></tr></thead>
+    <tbody id="tbody"><tr><td colspan="6"><em>ยังไม่มีข้อมูล — เพิ่มด้านบน</em></td></tr></tbody>
+  </table>
+</div>
+
+<input type="file" id="file-import" accept=".json" style="display:none">
+
+<script>
+const KEY = 'julian_seed_records';
+let records = JSON.parse(localStorage.getItem(KEY) || '[]');
+
+// Gregorian Y/M/D + H/M (UTC) → JD (integer ที่ noon UTC, fractional ถ้ามี time)
+function gregorianToJD(y, m, d, hh = 12, mi = 0) {
+  if (m <= 2) { y -= 1; m += 12; }
+  const a = Math.floor(y / 100);
+  const b = 2 - a + Math.floor(a / 4);
+  const jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + b - 1524.5
+           + (hh + mi / 60) / 24;
+  return Math.floor(jd);
+}
+
+function status(msg, type = '') {
+  const s = document.getElementById('status');
+  s.textContent = msg;
+  s.className = type;
+  s.style.display = 'block';
+  if (type === 'ok') setTimeout(() => { s.style.display = 'none'; }, 3000);
+}
+
+function addRecord() {
+  const name = document.getElementById('f-name').value.trim();
+  const dateStr = document.getElementById('f-date').value;
+  if (!name) return status('ใส่ชื่อก่อน', 'err');
+  if (!dateStr) return status('เลือกวันเกิดก่อน', 'err');
+
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const timeStr = document.getElementById('f-time').value;
+  const [hh, mi] = timeStr ? timeStr.split(':').map(Number) : [12, 0];
+  const jd = gregorianToJD(y, m, d, hh, mi);
+
+  const lat = parseFloat(document.getElementById('f-lat').value) || null;
+  const lng = parseFloat(document.getElementById('f-lng').value) || null;
+  const accuracy = document.getElementById('f-accuracy').value;
+
+  const rec = {
+    jd,
+    name,
+    event_label: document.getElementById('f-label').value.trim() || null,
+    type: 'human',
+    country: document.getElementById('f-country').value.trim().toUpperCase().slice(0, 2) || null,
+    tier: parseInt(document.getElementById('f-tier').value),
+    lat, lng,
+    time_utc: timeStr || null,
+    lagna_sign: null,
+    relate_id: null,
+    source: document.getElementById('f-source').value.trim() || 'manual:thai_seed',
+    source_type: 'manual',
+    accuracy,
+    validated_count: 0,
+    confidence: accuracy === 'A' ? 0.98 : accuracy === 'B' ? 0.93 : accuracy === 'C' ? 0.88 : 0.80,
+    notes: document.getElementById('f-notes').value.trim() || null,
+  };
+
+  // Check duplicate by jd+name
+  const key = jd + '|' + name;
+  const idx = records.findIndex(r => (r.jd + '|' + r.name) === key);
+  if (idx >= 0) { records[idx] = rec; status(`อัปเดต: ${name}`, 'ok'); }
+  else { records.push(rec); status(`เพิ่ม: ${name} (JD ${jd})`, 'ok'); }
+
+  localStorage.setItem(KEY, JSON.stringify(records));
+  render();
+  clearForm();
+}
+
+function clearForm() {
+  ['f-name','f-label','f-date','f-time','f-lat','f-lng','f-source','f-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-country').value = 'TH';
+  document.getElementById('f-tier').value = '1';
+  document.getElementById('f-accuracy').value = 'C';
+}
+
+function deleteRecord(i) {
+  if (!confirm('ลบ "' + records[i].name + '" หรือไม่?')) return;
+  records.splice(i, 1);
+  localStorage.setItem(KEY, JSON.stringify(records));
+  render();
+}
+
+function editRecord(i) {
+  const r = records[i];
+  document.getElementById('f-name').value = r.name;
+  document.getElementById('f-label').value = r.event_label || '';
+  document.getElementById('f-country').value = r.country || 'TH';
+  document.getElementById('f-tier').value = String(r.tier ?? 1);
+  // jd → Gregorian (approximate, ตัด fractional)
+  const jd = r.jd + 0.5;
+  const z = Math.floor(jd);
+  let a = z;
+  if (z >= 2299161) {
+    const alpha = Math.floor((z - 1867216.25) / 36524.25);
+    a = z + 1 + alpha - Math.floor(alpha / 4);
+  }
+  const b = a + 1524;
+  const c = Math.floor((b - 122.1) / 365.25);
+  const dd = Math.floor(365.25 * c);
+  const e = Math.floor((b - dd) / 30.6001);
+  const day = b - dd - Math.floor(30.6001 * e);
+  const month = e < 14 ? e - 1 : e - 13;
+  const year = month > 2 ? c - 4716 : c - 4715;
+  document.getElementById('f-date').value = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  document.getElementById('f-time').value = r.time_utc || '';
+  document.getElementById('f-lat').value = r.lat ?? '';
+  document.getElementById('f-lng').value = r.lng ?? '';
+  document.getElementById('f-source').value = r.source || '';
+  document.getElementById('f-notes').value = r.notes || '';
+  document.getElementById('f-accuracy').value = r.accuracy || 'C';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function render() {
+  document.getElementById('count').textContent = records.length;
+  const tbody = document.getElementById('tbody');
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><em>ยังไม่มีข้อมูล — เพิ่มด้านบน</em></td></tr>';
+    return;
+  }
+  tbody.innerHTML = records.map((r, i) => `
+    <tr>
+      <td>${r.name}</td>
+      <td>${r.jd}</td>
+      <td>${r.notes?.includes('birth_province:') ? r.notes.split('birth_province:')[1].split(',')[0] : ''}</td>
+      <td>${r.time_utc || '-'}</td>
+      <td><span class="grade grade-${r.accuracy}">${r.accuracy}</span></td>
+      <td>
+        <button class="secondary" onclick="editRecord(${i})" style="padding:0.2rem 0.5rem;font-size:0.8rem">แก้</button>
+        <button class="danger" onclick="deleteRecord(${i})" style="padding:0.2rem 0.5rem;font-size:0.8rem">ลบ</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function exportJSON() {
+  if (!records.length) return status('ไม่มีข้อมูลให้ export', 'err');
+  const payload = {
+    _doc: { exported: new Date().toISOString(), count: records.length },
+    records,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'julian_thai_seed.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  status(`Export ${records.length} records`, 'ok');
+}
+
+function importJSON() {
+  document.getElementById('file-import').click();
+}
+
+document.getElementById('file-import').addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const text = await f.text();
+    const data = JSON.parse(text);
+    const imported = Array.isArray(data) ? data : (data.records || []);
+    if (!imported.length) return status('ไฟล์ไม่มี records', 'err');
+    if (confirm(`Import ${imported.length} records (replace ปัจจุบัน ${records.length})?`)) {
+      records = imported;
+      localStorage.setItem(KEY, JSON.stringify(records));
+      render();
+      status(`Imported ${records.length} records`, 'ok');
+    }
+  } catch (err) {
+    status('Import fail: ' + err.message, 'err');
+  }
+});
+
+function clearAll() {
+  if (!confirm('ลบ records ทั้งหมด (' + records.length + ')?')) return;
+  records = [];
+  localStorage.setItem(KEY, JSON.stringify(records));
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>

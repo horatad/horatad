@@ -200,6 +200,23 @@ jobs:
             git push origin HEAD:main
           fi
 
+      # ─── Manual seed merge — รวม data/julian_thai_seed.json → julian_all.json ──
+      # รันหลัง enrichment ทุกแหล่ง — manual seed > scraped (accuracy A/B/C overrides D)
+      - name: Manual seed merge
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          node workers/julian_seed_merge.mjs || true
+          if git diff --quiet data/julian_all.json; then
+            echo "Seed merge: no changes"
+          else
+            git config user.name  "JULIAN Bot"
+            git config user.email "julian-bot@horatad.com"
+            git add data/julian_all.json
+            git commit -m "JULIAN seed: merge manual records"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       # ─── Upload to GitHub Release ─────────────────────────────
       - name: Upload to GitHub Release
         if: steps.scrape.outputs.status == 'ok'
