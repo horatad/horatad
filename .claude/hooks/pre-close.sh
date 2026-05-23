@@ -24,9 +24,24 @@ if [ "$UNCOMMITTED" != "0" ]; then
 fi
 
 if [ "$PENDING" != "0" ] && [ "$BRANCH" != "main" ]; then
-  echo "⚠ pre-close: $PENDING commits ค้างบน $BRANCH ยังไม่ ff main" >&2
-  echo "   รัน: git push -u origin $BRANCH && git push origin $BRANCH:main" >&2
-  ISSUES=$((ISSUES+1))
+  echo "⚠ pre-close: $PENDING commits ค้างบน $BRANCH — กำลัง ff main อัตโนมัติ..." >&2
+
+  # Push feature branch ก่อน (ถ้ายังไม่ได้ push)
+  git push -u origin "$BRANCH" --quiet 2>/dev/null || true
+
+  # ff main ด้วย rebase+retry
+  FF_SCRIPT="$(dirname "$0")/../../scripts/admin/ff_main.sh"
+  if [ -f "$FF_SCRIPT" ]; then
+    if bash "$FF_SCRIPT" "$BRANCH" 2>&1 | sed 's/^/   /' >&2; then
+      echo "✓ pre-close: ff main สำเร็จ — branch $BRANCH synced" >&2
+    else
+      echo "✗ pre-close: ff main ล้มเหลว — รัน bash scripts/admin/ff_main.sh $BRANCH" >&2
+      ISSUES=$((ISSUES+1))
+    fi
+  else
+    echo "⚠ pre-close: ไม่พบ ff_main.sh — รัน: git push origin $BRANCH:main" >&2
+    ISSUES=$((ISSUES+1))
+  fi
 fi
 
 # Latest handoff timestamp — ถ้าเก่ากว่า session HEAD = handoff อาจค้าง

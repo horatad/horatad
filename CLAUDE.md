@@ -587,7 +587,7 @@ Claude **ไม่มี tool ดู token usage จริง** — ใช้ he
 **Auto-deploy ทุก commit** (ผู้ใช้ confirm แล้ว — ทำเงียบๆ ไม่ถาม):
 ```bash
 git push -u origin <feature-branch>
-git push origin <feature-branch>:main           # ff main — MANDATORY, ทุก session ทุก commit
+bash scripts/admin/ff_main.sh <feature-branch>  # ff main พร้อม rebase+retry — MANDATORY
 git push origin <SHA>:refs/heads/backup/vX.Y.Z  # backup branch
 git checkout main && git reset --hard origin/main && git checkout <feature-branch>  # sync local main
 ```
@@ -596,6 +596,11 @@ git checkout main && git reset --hard origin/main && git checkout <feature-branc
 - ทุก commit ของทุก session ต้องลงไป main เสมอ — ห้ามลืม
 - session ใหม่ checkout จาก main → ถ้าไม่ ff main, work หาย invisible
 - ก่อนปิด session ตรวจ `git log origin/main..HEAD` — ถ้าไม่ empty → push ค้างอยู่ → push ทันที
+
+**ff_main.sh — retry logic** (แก้ race condition):
+- ลอง ff main ตรง → ถ้า main ขยับไปแล้ว → fetch + rebase + retry สูงสุด 3 ครั้ง
+- ถ้า rebase conflict → หยุดและแจ้งให้แก้มือ (ไม่ force-push)
+- pre-close hook เรียก ff_main.sh อัตโนมัติเมื่อ session ปิด
 
 **Backup**:
 - ใช้ **branch** ชื่อ `backup/vX.Y.Z` (git tag push เจอ 403 ใน sandbox นี้)
