@@ -30,7 +30,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B → **GUARD T-01 / R-07 owner** (GUARD แนะนำ Option C: friendly disclosure)
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260522_v3.md`
+`handoffs/HORATAD_20260523_v1.md`
 
 ---
 
@@ -212,7 +212,7 @@
 - [ ] Rename `BIBLE_MISSION.md` → `BIBLE.md` + `JULIAN_MISSION.md` → `JULIAN.md` (consistency)
 
 ### Handoff ล่าสุด
-`handoffs/REORG_20260522_v2.md`
+`handoffs/REORG_20260523_v3.md`
 
 ---
 
