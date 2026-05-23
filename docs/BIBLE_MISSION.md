@@ -220,7 +220,7 @@ Julian Day DB (บุคคลสำคัญ) → คำนวณ planets[] →
 → เก็บลง rule.empirical_p ใน kb.json
 ```
 
-### Schema (เพิ่มใน kb.json V2.2.0)
+### Schema (เพิ่มใน kb.json V2.3.0)
 ```json
 {
   "empirical_p":    0.73,     // P(trait | config) — null ถ้าไม่มีข้อมูล
@@ -313,7 +313,7 @@ matched_rules → extract keywords จาก rule.p (deterministic)
 | `dictionary_builder_v3.html` | Build/edit rules + Import AI + Export kb.json |
 | `scripts/parse_yaml_kb.mjs` | แปลง YAML KB → kb_yaml_import.json |
 | `scripts/gen_rule_skeletons.mjs` | สร้าง skeleton rules สำหรับ missing combinations (M7) |
-| `v3/kb.json` | V2.2.0 — 342 rules, 284 มี conditions + empirical schema |
+| `v3/kb.json` | V2.3.0 — 342 rules, 284 มี conditions + empirical schema |
 | `v3/kb_skeletons.json` | 90 skeleton rules (planet×quality missing) — รอ expert กรอก |
 | `v3/kb_yaml_import.json` | output จาก parse_yaml_kb.mjs (342 rules) |
 | `v3/typhoon.js` | match_rules(), build_prompt(), send_to_typhoon() |
