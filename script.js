@@ -2056,7 +2056,7 @@ function _renderTank(filter){
   _memCache.forEach((m,i)=>{
     if(f&&!(m.name||'').toLowerCase().includes(f)&&!(m.prov||'').toLowerCase().includes(f))return;
     const y_ce=_beToce(m.y_be,m.m);
-    const meta=`${m.d}/${m.m}/${m.y_be} (${y_ce}) · ${m.t}`;
+    const meta=`${_escHtml(m.d)}/${_escHtml(m.m)}/${_escHtml(m.y_be)} (${_escHtml(y_ce)}) · ${_escHtml(m.t)}`;
     if(_activeTank==='qr'){
       items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
     }else{
@@ -2685,7 +2685,7 @@ function _renderSompongList(){
     <div class="memory-item" style="display:flex;align-items:center;gap:6px">
       <div style="flex:1;min-width:0;cursor:pointer" onclick="_sompongLoadByUid('${s.uid}')">
         <div class="memory-name">${_escHtml(s.name||'—')}</div>
-        <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}</div>
+        <div class="memory-meta">${_escHtml(s.d||'')}/${_escHtml(s.m||'')}/${_escHtml(s.y_be||'')} · ${_escHtml(s.t||'')}</div>
       </div>
       <button onclick="_sompongDeleteByUid('${s.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
     </div>
@@ -2743,7 +2743,7 @@ function _renderEventSlotsList(){
     return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
       <div style="flex:1;min-width:0;cursor:pointer" onclick="_eventSlotLoadByUid('${s.uid}')">
         <div class="memory-name">${_escHtml(s.name||'—')}</div>
-        <div class="memory-meta">${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''}${linkedName?' · 🔗 '+_escHtml(linkedName):''}</div>
+        <div class="memory-meta">${_escHtml(s.d||'')}/${_escHtml(s.m||'')}/${_escHtml(s.y_be||'')} · ${_escHtml(s.t||'')}${linkedName?' · 🔗 '+_escHtml(linkedName):''}</div>
       </div>
       <button onclick="_eventSlotDeleteByUid('${s.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
     </div>`;
@@ -2892,7 +2892,7 @@ function _renderDB1List(){
       return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
         <div style="flex:1;min-width:0;cursor:pointer" onclick="_db1Load('${r.uid}')">
           <div class="memory-name">${_escHtml(r.name||'—')}${badge}</div>
-          <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''} · ${_escHtml(r.prov||'')}</div>
+          <div class="memory-meta">${_escHtml(r.d||'')}/${_escHtml(r.m||'')}/${_escHtml(r.y_be||'')} · ${_escHtml(r.t||'')} · ${_escHtml(r.prov||'')}</div>
         </div>
         <button onclick="event.stopPropagation();_db1Edit('${r.uid}')" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">✏️</button>
         <button onclick="event.stopPropagation();_db1Delete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
@@ -2903,7 +2903,7 @@ function _renderDB1List(){
       return`<div class="memory-item" style="display:flex;align-items:center;gap:6px">
         <div style="flex:1;min-width:0">
           <div class="memory-name">${_escHtml(r.name||'—')}</div>
-          <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''}${linked?' · 🔗 '+_escHtml(linked.name||''):''}</div>
+          <div class="memory-meta">${_escHtml(r.d||'')}/${_escHtml(r.m||'')}/${_escHtml(r.y_be||'')} · ${_escHtml(r.t||'')}${linked?' · 🔗 '+_escHtml(linked.name||''):''}</div>
         </div>
         <button onclick="event.stopPropagation();_db1TypeDelete('${r.uid}')" style="flex:0;background:#3d444c;border:none;color:#f85149;padding:4px 8px;border-radius:4px;cursor:pointer;font-size:12px">ลบ</button>
       </div>`;
@@ -3108,7 +3108,7 @@ function _renderGroupBody(){
         <div class="memory-item" style="display:flex;align-items:center;gap:4px">
           <div style="flex:1;min-width:0;cursor:pointer" onclick="_groupLoadAsNatal1('${r.uid}')">
             <div class="memory-name">${_escHtml(r.name||'—')}</div>
-            <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''}</div>
+            <div class="memory-meta">${_escHtml(r.d||'')}/${_escHtml(r.m||'')}/${_escHtml(r.y_be||'')} · ${_escHtml(r.t||'')}</div>
           </div>
           <button onclick="event.stopPropagation();_groupLoadAsNatal1('${r.uid}')" style="flex:0;background:#1a3c6b;border:none;color:#79c0ff;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:11px">โหลด</button>
           <button onclick="event.stopPropagation();_groupLoadAsNatal2('${r.uid}')" style="flex:0;background:#3d1f6b;border:none;color:#c9b8f0;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:11px">เปรียบ</button>
@@ -3188,7 +3188,7 @@ function _renderNatalPicker(){
   list.innerHTML=filtered.length?filtered.map(r=>`
     <div class="memory-item" style="cursor:pointer" onclick="_groupAddMember('${r.uid}')">
       <div class="memory-name">${_escHtml(r.name||'—')}</div>
-      <div class="memory-meta">${r.d||''}/${r.m||''}/${r.y_be||''} · ${r.t||''} · ${_escHtml(r.prov||'')}</div>
+      <div class="memory-meta">${_escHtml(r.d||'')}/${_escHtml(r.m||'')}/${_escHtml(r.y_be||'')} · ${_escHtml(r.t||'')} · ${_escHtml(r.prov||'')}</div>
     </div>`).join(''):'<div style="text-align:center;padding:20px;color:#666;font-size:13px">'+(q?'ไม่พบ':'ไม่มีดวงที่เพิ่มได้')+'</div>';
 }
 function _groupAddMember(natalUid){

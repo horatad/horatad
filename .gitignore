@@ -1,1 +1,30 @@
+# Node / build
 node_modules/
+dist/
+build/
+.cache/
+coverage/
+.tmp/
+
+# Credentials & local config
+.env
+.env.*
+*.local
+*.key
+*.pem
+*.p12
+*.pfx
+.npmrc
+credentials.json
+service-account*.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/settings.json
+.idea/
+
+# Misc
+*.log

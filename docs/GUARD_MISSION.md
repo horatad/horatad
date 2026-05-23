@@ -203,6 +203,10 @@
 | R-12 | GitHub Action runs arbitrary code from PRs | low | high | disable PR workflow trigger from forks | **P0** | very low |
 | R-13 | localStorage XSS data theft | low | medium | CSP gates XSS surface | covered by R-03 | — |
 | R-14 | julian_all.json 15MB slow first-load | high | medium | shard or lazy-fetch | **P2** | medium |
+| R-15 | Stale long-lived API token (CF/Groq/Typhoon) | medium | high | quarterly rotation + GH issue auto-create | **P1** | low |
+| R-16 | Wikidata SPARQL scrape compliance | low | medium | UA + backoff + 1500ms gap (verified COMPLIANT 2026-05-23) | **P1 ✅ closed** | — |
+| R-17 | horatad-auth Worker hardening | medium | high | client gate cosmetic; Worker source review required | **P1** | medium |
+| R-18 | Secret sprawl & inventory drift | medium | medium | docs/SECRETS.md + rotation reminder workflow | **P1** | low |
 
 ### 3.3 Things we DON'T do (และเหตุผล)
 
@@ -297,6 +301,18 @@
 [ ] Initial JS bundle < 500KB transfer
 [ ] No new render-blocking resource ใน <head>
 [ ] ถ้า regression → block bump version จนกว่าจะ fix หรือ explicit waiver ใน handoff
+```
+
+### SOP-05: Quarterly secret rotation (Mar / Jun / Sep / Dec — auto-issue)
+```
+1. รอ GH issue auto-created โดย .github/workflows/rotate_secrets_reminder.yml (P1-F)
+2. ตาม checklist ใน docs/SECRETS.md § 5 ทำ rotate ทุก key ที่ frequency=quarterly
+3. หลัง rotate แต่ละ key:
+   - ทดสอบ workflow / Worker ที่ใช้ key นั้น (kb_extract_test สำหรับ GROQ; manual call horatad.com → V3 → Predict สำหรับ TYPHOON)
+   - revoke old key หลัง confirm new key ใช้ได้
+   - อัปเดต docs/SECRETS.md (`last_rotated` field) ใน commit เดียวกัน
+4. ปิด issue เมื่อทุก key เสร็จ
+5. ถ้าพบ key หายไปจาก source-of-truth (sprawl drift) → R-18 trigger + update SECRETS.md ทันที
 ```
 
 ---
