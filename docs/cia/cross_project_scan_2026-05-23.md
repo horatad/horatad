@@ -121,6 +121,38 @@ When BIBLE Phase 2+ adds:
 - Multi-turn conversation history → **prompt leak risk** — design audit needed
 - KB editor in tools/ → **user write access to KB** — currently dev-only; audit when productized
 
+### 2.4 Finding B-03 — Developer tool LLM keys in browser localStorage (T-09)
+
+**Severity:** low-medium | **Risk:** R-13 (localStorage XSS) + R-18 (secret sprawl)
+**Added:** 2026-05-23 (session 3 supplementary scan, parallel to v3 main work)
+
+ตรวจ `tools/*.html` ที่ใช้ LLM API จาก browser พบ:
+
+| File | Storage key | Provider | Risk |
+|---|---|---|---|
+| `tools/kb_extract.html:460` | `bible_groq_key` | Groq | localStorage key persists |
+| `m0_hallucination_test.html:395` | `m0_key_g` | Gemini | + URL query string `?key=...` (l.208) |
+| `m0_hallucination_test.html:396` | `m0_key_r` | Groq | localStorage |
+
+**Risk analysis:**
+- ⚠️ ถ้า tools/* page ใดมี XSS surface → key หลุดผ่าน localStorage shared (same origin `horatad.github.io`)
+- ⚠️ `m0_hallucination_test.html` ส่ง key ใน URL query string → log ที่ Google server-side (สำหรับ debug)
+- ✅ ทั้ง 2 ไฟล์เป็น **developer tool** — user count = 1 (developer คนเดียว)
+- ✅ Free tier quota ที่ Groq/Gemini → abuse impact จำกัด
+
+**Verdict:** **accept** ภายใต้เงื่อนไข:
+1. ตรวจ tools/kb_extract.html + m0_hallucination_test.html ไม่มี user input render = XSS surface
+2. แจ้งใน inventory `docs/SECRETS.md` § "Developer tool storage"
+3. Rotation cycle SOP-05 ครอบคลุม (รอบ Mar/Jun/Sep/Dec)
+4. ใช้ `localStorage.clear()` หรือ private window เมื่อใช้ device แชร์
+
+**Cross-link:**
+- เพิ่ม T-09 ใน GUARD handoff v3 PENDING list
+- update `docs/SECRETS.md` § dev tools section ครั้งหน้า BIBLE session (owner BIBLE)
+- ผูก rotation reminder ของ Groq/Gemini ไปกับ T-03 (CF token) ใน quarterly workflow
+
+**Owner:** GUARD (audit + policy), BIBLE (operational use)
+
 ---
 
 ## 3. REORG (Docs Reorganization)

@@ -491,7 +491,7 @@ bump `X.Y.Z` พร้อมกัน **6 จุด**:
 ## Project quirks
 
 - **Memory dedup key**: `${name}|${d}/${m}/${y_be}|${t}|${prov}` — ถ้าแก้ field ที่เป็นส่วนของ key จะสร้าง entry ใหม่ (V2.2.38 รองรับ edit mode ผ่าน `replaceKey` param)
-- **PIN auth**: V3 tab unlock ผ่าน CF Worker `horatad-auth` — ห้าม hardcode PIN ใน frontend → **GUARD T-06 / R-17** hardening audit pending (GUARD-P0-G: constant-time compare, rate limit, timing-safe response)
+- **PIN auth**: V3 tab unlock ผ่าน CF Worker `horatad-auth` — ห้าม hardcode PIN ใน frontend → **GUARD T-06 / R-17** audit 2026-05-23: **client-side OK** (no hardcoded PIN, flow ผ่าน Worker จริง) แต่ **DevTools workaround พบ** — V3 tab unlock เป็น CSS class manipulation (ลบ `hidden` class = unlock ไม่ต้อง PIN). **Intent decision needed:** (1) ถ้า PIN gate Typhoon cost → ต้อง refactor horatad-ai Worker ให้ verify session cookie จาก horatad-auth; (2) ถ้า UX friction เฉยๆ → คงเดิม + document ที่นี่ว่าไม่ใช่ security boundary. รายละเอียด: `docs/cia/horatad_auth_audit_2026-05-23.md`
 - **Era toggle**: BE (พ.ศ.) ↔ CE (ค.ศ.) — input field เก็บตาม era ปัจจุบัน แต่ memory เก็บ y_be เสมอ
 - **Numpad commit**: `_setField()` ใช้ `.value=` ตรงๆ → ไม่ trigger `input` event → ถ้าต้องปลุก listener (เช่น DB indicator) ต้องเรียกเอง
 - **iOS Safari `<input type="time">`**: บางครั้ง fire เฉพาะ `change` ไม่ใช่ `input`
