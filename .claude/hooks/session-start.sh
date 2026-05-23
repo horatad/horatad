@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart hook — แสดง main sync + project status ตอน session เริ่ม
+# SessionStart hook — แสดง main sync + project status + scope banner ตอน session เริ่ม
 # Config ใน .claude/settings.json
 # กฎ: เร็ว (<3s) + read-only + ไม่ block session
 
@@ -31,17 +31,18 @@ else
   echo "✓ main = HEAD (synced)"
 fi
 
+if [ "$UNCOMMITTED" != "0" ]; then
+  echo "⚠ uncommitted files: $UNCOMMITTED"
+fi
+
 # ตรวจ cross-project commit contamination บน branch
-# branch ควรมีเฉพาะ commits ของ project เดียว
 if [ "$PENDING" != "0" ] && [ "$BRANCH" != "main" ]; then
-  # ดึง prefix จาก branch name เช่น claude/bible-XXX → BIBLE
   BRANCH_PROJECT=$(echo "$BRANCH" | grep -oiE '(bible|horatad|julian|nok|guard|reorg|platform|big)' | head -1 | tr '[:lower:]' '[:upper:]')
   if [ -n "$BRANCH_PROJECT" ]; then
-    # หา commits ที่ prefix ไม่ตรง project ของ branch
     FOREIGN=$(git log origin/main..HEAD --oneline 2>/dev/null \
       | grep -iv "$BRANCH_PROJECT" | grep -v "^$" | wc -l | tr -d ' ')
     if [ "$FOREIGN" -gt 0 ]; then
-      echo "⚠ พบ commits ต่าง project บน branch นี้ ($FOREIGN commits ไม่ใช่ $BRANCH_PROJECT):"
+      echo "⚠ พบ commits ต่าง project บน branch ($FOREIGN commits ไม่ใช่ $BRANCH_PROJECT):"
       git log origin/main..HEAD --oneline 2>/dev/null \
         | grep -iv "$BRANCH_PROJECT" | head -3 | sed 's/^/   /'
       echo "   → รัน bash scripts/admin/ff_main.sh เพื่อ clean branch"
@@ -49,15 +50,34 @@ if [ "$PENDING" != "0" ] && [ "$BRANCH" != "main" ]; then
   fi
 fi
 
-if [ "$UNCOMMITTED" != "0" ]; then
-  echo "⚠ uncommitted files: $UNCOMMITTED"
+# แสดง scope banner ถ้ามีการประกาศ scope ไว้ (.claude/session_scope)
+SCOPE_FILE="$(dirname "$0")/session_scope"
+if [ -f "$SCOPE_FILE" ]; then
+  SCOPE=$(cat "$SCOPE_FILE" | tr '[:lower:]' '[:upper:]' | tr -d '[:space:]')
+  if [ -n "$SCOPE" ]; then
+    echo ""
+    echo "🔒 SESSION SCOPE: $SCOPE (จาก session ก่อน)"
+    case "$SCOPE" in
+      HORATAD) FILES="script.js · index.html · style.css · sw.js · v3/v3tab.js · v3/engine.js · v3/interpretation.js · v3/typhoon.js · docs/HORATAD*" ;;
+      BIBLE)   FILES="v3/kb*.json · workers/kb_extract* · workers/groq* · workers/typhoon* · tools/kb_* · docs/BIBLE*" ;;
+      JULIAN)  FILES="workers/julian* · data/julian* · tools/julian* · docs/JULIAN*" ;;
+      NOK)     FILES="v3/tts.js · docs/NOK*" ;;
+      GUARD)   FILES="docs/GUARD* · docs/cia/* · docs/SECRETS.md · .github/workflows/* · _headers · auth-pin.js" ;;
+      REORG)   FILES="docs/*.md (restructure only)" ;;
+      BIG)     FILES="scripts/admin/* · .claude/hooks/* · ECOSYSTEM.md · DEPLOY.md" ;;
+      *)       FILES="custom scope" ;;
+    esac
+    echo "   ✅ $FILES"
+    echo "   📝 shared: CLAUDE.md · PROJECT_STATUS.md · handoffs/${SCOPE}*"
+    echo "   ❌ ห้ามแก้ไฟล์ project อื่น"
+    echo "   ⚠ Claude: ถ้า scope เปลี่ยน ให้รัน: echo 'NEW_PROJECT' > .claude/hooks/session_scope"
+  fi
 fi
 
 # Project handoffs ล่าสุด (1 บรรทัด/project — auto-discover จาก filesystem)
 if [ -d handoffs ]; then
   echo ""
   echo "Latest handoffs:"
-  # discover project codes จากชื่อไฟล์ <CODE>_YYYYMMDD_vN.md
   PROJECTS=$(ls handoffs/[A-Z]*_[0-9]*_v[0-9]*.md 2>/dev/null \
     | sed -E 's|.*/([A-Z]+)_[0-9]+_v[0-9]+\.md|\1|' \
     | sort -u)

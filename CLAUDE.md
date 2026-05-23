@@ -349,18 +349,60 @@ Option B: [upgrade $X/เดือน — ได้อะไรเพิ่ม]
 User ไม่อยากเฝ้า — ทุก session ทำตามนี้
 
 ### Session scope (สำคัญ — อ่านก่อนเสมอ)
-- **ทุก session มี project scope 1 อย่าง**: BIG | HORATAD | BIBLE | JULIAN | PLATFORM | (project ใหม่)
+- **ทุก session มี project scope 1 อย่าง**: BIG | HORATAD | BIBLE | JULIAN | NOK | GUARD | REORG | PLATFORM
 - User ประกาศ scope ตอนเริ่ม เช่น "session BIBLE" หรือ "BIG"
 - ถ้าไม่ประกาศ → อ่าน `PROJECT_STATUS.md` แล้วเลือก project ที่มี PENDING สูงสุด
-- **Cross-project request**: ถ้า user ขอให้ทำงานนอก scope → **บันทึกลง handoff ของ project ปลายทาง แล้วแจ้ง user แต่ไม่ทำใน session นี้**
-  ตัวอย่าง: อยู่ใน BIBLE session แล้ว user พูดถึง HORATAD bug → note ลง `handoffs/HORATAD_*.md` + แจ้ง "บันทึกไว้ใน HORATAD แล้ว จะทำ session ถัดไป"
+- **เมื่อรู้ scope แล้ว → ทำ 2 สิ่งทันที ก่อนทำงานใดๆ:**
+  1. เขียน scope ลงไฟล์: `echo 'PROJECT' > .claude/hooks/session_scope`
+  2. แสดง scope banner (format ด้านล่าง)
 
-- **Cross-project impact** (สำคัญ): เมื่อ session นี้เปลี่ยนอะไรที่ **project อื่น depend on** → ต้องอัปเดต handoff ของ project ปลายทางทันที ไม่รอให้ session นั้นมาเจอเอง
-  ตัวอย่างที่ต้องแจ้ง:
-  - JULIAN เปลี่ยน export URL / data format → อัปเดต HORATAD handoff ส่วน "JULIAN dependency"
-  - JULIAN เพิ่ม field ใหม่ใน julian_all.json → note ใน HORATAD handoff ว่า import function ต้องรองรับ field ใหม่
-  - BIBLE เปลี่ยน kb.json schema → note ใน HORATAD handoff ว่า v3tab.js อาจกระทบ
-  Format: เพิ่ม section `## 📨 Incoming from <PROJECT>` ใน handoff ปลายทาง
+#### 🔒 Scope Banner — แสดงทุกครั้งที่ประกาศ project
+
+```
+━━━ SESSION SCOPE: [PROJECT] ━━━
+✅ ไฟล์ที่แตะได้: [file list]
+📝 shared (แตะได้เสมอ): CLAUDE.md · PROJECT_STATUS.md · handoffs/[PROJECT]*
+❌ ห้ามแก้: ไฟล์ของ project อื่น
+cross-project request → note handoff ปลายทาง + ปฏิเสธ
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+#### 📁 File Ownership — ใครเป็นเจ้าของไฟล์ไหน
+
+| Project | ไฟล์ที่เป็นเจ้าของ |
+|---|---|
+| **HORATAD** | `script.js` · `index.html` · `style.css` · `sw.js` · `manifest.json` · `v3/v3tab.js` · `v3/engine.js` · `v3/interpretation.js` · `v3/typhoon.js` · `v3/kb_embedded.json` · `docs/HORATAD*.md` |
+| **BIBLE** | `v3/kb*.json` · `v3/kb_skeletons.json` · `workers/kb_extract*` · `workers/groq*` · `workers/typhoon*` · `workers/claude_extraction*` · `tools/kb_*` · `docs/BIBLE*.md` |
+| **JULIAN** | `workers/julian*` · `data/julian*` · `tools/julian*` · `docs/JULIAN*.md` |
+| **NOK** | `v3/tts.js` · `docs/NOK*.md` |
+| **GUARD** | `docs/GUARD*.md` · `docs/cia/*` · `docs/SECRETS.md` · `.github/workflows/*` · `_headers` · `auth-pin.js` |
+| **REORG** | `docs/*.md` (restructure เท่านั้น) |
+| **BIG** | `scripts/admin/*` · `.claude/hooks/*` · `ECOSYSTEM.md` · `DEPLOY.md` |
+| **Shared** | `CLAUDE.md` · `PROJECT_STATUS.md` · `handoffs/<OWN_PROJECT>*` · `handoffs/<OWN_PROJECT>_memory.md` |
+
+#### ❌ Cross-project request — format การปฏิเสธ
+
+เมื่อ user สั่งงานนอก scope **ห้ามทำ** — ตอบแบบนี้เสมอ:
+
+```
+⛔ งานนี้อยู่นอก scope ของ session [PROJECT]
+บันทึกไว้ใน handoffs/[TARGET_PROJECT]_*.md แล้ว (section PENDING)
+→ เปิด session [TARGET_PROJECT] เพื่อทำต่อ
+```
+
+แล้ว append ลง handoff ของ project ปลายทางจริงๆ ทันที
+
+**ยกเว้น — ทำข้ามได้โดยไม่ถือว่า cross-project:**
+- อัปเดต `CLAUDE.md` หรือ `PROJECT_STATUS.md` (shared)
+- เขียน `## 📨 Incoming from [PROJECT]` ใน handoff project อื่น (notification เท่านั้น ไม่ใช่ implement)
+- อ่านไฟล์ project อื่น (read-only เพื่อ context)
+
+#### ↗ Cross-project impact — แจ้งเมื่อ session นี้กระทบ project อื่น
+
+เมื่อ session นี้เปลี่ยนอะไรที่ **project อื่น depend on** → append `## 📨 Incoming from <PROJECT>` ใน handoff ปลายทางทันที:
+- JULIAN เปลี่ยน export format → note ใน HORATAD handoff
+- BIBLE เปลี่ยน kb.json schema → note ใน HORATAD handoff
+- GUARD พบ security issue ใน HORATAD code → note ใน HORATAD handoff
 
 ### 📚 Project Memory Files — อ่านต้น session เขียนเมื่อ trigger
 
