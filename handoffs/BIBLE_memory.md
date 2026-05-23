@@ -1,8 +1,24 @@
 # BIBLE_memory — องค์ความรู้สะสม (อ่านก่อนเริ่มทุก session)
 
 > ไฟล์นี้ ≠ handoff — ไม่มี PENDING/DONE  
-> จุดประสงค์: เก็บความรู้ที่เรียนรู้จากหนังสือ + การ extract  
-> Claude ควรอ่านก่อน session BIBLE **ทุกครั้ง** แล้วเพิ่มเติมก่อนจบ session
+> จุดประสงค์: เก็บความรู้ที่เรียนรู้จากหนังสือ + การ extract
+
+## เมื่อไหร่ต้องอัปเดตไฟล์นี้
+
+BIBLE extraction sessions มักจบด้วย context หมด — อัปเดตทันทีหลังทำ ff main แต่ละ batch (ไม่รอจบ session)
+
+| Trigger | Section ที่เพิ่ม |
+|---|---|
+| พบคำ/alias ดาวที่ไม่เคยเจอ | §2 Planet Dictionary (เพิ่มแถว aliases) |
+| พบ compound word ที่ต้องไม่ตัด | §7.1 Compound Words |
+| พบ pattern extraction rule ใหม่ (tier หรือ marker ใหม่) | §8 Extraction Logic |
+| extract บทเสร็จ — อัปเดตจำนวน rules + chapter done | §12 Extraction Progress |
+| บทมีคุณภาพ extraction สูง/ต่ำผิดคาด | §12.2 คุณภาพการ extract |
+| พบ ground truth ใหม่ (case ที่พิสูจน์/หักล้าง rule) | §10 Ground Truth Tests |
+| พบ chapter ที่ควรข้ามหรือ priority ต่าง | §11 Chapter Map |
+| pattern สำคัญที่พบซ้ำหลายบท | §13 WHY LOG |
+
+**ทุก batch ต้องอัปเดต §12** (progress table) — ห้าม skip แม้ไม่มี trigger อื่น
 
 ---
 

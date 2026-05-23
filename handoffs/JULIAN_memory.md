@@ -1,9 +1,22 @@
 # JULIAN_memory — Session Learnings สะสม
-# Claude อ่านไฟล์นี้ก่อนทุก session JULIAN เพิ่มเติมก่อนจบ session
+# Claude อ่านไฟล์นี้ก่อนทุก session JULIAN
 
 > ไฟล์นี้ ≠ handoff — ไม่มี PENDING/DONE  
 > จุดประสงค์: เก็บ schema decisions, source patterns, scraping gotchas  
 > (สิ่งที่ต้องรู้ทุก session แต่ไม่อยู่ใน code)
+
+## เมื่อไหร่ต้องอัปเดตไฟล์นี้
+
+| Trigger | Section ที่เพิ่ม |
+|---|---|
+| debug scraper แล้วเจอว่า selector/pattern ผิด | §3 Source Patterns (gotcha ใหม่) |
+| เพิ่ม/เปลี่ยน field ใน schema | §2 Database Schema |
+| เพิ่ม query series ใหม่หรือเปลี่ยน target | §5 Query Series |
+| พบ data quality issue ใหม่ (grade ผิด, dup logic พัง) | §6 Known Issues |
+| records milestone (ทุก 10K) + distinct jd rate | §7 Records Timeline |
+| ตัดสินใจ architecture (เช่น เพิ่ม source ใหม่) | §8 WHY LOG |
+
+**ไม่ต้องอัปเดตถ้า**: workflow รันปกติ ตัวเลข records เพิ่ม ไม่มี bug/decision
 
 ---
 

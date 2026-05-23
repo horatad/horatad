@@ -1,9 +1,21 @@
 # NOK_memory — Session Learnings สะสม
-# Claude อ่านไฟล์นี้ก่อนทุก session NOK เพิ่มเติมก่อนจบ session
+# Claude อ่านไฟล์นี้ก่อนทุก session NOK
 
 > ไฟล์นี้ ≠ handoff — ไม่มี PENDING/DONE  
 > จุดประสงค์: เก็บ platform quirks + design decisions  
 > (โค้ด v3/tts.js เป็น memory หลัก — ไฟล์นี้เก็บ WHY ที่โค้ดไม่ได้บอก)
+
+## เมื่อไหร่ต้องอัปเดตไฟล์นี้
+
+| Trigger | Section ที่เพิ่ม |
+|---|---|
+| user รายงาน / test พบ platform quirk ใหม่ | §2 Platform Quirks |
+| เปลี่ยน chunk size หรือ split logic | §3 Chunk-split Logic |
+| ตัดสินใจ UX pattern (toggle, color, behavior) | §4 UX Decisions |
+| Phase ใหม่เริ่มหรือ defer | §5 Phase Roadmap |
+| พบ WHY ใหม่ที่ไม่เคย capture | §6 WHY LOG |
+
+**ไม่ต้องอัปเดตถ้า**: session เพิ่ม feature ปกติ ไม่พบ quirk/decision ใหม่
 
 ---
 

@@ -1,10 +1,25 @@
 # HORATAD_memory — Session Learnings สะสม
 # อ่านร่วมกับ docs/HORATAD.md (tech stack + version bump + design tokens)
-# Claude อ่านไฟล์นี้ก่อนทุก session HORATAD เพิ่มเติมก่อนจบ session
+# Claude อ่านไฟล์นี้ก่อนทุก session HORATAD
 
 > ไฟล์นี้ ≠ handoff — ไม่มี PENDING/DONE  
 > จุดประสงค์: เก็บ **session learnings** ที่ docs/HORATAD.md ไม่ครอบคลุม  
 > (bug patterns, architecture decisions, gotchas จากการแก้จริง)
+
+## เมื่อไหร่ต้องอัปเดตไฟล์นี้
+
+อัปเดตเฉพาะเมื่อ session เจอ trigger เหล่านี้:
+
+| Trigger | Section ที่เพิ่ม |
+|---|---|
+| แก้ bug แล้วเข้าใจ root cause (ไม่ใช่แค่ symptom) | §5 Recurring Bug Patterns |
+| ตัดสินใจ architecture / pattern ที่จะใช้ต่อไป | §8 WHY LOG |
+| พบ platform quirk ใหม่ (iOS/Android/SW) | §6 Platform Quirks |
+| เพิ่ม/เปลี่ยน localStorage key | §4 localStorage Keys |
+| เพิ่ม module หรือเปลี่ยน module boundary | §2 Module Map |
+| security finding ใหม่ที่ Claude ต้องรู้ก่อนแก้โค้ด | §7 Security |
+
+**ไม่ต้องอัปเดตถ้า**: session ทำ feature ปกติโดยไม่เจอ bug/quirk/decision ใหม่
 
 ---
 
