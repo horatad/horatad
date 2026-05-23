@@ -241,4 +241,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-23 | V3.3.23 | HORATAD M1-M6 ✅ + Phase2 Step0 ✅ (script.js -49%) | **GUARD Phase 1: 6/7 ✅** — P1-A/B/C/D/F/G shipped; P1-E blocked on user (R-07 Option C decision) | handoffs/GUARD_20260523_v2.md*
+*อัปเดตล่าสุด: 2026-05-23 BIG | V3.3.23 | Memory files ครบทุก project (HORATAD/BIBLE/JULIAN/NOK) | clean-branch pattern + session scope enforcement | handoffs/BIG_20260523_v1.md*
