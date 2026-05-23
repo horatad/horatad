@@ -63,8 +63,16 @@ for (let y = 1700; y < 2100; y += 5) ERA_SERIES.push(eraQuery(y, y + 5));
 export const CONFIG = {
 
   // ── Target ────────────────────────────────────────────────────
-  TARGET_RECORDS: 50000,    // เพดานสูงสุด (หยุดก่อนถ้า queries หมด)
+  TARGET_RECORDS: 100000,   // เพดานสูงสุด (หยุดก่อนถ้า queries หมด)
   MAX_PER_RUN: 500,         // เพดาน records ต่อ 1 query ใน run เดียว
+
+  // ── Accuracy grades (ความเชื่อมั่นของแหล่งข้อมูลเวลาเกิด) ─────
+  // A = สูจิบัตร / official document          — เชื่อถือได้สูงสุด
+  // B = คนใกล้ชิด / family direct testimony   — ครอบครัวยืนยัน
+  // C = สาธารณะ verified (cite source)        — Astrotheme, Wikipedia ที่อ้างอิงแหล่ง
+  // D = สาธารณะ unverified (date only)        — Wikidata วันเกิดแต่ไม่มีเวลา
+  // F = unknown / placeholder / no source     — ไม่มีข้อมูลแหล่งที่มา
+  // birth time ไม่ใช่ bottleneck — record มี accuracy=D ก็ใช้งานได้ (validate หน้างาน)
 
   // ── Rate Limits ───────────────────────────────────────────────
   WIKIDATA_DELAY_MS: 1500,      // หน่วงระหว่าง queries (礼儀 polite gap)

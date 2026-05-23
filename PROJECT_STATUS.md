@@ -63,22 +63,36 @@
 
 ## JULIAN — Empirical Astro Search Engine 🟢 Automation running
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
+**Priority:** distinct birthdate (jd) สำคัญกว่า total count | birth time = optional (validate หน้างานด้วย accuracy A-F)
 
-### สถานะ
-- Schema: ✅ | JD: ✅ | Records: 31,031/50,000 (รันทุก 6 ชั่วโมง)
+### สถานะ (2026-05-23)
+- Schema: ✅ + `accuracy` field A/B/C/D/F | JD: ✅
+- **Records: 47,508 / 100,000 (47.5%)** | distinct jd: 20,813 (dedup rate 56%)
+- Accuracy distribution: A=0 B=0 C=588 D=46,910 F=10
 - Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
-- Astrotheme enrichment: ✅ เติม time_utc + lat/lng อัตโนมัติ
+- Astrotheme enrichment: ⚠️ time_utc ทำงาน (1.24% match) | lat/lng = 0 (parser ไม่ได้ extract — pending fix)
+
+### Accuracy grades
+- **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user seed)
+- **B** คนใกล้ชิด / family testimony — ครอบครัวยืนยัน (ยังไม่มี)
+- **C** สาธารณะ verified — Astrotheme + Wikipedia cite source (588 records)
+- **D** สาธารณะ unverified — Wikidata date only, no time (46,910 records)
+- **F** unknown — placeholder default (10 records)
 
 ### Next (Claude ทำได้)
-(ไม่มี — automation ครบแล้ว รอข้อมูลสะสม)
+- [ ] Debug Astrotheme lat/lng parser — ไม่ critical แต่ดี (parser มี selector ไม่ตรง)
+- [ ] เพิ่ม distinct birthdate diversity — query ใหม่เน้น profession variety (ไม่ใช่แค่ era cron)
+- [ ] manual seed list คนไทย (accuracy A/B) — รอ user provide
 
 ### Blocked (รอ user)
-(ไม่มี — automation รันเองได้ทั้งหมด)
+- [ ] [ทดลองใช้] Trigger workflow run ครั้งแรกหลังเปลี่ยน target 100K
+- [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ"
+- [ ] [BLOCKED] รอ user provide seed list คนไทย accuracy A/B (สูจิบัตร/ครอบครัว)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260522_v1.md`
+`handoffs/JULIAN_20260523_v1.md`
 
 ---
 
@@ -205,7 +219,7 @@
 |---|---|---|---|
 | Horatad PWA | HORATAD V3.3.19 | script.js, v3/*, index.html | 🟡 Pre-launch — M4-M6 pending |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
-| Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
+| Empirical DB | JULIAN 47,508/100,000 (distinct jd 20,813) | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Security + Perf | GUARD Phase 1 6/7 done | docs/GUARD_MISSION.md + docs/cia/* + docs/SECRETS.md + _headers + auth-pin.js | 🟢 P1-A/B/C/D/F/G ✅ — P1-E blocked on user |

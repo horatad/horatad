@@ -156,6 +156,10 @@ async function processQuery(query, progress, batchFile, today) {
       : null;
 
     const astroId = b.astroId?.value || null;
+    // accuracy: D = date only (Wikidata precision=day, no time)
+    //          C = time present (Wikidata precision>=13 with hour/minute)
+    // Astrotheme enrichment step จะ upgrade เป็น C ถ้าเจอเวลามี cited source
+    const accuracy = time_utc ? 'C' : 'D';
     records.push({
       jd: birth.jd, name,
       event_label: query.label, type: 'human',
@@ -165,6 +169,7 @@ async function processQuery(query, progress, batchFile, today) {
       relate_id: death ? [death.jd] : null,
       source: astroId ? `astrotheme:${astroId}` : `wikidata:${qid}`,
       source_type: 'internet',
+      accuracy,
       validated_count: 0,
       confidence: time_utc ? 0.95 : 0.85,
       notes: null,

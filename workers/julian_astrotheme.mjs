@@ -135,6 +135,7 @@ async function enrichOne(record) {
       relate_id:       record.relate_id ?? null,
       source:          record.source ?? `astrotheme:${path}`,
       source_type:     'internet',
+      accuracy:        parsed.time_utc ? 'C' : (record.accuracy ?? 'D'),
       validated_count: 0,
       confidence:      parsed.time_utc ? 0.95 : 0.87,
       notes:           null,
