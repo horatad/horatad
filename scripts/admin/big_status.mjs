@@ -65,27 +65,58 @@ if (uncommitted) {
 // ─── 2. FEATURE BRANCHES ─────────────────────────────
 section('Feature branches');
 
+const ACTIVE_THRESHOLD_MS = 4 * 60 * 60 * 1000; // 4 ชั่วโมง = active session
+const NOW = Date.now();
+
 const allBranches = sh('git branch -r', { allowFail: true })
   .split('\n')
   .map(b => b.trim().replace(/^origin\//, ''))
   .filter(b => b.startsWith('claude/') && !b.includes('->'));
 
-let mergedCount = 0, unmergedCount = 0;
-const unmergedList = [];
+let mergedCount = 0;
+const activeList = [];   // current branch หรือ commit < 4h (unmerged เท่านั้น)
+const unmergedList = []; // unmerged + เก่ากว่า 4h
 
 for (const b of allBranches) {
+  const isCurrent = b === branch;
   const isMerged = sh(`git merge-base --is-ancestor origin/${b} origin/main && echo merged || echo no`, { allowFail: true });
-  if (isMerged === 'merged') {
+  const commitTs = sh(`git log -1 --format='%ct' origin/${b}`, { allowFail: true });
+  const commitMs = parseInt(commitTs, 10) * 1000;
+  const lastCommit = sh(`git log -1 --format='%cr · %s' origin/${b}`, { allowFail: true });
+  const isRecent = !isNaN(commitMs) && (NOW - commitMs) < ACTIVE_THRESHOLD_MS;
+
+  if (isCurrent || isRecent) {
+    // current branch หรือ recent — แสดงเป็น active เสมอ ไม่ว่า merged/unmerged
+    if (isMerged === 'merged') mergedCount++; // นับ merged ด้วยแต่ยัง show ใน active
+    activeList.push({ b, lastCommit, isCurrent, merged: isMerged === 'merged' });
+  } else if (isMerged === 'merged') {
     mergedCount++;
   } else {
-    unmergedCount++;
-    const lastCommit = sh(`git log -1 --format='%cr · %s' origin/${b}`, { allowFail: true });
     unmergedList.push(`${b} (${lastCommit})`);
   }
 }
 
+// ถ้า current branch ไม่อยู่ใน origin (ยังไม่ push) → เพิ่มพิเศษ
+const currentInList = activeList.some(a => a.isCurrent) || unmergedList.some(s => s.startsWith(branch));
+if (!currentInList && branch !== 'main' && branch !== 'HEAD') {
+  activeList.unshift({ b: branch, lastCommit: 'local only — ยังไม่ push ขึ้น origin', isCurrent: true, merged: false });
+}
+
+// Active sessions — แสดงเด่นก่อนเสมอ
+if (activeList.length) {
+  console.log(`  ${C.green}${C.bold}active${C.reset}   : ${activeList.length} session${activeList.length > 1 ? 's' : ''} (< 4h หรือ current)`);
+  activeList.forEach(({ b, lastCommit, isCurrent, merged }) => {
+    const currentTag = isCurrent ? ` ${C.green}← current${C.reset}` : '';
+    const mergedTag = merged ? ` ${C.dim}[synced to main]${C.reset}` : '';
+    console.log(`     ${C.green}▶${C.reset} ${C.bold}${b}${C.reset}${currentTag}${mergedTag}`);
+    console.log(`       ${C.dim}${lastCommit}${C.reset}`);
+  });
+} else {
+  console.log(`  ${C.dim}active   : ไม่มี session ที่ active ใน 4h ที่ผ่านมา${C.reset}`);
+}
+
 console.log(`  ${C.green}merged${C.reset}   : ${mergedCount} branches (พร้อมลบ — รัน \`node scripts/admin/branch_cleanup.mjs\`)`);
-console.log(`  ${C.yellow}unmerged${C.reset} : ${unmergedCount} branches`);
+console.log(`  ${C.yellow}unmerged${C.reset} : ${unmergedList.length} branches (เก่ากว่า 4h)`);
 if (VERBOSE && unmergedList.length) {
   unmergedList.slice(0, 15).forEach(b => console.log(`     ${C.dim}${b}${C.reset}`));
   if (unmergedList.length > 15) console.log(`     ${C.dim}... อีก ${unmergedList.length - 15} branches${C.reset}`);
