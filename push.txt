@@ -1,6 +1,0 @@
-# ที่ C:\Users\PETERCGS\horatad
-git pull origin main              # sync ให้ตรงกับ GitHub ก่อน
-# copy ไฟล์ทั้ง 3 มาวางที่ folder นี้
-git add ChgLog19May.md session_handoff_20260519_v4.md BEST_PRACTICES_20260519.md
-git commit -m "docs: session 4 handoff"
-git push origin main

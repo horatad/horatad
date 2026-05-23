@@ -3683,7 +3683,8 @@ async function _callTyphoon(natal,transit,matched){
 async function openInterpretation(){
   // V2.2.23: ทำนายจากดวงวงใน (natal) เสมอ ไม่ขึ้นกับ viewMode
   const active=natal;
-  if(!active||!_kbRules)return;
+  if(!active)return;
+  if(!_kbRules){_showToast('กำลังโหลด KB... ลองอีกครั้ง');return;}
   const backdrop=document.getElementById('interp-backdrop');
   const modal=document.getElementById('interp-modal');
   const text=document.getElementById('interp-text');
