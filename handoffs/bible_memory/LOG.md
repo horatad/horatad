@@ -37,3 +37,27 @@
 - LOG.md = append-only, date-time stamped, อัตโนมัติ ไม่รอสั่ง
 - Q&A mode: ตอบคำถามโหราศาสตร์จาก KB 290 rules → flag KB gap → candidate rule ใหม่
 - CLAUDE.md อัปเดตชี้ไปที่ bible_memory/INDEX.md + LOG.md แทนเดิม
+
+## 2026-05-23 — Extraction infrastructure + Master Dict architecture
+
+### ไฟล์ใหม่ที่สร้าง
+- `TAXONOMY.md` — rule schema spec ครบทุก field + decision tree + good/bad examples + edge cases
+  → LLM (Typhoon/Groq/Claude) อ่านได้ทันทีเพื่อ extract ตาม schema นี้
+- `PROMPTS.md` — 4 extraction templates: standard / chunked / Q&A heavy / batch small
+  → พร้อมใช้กับ Typhoon/Groq/Claude ไม่ต้อง prompt ใหม่ทุกครั้ง
+- `v3/master_dict_meanings.json` — user-editable meanings layer: ดาว 10, ภพ 12, คุณภาพ 11, domain 7, aspect 5
+  → แยกออกจาก master_dict.js (computation) — user เป็นเจ้าของ, Claude propose เท่านั้น
+- `tools/master_dict_editor.html` — HTML editor load URL/ไฟล์ → ดูรายภพ/ดาว/คุณภาพ → export JSON
+  → deploy GitHub Pages: https://horatad.github.io/horatad/tools/master_dict_editor.html
+
+### Master Dict architecture (confirmed)
+- master_dict.js = Claude owns: computation, pairs, relations, formulas (ไม่มี meanings)
+- master_dict_meanings.json = User owns: meanings, keywords, labels (user validate ก่อน commit)
+- Sync protocol: Claude พบ → propose ใน LOG.md → user validate → user edit JSON → Claude อ่านต้น session ถัดไป
+- Conflict: user เป็น final authority เสมอ
+
+### UI decision: HTML tool แทน Google Sheets
+- ข้อดี: free (GitHub Pages), offline-capable, validate ได้, ไม่มี auth issue
+- ข้อเสียที่รู้แล้ว: schema เปลี่ยน → ต้อง update tool; export JSON แล้วต้อง commit มือ
+- ข้อเสียของ Google Sheets: sync manual, export JSON เอง — แต่คุ้นเคยกว่า
+- Decision: HTML tool เป็นจุดเริ่มต้น, Google Sheets ถ้า user ต้องการ
