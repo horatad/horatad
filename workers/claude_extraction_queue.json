@@ -9,25 +9,17 @@
   "batch_size": 15,
   "stats": {
     "total": 102,
-    "done": 29,
-    "rules_extracted": 155,
-    "sessions_used": 2,
-    "pending": 73
+    "done": 37,
+    "rules_extracted": 191,
+    "sessions_used": 3,
+    "pending": 65
   },
-  "last_session_date": "2026-05-22",
+  "last_session_date": "2026-05-23",
   "pending": [
-    "ch026",
-    "ch030",
-    "ch031",
     "ch032",
     "ch033",
-    "ch034",
-    "ch035",
-    "ch036",
-    "ch037",
     "ch038",
     "ch039",
-    "ch040",
     "ch041",
     "ch042",
     "ch043",
@@ -117,9 +109,17 @@
     "ch023",
     "ch024",
     "ch025",
+    "ch026",
     "ch027",
     "ch028",
-    "ch029"
+    "ch029",
+    "ch030",
+    "ch031",
+    "ch034",
+    "ch035",
+    "ch036",
+    "ch037",
+    "ch040"
   ],
   "errors": []
 }
