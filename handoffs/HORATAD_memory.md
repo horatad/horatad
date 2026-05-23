@@ -157,8 +157,11 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 
 ---
 
-## 9. อัปเดต
+## 9. LOG — session learnings (append-only)
 
-| วันที่ | สิ่งที่เพิ่ม |
-|---|---|
-| 2026-05-23 | สร้างไฟล์ครั้งแรก — architecture, state machine, localStorage keys, recurring bugs, platform quirks, WHY LOG |
+<!-- append ลง table นี้ทุกครั้งที่ session update ไฟล์นี้ — ห้ามแก้ entry เก่า -->
+<!-- ถ้าข้อมูลเดิมผิด → เพิ่ม "⚠️ แก้ไข (date): ..." ต่อท้าย row เดิม ไม่ลบ -->
+
+| วันที่ | trigger | สิ่งที่เรียนรู้ |
+|---|---|---|
+| 2026-05-23 | สร้างไฟล์ | architecture post-Step0, module map (tier 1-5), state machine compareMode 0-3, localStorage 7 keys, bugs (XSS/cursor/SW/numpad), platform quirks (iOS/Android/Desktop), security (PIN bypass + CSP Report-Only), WHY LOG |

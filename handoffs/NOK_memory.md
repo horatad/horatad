@@ -120,8 +120,11 @@ strip ก่อน split:
 
 ---
 
-## 7. อัปเดต
+## 7. LOG — session learnings (append-only)
 
-| วันที่ | สิ่งที่เพิ่ม |
-|---|---|
-| 2026-05-23 | สร้างไฟล์ครั้งแรก — architecture, platform quirks, chunk-split, UX decisions, WHY LOG |
+<!-- append ลง table นี้ทุกครั้งที่ session update ไฟล์นี้ — ห้ามแก้ entry เก่า -->
+<!-- ถ้าข้อมูลเดิมผิด → เพิ่ม "⚠️ แก้ไข (date): ..." ต่อท้าย row เดิม ไม่ลบ -->
+
+| วันที่ | trigger | สิ่งที่เรียนรู้ |
+|---|---|---|
+| 2026-05-23 | สร้างไฟล์ | API surface (6 exports), iOS quirks (chunk 180/getVoices/canceled), chunk-split priority (sentence→space→char), UX toggle pattern, phase roadmap 1-6, WHY LOG |

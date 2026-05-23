@@ -180,8 +180,11 @@ Cron (ทุก 6h):
 
 ---
 
-## 9. อัปเดต
+## 9. LOG — session learnings (append-only)
 
-| วันที่ | สิ่งที่เพิ่ม |
-|---|---|
-| 2026-05-23 | สร้างไฟล์ครั้งแรก — schema, accuracy grades, source patterns, workflow, known issues, WHY LOG |
+<!-- append ลง table นี้ทุกครั้งที่ session update ไฟล์นี้ — ห้ามแก้ entry เก่า -->
+<!-- ถ้าข้อมูลเดิมผิด → เพิ่ม "⚠️ แก้ไข (date): ..." ต่อท้าย row เดิม ไม่ลบ -->
+
+| วันที่ | trigger | สิ่งที่เรียนรู้ |
+|---|---|---|
+| 2026-05-23 | สร้างไฟล์ | schema + accuracy A-F, dedup 4 layers, Wikidata SPARQL pattern (QID/precision gotchas), Astrotheme match 1.24% + lat/lng bug, Wikipedia TH parser 7 patterns + 0 records issue, workflow cron arch, 137 query series, WHY LOG |
