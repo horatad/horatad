@@ -23,6 +23,7 @@ const CORE_ASSETS=[
   './horatad_180x180.png',
   './horatad_192x192.png',
   './horatad_512x512.png',
+  './horatad_512x512_maskable.png',
   './horatad_746x746.png',
 ];
 
