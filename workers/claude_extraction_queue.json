@@ -16,10 +16,6 @@
   },
   "last_session_date": "2026-05-22",
   "pending": [
-    "ch041",
-    "ch042",
-    "ch043",
-    "ch044",
     "ch056",
     "ch057",
     "ch058",
@@ -119,8 +115,12 @@
     "ch054",
     "ch055",
     "ch038",
-    "ch039"
+    "ch039",
+    "ch041",
+    "ch042",
+    "ch043",
+    "ch044"
   ],
   "errors": [],
-  "rules_extracted": 261
+  "rules_extracted": 269
 }
