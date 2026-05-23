@@ -1,5 +1,38 @@
+# ── Global security headers (all paths) ──────────────────────
+# Applied per GUARD-P1-B (2026-05-23) — see docs/cia/headers_draft_2026-05-23.md
+# NOTE: script-src includes 'unsafe-inline' temporarily for inline onclick handlers
+#       throughout script.js generated HTML. Phase 2 will refactor → strict CSP.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+  X-Frame-Options: DENY
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://horatad.github.io https://promptpay.io; connect-src 'self' https://raw.githubusercontent.com https://horatad-ai.uchujaro5.workers.dev; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+
+# ── PWA core: no-store (existing — keep) ─────────────────────
 /sw.js
   Cache-Control: no-store
+  Service-Worker-Allowed: /
 
 /v3/*
   Cache-Control: no-store
+
+# ── Versioned static assets — short cache (revalidated by ?v=N) ──
+/style.css
+  Cache-Control: public, max-age=3600
+
+/script.js
+  Cache-Control: public, max-age=3600
+
+/auth-pin.js
+  Cache-Control: public, max-age=3600
+
+/manifest.json
+  Cache-Control: public, max-age=3600
+
+# ── PWA icons — long cache (immutable filenames) ─────────────
+/horatad_*.png
+  Cache-Control: public, max-age=86400, immutable

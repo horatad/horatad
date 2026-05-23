@@ -10,6 +10,7 @@ const CORE_ASSETS=[
   './index.html?v='+V,
   './style.css?v='+V,
   './script.js?v='+V,
+  './auth-pin.js?v='+V,
   './v3/engine.js?v='+V,
   './v3/interpretation.js?v='+V,
   './v3/typhoon.js?v='+V,
