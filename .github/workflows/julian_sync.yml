@@ -146,6 +146,60 @@ jobs:
             git push origin HEAD:main
           fi
 
+      # ─── Wikipedia TH enrichment — โฟกัส tier 1 + country=TH ─────────────
+      # รันหลัง Astrotheme — Astrotheme ไม่ครอบคลุมคนไทย, wiki TH ตรงกว่า
+      - name: Wikipedia TH enrichment
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          echo "── Filter tier 1 Thai records without time_utc ──"
+          node -e "
+            const fs = require('fs');
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync('data/julian_all.json', 'utf8')); } catch(e) {}
+            const target = data.filter(r => r && r.jd && r.name && !r.time_utc
+              && r.tier === 1 && r.country === 'TH'
+              && r.source?.startsWith('wikidata:')).slice(0, 200);
+            fs.writeFileSync('/tmp/wiki_th_input.jsonl', target.map(r => JSON.stringify(r)).join('\n'));
+            console.log('Records to enrich:', target.length);
+          "
+          if [ ! -s /tmp/wiki_th_input.jsonl ]; then
+            echo "No tier 1 Thai records to enrich — skip"
+            exit 0
+          fi
+          node workers/julian_wiki_th.mjs /tmp/wiki_th_input.jsonl > /tmp/wiki_th_enriched.jsonl || true
+          echo "── Merge enrichment ──"
+          ENRICHED_COUNT=$(node -e "
+            const fs = require('fs');
+            const dataFile = 'data/julian_all.json';
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
+            const lines = fs.readFileSync('/tmp/wiki_th_enriched.jsonl', 'utf8').split('\n').filter(Boolean);
+            const enrichMap = new Map();
+            for (const l of lines) {
+              try { const r = JSON.parse(l); if (r.jd && r.name) enrichMap.set(r.jd+'|'+r.name, r); } catch(e) {}
+            }
+            let count = 0;
+            for (const r of data) {
+              const e = enrichMap.get(r.jd+'|'+r.name);
+              if (!e) continue;
+              if (!r.time_utc && e.time_utc) { r.time_utc = e.time_utc; count++; }
+              if (e.accuracy && (!r.accuracy || r.accuracy === 'D' || r.accuracy === 'F')) r.accuracy = e.accuracy;
+              if (e.notes && !r.notes) r.notes = e.notes;
+              if (e.source && !r.source.includes('wikipedia_th:')) r.source = e.source;
+            }
+            fs.writeFileSync(dataFile, JSON.stringify(data));
+            console.log(count);
+          ")
+          echo "Applied wiki_th enrichment to ${ENRICHED_COUNT} records"
+          if [ "${ENRICHED_COUNT}" != "0" ]; then
+            git config user.name  "JULIAN Bot"
+            git config user.email "julian-bot@horatad.com"
+            git add data/julian_all.json
+            git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Wikipedia TH"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       # ─── Upload to GitHub Release ─────────────────────────────
       - name: Upload to GitHub Release
         if: steps.scrape.outputs.status == 'ok'
@@ -193,5 +247,5 @@ jobs:
           echo "## JULIAN Sync Summary" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ steps.scrape.outputs.status }}" >> $GITHUB_STEP_SUMMARY
           echo "- Records this run: ${{ steps.scrape.outputs.record_count || 0 }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Total: ${{ steps.scrape.outputs.total || '?' }}/50000" >> $GITHUB_STEP_SUMMARY
+          echo "- Total: ${{ steps.scrape.outputs.total || '?' }}/100000" >> $GITHUB_STEP_SUMMARY
           echo "- Storage: data/julian_all.json (repo) + GitHub Release julian-data" >> $GITHUB_STEP_SUMMARY
