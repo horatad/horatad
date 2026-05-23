@@ -19,7 +19,9 @@
   - M6: localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (V3.3.22)
 
 ### Next (Claude ทำได้)
-- [ ] Phase 2: code-split script.js + julian_all.json move (รวมกับ GUARD Phase 2)
+- [ ] **Phase 2 Step 0 — KB_RULES extract** ⭐ ลด script.js 50% ทันที (198KB inline → JSON file) — spec: `docs/HORATAD_modules.md`
+- [ ] Phase 2 Step 1 — core/ Tier 1 (engine/lunar/varga/transit) split
+- [ ] julian_all.json move (รอ user เลือก target)
 
 ### Blocked (รอ user)
 - [ ] [ทดลองใช้] ทดสอบ V3.3.22 บนมือถือ — M6 persist (refresh แล้ว transit cursor/synastry/event idx ยังเดิม) + nav header compareMode===3
