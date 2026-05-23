@@ -4,9 +4,9 @@
 
 > **Source of truth:**
 > - Charter risks (R-01..R-14): `docs/GUARD_MISSION.md` § 3.2
-> - Extended risks + status: `handoffs/GUARD_20260523_v2.md`
+> - Extended risks + status: `handoffs/GUARD_20260523_v3.md`
 
-## Risk register (18 risks)
+## Risk register (19 risks)
 
 | ID | Risk | Priority/Status | Source |
 |---|---|---|---|
@@ -28,6 +28,7 @@
 | R-16 | Wikidata SPARQL scrape compliance | low | medium | UA + backoff + 1500ms gap (verified COMPLIANT 2026-05-23) | **P1 ✅ closed** | — |
 | R-17 | horatad-auth Worker hardening | medium | high | client gate cosmetic; Worker source review required | **P1** | medium |
 | R-18 | Secret sprawl & inventory drift | medium | medium | docs/SECRETS.md + rotation reminder workflow | **P1** | low |
+| R-19 | TTS text egress to cloud voice engine (Web Speech API) | low | low | local voices preferred (lang=th-TH bias); friendly disclosure if Phase 3 cloud TTS | **informational** | none now |
 
 ## Transferred items (T-NN → R-NN cross-link)
 
@@ -37,7 +38,7 @@ _(no T-NN transfers found)_
 
 1. **อ่านไฟล์นี้** — overview risks + status
 2. `docs/GUARD_MISSION.md` — full context (threat model, decision framework, SOPs)
-3. `handoffs/GUARD_20260523_v2.md` — live task state, blocked/pending/done
+3. `handoffs/GUARD_20260523_v3.md` — live task state, blocked/pending/done
 
 ## คำสั่ง maintenance
 
@@ -46,7 +47,7 @@ _(no T-NN transfers found)_
 node scripts/admin/gen_risk_register.mjs
 
 # ตรวจ handoff format
-node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260523_v2.md
+node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260523_v3.md
 
 # BIG overview
 node scripts/admin/big_status.mjs --verbose
