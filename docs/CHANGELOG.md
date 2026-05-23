@@ -4,6 +4,14 @@
 
 ---
 
+## [3.3.23] — 2026-05-23
+### Changed
+- HORATAD Phase 2 Step 0: extract `KB_RULES` (198KB inline) → `v3/kb_embedded.json` — script.js 393KB→199KB (-49%)
+  - KB loaded async via `_loadEmbeddedKB()` after init — non-blocking initial render
+  - Guards intact: `_matchRules()` + `openInterpretation()` short-circuit if KB not loaded yet
+  - SW caches `v3/kb_embedded.json` separately → KB updates ไม่ bust script.js cache
+  - net wire bytes unchanged (~+1KB) แต่ initial parse + cache isolation ดีขึ้น
+
 ## [3.3.22] — 2026-05-23
 ### Added
 - HORATAD: M6 — localStorage persist `_synastryIdx`/`_eventIdx`/`_transitCursor` → refresh แล้วยังอยู่ตำแหน่งเดิม
