@@ -39,18 +39,18 @@
 
 ---
 
-## BIBLE — Prediction Wording Engine 🟢 Active — Triple extraction running
+## BIBLE — Prediction Wording Engine 🟢 Active — kb_v24-3 COMPLETE
 **เป้าหมาย:** rules → keywords → LLM wordings — ground-truth based, zero hallucination
 
 ### สถานะ
 - KB V2.3: 342 rules (ใช้งานอยู่) | Engine 3.1.0 ✅
-- Triple extraction pipeline: Groq (kb_v24-1) + Typhoon (kb_v24-2) + Claude queue (kb_v24-3)
-- kb_v24-1: **กำลังรัน** (browser tool) | kb_v24-2: รอรันหลัง Groq | kb_v24-3: รอ session queue
+- **kb_v24-3: ✅ COMPLETE** — 102 บท → 290 rules (2026-05-23)
+- Triple extraction pipeline: Groq (kb_v24-1) + Typhoon (kb_v24-2) + Claude (kb_v24-3 ✅)
+- kb_v24-1: รอ browser tool Groq | kb_v24-2: รอรันหลัง Groq
 - tools/kb_extract.html: เพิ่ม mode selector (Groq/Typhoon) แล้ว ✅
-- workers/claude_extraction_queue.json: สร้างแล้ว (102 บท pending) ✅
 
 ### Next (Claude ทำได้)
-- [ ] kb_v24-3: `session BIBLE` → Claude process 15 บท/session ×7 → v3/kb_v24-3.json
+- [ ] GUARD T-05: validate_inputs() ใน v3/engine.js + v3/interpretation.js (รายละเอียดใน handoff)
 - [ ] Comparison: หลัง 3 ไฟล์ครบ → `session BIBLE — compare` → v3/kb_v24.json final
 
 ### Blocked (รอ user)
@@ -58,11 +58,11 @@
 - [ ] [ทดลองใช้] รัน Typhoon mode ใน browser tool → download kb_v24-2.json → commit v3/kb_v24-2.json
 
 ### ไฟล์หลัก
-`v3/kb.json` (V2.3 current) | `v3/kb_v24-1.json` `v3/kb_v24-2.json` `v3/kb_v24-3.json` (extraction outputs)
-`tools/kb_extract.html` | `workers/claude_extraction_queue.json` | `workers/kb_extract_gha.mjs`
+`v3/kb.json` (V2.3 current) | `v3/kb_v24-3.json` (290 rules ✅) | `v3/kb_v24-1.json` `v3/kb_v24-2.json` (รอ)
+`tools/kb_extract.html` | `workers/claude_extraction_queue.json` (done=102) | `workers/kb_extract_gha.mjs`
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260522_v5.md`
+`handoffs/BIBLE_20260523_v1.md`
 
 ---
 
