@@ -35,7 +35,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B/C → **GUARD R-07 owner**
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260523_v3.md`
+`handoffs/HORATAD_20260523_v4.md`
 
 ---
 
