@@ -1,5 +1,5 @@
 # HORATAD — Technical Reference for Claude
-# อัปเดต: 2026-05-23 | app V3.3.19
+# อัปเดต: 2026-05-23 | app V3.3.23
 # Claude อ่านไฟล์นี้เมื่ออยู่ใน HORATAD session
 
 ---

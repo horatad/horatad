@@ -213,8 +213,7 @@
 - ✅ Task 4: Fix `DEPLOY.md` broken reference + ECOSYSTEM.md/CLAUDE.md references อัปเดต
 
 ### Deferred (รอบหน้า)
-- [ ] Trim CLAUDE.md — ย้าย HORATAD-specific rules → docs/HORATAD.md
-- [ ] Rename `BIBLE_MISSION.md` → `BIBLE.md` + `JULIAN_MISSION.md` → `JULIAN.md` (consistency)
+- [ ] Trim CLAUDE.md — ย้าย HORATAD-specific rules → docs/HORATAD.md (version bump checklist, SW policy, QR format)
 
 ### Handoff ล่าสุด
 `handoffs/REORG_20260523_v3.md`
