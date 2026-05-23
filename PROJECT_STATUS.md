@@ -69,14 +69,15 @@
 
 ### สถานะ (2026-05-23)
 - Schema: ✅ + `accuracy` field A/B/C/D/F | JD: ✅
-- **Records: 53,148 / 100,000 (53.1%)** — workflow run #21 +5,640
-- Accuracy distribution: A=0 B=0 C=588 D=52,550 F=10
+- **Records: 58,428 / 100,000 (58.4%)** — เพิ่มจาก 2 workflow runs
+- Accuracy distribution: A=0 B=0 C=599 D=57,819 F=10
 - Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
 - Astrotheme enrichment: ⚠️ time_utc ทำงาน (1.24% match) | lat/lng = 0 (parser ไม่ได้ extract)
-- Wikipedia TH enrichment: ⚠️ run แล้วได้ 0 records — รอ debug
-- **Manual seed input tool ใหม่**: `tools/julian_seed_input.html` + workflow merge step
+- Wikipedia TH enrichment: ✅ +112 records (เจอจังหวัด 98%, เวลา 10/112) — first Thai time!
+- Tier 1 Thai time_utc: 0 → **11 records** ✅
+- **Manual seed input tool**: `tools/julian_seed_input.html` + workflow merge step (รอ user เริ่มกรอก)
 
 ### Accuracy grades
 - **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user เติมผ่าน tool)
@@ -86,14 +87,13 @@
 - **F** unknown — placeholder default (10 records)
 
 ### Next (Claude ทำได้)
-- [ ] Debug Wikipedia TH step — 0 records enriched (ดู log JULIAN Data Sync run)
+- [ ] ขยาย Wikipedia TH parser — เพิ่ม pattern "ฤกษ์เกิด", "ดวงเกิด" เพื่อจับเวลาเพิ่ม
 - [ ] Debug Astrotheme lat/lng parser — selector ไม่ตรง coord field
 - [ ] Astro-Databank scraper (astro.com) — Rodden Rating AA/A/B/C/DD → accuracy A/B/C/D/F
 
 ### Blocked (รอ user)
 - [ ] ⭐ **เปิด `tools/julian_seed_input.html`** กรอก records accuracy A/B/C ของคนใกล้ตัว → export JSON → commit
 - [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ"
-- [ ] [ทดลองใช้] ดู workflow log step "Wikipedia TH enrichment" → ส่งให้ Claude debug
 
 ### Handoff ล่าสุด
 `handoffs/JULIAN_20260523_v1.md`
