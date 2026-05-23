@@ -10,6 +10,10 @@ import { execSync } from 'node:child_process';
 const APPLY = process.argv.includes('--apply');
 const INCLUDE_BACKUP = process.argv.includes('--include-backup');
 
+// Sandbox ของ Claude Code Web มักจะไม่ได้รับ permission ลบ remote branch (403)
+// → ถ้าต้องการลบจริง: รันที่ local CLI หรือใช้ GH workflow stale_branch_cleanup.yml
+// (workflow_dispatch + apply=true) ผ่าน GitHub Actions แทน
+
 const C = {
   reset: '\x1b[0m', bold: '\x1b[1m', dim: '\x1b[2m',
   red: '\x1b[31m', green: '\x1b[32m', yellow: '\x1b[33m', cyan: '\x1b[36m',
