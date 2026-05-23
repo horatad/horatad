@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIG Admin Dashboard — Horatad</title>
+<style>
+  :root {
+    --bg: #0d1117; --fg: #c9d1d9; --dim: #8b949e; --accent: #b8860b;
+    --green: #3fb950; --yellow: #d29922; --red: #f85149; --blue: #58a6ff;
+    --card: #161b22; --border: #30363d;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 20px; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.5; }
+  h1 { color: var(--accent); margin: 0 0 4px; font-size: 22px; }
+  .sub { color: var(--dim); font-size: 13px; margin-bottom: 20px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card h2 { margin: 0 0 8px; font-size: 16px; color: var(--blue); display: flex; align-items: center; gap: 8px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .b-done { background: rgba(63,185,80,0.15); color: var(--green); }
+  .b-pending { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .b-blocked { background: rgba(248,81,73,0.15); color: var(--red); }
+  .b-test { background: rgba(88,166,255,0.15); color: var(--blue); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  th { color: var(--dim); font-weight: 500; font-size: 11px; text-transform: uppercase; }
+  .empty { color: var(--dim); font-style: italic; padding: 12px; text-align: center; }
+  .err { color: var(--red); }
+  .ok { color: var(--green); }
+  .row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .controls { margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+  button { background: var(--card); border: 1px solid var(--border); color: var(--fg);
+    padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+  button:hover { border-color: var(--accent); }
+  code { background: rgba(110,118,129,0.15); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .loading { padding: 40px; text-align: center; color: var(--dim); }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: var(--dim); font-size: 12px; }
+  .meta { font-size: 11px; color: var(--dim); margin-top: 4px; }
+</style>
+</head>
+<body>
+  <h1>👑 BIG Admin Dashboard</h1>
+  <div class="sub" id="meta">Loading…</div>
+
+  <div class="controls">
+    <button onclick="loadAll()">🔄 Refresh</button>
+    <button onclick="toggleArchived()">📦 Toggle archived</button>
+    <a href="https://github.com/horatad/horatad/actions" target="_blank"><button>📊 GH Actions</button></a>
+    <a href="https://github.com/horatad/horatad/issues?q=is%3Aissue+label%3Abig-admin" target="_blank"><button>📋 BIG issues</button></a>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="loading">⏳ กำลังโหลดข้อมูลจาก repo…</div>
+  </div>
+
+<script>
+const REPO = 'horatad/horatad';
+const BRANCH = 'main';
+const RAW = (path) => `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}`;
+const PROJECTS = ['HORATAD', 'BIBLE', 'JULIAN', 'NOK', 'PLATFORM', 'CIA', 'REORG', 'BIG'];
+
+let showArchived = false;
+
+async function fetchText(path) {
+  try {
+    const r = await fetch(RAW(path) + '?_=' + Date.now());
+    if (!r.ok) throw new Error(r.status);
+    return await r.text();
+  } catch (e) { return null; }
+}
+
+async function ghApi(endpoint) {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/${endpoint}`);
+    if (!r.ok) throw new Error(r.status);
+    return await r.json();
+  } catch (e) { return null; }
+}
+
+function countMatches(text, re) {
+  return (text?.match(re) || []).length;
+}
+
+function escape(s) {
+  return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+
+async function listHandoffs() {
+  const data = await ghApi('contents/handoffs');
+  if (!Array.isArray(data)) return [];
+  return data.filter(f => f.type === 'file' && f.name.endsWith('.md')).map(f => f.name);
+}
+
+async function loadProjectCards() {
+  const files = await listHandoffs();
+  const cards = [];
+
+  for (const P of PROJECTS) {
+    const matches = files
+      .filter(f => new RegExp(`^${P}_\\d{8}_v\\d+\\.md$`).test(f))
+      .sort()
+      .reverse();
+    const latest = matches[0];
+    if (!latest) {
+      cards.push(`<div class="card"><h2>${P}</h2><div class="empty">ไม่มี handoff</div></div>`);
+      continue;
+    }
+    const content = await fetchText(`handoffs/${latest}`);
+    if (!content) {
+      cards.push(`<div class="card"><h2>${P}</h2><div class="empty err">โหลดไม่ได้</div></div>`);
+      continue;
+    }
+    const done = countMatches(content, /^✓/gm);
+    const pending = countMatches(content, /^\[ \] /gm);
+    const blocked = countMatches(content, /\[BLOCKED\]/g);
+    const testing = countMatches(content, /\[ทดลองใช้\]/g);
+    cards.push(`
+      <div class="card">
+        <h2>${P}
+          <a href="https://github.com/${REPO}/blob/${BRANCH}/handoffs/${latest}" target="_blank" style="margin-left:auto;font-size:11px">${escape(latest)} →</a>
+        </h2>
+        <div class="row">
+          <span class="badge b-done">${done} done</span>
+          <span class="badge b-pending">${pending} pending</span>
+          <span class="badge b-test">${testing} [ทดลองใช้]</span>
+          <span class="badge b-blocked">${blocked} [BLOCKED]</span>
+        </div>
+      </div>`);
+  }
+  return cards.join('');
+}
+
+async function loadGitStatus() {
+  const branches = await ghApi('branches?per_page=100');
+  if (!Array.isArray(branches)) return '<div class="empty err">โหลด branches ไม่ได้</div>';
+  const claudeBranches = branches.filter(b => b.name.startsWith('claude/'));
+  const backupBranches = branches.filter(b => b.name.startsWith('backup/'));
+
+  return `
+    <table>
+      <tr><th>Total</th><td>${branches.length}</td></tr>
+      <tr><th>claude/*</th><td>${claudeBranches.length}</td></tr>
+      <tr><th>backup/*</th><td>${backupBranches.length}</td></tr>
+    </table>
+    <details><summary>คำสั่ง cleanup</summary>
+      <code>node scripts/admin/branch_cleanup.mjs</code> (dry-run)<br>
+      <code>node scripts/admin/branch_cleanup.mjs --apply</code> (ลบ)
+    </details>`;
+}
+
+async function loadRiskRegister() {
+  const txt = await fetchText('docs/admin/RISK_REGISTER.md');
+  if (!txt) return '<div class="empty err">โหลดไม่ได้</div>';
+  const rows = [...txt.matchAll(/\| (R-\d+) \| ([^|]+?) \| \*?\*?(P\d|N\/A|done.*?)\*?\*? \|/g)];
+  if (!rows.length) return '<div class="empty">ไม่มี risk</div>';
+  return `<table>
+    <tr><th>ID</th><th>Risk</th><th>Status</th></tr>
+    ${rows.slice(0, 20).map(([, id, risk, status]) => {
+      const cls = status.startsWith('P0') ? 'err' : status.startsWith('P1') ? '' : status.includes('done') ? 'ok' : '';
+      return `<tr><td><code>${id}</code></td><td>${escape(risk.trim())}</td><td class="${cls}">${escape(status.trim())}</td></tr>`;
+    }).join('')}
+    ${rows.length > 20 ? `<tr><td colspan="3" class="empty">… อีก ${rows.length - 20} risks</td></tr>` : ''}
+  </table>`;
+}
+
+async function loadAll() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '<div class="loading">⏳ Refreshing…</div>';
+
+  const [projectsHTML, gitHTML, riskHTML] = await Promise.all([
+    loadProjectCards(),
+    loadGitStatus(),
+    loadRiskRegister(),
+  ]);
+
+  grid.innerHTML = `
+    ${projectsHTML}
+    <div class="card">
+      <h2>📂 Git status</h2>
+      ${gitHTML}
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2>🛡️ CIA Risk Register</h2>
+      ${riskHTML}
+    </div>`;
+
+  document.getElementById('meta').textContent =
+    `Refreshed: ${new Date().toLocaleString('th-TH')} · source: ${REPO}@${BRANCH}`;
+}
+
+function toggleArchived() {
+  showArchived = !showArchived;
+  alert('Archived toggle: ' + (showArchived ? 'on' : 'off') + ' (TODO: implement)');
+}
+
+loadAll();
+setInterval(loadAll, 5 * 60 * 1000);  // auto-refresh ทุก 5 นาที
+</script>
+</body>
+</html>

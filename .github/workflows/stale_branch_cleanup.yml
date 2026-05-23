@@ -1,0 +1,68 @@
+name: Stale Branch Cleanup
+# auto-delete claude/* branches ที่ merged ไป main แล้ว + เก่ากว่า 14 วัน
+# dry-run ใน schedule + report → comment ใน tracking issue
+# ลบจริงเมื่อ trigger ด้วย workflow_dispatch + apply=true
+
+on:
+  schedule:
+    - cron: '0 19 * * 0'  # อาทิตย์ 02:00 ICT
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Set to "true" to actually delete (default: dry-run)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Run branch cleanup
+        id: cleanup
+        run: |
+          set +e
+          git fetch origin --prune
+          APPLY="${{ github.event.inputs.apply || 'false' }}"
+          NOW=$(date +%s)
+          FOURTEEN_DAYS_AGO=$((NOW - 14 * 86400))
+          DELETED=""
+          SKIPPED=""
+
+          for B in $(git branch -r | grep 'origin/claude/' | grep -v ' -> '); do
+            BRANCH="${B#origin/}"
+            BRANCH_TS=$(git log -1 --format=%ct "$B")
+            # ต้อง merged + เก่ากว่า 14 วัน
+            git merge-base --is-ancestor "$B" origin/main || { SKIPPED="$SKIPPED\n  skip $BRANCH (unmerged)"; continue; }
+            [ "$BRANCH_TS" -gt "$FOURTEEN_DAYS_AGO" ] && { SKIPPED="$SKIPPED\n  skip $BRANCH (recent)"; continue; }
+
+            if [ "$APPLY" = "true" ]; then
+              if git push origin --delete "$BRANCH" 2>&1; then
+                DELETED="$DELETED\n  deleted $BRANCH"
+              else
+                DELETED="$DELETED\n  ✗ failed $BRANCH"
+              fi
+            else
+              DELETED="$DELETED\n  would delete $BRANCH (dry-run)"
+            fi
+          done
+
+          {
+            echo "apply=$APPLY"
+            echo 'deleted<<EOF'
+            echo -e "$DELETED"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Apply=$APPLY"
+          echo "Deleted/preview:"
+          echo -e "$DELETED"
+          echo ""
+          echo "Skipped:"
+          echo -e "$SKIPPED"

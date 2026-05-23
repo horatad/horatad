@@ -1,0 +1,53 @@
+name: Handoff Lint
+on:
+  pull_request:
+    paths:
+      - 'handoffs/**.md'
+      - 'docs/CIA_MISSION.md'
+      - 'scripts/admin/handoff_lint.mjs'
+  push:
+    branches: [main]
+    paths:
+      - 'handoffs/**.md'
+      - 'docs/CIA_MISSION.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+      - name: Lint handoffs (strict mode)
+        run: node scripts/admin/handoff_lint.mjs --strict
+
+  risk-register:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+      - name: Regenerate risk register
+        run: node scripts/admin/gen_risk_register.mjs
+      - name: Commit if changed
+        run: |
+          if ! git diff --quiet docs/admin/RISK_REGISTER.md; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/admin/RISK_REGISTER.md
+            git commit -m "chore(cia): regenerate RISK_REGISTER.md [skip ci]"
+            git push
+          else
+            echo "RISK_REGISTER.md unchanged"
+          fi
