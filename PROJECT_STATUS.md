@@ -5,32 +5,32 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.19 | **URL:** horatad.com
+**Version:** V3.3.22 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
 - 3-tank memory: Private / QR / JULIAN ✅ (V3.3.16-17)
-- Chart redesign M1+M2+M3 ✅ (V3.3.18-19):
+- Chart redesign M1-M6 ✅ ครบทุก milestone (V3.3.18-22):
   - M1: state vars _compareMode/_outerDisplay/_transitCursor/_transitUnit + synastry/eventChart/transit buffers
   - M2: T1/T2 buttons ใน chart-nav-header (btn-t1/btn-t2) + cycleCompareMode/cycleOuterDisplay
   - M3: transit unit popup (fixed+planet) + sign-change algorithm + cursor helpers
-- ⚠️ M4 HIGH RISK: rename natal1→natal, natal2→synastry/eventChart/transit ทั้งไฟล์
+  - M4: rename natal1→natal / natal2→synastry ทั้งไฟล์ (V3.3.20)
+  - M5: eventChart full support + cycleMemory _eventIdx + _updateNavHeader compareMode-aware (V3.3.21)
+  - M6: localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (V3.3.22)
 
 ### Next (Claude ทำได้)
-- [ ] **M4** — rename natal1→natal / natal2→context-aware (HIGH RISK — search-replace ทั้งไฟล์)
-- [ ] **M5** — eventChart full support + buildCompareReport unified template
-- [ ] **M6** — localStorage persistence ของ _synastryIdx/_eventIdx/_transitCursor
+- [ ] Phase 2: code-split script.js + julian_all.json move (รวมกับ GUARD Phase 2)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.17 บนมือถือ — memory modal UX ใหม่ + sort buttons
-- [ ] [ทดลองใช้] ทดสอบ V3.3.16 — 3-tank system + JULIAN tree filter
+- [ ] [ทดลองใช้] ทดสอบ V3.3.22 บนมือถือ — M6 persist (refresh แล้ว transit cursor/synastry/event idx ยังเดิม) + nav header compareMode===3
+- [ ] [ทดลองใช้] ทดสอบ V3.3.21 บนมือถือ — T1/T2 buttons + transit unit popup + eventChart cycling
 - [ ] [ทดลองใช้] ทดสอบ NOK TTS guide บน Android Chrome
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker → **GUARD T-02 owns rate-limit policy**
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B → **GUARD T-01 / R-07 owner** (GUARD แนะนำ Option C: friendly disclosure)
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260523_v1.md`
+`handoffs/HORATAD_20260523_v2.md`
 
 ---
 
@@ -220,7 +220,7 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.19 | script.js, v3/*, index.html | 🟡 Pre-launch — M4-M6 pending |
+| Horatad PWA | HORATAD V3.3.22 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 ✅ chart redesign ครบ |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 53,148/100,000 | workers/julian_scraper.mjs, workers/julian_seed_merge.mjs, tools/julian_seed_input.html | 🟢 Automation + manual seed tool ready |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
@@ -236,4 +236,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-23 | V3.3.19 | HORATAD M4-M6 pending | **GUARD Phase 1: 6/7 ✅** — P1-A/B/C/D/F/G shipped; P1-E blocked on user (R-07 Option C decision) | handoffs/GUARD_20260523_v2.md*
+*อัปเดตล่าสุด: 2026-05-23 | V3.3.22 | HORATAD M1-M6 ✅ chart redesign complete | **GUARD Phase 1: 6/7 ✅** — P1-A/B/C/D/F/G shipped; P1-E blocked on user (R-07 Option C decision) | handoffs/GUARD_20260523_v2.md*

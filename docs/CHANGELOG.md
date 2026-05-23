@@ -4,6 +4,20 @@
 
 ---
 
+## [3.3.22] — 2026-05-23
+### Added
+- HORATAD: M6 — localStorage persist `_synastryIdx`/`_eventIdx`/`_transitCursor` → refresh แล้วยังอยู่ตำแหน่งเดิม
+- HORATAD: `_tsCalc()` sync `_transitCursor` ทันทีเมื่อกด "คำนวณจร"
+- HORATAD: `_updateNavHeader()` รองรับ `compareMode===3` — แสดง "จร · d/m/y · t" จาก `_transitCursor`
+
+## [3.3.21] — 2026-05-22
+### Added
+- HORATAD: M5 — eventChart full support, `_compareMode===2` path, `cycleMemory` `_eventIdx`, `_updateNavHeader` compareMode-aware
+
+## [3.3.20] — 2026-05-22
+### Changed
+- HORATAD: M4 — rename `natal1`→`natal`, `natal2`→`synastry` ทั้งไฟล์ (63 occurrences)
+
 ## [3.3.19] — 2026-05-22
 ### Added
 - HORATAD: M3 transit unit popup (fixed+planet) + sign-change algorithm + cursor helpers (_tsCalcMode, _transitCursor, _transitUnit)
