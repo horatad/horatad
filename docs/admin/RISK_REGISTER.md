@@ -4,42 +4,40 @@
 
 > **Source of truth:**
 > - Charter risks (R-01..R-14): `docs/GUARD_MISSION.md` § 3.2
-> - Extended risks + status: `handoffs/GUARD_20260522_v2.md`
+> - Extended risks + status: `handoffs/GUARD_20260523_v1.md`
 
-## Risk register (14 risks)
+## Risk register (18 risks)
 
 | ID | Risk | Priority/Status | Source |
 |---|---|---|---|
-| R-01 | Secret leak in commit | P0 | open (GUARD-P0-B) | v1 |
-| R-02 | Worker quota burn | P1 | open (T-02 + user CF dashboard) | v1+T-02 |
-| R-03 | XSS via user input | P1 | open (GUARD-P0-A + T-05) | v1+T-05 |
-| R-04 | GitHub/CF account takeover | P0 | open ([ทดลองใช้]) | v1 |
-| R-05 | Stale SW cache | done ✅ | — | v1 |
-| R-06 | Source code theft | N/A accepted | — | v1 |
-| R-07 | QR URL user-data scrape | P1 | open (T-01, GUARD recommends Option C) | v1+T-01 |
-| R-08 | LCP > 4s mobile | P0 measure | open (need Lighthouse) | v1 |
+| R-01 | Secret leak in commit | P0 | ✅ history clean; control gap (gitleaks) → P1-A |
+| R-02 | Worker quota burn | P1 | open — [ทดลองใช้] CF rate limit + T-02 |
+| R-03 | XSS via user input | P1 | F1 found (low-med) → P1-D patch; CSP P1-B as backstop |
+| R-04 | GitHub/CF account takeover | P0 | open ([ทดลองใช้]) |
+| R-05 | Stale SW cache | done ✅ | — |
+| R-06 | Source code "theft" | N/A | accepted (open by design) |
+| R-07 | QR URL user-data scrape | P1 | scoped — Option C recommended → P1-E |
+| R-08 | LCP > 4s mobile | P0 measure | blocked on user Lighthouse run |
 | R-09 | Spam form submit | low | low | accepted (form is local-only, no server side-effect) | **N/A** | — |
-| R-10 | Supply chain | P0 enable | open ([ทดลองใช้] + GUARD-P0-C) | v1 |
-| R-11 | Missing CSP/clickjacking | P1 | open (GUARD-P0-D draft, GUARD-P1-B apply) | v1 |
-| R-12 | GHA fork abuse | P0 | open (GUARD-P0-F) | v1 |
+| R-10 | Supply chain | P0 enable | static excellent ✅; Dependabot = user task |
+| R-11 | Missing CSP/clickjacking | P1 | drafted → P1-B apply |
+| R-12 | GHA fork abuse | P0 | ✅ mitigated by trigger design |
 | R-13 | localStorage XSS data theft | low | medium | CSP gates XSS surface | covered by R-03 | — |
-| R-14 | julian_all.json size | P2 | open (Phase 2) | v1 |
+| R-14 | julian_all.json 15MB | P2 | confirmed on-demand only (not initial); repo bloat noted |
+| R-15 | Stale long-lived API token | P1 | scheduled in SECRETS.md → P1-F automation |
+| R-16 | Wikidata scrape compliance | P1 | ✅ COMPLIANT |
+| R-17 | horatad-auth hardening | P1 | client OK; Worker source blocked → [ทดลองใช้] |
+| R-18 | Secret sprawl & inventory drift | P1 | docs/SECRETS.md created; rotation automation → P1-F |
 
 ## Transferred items (T-NN → R-NN cross-link)
 
-- **T-01** — QR URL privacy
-- **T-02** — CF Worker deploy
-- **T-03** — CF API token rotation
-- **T-04** — Wikidata SPARQL rate limit
-- **T-05** — Input validation defensive layer
-- **T-06** — PIN auth via CF Worker
-- **T-07** — Worker API key inventory
+_(no T-NN transfers found)_
 
 ## ลำดับการอ่าน
 
 1. **อ่านไฟล์นี้** — overview risks + status
 2. `docs/GUARD_MISSION.md` — full context (threat model, decision framework, SOPs)
-3. `handoffs/GUARD_20260522_v2.md` — live task state, blocked/pending/done
+3. `handoffs/GUARD_20260523_v1.md` — live task state, blocked/pending/done
 
 ## คำสั่ง maintenance
 
@@ -48,7 +46,7 @@
 node scripts/admin/gen_risk_register.mjs
 
 # ตรวจ handoff format
-node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260522_v2.md
+node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260523_v1.md
 
 # BIG overview
 node scripts/admin/big_status.mjs --verbose
