@@ -131,46 +131,48 @@
 
 ---
 
-## GUARD — Confidentiality · Integrity · Availability + Performance 🟢 Phase 0 Pending
+## GUARD — Confidentiality · Integrity · Availability + Performance 🟢 Phase 0 COMPLETE → Phase 1 Ready
 **เป้าหมาย:** ตรวจสอบ + เฝ้าระวัง security (กันขโมย source / hack / spam) + ประสิทธิภาพ (ความเร็ว/ตอบสนอง) ของ horatad.com ทั้งระบบ — ยึด benefit/risk trade-off
 
 ### สถานะ
-- Charter ครบ: `docs/GUARD_MISSION.md` — 3 pillars + risk register R-01..R-14 + Phase 0-4 roadmap + SOPs
-- Threat model: A1-A5 (source thief / casual abuser / supply chain / account takeover / data scraper)
-- Phase 0 (Discovery) ยังไม่เริ่ม — pure audit, ไม่กระทบ code
-- **v2 consolidation**: รับโอนงาน security/perf จาก HORATAD/BIBLE/JULIAN เข้ามา (T-01..T-07) + เพิ่ม R-15..R-18
+- Charter ครบ: `docs/GUARD_MISSION.md` — 3 pillars + risk register R-01..R-18 + Phase 0-4 roadmap + SOPs
+- **Phase 0 (Discovery) COMPLETE 2026-05-23** — 7 audit reports + SECRETS.md ลง `docs/cia/`
+- Risk register update: R-12 mitigated ✅, R-16 COMPLIANT ✅, R-17 partial (Worker source needed), F1 found (low-med XSS via QR import path)
 
-### Transferred ownership (📨 จาก project อื่นมา GUARD)
-- **T-01 / R-07** — QR URL privacy (จาก HORATAD) → GUARD Phase 1 + recommend Option C
-- **T-02 / R-02** — CF Worker deploy rate-limit policy (จาก HORATAD) → GUARD Phase 1
-- **T-03 / R-15** — CF API token rotation scheduling (จาก JULIAN) → GUARD SOP-05
-- **T-04 / R-16** — Wikidata SPARQL compliance audit (จาก JULIAN config) → GUARD Phase 0
-- **T-05 / R-03** — Input validation defensive layer (จาก BIBLE) → GUARD Phase 0 audit
-- **T-06 / R-17** — horatad-auth Worker hardening (จาก HORATAD_MANUAL) → GUARD Phase 0 ใหม่ GUARD-P0-G
-- **T-07 / R-18** — Secret sprawl inventory → docs/SECRETS.md (GUARD Phase 1 GUARD-P1-F)
+### Key findings (Phase 0)
+- **R-11 (headers)** — zero security headers ปัจจุบัน → drafted `docs/cia/headers_draft_2026-05-23.md` พร้อม apply ใน P1-B
+- **R-17 (horatad-auth)** — client gate เป็น cosmetic CSS-only (DevTools bypass trivial); needs Worker source export + intent clarification with HORATAD
+- **F1 (XSS via QR)** — 5 sites ไม่ escape `s.d/s.m/s.y_be/s.t/s.prov` → P1-D patch ~10 บรรทัด
+- **R-16 (Wikidata)** — COMPLIANT ✅ ปิดได้
+- **T-05 (BIBLE)** — confirmed no validate_inputs in engine.js → cross-link to BIBLE owner
 
-### Next (Claude ทำได้ — Phase 0 Discovery, 7 งาน)
-- [ ] **GUARD-P0-A** — XSS surface audit + T-05 defensive layer scan → `docs/cia/xss_surface_audit_*.md`
-- [ ] **GUARD-P0-B** — Secret leak history audit + T-07 inventory → `docs/cia/secret_audit_*.md` + `docs/SECRETS.md`
-- [ ] **GUARD-P0-C** — External resource + supply chain audit → `docs/cia/supply_chain_*.md`
-- [ ] **GUARD-P0-D** — Security headers gap analysis + draft `_headers` → `docs/cia/headers_draft_*.md`
-- [ ] **GUARD-P0-E** — Bundle size + render-blocking baseline (Lighthouse = user task)
-- [ ] **GUARD-P0-F** — GitHub Actions + T-04 Wikidata SPARQL audit → `docs/cia/gha_audit_*.md`
-- [ ] **GUARD-P0-G** ⭐ — horatad-auth Worker hardening audit (T-06) → `docs/cia/horatad_auth_audit_*.md`
+### Next (Claude ทำได้ — Phase 1 Quick Wins, 7 งาน)
+- [ ] **GUARD-P1-A** — gitleaks CI + expand .gitignore + unify @v5 action pins
+- [ ] **GUARD-P1-B** — apply security headers + CSP report-only + extract inline `<script>`
+- [ ] **GUARD-P1-C** — maskable icon + manifest update
+- [ ] **GUARD-P1-D** — F1 XSS patch (escape 5 render sites)
+- [ ] **GUARD-P1-E** — QR Option C friendly disclosure UI
+- [ ] **GUARD-P1-F** — quarterly rotation reminder workflow (GH issue auto-create)
+- [ ] **GUARD-P1-G** — update GUARD_MISSION.md charter with R-15..R-18 + SOP-05
 
-### Blocked (รอ user — Phase 0)
-- [ ] [ทดลองใช้] รัน Lighthouse mobile + desktop บน horatad.com → ส่ง HTML report ให้ Claude
-- [ ] [ทดลองใช้] GitHub Settings: 2FA + branch protection main + Dependabot + secret scanning
-- [ ] [ทดลองใช้] Cloudflare dashboard: Rate Limiting rule 30 req/min/IP สำหรับ Worker endpoints
+### Blocked (รอ user — Phase 0 outcomes)
+- [ ] [ทดลองใช้] รัน Lighthouse mobile + desktop บน horatad.com → save to `docs/cia/lighthouse_*` (R-08)
+- [ ] [ทดลองใช้] GitHub Settings: 2FA + branch protection + Dependabot + secret scanning (R-04 + R-10)
+- [ ] [ทดลองใช้] Cloudflare dashboard: Rate Limiting 30 req/min/IP (R-02 / T-02)
+- [ ] [ทดลองใช้] Export `horatad-auth` + `horatad-ai` Worker source ลง workers/ → GUARD re-audit T-06
+- [ ] [BLOCKED] R-07 decision — Option A/B/C (GUARD recommends C, P1-E implements)
 
 ### เริ่ม session
 พิมพ์: `session GUARD`
 
 ### Handoff ล่าสุด
-`handoffs/GUARD_20260522_v2.md` (v1 archived)
+`handoffs/GUARD_20260523_v1.md` (v2 archived)
 
 ### Charter (ต้องอ่านก่อน session GUARD ทุกครั้ง)
 `docs/GUARD_MISSION.md`
+
+### Audit outputs (docs/cia/)
+`xss_surface_audit_*.md` · `secret_audit_*.md` · `supply_chain_*.md` · `headers_draft_*.md` · `gha_audit_*.md` · `perf_baseline_*.md` · `horatad_auth_audit_*.md` · `../SECRETS.md`
 
 ---
 
@@ -204,7 +206,7 @@
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
-| Security + Perf | GUARD Phase 0 | docs/GUARD_MISSION.md | 🟢 Pending — รอ session GUARD |
+| Security + Perf | GUARD Phase 1 ready | docs/GUARD_MISSION.md + docs/cia/* + docs/SECRETS.md | 🟢 Phase 0 ✅ — Phase 1 quick wins next |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
 
 ---
@@ -215,4 +217,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.19 | HORATAD M4-M6 pending | GUARD initiated + consolidated security/perf items จาก HORATAD/BIBLE/JULIAN (T-01..T-07, R-15..R-18) | handoffs/GUARD_20260522_v2.md*
+*อัปเดตล่าสุด: 2026-05-23 | V3.3.19 | HORATAD M4-M6 pending | **GUARD Phase 0 ✅ COMPLETE** — 7 audits ใน docs/cia/ + docs/SECRETS.md; Phase 1 ready (P1-A..P1-G) | handoffs/GUARD_20260523_v1.md*
