@@ -207,6 +207,7 @@
 | R-16 | Wikidata SPARQL scrape compliance | low | medium | UA + backoff + 1500ms gap (verified COMPLIANT 2026-05-23) | **P1 ✅ closed** | — |
 | R-17 | horatad-auth Worker hardening | medium | high | client gate cosmetic; Worker source review required | **P1** | medium |
 | R-18 | Secret sprawl & inventory drift | medium | medium | docs/SECRETS.md + rotation reminder workflow | **P1** | low |
+| R-19 | TTS text egress to cloud voice engine (Web Speech API) | low | low | local voices preferred (lang=th-TH bias); friendly disclosure if Phase 3 cloud TTS | **informational** | none now |
 
 ### 3.3 Things we DON'T do (และเหตุผล)
 

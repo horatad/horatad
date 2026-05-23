@@ -182,7 +182,11 @@
 พิมพ์: `session GUARD`
 
 ### Handoff ล่าสุด
-`handoffs/GUARD_20260523_v2.md` (v1 archived)
+`handoffs/GUARD_20260523_v3.md` (v1, v2 archived)
+
+### Phase 2 prep ✅ (session 3 — 2026-05-23)
+- `docs/cia/csp_policy.md` — Option E refactor plan + 196 inline handler inventory
+- `docs/cia/cross_project_scan_2026-05-23.md` — NOK/BIBLE/REORG/JULIAN audit; R-19 added; BIBLE DSL+prompt SAFE ✅
 
 ### Charter
 `docs/GUARD_MISSION.md`
