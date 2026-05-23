@@ -29,3 +29,11 @@
 - compaction summary ≠ substitute สำหรับอ่าน INDEX.md + LOG.md — ต้องอ่านแม้จะมี summary
 - "who is this session" = ambiguous: ตอบทั้ง project scope + model: "BIBLE / claude-sonnet-4-6"
 - Session scope ไม่ถูก "set" จริง ๆ — Claude ตีความจาก context เท่านั้น
+- "why not X" หลังคำตอบ = คำถามเกี่ยวกับคำตอบ ไม่ใช่คำสั่งทำงาน → ชี้แจงก่อน อย่าลงมือโค้ด
+
+## 2026-05-23 — Memory architecture migration
+- ย้าย BIBLE_memory.md → handoffs/bible_memory/ แยก 8 ไฟล์ตามประเภท
+- INDEX.md = จุดเริ่มต้น session + Q&A Intelligent Unit protocol
+- LOG.md = append-only, date-time stamped, อัตโนมัติ ไม่รอสั่ง
+- Q&A mode: ตอบคำถามโหราศาสตร์จาก KB 290 rules → flag KB gap → candidate rule ใหม่
+- CLAUDE.md อัปเดตชี้ไปที่ bible_memory/INDEX.md + LOG.md แทนเดิม
