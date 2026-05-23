@@ -1,0 +1,149 @@
+# HORATAD_memory — Session Learnings สะสม
+# อ่านร่วมกับ docs/HORATAD.md (tech stack + version bump + design tokens)
+# Claude อ่านไฟล์นี้ก่อนทุก session HORATAD เพิ่มเติมก่อนจบ session
+
+> ไฟล์นี้ ≠ handoff — ไม่มี PENDING/DONE  
+> จุดประสงค์: เก็บ **session learnings** ที่ docs/HORATAD.md ไม่ครอบคลุม  
+> (bug patterns, architecture decisions, gotchas จากการแก้จริง)
+
+---
+
+## 1. Architecture Overview (post-Phase 2 Step 0)
+
+### ไฟล์หลัก
+```
+script.js       ← monolith หลัก (V3.3.23: 199KB, 3,696 บรรทัด หลัง KB extract)
+v3/kb_embedded.json  ← KB rules (194KB, async load) — ย้ายจาก script.js Step 0
+v3/v3tab.js     ← V3 tab logic (ES module)
+v3/engine.js    ← Thai astro engine (ES module)
+v3/interpretation.js ← keyword matching (ES module)
+v3/typhoon.js   ← Typhoon LLM bridge (ES module)
+v3/tts.js       ← TTS/NOK engine (ES module)
+index.html      ← entry point, loads script.js + v3tab.js
+sw.js           ← service worker, cache-first
+```
+
+### Phase 2 refactor — ลำดับบังคับ
+```
+Step 0 (✅ DONE V3.3.23): KB_RULES → kb_embedded.json
+Step 0b (deferred):        PROVINCES + astro tables — async ทำไม่ได้ (hot calc path)
+Step 1+ (⏸ รอ CSP):        Tier 1-7 module split — ต้องทำหลัง CSP enforce (P2-A) เพราะ
+                            inline event handlers (onclick="...") ต้องแก้ก่อน จึง split ได้
+```
+
+**กฎสำคัญ**: ห้ามทำ Step 1+ ก่อน CSP enforce — ถ้า split แล้วค่อย refactor onclick = ทำ 2 รอบ
+
+### async KB load pattern (Step 0)
+```javascript
+// KB โหลด async — guard ทุก caller
+if (_kbRules === null) { toast("กำลังโหลด KB... ลองอีกครั้ง"); return; }
+// _matchRules() + openInterpretation() ต้องมี guard นี้เสมอ
+```
+
+---
+
+## 2. Script.js — Module Map (สำหรับ grep เร็ว)
+
+| Tier | Module | บรรทัด (approx) | หน้าที่ |
+|---|---|---|---|
+| 1 | core/engine | ~70, 536-660 | `_calcJD`, `get_data`, `getHouse`, `analyzePairs` |
+| 1 | core/lunar | 662-779 | `buildLunarInfo`, `getLunarDay`, tithi |
+| 1 | core/transit | 988-1093 | `_moveCursorByFixed`, `_recalcTransit` |
+| 2 | db/tank | 1831-1882 | `_tankLoad`, `_tankSave`, memory 3 tanks |
+| 3 | render/report | 780-893 | `_escHtml`, `buildReport`, `buildCompareReport` |
+| 4 | ui/nav | ~2900-3000 | `_updateNavHeader`, compareMode logic |
+| 5 | io/qr | ~2600-2700 | QR encode/decode, share image |
+
+⚠️ บรรทัดเปลี่ยนทุก session — ใช้ `grep -n "function X" script.js` verify ก่อนเสมอ
+
+---
+
+## 3. State Machine — compareMode
+
+```
+compareMode:
+  0 = natal เดี่ยว
+  1 = synastry (natal vs natal2/_synastry)
+  2 = eventChart
+  3 = transit (_transitCursor)
+
+outerDisplay: 0=synastry | 1=eventChart | 2=transitChart
+_updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
+```
+
+**pattern**: ใช้ `const outerChart = compareMode===1 ? synastry : compareMode===2 ? eventChart : transitChart` ใน outer render ทุกจุด — ห้ามอ้าง global โดยตรง
+
+---
+
+## 4. localStorage Keys
+
+| Key | เก็บ | Type |
+|---|---|---|
+| `horatad_transit_cursor` | `{d,m,y_be,t}` | object |
+| `horatad_synastry_idx` | index ใน _synastryDb | number |
+| `horatad_event_idx` | index ใน _eventDb | number |
+| `horatad_v3_db1` | Private tank persons | array |
+| `horatad_v3_db2` | QR tank persons | array |
+| `horatad_v3_db3` | JULIAN tank persons | array |
+| `horatad_pin_unlocked` | PIN state (session) | bool |
+
+**กฎ**: save index ไม่ใช่ object สำหรับ synastry/event (db backing อยู่แล้ว) — transitCursor เป็น exception เพราะไม่มี db
+
+---
+
+## 5. Recurring Bug Patterns
+
+### XSS — escHtml gaps
+- `_escHtml()` ต้องครอบทุกจุดที่ render text จาก user input หรือ external data
+- ตรวจด้วย: `grep -n "innerHTML" script.js` → ทุกบรรทัดต้องมี `_escHtml()`
+- F1 XSS patch (2026-05-23): 7 sites แก้แล้ว — ถ้าเพิ่ม render จุดใหม่ ต้อง wrap ทันที
+
+### Transit cursor normalization
+- `_transitCursor` ต้อง normalize เป็น `y_be` เสมอ (ไม่ใช่ CE year)
+- บน DOM input ใช้ era ปัจจุบัน — `_tsCalc()` convert แล้ว save `y_be`
+
+### SW cache mismatch
+- ถ้า asset URL ใน CORE_ASSETS ไม่ตรงกับ ?v= ของไฟล์จริง → offline พัง
+- หลัง Step 0: `v3/kb_embedded.json?v=X.Y.Z` ต้องอยู่ใน CORE_ASSETS ด้วย
+
+### Numpad → input event
+- `_setField()` ใช้ `.value=` ตรงๆ → ไม่ trigger `input` event → listener ต้องเรียก update เอง
+- pattern: `_setField(el, val); _onInputChange(el);`
+
+---
+
+## 6. Platform Quirks
+
+| Platform | Quirk | Fix |
+|---|---|---|
+| iOS Safari | `<input type="time">` fire `change` ไม่ใช่ `input` | listen ทั้งคู่ |
+| iOS Safari | Web Speech pause หลัง ~15s utterance ยาว | chunk-split 180 chars (NOK tts.js) |
+| iOS Safari | preload voice list ต้องทำ DOMContentLoaded | `speechSynthesis.getVoices()` ก่อน speak |
+| Android Chrome | Google TH voice ใช้งานได้ แต่ต้องรอ list load | ใช้ `onvoiceschanged` event |
+| Desktop Chrome | ไม่มี Thai voice → ปุ่ม disabled พร้อม hint | `hasThaiVoice()` check |
+
+---
+
+## 7. Security — Known Decisions
+
+- **PIN auth DevTools bypass**: ลบ `hidden` class = unlock ไม่ต้อง PIN — intent ยังไม่ตัดสิน (2026-05-23)
+- **CSP Report-Only**: deploy แล้ว — รอ 1 wk violations → enforce (P2-A)
+- **Inline handlers**: 196 handlers (index.html=165, script.js=31) — ต้อง refactor ก่อน CSP enforce
+
+---
+
+## 8. WHY LOG สะสม
+
+- **KB_RULES → JSON (Step 0)** — 198KB inline = 49% ของ script.js. fetch async ได้เพราะ KB ไม่ได้อยู่ใน hot calc path (คำนวณดาวไม่ต้องใช้ KB). script.js เล็กลงครึ่งทันที ไม่ต้องรอ CSP
+- **PROVINCES defer** — ใช้ใน `calculateChart()` hot path, async fetch = init พัง. wire bytes ไม่ลดถ้าใช้ sync `<script>` — ไม่คุ้ม รอ Step 1
+- **Phase 2 Step 0b defer** — value/effort ต่ำ: 5KB ประหยัดได้ แต่ complex. รอ Step 1 ทำพร้อมกันครั้งเดียว
+- **outerChart local const** — แทนอ้าง global โดยตรง ทำให้ mode ใหม่ต่อได้ใน 1 จุด (ไม่กระจาย)
+- **_synastryIdx เป็น index แทน find-by-key** — เร็วกว่า consistent กับ _eventIdx pattern
+
+---
+
+## 9. อัปเดต
+
+| วันที่ | สิ่งที่เพิ่ม |
+|---|---|
+| 2026-05-23 | สร้างไฟล์ครั้งแรก — architecture, state machine, localStorage keys, recurring bugs, platform quirks, WHY LOG |
