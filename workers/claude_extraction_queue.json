@@ -15,10 +15,7 @@
     "pending": 73
   },
   "last_session_date": "2026-05-22",
-  "pending": [
-    "ch100",
-    "ch101"
-  ],
+  "pending": [],
   "done": [
     "ch000",
     "ch001",
@@ -119,8 +116,10 @@
     "ch096",
     "ch097",
     "ch098",
-    "ch099"
+    "ch099",
+    "ch100",
+    "ch101"
   ],
   "errors": [],
-  "rules_extracted": 286
+  "rules_extracted": 290
 }
