@@ -198,24 +198,21 @@
 
 ---
 
-## REORG — Docs Cleanup 🟢 Pending (Claude ทำได้)
+## REORG — Docs Cleanup ✅ DONE (2026-05-23)
 **เป้าหมาย:** ลด docs จาก 12 → 8 ไฟล์ ปรับ source of truth ให้ชัด
 
 ### สถานะ
-- BIG session ตรวจพบ docs ขัดแย้ง/outdated/ซ้ำซ้อน 4 critical issue
-- Migration plan + verification checklist เขียนครบใน `handoffs/REORG_20260522_v1.md`
+- ✅ Task 1: ลบ `docs/BEST_PRACTICES.md` + `docs/SYSTEM_INSTRUCTION_V3-4.md` + `docs/HORATAD_MANUAL.md`
+- ✅ Task 2: เขียน `docs/HORATAD.md` ใหม่ (~185 บรรทัด) — lean technical reference
+- ✅ Task 3: Update `docs/CHANGELOG.md` เพิ่ม V3.2.7–V3.3.19 (19 entries)
+- ✅ Task 4: Fix `DEPLOY.md` broken reference + ECOSYSTEM.md/CLAUDE.md references อัปเดต
 
-### Next (Claude ทำได้ — session REORG)
-- [ ] Task 1: ลบ `docs/BEST_PRACTICES.md` + `docs/SYSTEM_INSTRUCTION_V3-4.md` (outdated 100%)
-- [ ] Task 2: Rewrite `docs/HORATAD_MANUAL.md` → `docs/HORATAD.md` (498 → ~250 บรรทัด)
-- [ ] Task 3: Update `docs/CHANGELOG.md` เพิ่ม V3.2.7-V3.3.12 (16 entries)
-- [ ] Task 4: Fix `DEPLOY.md` l.131 broken reference + ECOSYSTEM.md/CLAUDE.md references
-
-### เริ่ม session
-พิมพ์: `session REORG`
+### Deferred (รอบหน้า)
+- [ ] Trim CLAUDE.md — ย้าย HORATAD-specific rules → docs/HORATAD.md
+- [ ] Rename `BIBLE_MISSION.md` → `BIBLE.md` + `JULIAN_MISSION.md` → `JULIAN.md` (consistency)
 
 ### Handoff ล่าสุด
-`handoffs/REORG_20260522_v1.md`
+`handoffs/REORG_20260522_v2.md`
 
 ---
 
@@ -229,7 +226,7 @@
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
 | Security + Perf | GUARD Phase 1 6/7 done | docs/GUARD_MISSION.md + docs/cia/* + docs/SECRETS.md + _headers + auth-pin.js | 🟢 P1-A/B/C/D/F/G ✅ — P1-E blocked on user |
-| Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
+| Docs cleanup | REORG | docs/*.md | ✅ DONE 2026-05-23 — 3 ไฟล์ลบ, HORATAD.md ใหม่, CHANGELOG+19 entries |
 
 ---
 

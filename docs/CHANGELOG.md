@@ -4,6 +4,96 @@
 
 ---
 
+## [3.3.19] — 2026-05-22
+### Added
+- HORATAD: M3 transit unit popup (fixed+planet) + sign-change algorithm + cursor helpers (_tsCalcMode, _transitCursor, _transitUnit)
+
+## [3.3.18] — 2026-05-22
+### Added
+- HORATAD: M1+M2 chart redesign — state vars (_compareMode, _outerDisplay, _transitCursor, _transitUnit) + synastry/eventChart/transit buffers + T1/T2 toggle buttons ใน chart-nav-header
+
+## [3.3.17] — 2026-05-22
+### Added
+- HORATAD: memory modal UX redesign (แท็บ QR / ส่วนตัว / JULIAN) + ดวงนอก/จร toggle button + sort controls
+
+## [3.3.16] — 2026-05-22
+### Added
+- HORATAD: 3-tank memory system — แยก storage ชัดเจน (ส่วนตัว / QR / JULIAN) + tab UI + dedup dialog สำหรับ record ที่ซ้ำกัน
+
+## [3.3.15] — 2026-05-22
+### Added
+- NOK: TTS guide modal แทนปุ่ม disabled เมื่อไม่มี Thai voice — แนะนำขั้นตอน iOS/Android/Desktop
+
+## [3.3.14] — 2026-05-22
+### Fixed
+- NOK: lstrip per-line + hard-split fallback (ทุก 200 chars) สำหรับข้อความพยากรณ์ยาวที่ไม่มี sentence boundary
+
+## [3.3.13] — 2026-05-22
+### Added
+- NOK Phase 1: ปุ่ม 🔊 ฟังคำพยากรณ์ใน V3 tab — Web Speech API (tts.js) พร้อม speak/stop/preload/hasThaiVoice
+
+## [3.3.12] — 2026-05-21
+### Fixed
+- HORATAD: JULIAN download 404 — สร้าง placeholder `data/julian_all.json` + ปรับ empty message user-friendly
+
+## [3.3.11] — 2026-05-21
+### Fixed
+- HORATAD: QR ใน capture — bundle qrcode.min.js local (ไม่พึ่ง CDN), fix qrDiv position, เพิ่ม toast บอก save location
+
+## [3.3.10] — 2026-05-21
+### Changed
+- HORATAD: ลบ section ปรัชญาการพัฒนาออกจากหน้าเกี่ยวกับ + about page full-screen layout
+
+## [3.3.9] — 2026-05-21
+### Fixed
+- HORATAD: JULIAN URL → raw.githubusercontent (CORS-free), ปิด autofocus search, swap transit fn, lunar content restore (5 fixes batch)
+
+## [3.3.8] — 2026-05-21
+### Added/Changed
+- HORATAD: 8 changes batch — import choice dialog, DB1 sort controls, pin auth fix, tag delete, toggle buttons, nav view button, lunar section cleanup
+
+## [3.3.7] — 2026-05-21
+### Fixed
+- HORATAD: memory modal ใช้ dvh แทน vh — keyboard บนมือถือไม่บัง Export/Import/ปิด buttons
+
+## [3.3.5] — 2026-05-21
+### Added
+- BIBLE: rule numbers display + natal/transit toggle + simplified input panel ใน tools/kb_reviewer.html
+
+## [3.3.4] — 2026-05-21
+### Added
+- HORATAD: V3 tab — 3-panel view (กฎ / Input Typhoon / Output) แทน single-panel
+
+## [3.3.3] — 2026-05-21
+### Fixed
+- BIBLE: match_rules() — house_lord_of (dynamic เจ้าเรือน), REFERENCE filter ออกจาก output, planet_id=0 bug
+
+## [3.3.2] — 2026-05-21
+### Added
+- BIBLE: house context map + tagged phrase cluster prompt สำหรับ LLM wording generation
+
+## [3.3.1] — 2026-05-21
+### Added
+- HORATAD: wire M8 compose_local_prediction → v3tab.js (✅/⚠️/📋 grouped display แทน render_fallback)
+
+## [3.3.0] — 2026-05-21
+### Added
+- HORATAD: M8 keyword composition engine (compose_local_prediction + compose_summary_text) ใน v3/interpretation.js
+- HORATAD: M7 empirical schema fields (empirical_p, empirical_n, empirical_refs, secondary_obs) + rule skeleton generator
+- HORATAD: v3/kb_skeletons.json — 90 skeletons สำหรับ planet×quality combinations ที่ขาดกฎ
+
+## [3.2.9] — 2026-05-21
+### Added
+- HORATAD: M1 structured JSON output (rule_id validation) + M2 conditions-based match_rules() + M3 multi-LLM benchmark framework
+
+## [3.2.8] — 2026-05-20
+### Changed
+- HORATAD: kb.json V2.1 — รวม 2 Typhoon fill rounds → 284/342 conditions[] (83% coverage)
+
+## [3.2.7] — 2026-05-20
+### Added
+- HORATAD: kb.json V2 — 342 rules พร้อม conditions[] จาก Typhoon (83% coverage, 284/342 rules)
+
 ## [3.2.6] — 2026-05-20
 ### Added
 - ปรัชญาการพัฒนา (Development Philosophy): Simple / Friendly / UX / Fast
