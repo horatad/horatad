@@ -14,6 +14,15 @@
 
 ---
 
+## Session Tips (HORATAD-specific)
+
+- **`script.js` ใหญ่** (~200KB หลัง KB extract V3.3.23, เดิม 393KB) — grep ก่อน read เสมอ, อย่าโหลดทั้งไฟล์
+- **Version bump = 6 ไฟล์ sync พร้อมกัน** (ดู Version Bump Checklist ด้านล่าง) — overhead สูง batching จึงสำคัญ
+- **KB load เป็น async** (V3.3.23+) — `_loadEmbeddedKB()` ที่ init → ใช้ guard `if(!_kbRules)return` ทุกที่ที่ใช้ KB
+- **Production URL = horatad.com** — ทุก test instruction ใช้ URL นี้, ห้ามแนะนำ horatad.github.io สำหรับ app หลัก
+
+---
+
 ## Version Bump Checklist
 
 bump `X.Y.Z` พร้อมกัน **6 จุด**:

@@ -206,7 +206,9 @@
 ## REORG — Docs Cleanup ✅ CLOSED (2026-05-23)
 **เป้าหมาย:** ลด docs จาก 12 → 8 ไฟล์ — ✅ บรรลุแล้ว
 
-งานที่เหลือ (ESLint setup, Trim CLAUDE.md) โอนไป **BIG** แล้ว — ดู `handoffs/BIG_20260523_v1.md`
+งานที่เหลือ (ESLint setup) โอนไป **BIG** แล้ว — ดู `handoffs/BIG_20260523_v1.md`
+
+> Trim CLAUDE.md ✅ done 2026-05-23 HORATAD session — 4 จุด HORATAD-specific generalized + Session Tips section ใน docs/HORATAD.md (BIG handoff should mark complete)
 
 ---
 
