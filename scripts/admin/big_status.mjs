@@ -117,10 +117,10 @@ for (const p of PROJECTS) {
   console.log(`     ${C.green}done ${done}${C.reset}  ${C.yellow}pending ${pending}${C.reset}  ${C.magenta}[ทดลองใช้] ${testing}${C.reset}  ${C.red}[BLOCKED] ${blocked}${C.reset}`);
 }
 
-// ─── 4. CIA RISK SNAPSHOT ────────────────────────────
-section('CIA Risk snapshot');
+// ─── 4.  GUARD RISK SNAPSHOT ────────────────────────────
+section('GUARD Risk snapshot');
 
-const ciaFile = join(ROOT, 'docs/CIA_MISSION.md');
+const ciaFile = join(ROOT, 'docs/GUARD_MISSION.md');
 if (existsSync(ciaFile)) {
   const cia = readFileSync(ciaFile, 'utf8');
   const risks = [...cia.matchAll(/\| R-(\d+) \| ([^|]+?) \|.*?\| \*?\*?(P\d|N\/A|done.*?)\*?\*? \|/g)];
@@ -132,7 +132,7 @@ if (existsSync(ciaFile)) {
   }
   console.log(`     ${C.red}P0 ${byPriority.P0}${C.reset}  ${C.yellow}P1 ${byPriority.P1}${C.reset}  P2 ${byPriority.P2}  P3 ${byPriority.P3}  ${C.green}done ${byPriority.done}${C.reset}  ${C.dim}N/A ${byPriority['N/A']}${C.reset}`);
 } else {
-  warn('docs/CIA_MISSION.md ไม่พบ');
+  warn('docs/GUARD_MISSION.md ไม่พบ');
 }
 
 // ─── 5. PROJECT_STATUS DRIFT CHECK ───────────────────

@@ -70,8 +70,8 @@ function lint(file) {
     issues.warn.push('WHY LOG section สั้นมาก หรือว่าง — ควรบันทึก decision อย่างน้อย 1 รายการ');
   }
 
-  // ── 5. CIA cross-link integrity ────
-  if (file.includes('CIA_')) {
+  // ── 5. GUARD cross-link integrity ────
+  if (file.includes('GUARD_')) {
     const ts = content.match(/T-\d+/g) || [];
     const rs = content.match(/R-\d+/g) || [];
     if (ts.length && rs.length === 0) {

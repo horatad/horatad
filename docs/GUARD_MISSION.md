@@ -1,4 +1,4 @@
-# CIA — Confidentiality · Integrity · Availability + Performance
+# GUARD — Confidentiality · Integrity · Availability + Performance
 # Project Charter, Policy & Roadmap | สร้าง 2026-05-22
 
 > **หน้าที่:** ตรวจสอบ + เฝ้าระวัง + ปรับปรุง ทั้ง **ความปลอดภัย** (เข้าถึง horatad.com, ป้องกันขโมย source / hack / spam) และ **ประสิทธิภาพ** (ความเร็ว/การตอบสนอง) ของ Horatad ecosystem ทั้งหมด — โดยยึด trade-off **benefit / risk** เป็นหลักตัดสิน
@@ -7,7 +7,7 @@
 
 ---
 
-## 0. ปรัชญา CIA (อ่าน 30 วินาที)
+## 0. ปรัชญา  GUARD (อ่าน 30 วินาที)
 
 ```
 "ปลอดภัย" ≠ "เพิ่ม layer ทุกที่"
@@ -218,7 +218,7 @@
 
 ---
 
-## 4. 📅 Roadmap CIA — Phase plan
+## 4. 📅 Roadmap  GUARD — Phase plan
 
 ### Phase 0 — Discovery & Baseline (1-2 sessions, ทำก่อนแก้อะไร)
 **ขั้นตอน:**
@@ -230,8 +230,8 @@
 2. **Baseline metrics**:
    - Lighthouse mobile + desktop บน horatad.com
    - Save report ลง `docs/cia/perf_baseline_YYYY-MM-DD.{json,md}`
-   - บันทึก LCP/INP/CLS/PWA score ลง CIA handoff
-3. **Output**: `handoffs/CIA_<date>_v2.md` พร้อม priority list
+   - บันทึก LCP/INP/CLS/PWA score ลง  GUARD handoff
+3. **Output**: `handoffs/GUARD_<date>_v2.md` พร้อม priority list
 
 ### Phase 1 — Quick wins P0+P1 (3-4 sessions)
 ทำตามลำดับ priority ใน risk register § 3.2:
@@ -251,7 +251,7 @@
 2. **Monthly Lighthouse sweep** — ดู regression
 3. **Watch CF Worker analytics** — abuse pattern detection
 4. **Dependabot triage** — เมื่อมี PR
-5. **Update CIA risk register** — ทุก feature ใหม่ของ ecosystem ต้อง assess
+5. **Update GUARD risk register** — ทุก feature ใหม่ของ ecosystem ต้อง assess
 
 ### Phase 4+ — Advanced (consider เมื่อมี user จริง > 100 daily)
 - Add **CSP report-uri** endpoint → analyze violations
@@ -287,7 +287,7 @@
 2. ตรวจ user input → render path ทุกจุด → ใช้ textContent ไม่ใช่ innerHTML
 3. ตรวจ external network call → endpoint trusted? ส่งข้อมูลอะไร?
 4. ตรวจ secret usage → CF Worker env vars เท่านั้น, ไม่ลง localStorage/sessionStorage
-5. ลงใน risk register ของ project นั้น + cross-link ใน CIA handoff
+5. ลงใน risk register ของ project นั้น + cross-link ใน GUARD handoff
 ```
 
 ### SOP-04: Performance budget enforcement (ทุก major version bump)
@@ -318,7 +318,7 @@
 
 ## 7. 🔗 Cross-project dependencies
 
-| Project | CIA concern |
+| Project |  GUARD concern |
 |---|---|
 | HORATAD | XSS surface in script.js, perf bottleneck, PWA installability |
 | BIBLE | Typhoon API key (server-side via CF Worker), prompt injection from user input → LLM |
@@ -326,7 +326,7 @@
 | NOK | Web Speech API privacy (sends text to OS-level voice engine — usually local but verify), browser permissions |
 | PLATFORM (future) | LINE OA webhook signature verification, CF Worker rate limit, content moderation |
 
-> **กฎ**: CIA session **ไม่แตะโค้ดของ project อื่น** โดยไม่ผ่าน handoff cross-project. ทุกข้อเสนอจะ commit ลง handoff project ปลายทาง + แจ้ง user
+> **กฎ**: GUARD session **ไม่แตะโค้ดของ project อื่น** โดยไม่ผ่าน handoff cross-project. ทุกข้อเสนอจะ commit ลง handoff project ปลายทาง + แจ้ง user
 
 ---
 
@@ -339,23 +339,23 @@
 | Performance | Core Web Vitals (Google), RAIL model, web.dev/fast |
 | Privacy | PDPA (Thai 2562), GDPR (สำหรับ EU users ในอนาคต) |
 | Content Security | CSP Level 3, COOP/COEP, CORP, Permissions-Policy |
-| Accessibility | WCAG 2.2 AA (parallel concern, ไม่ใช่ scope หลัก CIA) |
+| Accessibility | WCAG 2.2 AA (parallel concern, ไม่ใช่ scope หลัก GUARD) |
 | Crypto | NIST SP 800-63B password guidelines (ถ้ามี login ในอนาคต) |
 | Supply chain | SLSA framework Level 1 (เริ่ม), Dependabot, gitleaks |
 
 ---
 
-## 9. 📂 ไฟล์ project CIA (file map)
+## 9. 📂 ไฟล์ project  GUARD (file map)
 
 ```
-docs/CIA_MISSION.md             ← ไฟล์นี้ (charter + policy + roadmap)
+docs/GUARD_MISSION.md             ← ไฟล์นี้ (charter + policy + roadmap)
 docs/cia/                       ← (จะสร้างเมื่อจำเป็น)
   perf_baseline_YYYY-MM-DD.md   ← Lighthouse baseline
   secret_audit_YYYY-MM-DD.md    ← gitleaks audit result
   csp_policy.md                 ← Content Security Policy draft + iterations
   risk_register.md              ← live tracking ของ R-01..R-NN
 
-handoffs/CIA_YYYYMMDD_vN.md     ← session handoff (เริ่ม v1 หลัง session แรกทำงาน)
+handoffs/GUARD_YYYYMMDD_vN.md     ← session handoff (เริ่ม v1 หลัง session แรกทำงาน)
 
 _headers                        ← Cloudflare Pages headers (CSP, X-Frame, etc.)
 .github/workflows/ci.yml        ← เพิ่ม gitleaks job
@@ -363,11 +363,11 @@ _headers                        ← Cloudflare Pages headers (CSP, X-Frame, etc.
 
 ---
 
-## 10. 🚦 Session opening template (สำหรับ CIA sessions ถัดไป)
+## 10. 🚦 Session opening template (สำหรับ GUARD sessions ถัดไป)
 
 ทุก session เริ่มต้นด้วย:
 ```
-## CIA — งานค้างวันนี้
+## GUARD — งานค้างวันนี้
 
 **Phase ปัจจุบัน:** 0 (Discovery) / 1 (Quick wins) / 2 (Structural) / 3 (Continuous)
 

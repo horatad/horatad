@@ -25,9 +25,9 @@
 - [ ] [ทดลองใช้] ทดสอบ V3.3.17 บนมือถือ — memory modal UX ใหม่ + sort buttons
 - [ ] [ทดลองใช้] ทดสอบ V3.3.16 — 3-tank system + JULIAN tree filter
 - [ ] [ทดลองใช้] ทดสอบ NOK TTS guide บน Android Chrome
-- [ ] [ทดลองใช้] CF: deploy horatad-ai Worker → **CIA T-02 owns rate-limit policy**
+- [ ] [ทดลองใช้] CF: deploy horatad-ai Worker → **GUARD T-02 owns rate-limit policy**
 - [ ] [BLOCKED] cloud sync — รอ server confirm
-- [ ] [BLOCKED] QR URL privacy — รอ Option A/B → **CIA T-01 / R-07 owner** (CIA แนะนำ Option C: friendly disclosure)
+- [ ] [BLOCKED] QR URL privacy — รอ Option A/B → **GUARD T-01 / R-07 owner** (GUARD แนะนำ Option C: friendly disclosure)
 
 ### Handoff ล่าสุด
 `handoffs/HORATAD_20260522_v3.md`
@@ -131,32 +131,32 @@
 
 ---
 
-## CIA — Confidentiality · Integrity · Availability + Performance 🟢 Phase 0 Pending
+## GUARD — Confidentiality · Integrity · Availability + Performance 🟢 Phase 0 Pending
 **เป้าหมาย:** ตรวจสอบ + เฝ้าระวัง security (กันขโมย source / hack / spam) + ประสิทธิภาพ (ความเร็ว/ตอบสนอง) ของ horatad.com ทั้งระบบ — ยึด benefit/risk trade-off
 
 ### สถานะ
-- Charter ครบ: `docs/CIA_MISSION.md` — 3 pillars + risk register R-01..R-14 + Phase 0-4 roadmap + SOPs
+- Charter ครบ: `docs/GUARD_MISSION.md` — 3 pillars + risk register R-01..R-14 + Phase 0-4 roadmap + SOPs
 - Threat model: A1-A5 (source thief / casual abuser / supply chain / account takeover / data scraper)
 - Phase 0 (Discovery) ยังไม่เริ่ม — pure audit, ไม่กระทบ code
 - **v2 consolidation**: รับโอนงาน security/perf จาก HORATAD/BIBLE/JULIAN เข้ามา (T-01..T-07) + เพิ่ม R-15..R-18
 
-### Transferred ownership (📨 จาก project อื่นมา CIA)
-- **T-01 / R-07** — QR URL privacy (จาก HORATAD) → CIA Phase 1 + recommend Option C
-- **T-02 / R-02** — CF Worker deploy rate-limit policy (จาก HORATAD) → CIA Phase 1
-- **T-03 / R-15** — CF API token rotation scheduling (จาก JULIAN) → CIA SOP-05
-- **T-04 / R-16** — Wikidata SPARQL compliance audit (จาก JULIAN config) → CIA Phase 0
-- **T-05 / R-03** — Input validation defensive layer (จาก BIBLE) → CIA Phase 0 audit
-- **T-06 / R-17** — horatad-auth Worker hardening (จาก HORATAD_MANUAL) → CIA Phase 0 ใหม่ CIA-P0-G
-- **T-07 / R-18** — Secret sprawl inventory → docs/SECRETS.md (CIA Phase 1 CIA-P1-F)
+### Transferred ownership (📨 จาก project อื่นมา GUARD)
+- **T-01 / R-07** — QR URL privacy (จาก HORATAD) → GUARD Phase 1 + recommend Option C
+- **T-02 / R-02** — CF Worker deploy rate-limit policy (จาก HORATAD) → GUARD Phase 1
+- **T-03 / R-15** — CF API token rotation scheduling (จาก JULIAN) → GUARD SOP-05
+- **T-04 / R-16** — Wikidata SPARQL compliance audit (จาก JULIAN config) → GUARD Phase 0
+- **T-05 / R-03** — Input validation defensive layer (จาก BIBLE) → GUARD Phase 0 audit
+- **T-06 / R-17** — horatad-auth Worker hardening (จาก HORATAD_MANUAL) → GUARD Phase 0 ใหม่ GUARD-P0-G
+- **T-07 / R-18** — Secret sprawl inventory → docs/SECRETS.md (GUARD Phase 1 GUARD-P1-F)
 
 ### Next (Claude ทำได้ — Phase 0 Discovery, 7 งาน)
-- [ ] **CIA-P0-A** — XSS surface audit + T-05 defensive layer scan → `docs/cia/xss_surface_audit_*.md`
-- [ ] **CIA-P0-B** — Secret leak history audit + T-07 inventory → `docs/cia/secret_audit_*.md` + `docs/SECRETS.md`
-- [ ] **CIA-P0-C** — External resource + supply chain audit → `docs/cia/supply_chain_*.md`
-- [ ] **CIA-P0-D** — Security headers gap analysis + draft `_headers` → `docs/cia/headers_draft_*.md`
-- [ ] **CIA-P0-E** — Bundle size + render-blocking baseline (Lighthouse = user task)
-- [ ] **CIA-P0-F** — GitHub Actions + T-04 Wikidata SPARQL audit → `docs/cia/gha_audit_*.md`
-- [ ] **CIA-P0-G** ⭐ — horatad-auth Worker hardening audit (T-06) → `docs/cia/horatad_auth_audit_*.md`
+- [ ] **GUARD-P0-A** — XSS surface audit + T-05 defensive layer scan → `docs/cia/xss_surface_audit_*.md`
+- [ ] **GUARD-P0-B** — Secret leak history audit + T-07 inventory → `docs/cia/secret_audit_*.md` + `docs/SECRETS.md`
+- [ ] **GUARD-P0-C** — External resource + supply chain audit → `docs/cia/supply_chain_*.md`
+- [ ] **GUARD-P0-D** — Security headers gap analysis + draft `_headers` → `docs/cia/headers_draft_*.md`
+- [ ] **GUARD-P0-E** — Bundle size + render-blocking baseline (Lighthouse = user task)
+- [ ] **GUARD-P0-F** — GitHub Actions + T-04 Wikidata SPARQL audit → `docs/cia/gha_audit_*.md`
+- [ ] **GUARD-P0-G** ⭐ — horatad-auth Worker hardening audit (T-06) → `docs/cia/horatad_auth_audit_*.md`
 
 ### Blocked (รอ user — Phase 0)
 - [ ] [ทดลองใช้] รัน Lighthouse mobile + desktop บน horatad.com → ส่ง HTML report ให้ Claude
@@ -164,13 +164,13 @@
 - [ ] [ทดลองใช้] Cloudflare dashboard: Rate Limiting rule 30 req/min/IP สำหรับ Worker endpoints
 
 ### เริ่ม session
-พิมพ์: `session CIA`
+พิมพ์: `session GUARD`
 
 ### Handoff ล่าสุด
-`handoffs/CIA_20260522_v2.md` (v1 archived)
+`handoffs/GUARD_20260522_v2.md` (v1 archived)
 
-### Charter (ต้องอ่านก่อน session CIA ทุกครั้ง)
-`docs/CIA_MISSION.md`
+### Charter (ต้องอ่านก่อน session GUARD ทุกครั้ง)
+`docs/GUARD_MISSION.md`
 
 ---
 
@@ -204,15 +204,15 @@
 | Empirical DB | JULIAN 31,031/50,000 | workers/julian_scraper.mjs, .github/workflows/julian_sync.yml | 🟢 Automation running |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
 | Platform/Academy | PLATFORM | (ยังไม่มีไฟล์) | 🔲 Vision |
-| Security + Perf | CIA Phase 0 | docs/CIA_MISSION.md | 🟢 Pending — รอ session CIA |
+| Security + Perf | GUARD Phase 0 | docs/GUARD_MISSION.md | 🟢 Pending — รอ session GUARD |
 | Docs cleanup | REORG | docs/*.md | 🟢 Pending — รอ session REORG |
 
 ---
 
 ## วิธีเริ่ม session ใหม่
-1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / NOK / PLATFORM / CIA / REORG / BIG**
+1. บอก Claude ว่า session นี้เป็น project อะไร: **HORATAD / BIBLE / JULIAN / NOK / PLATFORM / GUARD / REORG / BIG**
 2. Claude อ่าน `ECOSYSTEM.md` (ภาพรวม) → `PROJECT_STATUS.md` (งาน) → `handoffs/<PROJECT>_*.md` ล่าสุด
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-22 | V3.3.19 | HORATAD M4-M6 pending | CIA initiated + consolidated security/perf items จาก HORATAD/BIBLE/JULIAN (T-01..T-07, R-15..R-18) | handoffs/CIA_20260522_v2.md*
+*อัปเดตล่าสุด: 2026-05-22 | V3.3.19 | HORATAD M4-M6 pending | GUARD initiated + consolidated security/perf items จาก HORATAD/BIBLE/JULIAN (T-01..T-07, R-15..R-18) | handoffs/GUARD_20260522_v2.md*

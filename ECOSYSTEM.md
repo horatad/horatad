@@ -149,9 +149,9 @@ LINE OA รับวันเกิดจาก user
 - **Dependency:** HORATAD (chart) + BIBLE (wording) + JULIAN (personalized data) + NOK (voice)
 - **Goal:** 1 คนดูแลทั้งหมดด้วย automation
 
-### CIA — Security + Performance Watchdog (cross-cutting)
+### GUARD — Security + Performance Watchdog (cross-cutting)
 - **หน้าที่:** ตรวจสอบ+เฝ้าระวัง ความปลอดภัย (กันขโมย source/hack/spam) + ประสิทธิภาพ (ความเร็ว/ตอบสนอง) ของระบบทั้งหมด — ยึด benefit/risk trade-off
-- **Core:** `docs/CIA_MISSION.md` (charter), risk register, SOPs, Phase 0-4 roadmap
+- **Core:** `docs/GUARD_MISSION.md` (charter), risk register, SOPs, Phase 0-4 roadmap
 - **Dependency:** ตรวจสอบทุก project (HORATAD/BIBLE/JULIAN/NOK/PLATFORM) ไม่มี dependency ตัวไหนเฉพาะ
 - **Output:** policy + audit report + recommendations → กระทบ project อื่นผ่าน cross-project handoff
 - **Standards:** OWASP Top 10, W3C PWA, Core Web Vitals, PDPA, CSP Level 3
@@ -290,7 +290,7 @@ NOK v3/tts.js
 PLATFORM
   └── consumes all above (ไม่มี project อื่น depend on PLATFORM)
 
-CIA (cross-cutting watchdog)
+GUARD (cross-cutting watchdog)
   └── audits all above (Security + Performance + Trade-off) → recommendations cross-link ไป handoff project ปลายทาง
 ```
 
@@ -308,7 +308,7 @@ CIA (cross-cutting watchdog)
 | JULIAN detail | `docs/JULIAN_MISSION.md` + `handoffs/JULIAN_*.md` |
 | NOK detail | `handoffs/NOK_*.md` (Phase 1 deployed; voice/TTS roadmap) |
 | PLATFORM detail | `handoffs/JULIAN_20260521_v2.md` → section PLATFORM VISION |
-| CIA detail | `docs/CIA_MISSION.md` + `handoffs/CIA_*.md` |
+| GUARD detail | `docs/GUARD_MISSION.md` + `handoffs/GUARD_*.md` |
 
 ---
 

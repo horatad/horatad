@@ -102,7 +102,7 @@ const missionTemplate = `# ${CODE} — ${NAME}
 |---|---|
 | HORATAD | _(เขียน)_ |
 | BIBLE | _(เขียน)_ |
-| CIA | security/perf concern — register risks ใน \`docs/CIA_MISSION.md\` ถ้ามี |
+|  GUARD | security/perf concern — register risks ใน \`docs/GUARD_MISSION.md\` ถ้ามี |
 
 ---
 
@@ -119,16 +119,16 @@ const missionTemplate = `# ${CODE} — ${NAME}
 
 ---
 
-## 5. 📨 CIA cross-link
+## 5. 📨 GUARD cross-link
 
-ทุก feature ของ ${CODE} ต้องผ่าน CIA review ถ้า:
-- มี user input → render path → ใส่ใน CIA-P0-A XSS audit
-- มี external network call → ใส่ใน CIA-P0-C supply chain audit
-- มี secret/API key → ใส่ใน CIA-P0-B + \`docs/SECRETS.md\`
-- มี user data storage → ใส่ใน CIA Privacy section
-- กระทบ Lighthouse perf → ใส่ใน CIA-P0-E baseline
+ทุก feature ของ ${CODE} ต้องผ่าน GUARD review ถ้า:
+- มี user input → render path → ใส่ใน GUARD-P0-A XSS audit
+- มี external network call → ใส่ใน GUARD-P0-C supply chain audit
+- มี secret/API key → ใส่ใน GUARD-P0-B + \`docs/SECRETS.md\`
+- มี user data storage → ใส่ใน GUARD Privacy section
+- กระทบ Lighthouse perf → ใส่ใน GUARD-P0-E baseline
 
-ดู: \`docs/CIA_MISSION.md\` (master charter)
+ดู: \`docs/GUARD_MISSION.md\` (master charter)
 
 ---
 
@@ -177,18 +177,18 @@ Sandbox    : [branch name]
 
 [ ] [ถ้ามี]
 
-## 📨 CIA cross-link (ตรวจ security/perf concern)
+## 📨 GUARD cross-link (ตรวจ security/perf concern)
 
-- [ ] ${CODE} มี user input ไหม? → ระบุ XSS surface → CIA-P0-A audit
-- [ ] ${CODE} มี external network call ไหม? → ระบุ endpoints → CIA-P0-C
-- [ ] ${CODE} มี secret/key ไหม? → register ใน \`docs/SECRETS.md\` (planned by CIA-P1-F)
-- [ ] ${CODE} มี user data storage ไหม? → privacy review → CIA Phase 1
-- [ ] ${CODE} กระทบ Lighthouse perf ไหม? → CIA-P0-E baseline
+- [ ] ${CODE} มี user input ไหม? → ระบุ XSS surface → GUARD-P0-A audit
+- [ ] ${CODE} มี external network call ไหม? → ระบุ endpoints → GUARD-P0-C
+- [ ] ${CODE} มี secret/key ไหม? → register ใน \`docs/SECRETS.md\` (planned by GUARD-P1-F)
+- [ ] ${CODE} มี user data storage ไหม? → privacy review → GUARD Phase 1
+- [ ] ${CODE} กระทบ Lighthouse perf ไหม? → GUARD-P0-E baseline
 
 ## WHY LOG
 
 - **เลือกชื่อ ${CODE}** — [เหตุผล]
-- **Phase 0 = Discovery only** — กฎ "Measure before / Measure after" (จาก CIA framework)
+- **Phase 0 = Discovery only** — กฎ "Measure before / Measure after" (จาก GUARD framework)
 
 ---
 
@@ -296,9 +296,9 @@ const claudePath = join(ROOT, 'CLAUDE.md');
 let claude = readFileSync(claudePath, 'utf8');
 
 const claudeRow = `| **${CODE}** | ${NAME} | ${ROLE} — charter: \`docs/${CODE}_MISSION.md\` |\n`;
-// insert หลัง CIA row (ถ้ามี) หรือ หลัง PLATFORM row
-if (claude.includes('| **CIA** |')) {
-  claude = claude.replace(/(\| \*\*CIA\*\* \|[^\n]+\n)/, `$1${claudeRow}`);
+// insert หลัง  GUARD row (ถ้ามี) หรือ หลัง PLATFORM row
+if (claude.includes('| **GUARD** |')) {
+  claude = claude.replace(/(\| \*\***GUARD***\* \|[^\n]+\n)/, `$1${claudeRow}`);
 } else if (claude.includes('| **PLATFORM** |')) {
   claude = claude.replace(/(\| \*\*PLATFORM\*\* \|[^\n]+\n)/, `$1${claudeRow}`);
 }

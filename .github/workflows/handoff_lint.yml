@@ -3,13 +3,13 @@ on:
   pull_request:
     paths:
       - 'handoffs/**.md'
-      - 'docs/CIA_MISSION.md'
+      - 'docs/GUARD_MISSION.md'
       - 'scripts/admin/handoff_lint.mjs'
   push:
     branches: [main]
     paths:
       - 'handoffs/**.md'
-      - 'docs/CIA_MISSION.md'
+      - 'docs/GUARD_MISSION.md'
   workflow_dispatch:
 
 permissions:

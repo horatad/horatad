@@ -1,6 +1,6 @@
 # New Project Checklist — BIG admin guide
 
-> ใช้เมื่อ BIG session ตัดสินใจเปิด project ใหม่ใน ecosystem (เช่นเดียวกับ CIA วันที่ 2026-05-22)
+> ใช้เมื่อ BIG session ตัดสินใจเปิด project ใหม่ใน ecosystem (เช่นเดียวกับ  GUARD วันที่ 2026-05-22)
 
 ---
 
@@ -60,9 +60,9 @@ Script จะสร้าง/แก้:
 - ปรัชญา 1 ประโยค
 - เป้าหมาย & success metrics
 - Architecture / approach
-- Cross-project dependencies (โดยเฉพาะ HORATAD/BIBLE/CIA)
+- Cross-project dependencies (โดยเฉพาะ HORATAD/BIBLE/GUARD)
 - Roadmap Phase 0-N
-- CIA cross-link section (security/perf concern)
+- GUARD cross-link section (security/perf concern)
 
 ### 2. สร้าง handoff v1
 `handoffs/<CODE>_<YYYYMMDD>_v1.md` — sections บังคับ (จาก handoff_lint.mjs):
@@ -76,15 +76,15 @@ Script จะสร้าง/แก้:
 - `ECOSYSTEM.md` — section ใน "แต่ละ Project" + แถวใน file navigation
 - `CLAUDE.md` — แถวใน project list table
 
-### 4. CIA cross-link (ทุก project ใหม่)
-ตอบ checklist นี้และเพิ่มลง CIA risk register ถ้ามี:
-- [ ] มี user input → render path → XSS surface? → CIA-P0-A
-- [ ] มี external network call → endpoint trusted? ส่งอะไร? → CIA-P0-C
-- [ ] มี secret/key? → `docs/SECRETS.md` (CIA-P1-F)
-- [ ] มี user data storage → privacy review? → CIA Phase 1
-- [ ] กระทบ Lighthouse perf? → CIA-P0-E baseline
+### 4. GUARD cross-link (ทุก project ใหม่)
+ตอบ checklist นี้และเพิ่มลง GUARD risk register ถ้ามี:
+- [ ] มี user input → render path → XSS surface? → GUARD-P0-A
+- [ ] มี external network call → endpoint trusted? ส่งอะไร? → GUARD-P0-C
+- [ ] มี secret/key? → `docs/SECRETS.md` (GUARD-P1-F)
+- [ ] มี user data storage → privacy review? → GUARD Phase 1
+- [ ] กระทบ Lighthouse perf? → GUARD-P0-E baseline
 
-ถ้าตอบ "yes" ข้อใด → cross-link ใน CIA handoff v2+
+ถ้าตอบ "yes" ข้อใด → cross-link ใน GUARD handoff v2+
 
 ---
 
@@ -93,7 +93,7 @@ Script จะสร้าง/แก้:
 - ตัวพิมพ์ใหญ่ A-Z, 2-12 ตัวอักษร
 - ไม่ใช้ตัวสงวน: `BIG` (admin role)
 - ชื่อต้องสื่อหน้าที่ — 1 คำดีกว่า acronym ถ้าทำได้
-- ตัวอย่างดี: `HORATAD`, `BIBLE`, `JULIAN`, `NOK`, `CIA`, `PLATFORM`
+- ตัวอย่างดี: `HORATAD`, `BIBLE`, `JULIAN`, `NOK`, `GUARD`, `PLATFORM`
 - ตัวอย่างหลีกเลี่ยง: `PROJECT1`, `NEWSTUFF`, `MISC`
 
 ---
@@ -122,10 +122,10 @@ git log origin/main..HEAD --oneline   # ต้อง empty
 → เพิ่ม note ใน handoff ของ project ปลายทาง (cross-project handoff)
 → ระบุใน Cross-Project Dependencies Map ของ ECOSYSTEM.md
 
-ตัวอย่างจาก CIA:
-- CIA require: HORATAD source code (audit), CF Worker code (review)
-- → CIA handoff ระบุ "T-06 horatad-auth audit pending"
-- → HORATAD_MANUAL.md ระบุ "PIN auth → CIA T-06 owner"
+ตัวอย่างจาก GUARD:
+- GUARD require: HORATAD source code (audit), CF Worker code (review)
+- →  GUARD handoff ระบุ "T-06 horatad-auth audit pending"
+- → HORATAD_MANUAL.md ระบุ "PIN auth → GUARD T-06 owner"
 
 ---
 

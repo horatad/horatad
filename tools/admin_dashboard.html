@@ -63,7 +63,7 @@
 const REPO = 'horatad/horatad';
 const BRANCH = 'main';
 const RAW = (path) => `https://raw.githubusercontent.com/${REPO}/${BRANCH}/${path}`;
-const PROJECTS = ['HORATAD', 'BIBLE', 'JULIAN', 'NOK', 'PLATFORM', 'CIA', 'REORG', 'BIG'];
+const PROJECTS = ['HORATAD', 'BIBLE', 'JULIAN', 'NOK', 'PLATFORM', 'GUARD', 'REORG', 'BIG'];
 
 let showArchived = false;
 
@@ -186,7 +186,7 @@ async function loadAll() {
       ${gitHTML}
     </div>
     <div class="card" style="grid-column: 1 / -1;">
-      <h2>🛡️ CIA Risk Register</h2>
+      <h2>🛡️ GUARD Risk Register</h2>
       ${riskHTML}
     </div>`;
 
