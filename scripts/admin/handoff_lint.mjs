@@ -7,6 +7,7 @@
 
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { allProjects } from './_projects.mjs';
 
 const STRICT = process.argv.includes('--strict');
 const TARGET = process.argv.slice(2).find(a => !a.startsWith('-'));
@@ -17,7 +18,7 @@ const C = {
 };
 
 const REQUIRED_SECTIONS = ['STATE', 'DONE', 'PENDING', 'WHY LOG'];
-const PROJECTS = ['HORATAD', 'BIBLE', 'JULIAN', 'NOK', 'PLATFORM', 'CIA', 'REORG', 'BIG'];
+const PROJECTS = allProjects(process.cwd());  // auto-discover
 
 let totalErrors = 0, totalWarnings = 0;
 

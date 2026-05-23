@@ -35,11 +35,15 @@ if [ "$UNCOMMITTED" != "0" ]; then
   echo "⚠ uncommitted files: $UNCOMMITTED"
 fi
 
-# Project handoffs ล่าสุด (1 บรรทัด/project)
+# Project handoffs ล่าสุด (1 บรรทัด/project — auto-discover จาก filesystem)
 if [ -d handoffs ]; then
   echo ""
   echo "Latest handoffs:"
-  for P in HORATAD BIBLE JULIAN NOK PLATFORM CIA REORG BIG; do
+  # discover project codes จากชื่อไฟล์ <CODE>_YYYYMMDD_vN.md
+  PROJECTS=$(ls handoffs/[A-Z]*_[0-9]*_v[0-9]*.md 2>/dev/null \
+    | sed -E 's|.*/([A-Z]+)_[0-9]+_v[0-9]+\.md|\1|' \
+    | sort -u)
+  for P in $PROJECTS; do
     LATEST=$(ls -1 handoffs/${P}_[0-9]*_v[0-9]*.md 2>/dev/null | sort -r | head -1)
     if [ -n "$LATEST" ]; then
       P_COUNT=$(grep -c '^\[ \]' "$LATEST" 2>/dev/null | head -1)

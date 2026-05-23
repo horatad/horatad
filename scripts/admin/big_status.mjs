@@ -6,6 +6,7 @@
 import { execSync } from 'node:child_process';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { allProjects } from './_projects.mjs';
 
 const ROOT = process.cwd();
 const VERBOSE = process.argv.includes('--verbose') || process.argv.includes('-v');
@@ -93,7 +94,7 @@ if (VERBOSE && unmergedList.length) {
 // ─── 3. PROJECTS ─────────────────────────────────────
 section('Projects (handoff latest)');
 
-const PROJECTS = ['HORATAD', 'BIBLE', 'JULIAN', 'NOK', 'PLATFORM', 'CIA', 'REORG', 'BIG'];
+const PROJECTS = allProjects(ROOT);  // auto-discover
 const handoffDir = join(ROOT, 'handoffs');
 
 for (const p of PROJECTS) {
