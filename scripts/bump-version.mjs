@@ -23,8 +23,6 @@ if (newV === old) {
 }
 console.log(`${old} → ${newV}\n`);
 
-const oldEsc = old.replace(/\./g, '\\.');
-
 function bump(file, find, replace) {
   const src = readFileSync(file, 'utf8');
   const updated = src.replace(find, replace);

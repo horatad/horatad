@@ -48,7 +48,7 @@ function lint(file) {
   if (!projectMatch) {
     issues.warn.push(`filename ไม่ตรง pattern <PROJECT>_<YYYYMMDD>_v<N>.md`);
   } else {
-    const [, project, , version] = projectMatch;
+    const [, project, , _version] = projectMatch;
     if (!PROJECTS.includes(project)) {
       issues.warn.push(`project "${project}" ไม่อยู่ใน list มาตรฐาน ${PROJECTS.join('/')}`);
     }
