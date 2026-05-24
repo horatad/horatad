@@ -10,9 +10,10 @@ import { execSync } from 'node:child_process';
 const APPLY = process.argv.includes('--apply');
 const INCLUDE_BACKUP = process.argv.includes('--include-backup');
 
-// Sandbox ของ Claude Code Web มักจะไม่ได้รับ permission ลบ remote branch (403)
+// Sandbox ของ Claude Code Web ใช้ local_proxy → ไม่ได้รับ permission ลบ remote branch (403)
 // → ถ้าต้องการลบจริง: รันที่ local CLI หรือใช้ GH workflow stale_branch_cleanup.yml
 // (workflow_dispatch + apply=true) ผ่าน GitHub Actions แทน
+// script จะตรวจ proxy + bail out ก่อนถ้าเจอ sandbox เพื่อไม่ให้เสียเวลา push --delete loop
 
 const C = {
   reset: '\x1b[0m', bold: '\x1b[1m', dim: '\x1b[2m',
@@ -92,6 +93,21 @@ if (INCLUDE_BACKUP && backupToDelete.length) {
 // ─── APPLY ─────────────────────────────────────────
 if (!APPLY) {
   console.log(`\n${C.dim}Dry-run เท่านั้น. รัน --apply เพื่อลบจริง.${C.reset}\n`);
+  process.exit(0);
+}
+
+// Sandbox detection — proxy URL (127.0.0.1) block git push --delete (403)
+const remoteUrl = sh('git config --get remote.origin.url', { allowFail: true });
+if (/127\.0\.0\.1|local_proxy/.test(remoteUrl)) {
+  console.log(`\n${C.bold}${C.yellow}⚠ Sandbox proxy detected${C.reset} (${C.dim}${remoteUrl}${C.reset})`);
+  console.log(`Sandbox ไม่สามารถ ${C.bold}git push --delete${C.reset} ได้ (403 จาก proxy)\n`);
+  console.log(`${C.bold}ทางเลือก:${C.reset}`);
+  console.log(`  1. ${C.cyan}Local CLI${C.reset} — รันที่เครื่อง user:`);
+  toDelete.forEach(({ branch }) => console.log(`       git push origin --delete ${branch}`));
+  console.log(`  2. ${C.cyan}GH Actions workflow${C.reset} — Actions tab → "Stale Branch Cleanup" → Run workflow → apply=true`);
+  console.log(`     (${C.dim}cron weekly อยู่แล้ว — ลบเฉพาะ branch >14 วัน${C.reset})`);
+  console.log(`  3. ${C.cyan}GitHub web UI${C.reset} — Branches page → "🗑" icon ต่อ branch`);
+  console.log(`\n${C.bold}สรุป:${C.reset} ${toDelete.length} branches รอลบ (sandbox skip)\n`);
   process.exit(0);
 }
 
