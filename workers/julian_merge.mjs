@@ -2,11 +2,12 @@
 // JULIAN Merge — รวม raw buckets → data/julian_all.json
 //
 // Priority (สูง → ต่ำ):
-//   1. data/julian_thai_seed.json     (manual A/B/C — full override per field)
-//   2. data/julian_raw/wikipedia_th.jsonl  (enrichment — COALESCE empty fields)
-//   3. data/julian_raw/astrotheme.jsonl    (enrichment — COALESCE empty fields)
-//   4. data/julian_raw/wikidata.jsonl      (base — last-write-wins per (jd,name))
-//   5. existing data/julian_all.json       (preserve เดิม — Phase 0 skip)
+//   1. data/julian_thai_seed.json              (manual A/B/C — full override per field)
+//   2. data/julian_raw/wikipedia_th.jsonl      (enrichment — COALESCE empty fields)
+//   3. data/julian_raw/astrotheme.jsonl        (enrichment — COALESCE empty fields)
+//   4. data/julian_raw/wikidata_coord.jsonl    (enrichment — COALESCE lat/lng/notes)
+//   5. data/julian_raw/wikidata.jsonl          (base — last-write-wins per (jd,name))
+//   6. existing data/julian_all.json           (preserve เดิม — Phase 0 skip)
 //
 // Dedup ภายใน bucket: latest by _scraped_at ชนะ
 // Output: data/julian_all.json + stats
@@ -147,16 +148,18 @@ function main() {
 
   const existing  = loadJsonArray(MAIN_FILE);
   const wikidata  = dedupLatest(loadJsonl(`${RAW_DIR}/wikidata.jsonl`));
+  const coord     = dedupLatest(loadJsonl(`${RAW_DIR}/wikidata_coord.jsonl`));
   const astro     = dedupLatest(loadJsonl(`${RAW_DIR}/astrotheme.jsonl`));
   const wikiTh    = dedupLatest(loadJsonl(`${RAW_DIR}/wikipedia_th.jsonl`));
   const seed      = loadSeed(SEED_FILE);
 
   console.log(`Inputs:
-  existing main : ${existing.length}
-  wikidata raw  : ${wikidata.length} (dedup'd)
-  astrotheme raw: ${astro.length}
-  wiki_th raw   : ${wikiTh.length}
-  manual seed   : ${seed.length}`);
+  existing main      : ${existing.length}
+  wikidata raw       : ${wikidata.length} (dedup'd)
+  wikidata_coord raw : ${coord.length}
+  astrotheme raw     : ${astro.length}
+  wiki_th raw        : ${wikiTh.length}
+  manual seed        : ${seed.length}`);
 
   // build map starting from existing
   const m = new Map();
@@ -165,12 +168,14 @@ function main() {
   // priority: low → high (later overrides earlier where applicable)
   const stats = {
     base:    { added:0, updated:0 },
+    coord:   { enriched:0, no_target:0 },
     astro:   { enriched:0, no_target:0 },
     wikiTh:  { enriched:0, no_target:0 },
     seed:    { added:0, replaced:0 },
   };
 
   applyBase(m, wikidata, stats.base);
+  applyEnrich(m, coord, stats.coord);
   applyEnrich(m, astro, stats.astro);
   applyEnrich(m, wikiTh, stats.wikiTh);
   applySeed(m, seed, stats.seed);
@@ -178,11 +183,12 @@ function main() {
   const merged = [...m.values()].sort((a, b) => (b.jd || 0) - (a.jd || 0));
 
   console.log(`\nMerge stats:
-  Wikidata base  : +${stats.base.added} new / ${stats.base.updated} updated
-  Astrotheme     : ${stats.astro.enriched} enriched / ${stats.astro.no_target} no-target
-  Wikipedia TH   : ${stats.wikiTh.enriched} enriched / ${stats.wikiTh.no_target} no-target
-  Manual seed    : +${stats.seed.added} new / ${stats.seed.replaced} replaced
-  Total final    : ${merged.length}`);
+  Wikidata base   : +${stats.base.added} new / ${stats.base.updated} updated
+  Wikidata coord  : ${stats.coord.enriched} enriched / ${stats.coord.no_target} no-target
+  Astrotheme      : ${stats.astro.enriched} enriched / ${stats.astro.no_target} no-target
+  Wikipedia TH    : ${stats.wikiTh.enriched} enriched / ${stats.wikiTh.no_target} no-target
+  Manual seed     : +${stats.seed.added} new / ${stats.seed.replaced} replaced
+  Total final     : ${merged.length}`);
 
   if (DRY) {
     console.log('\n[DRY-RUN] not writing julian_all.json');

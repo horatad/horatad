@@ -6,10 +6,11 @@
 
 | ไฟล์ | Source | Writer |
 |---|---|---|
-| `wikidata.jsonl` | Wikidata SPARQL | `workers/julian_scraper.mjs` |
-| `astrotheme.jsonl` | astrotheme.com | `workers/julian_astrotheme.mjs` |
-| `wikipedia_th.jsonl` | th.wikipedia.org | `workers/julian_wiki_th.mjs` |
-| `../julian_thai_seed.json` | Manual (UI) | `tools/julian_seed_input.html` |
+| `wikidata.jsonl` | Wikidata SPARQL (base — birthdate + identity) | `workers/julian_scraper.mjs` |
+| `wikidata_coord.jsonl` | Wikidata P19+P625 (lat/lng enrichment) | `workers/julian_wikidata_coord.mjs` |
+| `astrotheme.jsonl` | astrotheme.com (time + coord enrichment) | `workers/julian_astrotheme.mjs` |
+| `wikipedia_th.jsonl` | th.wikipedia.org (Thai birth time + province) | `workers/julian_wiki_th.mjs` |
+| `../julian_thai_seed.json` | Manual (UI) — accuracy A/B/C | `tools/julian_seed_input.html` |
 
 > Manual seed bucket = `data/julian_thai_seed.json` ของเดิม — ไม่ duplicate ที่นี่
 
