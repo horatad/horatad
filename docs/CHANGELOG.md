@@ -4,6 +4,21 @@
 
 ---
 
+## [3.3.24] — 2026-05-24
+### Added
+- noTime flow สำหรับ record ที่ไม่มีเวลาเกิด (เลือกจาก JULIAN tank):
+  - บันทึก private ด้วย `noTime:true` + t/prov ว่าง (แทน default '00:00' + 'กรุงเทพมหานคร')
+  - JULIAN list แสดง "ไม่ทราบเวลา" (สีทอง italic) แทน "00:00"
+  - Private list แสดง "ไม่ทราบเวลาเกิด" + ไม่แสดงสถานที่
+  - ผูกดวง: Lagna = ตำแหน่งอาทิตย์เดียวกัน (Surya Lagna technique — ลัคนาสมมุติ = ราศี/องศาเดียวกับอาทิตย์)
+  - User กรอกเวลาเองได้ทันที → กลับเป็น chart ปกติ
+
+### Files
+- `script.js`: `copyJulianToPrivate`, `_renderJulianTank`, `_renderTank`, `_pickMemory`, `_calcChart`, `_quickMemoryPick`, quick-pick wrapper, `calculateBoth` _addMemory calls
+- `style.css`: `.no-time-tag` (gold italic 11px)
+
+---
+
 ## [3.3.23] — 2026-05-23
 ### Changed
 - HORATAD Phase 2 Step 0: extract `KB_RULES` (198KB inline) → `v3/kb_embedded.json` — script.js 393KB→199KB (-49%)

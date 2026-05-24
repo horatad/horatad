@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.23
-// Version 3.3.23 | 2026-05-23
+// HORATAD:SCRIPT:3.3.24
+// Version 3.3.24 | 2026-05-24
+// Changes: [V3.3.24] feat(noTime): JULIAN record ไม่มี time_utc → save ด้วย noTime flag → display "ไม่ทราบเวลาเกิด" + ไม่แสดง prov + ผูกดวง ลัคนา=อาทิตย์ (Surya Lagna) ตำแหน่งเดียวกัน
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
 // Changes: [V3.3.22] feat(M6+_navHeader): localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (จร)
 // Changes: [V3.3.21] feat(M5): eventChart full support — _compareMode===2 path, cycleMemory _eventIdx, _updateNavHeader compareMode-aware
@@ -19,7 +20,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.23';
+const APP_VERSION='3.3.24';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1194,8 +1195,8 @@ function cycleMemory(dir){
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   _setField('name-1',m.name||'');
   const g=document.getElementById('gender1');if(g)g.value=m.gender||'ชาย';
-  _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
-  document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
+  _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
+  document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
   _customLng1=(typeof m.lng==='number')?m.lng:null;
   _updateLngUI('1');
   calculateChart1();
@@ -1410,18 +1411,22 @@ function _calcChart(num){
   let d=sanitizeInt(document.getElementById('d'+num).value,1,31,1);
   let m=sanitizeInt(document.getElementById('m'+num).value,1,12,1);
   let y=sanitizeInt(document.getElementById('y'+num).value,1,9999,_era==='BE'?cfg.defY_BE:cfg.defY_CE);
-  let[hr,mn]=sanitizeTime(document.getElementById('t'+num).value);
+  const tRaw=(document.getElementById('t'+num).value||'').trim();
+  const noTime=!tRaw;
+  let[hr,mn]=sanitizeTime(tRaw);
   _setField('d'+num,d);_setField('m'+num,m);_setField('y'+num,y);
-  _setField('t'+num,String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
-  const provVal=document.getElementById('prov'+num).value||'กรุงเทพมหานคร';
+  if(noTime){_setField('t'+num,'');}else{_setField('t'+num,String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));}
+  const provRaw=(document.getElementById('prov'+num).value||'').trim();
+  const provVal=noTime?'':(provRaw||'กรุงเทพมหานคร');
   const customLng=num==='1'?_customLng1:_customLng2;
   const lng=customLng!==null?customLng:(PROVINCES[provVal]||100.50);
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
   const pos=get_data(d,m,y_ce,hr,mn,lng);
   const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
+  if(noTime){pos[0]=pos[1];pos2[0]=pos2[1];}
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
-  const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  const lat=PROVINCES_LAT[provVal]||13.75;
+  const t=noTime?'':String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
+  const lat=noTime?0:(PROVINCES_LAT[provVal]||13.75);
   const chart={
     uid:crypto.randomUUID(),
     fn:name,ln:'',g:gender,
@@ -1431,7 +1436,7 @@ function _calcChart(num){
     pos,vel,
     lagna:null,tanu_lagna:null,tanu_set:null,houses:[],
     tag:[],group:'',sector:'',trait:'',note:'',
-    name,gender
+    name,gender,noTime
   };
   if(num==='1'){natal=_v3UpsertDB1(chart);_calc1Done=true;_viewMode=0;_tsInited=false;}
   else{
@@ -1439,12 +1444,12 @@ function _calcChart(num){
     if(_editingUid){_editingUid=null;_hideEditingIndicator();}
     _chart2=chart;_calc2Done=true;_compareMode=1;_viewMode=1;
     // Step 4: set synastry ทันที + auto-save as type='person' ถ้าไม่ซ้ำ
-    synastry={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng};
+    synastry={name:chart.name,gender:chart.gender,pos:chart.pos,vel:chart.vel,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,prov:chart.prov,lng:chart.lng,noTime:chart.noTime};
     const _bkey=`${chart.name}|${chart.d}/${chart.m}/${chart.y_be}`;
     if(!_dbPersons().some(s=>`${s.name}|${s.d}/${s.m}/${s.y_be}`===_bkey)){
       _dbUpsert({uid:crypto.randomUUID(),type:'person',
         name:chart.name,gender:chart.gender,d:chart.d,m:chart.m,y_be:chart.y_be,t:chart.t,
-        prov:chart.prov,lat:chart.lat,lng:chart.lng,savedAt:Date.now(),linkedNatalUid:null});
+        prov:chart.prov,lat:chart.lat,lng:chart.lng,savedAt:Date.now(),linkedNatalUid:null,noTime:chart.noTime});
     }
   }
   _updateShareButton();
@@ -1514,8 +1519,8 @@ function calculateBoth(){
   // V2.2.38: pass replaceKey ถ้ากำลังแก้ไข section นั้น → ลบ entry เดิมแม้ key เปลี่ยน
   const _rk1=_editingMemSection==='1'?_editingMemKey:null;
   const _rk2=_editingMemSection==='2'?_editingMemKey:null;
-  if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
-  if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
+  if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
+  if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,noTime:_chart2.noTime},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
   _editingMemKey=null;_editingMemSection=null;
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
@@ -2092,7 +2097,8 @@ function _renderTank(filter){
   _memCache.forEach((m,i)=>{
     if(f&&!(m.name||'').toLowerCase().includes(f)&&!(m.prov||'').toLowerCase().includes(f))return;
     const y_ce=_beToce(m.y_be,m.m);
-    const meta=`${_escHtml(m.d)}/${_escHtml(m.m)}/${_escHtml(m.y_be)} (${_escHtml(y_ce)}) · ${_escHtml(m.t)}`;
+    const tCell=m.noTime?'<span class="no-time-tag">ไม่ทราบเวลาเกิด</span>':_escHtml(m.t);
+    const meta=`${_escHtml(m.d)}/${_escHtml(m.m)}/${_escHtml(m.y_be)} (${_escHtml(y_ce)}) · ${tCell}`;
     if(_activeTank==='qr'){
       items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
     }else{
@@ -2240,9 +2246,9 @@ function _renderJulianTank(filter,append=false){
   const items=slice.map((r,i)=>{
     const{d,m:mo,y_ce}=_jdToGregorian(r.jd);
     const y_be=y_ce+543;
-    const t=r.time_utc?String(r.time_utc).substring(0,5):'00:00';
+    const tCell=r.time_utc?String(r.time_utc).substring(0,5):'<span class="no-time-tag">ไม่ทราบเวลา</span>';
     const label=_escHtml(r.event_label||r.country||'');
-    return `<div class="memory-item julian-item"><div>${_escHtml(r.name||'')} <span class="julian-badge">${label}</span></div><div class="meta">${d}/${mo}/${y_be} · ${t}</div><button class="tank-transfer-btn" onclick="copyJulianToPrivate(${i})">📥 บันทึกลง ส่วนตัว</button></div>`;
+    return `<div class="memory-item julian-item"><div>${_escHtml(r.name||'')} <span class="julian-badge">${label}</span></div><div class="meta">${d}/${mo}/${y_be} · ${tCell}</div><button class="tank-transfer-btn" onclick="copyJulianToPrivate(${i})">📥 บันทึกลง ส่วนตัว</button></div>`;
   });
   if(append){
     const existing=list.querySelectorAll('.memory-item').length;
@@ -2307,9 +2313,10 @@ window.copyJulianToPrivate=function(i){
   if(!r)return;
   const{d,m:mo,y_ce}=_jdToGregorian(r.jd);
   const y_be=y_ce+543;
-  const t=r.time_utc?String(r.time_utc).substring(0,5):'00:00';
-  const prov=(r.lat&&r.lng)?_latLngToProv(Number(r.lat),Number(r.lng)):'กรุงเทพมหานคร';
-  const rec={name:r.name,gender:'ชาย',d,m:mo,y_be,t,prov,jd:r.jd,source:'julian',savedAt:Date.now(),groups:[]};
+  const hasTime=!!r.time_utc;
+  const t=hasTime?String(r.time_utc).substring(0,5):'';
+  const prov=hasTime?((r.lat&&r.lng)?_latLngToProv(Number(r.lat),Number(r.lng)):'กรุงเทพมหานคร'):'';
+  const rec={name:r.name,gender:'ชาย',d,m:mo,y_be,t,prov,jd:r.jd,source:'julian',savedAt:Date.now(),groups:[],noTime:!hasTime};
   const privateList=_tankLoad(TANK_PRIVATE_KEY);
   const existing=privateList.find(m=>_tankKey(m)===_tankKey(rec));
   const doSave=()=>{
@@ -2383,15 +2390,15 @@ function _pickMemory(i){
   if(section==='1'){
     _setField('name-1',m.name||'');
     document.getElementById('gender1').value=m.gender||'ชาย';
-    _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
-    document.getElementById('prov1').value=m.prov||'กรุงเทพมหานคร';
+    _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
+    document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
     _customLng1=(typeof m.lng==='number')?m.lng:null;
     _updateLngUI('1');_applyInputColors('1','init');
   }else{
     _setField('name-2',m.name||'');
     document.getElementById('gender2').value=m.gender||'ชาย';
-    _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.t);
-    document.getElementById('prov2').value=m.prov||'กรุงเทพมหานคร';
+    _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.noTime?'':m.t);
+    document.getElementById('prov2').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
     _customLng2=(typeof m.lng==='number')?m.lng:null;
     _updateLngUI('2');_applyInputColors('2','init');
   }
@@ -3754,8 +3761,9 @@ function _quickLoad(i){
   const mem=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
   const m=mem[i];if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
-  _setField('name-1',m.name);_setField('gender1',m.gender||'');_setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.t);
-  if(m.prov)document.getElementById('prov1').value=m.prov;
+  _setField('name-1',m.name);_setField('gender1',m.gender||'');_setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
+  if(m.prov&&!m.noTime)document.getElementById('prov1').value=m.prov;
+  else if(m.noTime)document.getElementById('prov1').value='';
   _customLng1=(typeof m.lng==='number')?m.lng:null;
   _updateLngUI('1');
   calculateBoth();

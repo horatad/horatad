@@ -5,7 +5,7 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.23 | **URL:** horatad.com
+**Version:** V3.3.24 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
@@ -19,14 +19,14 @@
   - M6: localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (V3.3.22)
 
 ### Next (Claude ทำได้)
-- [x] ~~Phase 2 Step 0 — KB_RULES extract~~ ✅ V3.3.23 — script.js 393KB→199KB (-49%)
+- [x] ~~Phase 2 Step 0 — KB_RULES extract~~ ✅ V3.3.24 — script.js 393KB→199KB (-49%)
 - [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1
 - [ ] Phase 2 Step 2 — db/ Tier 2 (io/tank/core/natal/events)
 - [ ] PROVINCES extract (5KB, easy pattern after KB)
 - [ ] julian_all.json move (รอ user เลือก target)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.23 บนมือถือ — KB async load (กดทำนายปกติทำงานไหม) + Lighthouse re-run (คาดว่า TBT ลดลงเพราะ script.js -49%)
+- [ ] [ทดลองใช้] ทดสอบ V3.3.24 บนมือถือ — KB async load (กดทำนายปกติทำงานไหม) + Lighthouse re-run (คาดว่า TBT ลดลงเพราะ script.js -49%)
 - [ ] [ทดลองใช้] ทดสอบ V3.3.22 บนมือถือ — M6 persist (refresh แล้ว transit cursor/synastry/event idx ยังเดิม) + nav header compareMode===3
 - [ ] [ทดลองใช้] ทดสอบ V3.3.21 บนมือถือ — T1/T2 buttons + transit unit popup + eventChart cycling
 - [ ] [ทดลองใช้] ทดสอบ NOK TTS guide บน Android Chrome
@@ -216,7 +216,7 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.23 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 ✅ + Phase2 Step0 ✅ (KB extract -49%) |
+| Horatad PWA | HORATAD V3.3.24 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 ✅ + Phase2 Step0 ✅ (KB extract -49%) |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 53,148/100,000 | workers/julian_scraper.mjs, workers/julian_seed_merge.mjs, tools/julian_seed_input.html | 🟢 Automation + manual seed tool ready |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
@@ -232,4 +232,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-23 BIG | V3.3.23 | Memory files ครบทุก project (HORATAD/BIBLE/JULIAN/NOK) | clean-branch pattern + session scope enforcement | handoffs/BIG_20260523_v1.md*
+*อัปเดตล่าสุด: 2026-05-23 BIG | V3.3.24 | Memory files ครบทุก project (HORATAD/BIBLE/JULIAN/NOK) | clean-branch pattern + session scope enforcement | handoffs/BIG_20260523_v1.md*

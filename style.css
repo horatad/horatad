@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.3.23 */
+/* HORATAD:STYLE:3.3.24 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -201,6 +201,7 @@ button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer
 .memory-item:last-child{border-bottom:none}
 .memory-item:hover{background:#2d333b}
 .memory-item .meta{color:#8b949e;font-size:11px;margin-top:2px}
+.no-time-tag{color:#d29922;font-style:italic;font-size:11px}
 .memory-del{position:absolute;top:50%;right:6px;transform:translateY(-50%);background:transparent;border:none;color:#8b949e;cursor:pointer;font-size:18px;line-height:1;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:inherit;padding:0}
 .memory-del:hover{background:#3d2b2b;color:#f85149}
 .memory-edit{position:absolute;top:50%;right:36px;transform:translateY(-50%);background:transparent;border:none;color:#8b949e;cursor:pointer;font-size:14px;line-height:1;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:inherit;padding:0}
