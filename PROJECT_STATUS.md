@@ -178,7 +178,8 @@
 - ผูกกับ Phase 2 (CSP enforce, script.js code-split, julian_all.json move) → รอ Lighthouse + 1 wk CSP observation
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] รัน Lighthouse mobile + desktop บน horatad.com → save to `docs/cia/lighthouse_*` (R-08)
+- [ ] [ทดลองใช้] ⭐ รัน Lighthouse mobile + desktop บน horatad.com → save to `docs/cia/lighthouse_*` (R-08) — **checklist: `docs/admin/USER_TASKS_lighthouse_csp_2026-05-24.md` Part 1**
+- [ ] [ทดลองใช้] ⭐ collect CSP violations จาก browser console (1 wk หลัง 2026-05-23) — **checklist: same file Part 2**
 - [ ] [ทดลองใช้] GitHub Settings: 2FA + branch protection + Dependabot + secret scanning (R-04 + R-10)
 - [ ] [ทดลองใช้] Cloudflare dashboard: Rate Limiting 30 req/min/IP (R-02 / T-02)
 - [ ] [ทดลองใช้] Export `horatad-auth` + `horatad-ai` Worker source ลง workers/ → GUARD re-audit T-06
