@@ -63,6 +63,27 @@ let _v3KbRulesV24 = null;
 let _v3Running = false;
 let _v3Mode = 'natal'; // 'natal' | 'transit' | 'both'
 
+// ── Speech rate ────────────────────────────────────────────
+const _RATE_STEPS = [1.0, 1.25, 1.5, 1.75];
+let _v3SpeakRate = (() => {
+  const r = parseFloat(localStorage.getItem('v3_speak_rate') || '1');
+  return _RATE_STEPS.includes(r) ? r : 1.0;
+})();
+
+function _syncRateBtn() {
+  const btn = _el('v3-rate-btn');
+  if (!btn) return;
+  btn.textContent = _v3SpeakRate === 1.0 ? '1×' : _v3SpeakRate + '×';
+  btn.classList.toggle('active', _v3SpeakRate !== 1.0);
+}
+
+window.v3CycleRate = function() {
+  const idx = _RATE_STEPS.indexOf(_v3SpeakRate);
+  _v3SpeakRate = _RATE_STEPS[(idx + 1) % _RATE_STEPS.length];
+  localStorage.setItem('v3_speak_rate', String(_v3SpeakRate));
+  _syncRateBtn();
+};
+
 // ── KB loader ─────────────────────────────────────────────
 async function _loadKb() {
   if (_v3KbRules) return _v3KbRules;
@@ -372,6 +393,7 @@ function v3Speak() {
   }
 
   nokSpeak(text, {
+    rate: _v3SpeakRate,
     onState: (event, detail) => {
       if (!btn) return;
       if (event === 'start') {
@@ -431,6 +453,7 @@ window.v3SetMode = v3SetMode;
 // ── Bootstrap ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   _watchTab3();
+  _syncRateBtn();
   _loadKb().catch(err => console.warn('[v3tab] kb preload failed:', err));
   nokPreload(); // NOK: pre-warm voice list (iOS Safari load async)
 });

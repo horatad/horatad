@@ -1,6 +1,6 @@
-// HORATAD:SCRIPT:3.3.25
-// Version 3.3.25 | 2026-05-24
-// Changes: [V3.3.25] feat(v3-local): wire matchRulesV24()+kb_v24-3.json เข้าปุ่มดูกฎ local V3 tab + cleanup ESLint dead code
+// HORATAD:SCRIPT:3.3.26
+// Version 3.3.26 | 2026-05-24
+// Changes: [V3.3.26] feat(speak-rate): ปุ่มปรับความเร็วเสียง 1×/1.25×/1.5×/1.75× + save localStorage
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
 // Changes: [V3.3.22] feat(M6+_navHeader): localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (จร)
 // Changes: [V3.3.21] feat(M5): eventChart full support — _compareMode===2 path, cycleMemory _eventIdx, _updateNavHeader compareMode-aware
@@ -20,7 +20,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.25';
+const APP_VERSION='3.3.26';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
