@@ -35,7 +35,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B/C → **GUARD R-07 owner**
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260523_v4.md`
+`handoffs/HORATAD_20260524_v1.md`
 
 ---
 
@@ -50,7 +50,7 @@
 - tools/kb_extract.html: เพิ่ม mode selector (Groq/Typhoon) แล้ว ✅
 
 ### Next (Claude ทำได้)
-- [ ] GUARD T-05: validate_inputs() ใน v3/engine.js + v3/interpretation.js (รายละเอียดใน handoff)
+- [x] ~~GUARD T-05: validate_inputs()~~ ✅ v3/engine.js get_data() — RangeError guards ครบ 6 จุด
 - [ ] Comparison: หลัง 3 ไฟล์ครบ → `session BIBLE — compare` → v3/kb_v24.json final
 
 ### Blocked (รอ user)
