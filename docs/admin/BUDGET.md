@@ -1,5 +1,5 @@
 # BUDGET — Horatad Expense Tracker
-Updated: 2026-05-24 (v2: เพิ่ม Google One AI Premium)
+Updated: 2026-05-24 (v3: เพิ่ม domain + Google One)
 
 ---
 
@@ -22,7 +22,7 @@ Updated: 2026-05-24 (v2: เพิ่ม Google One AI Premium)
 
 | รายการ | วันที่ | ราคา (฿) | หมายเหตุ |
 |---|---|---:|---|
-| Domain horatad.com | ไม่ทราบ | ? | ต้องอัปเดต |
+| Domain horatad.com (Cloudflare Registrar) | 2026-05-16 | 348 | รายปี ($10.48) — ต่ออายุ 16 พ.ค. ทุกปี |
 | Computer + peripherals + OS | 2026-05-24 | 56,870 | invoice V2 — จ่ายครั้งเดียว |
 | Google One AI Premium (Gemini Pro + 5TB Drive) | 2026-05-12 | 7,500 | รายปี — ต่ออายุ 12 พ.ค. ทุกปี |
 
@@ -52,7 +52,7 @@ Updated: 2026-05-24 (v2: เพิ่ม Google One AI Premium)
 | Services รายเดือน | 0 | ทั้งหมด free tier |
 | Hardware + peripherals + OS | 56,870 | จ่ายครั้งเดียว 2026-05-24 |
 | Google One AI Premium | 7,500 | รายปี (ต่ออายุ 12 พ.ค. ทุกปี) |
-| Domain horatad.com | ? | ต้องอัปเดต |
+| Domain horatad.com | 348 | รายปี (ต่ออายุ 16 พ.ค. ทุกปี) |
 
 ---
 
