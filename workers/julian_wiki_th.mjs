@@ -35,12 +35,15 @@ function thaiToArabic(s) {
 }
 
 // ── Parse Thai birth time จาก HTML/wikitext ──────────────────────────────────
-// Pattern ที่พบใน wiki ภาษาไทย:
-//   - "เวลา HH:MM น."
-//   - "เวลา HH.MM น."
-//   - "เวลา HH นาฬิกา MM นาที"
-//   - "เวลา HH นาฬิกา"  (ไม่มีนาที → MM=00)
-//   - "เกิดเวลา HH:MM"
+// Pattern ที่พบใน wiki ภาษาไทย (เรียงจาก specific → general):
+//   - "เวลา HH:MM น." / "เวลา HH.MM น."
+//   - "เกิดเวลา HH:MM" / "เกิดเมื่อ ... เวลา HH:MM"
+//   - "HH นาฬิกา MM นาที"
+//   - "เวลา HH นาฬิกา" / "เวลา HH น." (ไม่มีนาที → MM=00)
+//   - "ฤกษ์เกิด HH:MM" (astrological context)
+//   - "ดวงเกิด HH:MM" (birth chart context)
+//   - "ลืมตาดูโลก HH:MM" / "ลืมตาเมื่อเวลา HH:MM"
+//   - "เกิดในเวลา HH:MM"
 export function parseBirthTimeTh(text) {
   if (!text) return null;
   const t = thaiToArabic(text);
@@ -64,6 +67,22 @@ export function parseBirthTimeTh(text) {
   // Pattern E: เวลา HH น. (ไม่มีนาที)
   m = t.match(/เวลา\s*(\d{1,2})\s*น\./);
   if (m) return formatTime(m[1], '0');
+
+  // Pattern F: ฤกษ์เกิด HH:MM (astrological birth time)
+  m = t.match(/ฤกษ์เกิด\s*(\d{1,2})[:.](\d{1,2})/);
+  if (m) return formatTime(m[1], m[2]);
+
+  // Pattern G: ดวงเกิด HH:MM (birth chart context)
+  m = t.match(/ดวงเกิด\s*(\d{1,2})[:.](\d{1,2})/);
+  if (m) return formatTime(m[1], m[2]);
+
+  // Pattern H: ลืมตา(ดูโลก) (เมื่อ)(เวลา) HH:MM
+  m = t.match(/ลืมตา(?:ดูโลก)?(?:\s*เมื่อ)?(?:\s*เวลา)?\s*(\d{1,2})[:.](\d{1,2})/);
+  if (m) return formatTime(m[1], m[2]);
+
+  // Pattern I: เกิดในเวลา HH:MM
+  m = t.match(/เกิดในเวลา\s*(\d{1,2})[:.](\d{1,2})/);
+  if (m) return formatTime(m[1], m[2]);
 
   return null;
 }
@@ -211,6 +230,19 @@ function runTests() {
       expected: '08:00', province: 'นครราชสีมา' },
     { text: 'ไม่มีข้อมูลเวลาเกิด เกิดที่กรุงเทพ',
       expected: null, province: 'กรุงเทพ' },
+    // เพิ่ม pattern F-I — astrological / poetic phrasings
+    { text: 'ฤกษ์เกิด 9:30 น. ตามคำพยากรณ์โหร ที่จังหวัดเชียงราย',
+      expected: '09:30', province: 'เชียงราย' },
+    { text: 'ดวงเกิด ๑๔.๒๕ ที่บ้านเกิดจังหวัดสุพรรณบุรี',
+      expected: '14:25', province: 'สุพรรณบุรี' },
+    { text: 'ลืมตาดูโลก 6:15 น. ที่จังหวัดราชบุรี',
+      expected: '06:15', province: 'ราชบุรี' },
+    { text: 'ลืมตาเมื่อเวลา 12.00 น. ของวันที่ 5 กรกฎาคม',
+      expected: '12:00', province: null },
+    { text: 'เกิดในเวลา 23:45 ของคืนวันเสาร์ที่จังหวัดอุบลราชธานี',
+      expected: '23:45', province: 'อุบลราชธานี' },
+    { text: 'ฤกษ์เกิด 18.20 น. ตอนเย็น เป็นเด็กชายที่ตาก',
+      expected: '18:20', province: 'ตาก' },
   ];
 
   let pass = 0, fail = 0;
