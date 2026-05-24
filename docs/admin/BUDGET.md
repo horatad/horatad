@@ -1,5 +1,5 @@
 # BUDGET — Horatad Expense Tracker
-Updated: 2026-05-24 (hardware itemized จาก invoice V2)
+Updated: 2026-05-24
 
 ---
 
@@ -20,54 +20,37 @@ Updated: 2026-05-24 (hardware itemized จาก invoice V2)
 
 ## One-time / Annual
 
-| รายการ | วันที่ | ราคา (฿) | Amortize/เดือน | หมายเหตุ |
-|---|---|---|---|---|
-| Domain horatad.com | ไม่ทราบ | ? | ? | ต้องอัปเดต |
-| **Computer รวม (incl. VAT 7%)** | **2026-05-24** | **56,870** | **1,580** | **amortize 36 เดือน** |
+| รายการ | วันที่ | ราคา (฿) | หมายเหตุ |
+|---|---|---:|---|
+| Domain horatad.com | ไม่ทราบ | ? | ต้องอัปเดต |
+| Computer + peripherals + OS | 2026-05-24 | 56,870 | invoice V2 |
 
-### รายละเอียด Hardware (จาก Invoice V2)
+### รายละเอียด (Invoice V2)
 
-**Hardware**
-
-| รายการ | ราคา (฿) |
+| รายการ | ฿ |
 |---|---:|
-| CPU: Intel Core i5-14400 (Socket 1700) | 6,490 |
+| CPU: Intel Core i5-14400 | 6,490 |
 | Mainboard: MSI B760M Gaming Plus WiFi DDR5 | 3,860 |
-| RAM: G.Skill Trident Z5 RGB DDR5 32GB (16GBx2) 5600MHz | 15,990 |
-| PSU: Thermaltake Toughpower GT 750W (80+ Gold) | 3,190 |
-| SSD: M.2 NVMe PCIe 4.0 WD Blue SN5000 2TB | 8,190 |
+| RAM: G.Skill DDR5 32GB (16GBx2) 5600MHz | 15,990 |
+| PSU: Thermaltake 750W 80+ Gold | 3,190 |
+| SSD: WD Blue SN5000 2TB NVMe | 8,190 |
 | CPU Cooler: Be Quiet Pure Rock Pro 3 LX | 1,990 |
-| Case: Deepcool CG530U 4F Black (ATX) | 2,990 |
-| **รวม Hardware** | **42,710** |
-
-**Peripherals & OS**
-
-| รายการ | ราคา (฿) |
-|---|---:|
+| Case: Deepcool CG530U 4F Black | 2,990 |
 | Monitor: Samsung IPS 24" 120Hz (x2) | 5,300 |
-| Keyboard: Fantech MK921 Wireless (Brown Switch) | 1,790 |
+| Keyboard: Fantech MK921 Wireless | 1,790 |
 | Mouse: Logitech M185R Wireless | 290 |
-| OS: Windows 11 Pro 64-bit (FPP USB) | 6,790 |
-| **รวม Peripherals & OS** | **14,170** |
-
-**สรุปราคา**
-
-| | ฿ |
-|---|---:|
-| รวมก่อนภาษี | 53,149.53 |
-| VAT 7% | 3,720.47 |
-| **รวมทั้งสิ้น** | **56,870.00** |
+| OS: Windows 11 Pro 64-bit | 6,790 |
+| **รวมทั้งสิ้น (incl. VAT)** | **56,870** |
 
 ---
 
-## Monthly Total
+## สรุปค่าใช้จ่าย
 
-| หมวด | ฿/เดือน |
-|---|---|
-| Services (cash) | ฿0 |
-| Hardware amortize | ฿1,580 |
-| Domain amortize | ฿? |
-| **รวม (ไม่รวม Max plan)** | **฿1,580+** |
+| หมวด | ฿ | หมายเหตุ |
+|---|---:|---|
+| Services รายเดือน | 0 | ทั้งหมด free tier |
+| Hardware + peripherals + OS | 56,870 | จ่ายครั้งเดียว 2026-05-24 |
+| Domain | ? | ต้องอัปเดต |
 
 ---
 
