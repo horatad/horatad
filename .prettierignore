@@ -1,0 +1,28 @@
+# Prettier ignore — mirrors eslint.config.mjs ignores + Prettier-specific
+
+node_modules/
+package-lock.json
+
+# Data + generated artifacts
+data/
+v3/kb.json
+v3/kb_*.json
+v3/master_dict.js
+v3/master_dict.json
+
+# Dev/legacy tools (inline scripts; Prettier mangles)
+tools/
+dictionary_builder_v3.html
+extract_conditions.html
+qrcode.min.js
+kb_yaml_filled_*.json
+
+# Generated docs
+docs/admin/RISK_REGISTER.md
+
+# Markdown — leave to human formatting (Thai mix)
+*.md
+handoffs/
+
+# Other
+*.html

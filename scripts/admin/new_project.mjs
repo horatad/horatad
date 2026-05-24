@@ -298,7 +298,7 @@ let claude = readFileSync(claudePath, 'utf8');
 const claudeRow = `| **${CODE}** | ${NAME} | ${ROLE} — charter: \`docs/${CODE}_MISSION.md\` |\n`;
 // insert หลัง  GUARD row (ถ้ามี) หรือ หลัง PLATFORM row
 if (claude.includes('| **GUARD** |')) {
-  claude = claude.replace(/(\| \*\***GUARD***\* \|[^\n]+\n)/, `$1${claudeRow}`);
+  claude = claude.replace(/(\| \*\*GUARD\*\* \|[^\n]+\n)/, `$1${claudeRow}`);
 } else if (claude.includes('| **PLATFORM** |')) {
   claude = claude.replace(/(\| \*\*PLATFORM\*\* \|[^\n]+\n)/, `$1${claudeRow}`);
 }

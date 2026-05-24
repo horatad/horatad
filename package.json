@@ -1,0 +1,17 @@
+{
+  "name": "horatad",
+  "private": true,
+  "type": "module",
+  "description": "Horatad — Thai astrology PWA + ecosystem (HORATAD/BIBLE/JULIAN/NOK/GUARD/BIG)",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2"
+  }
+}

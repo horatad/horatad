@@ -647,21 +647,12 @@ Read <file> offset=N limit=40    # อ่านเฉพาะส่วนที
 ⚠️ **tradeoff**: ถ้าเจอ bug นอก scope → ต้องหยุด note ใน handoff แล้วเปิด session ใหม่
 **แก้**: ถ้า bug เล็กมาก (1–2 บรรทัด) Claude แก้ inline ได้ แต่ note ใน handoff
 
-#### 4. แยก session type
-| type | งาน |
-|---|---|
-| code | เขียน/แก้โค้ด batch หลาย fix |
-| review | ตรวจ logic / audit อย่างเดียว |
-| deploy | bump + push + handoff อย่างเดียว |
-⚠️ **tradeoff**: งานเล็กต้องใช้หลาย session — overhead สูงกว่า
-**แก้**: ใช้เฉพาะ project ใหญ่หรือ session ที่ context เริ่มหนัก
-
-#### 5. CLAUDE.md = long-term memory (ใช้ด้วยความระวัง)
+#### 4. CLAUDE.md = long-term memory (ใช้ด้วยความระวัง)
 ตัดสินใจถาวร → เขียนลงทันที ไม่ต้องถามซ้ำทุก session
 ⚠️ **tradeoff**: CLAUDE.md โตเรื่อยๆ → อ่านหนักทุก session start / rule เก่าอาจขัดแย้ง rule ใหม่
 **แก้**: review + trim CLAUDE.md ทุก major version — ลบ rule ที่ไม่ใช้แล้ว
 
-#### 6. Concept / analysis → text ก่อน เสมอ ⭐
+#### 5. Concept / analysis → text ก่อน เสมอ ⭐
 ถ้า user ถามเรื่อง concept, design, tradeoff, หรือ "วิเคราะห์" → **ตอบ text ก่อน ไม่เปิดไฟล์**
 ใช้ tool ก็ต่อเมื่อ user ยืนยันว่าจะ implement
 
@@ -723,12 +714,6 @@ git checkout main && git reset --hard origin/main && git checkout <feature-branc
 
 **Local main quirk**: เคยมี "Add files via upload" commits จาก GitHub UI ค้างใน local
 ถ้าเจอ divergence ให้ `git reset --hard origin/main` (ของเก่าเป็นขยะ ไม่ใช่งาน)
-
----
-
-## Pending bugs / backlog
-
-ดู `PROJECT_STATUS.md` (overview ทุก project) + `handoffs/<PROJECT>_*.md` ล่าสุดของ project นั้น
 
 ---
 
