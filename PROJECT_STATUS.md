@@ -89,17 +89,25 @@
 - **D** สาธารณะ unverified — Wikidata date only, no time (52,550 records)
 - **F** unknown — placeholder default (10 records)
 
-### Next (Claude ทำได้)
-- [ ] ขยาย Wikipedia TH parser — เพิ่ม pattern "ฤกษ์เกิด", "ดวงเกิด" เพื่อจับเวลาเพิ่ม
-- [ ] Debug Astrotheme lat/lng parser — selector ไม่ตรง coord field
-- [ ] Astro-Databank scraper (astro.com) — Rodden Rating AA/A/B/C/DD → accuracy A/B/C/D/F
+### Architecture (NEW 2026-05-24) — Raw Source Buckets
+- ✅ **Phase 1**: dual-write raw — `workers/julian_raw_writer.mjs` + scrapers ทั้ง 3 เขียน `data/julian_raw/<source>.jsonl`
+- ✅ **Phase 2**: standalone merge — `workers/julian_merge.mjs` priority: seed > wiki_th > astrotheme > wikidata > existing
+- ⏸ **Phase 3**: validate (deferred จนกว่า raw มี data)
+- 🔴 **Phase 4 BLOCKED**: GUARD ต้อง patch workflow yaml ให้ `git add data/julian_raw/` — ดู `handoffs/GUARD_20260523_v3.md` Incoming
 
-### Blocked (รอ user)
-- [ ] ⭐ **เปิด `tools/julian_seed_input.html`** กรอก records accuracy A/B/C ของคนใกล้ตัว → export JSON → commit
-- [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ"
+### Next (Claude ทำได้)
+- [ ] Phase 3 validate.mjs — รอ raw buckets accumulate (post Phase 4 GUARD)
+- [ ] ขยาย Wikipedia TH parser — pattern "ฤกษ์เกิด", "ดวงเกิด"
+- [ ] Wikidata P19+P625 coord enricher — แยก script (ทดแทน Astrotheme lat/lng)
+- [ ] Fix accuracy overgrade bug — scraper.mjs:162 ใช้ precision==14 (ไม่ใช่ ≥13) สำหรับ C
+
+### Blocked (รอ user/อื่น)
+- [ ] 🔴 **Phase 4** — GUARD session patch `.github/workflows/julian_sync.yml` ให้ commit raw bucket files
+- [ ] ⭐ **เปิด `tools/julian_seed_input.html`** กรอก records accuracy A/B/C
+- [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ" (schema ไม่เปลี่ยน — ควรใช้ได้)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260523_v1.md`
+`handoffs/JULIAN_20260524_v1.md`
 
 ---
 
