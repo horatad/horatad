@@ -74,6 +74,18 @@ if [ -f "$SCOPE_FILE" ]; then
   fi
 fi
 
+# Critical alerts จาก BIG handoff ล่าสุด — surface ทุก session start
+LATEST_BIG=$(ls -1 handoffs/BIG_[0-9]*_v[0-9]*.md 2>/dev/null | sort -r | head -1)
+if [ -n "$LATEST_BIG" ] && grep -q "^## ⚠ CRITICAL ALERTS" "$LATEST_BIG" 2>/dev/null; then
+  echo ""
+  awk '
+    /^## ⚠ CRITICAL ALERTS/ {flag=1; print; next}
+    /^---$/ && flag {flag=0; exit}
+    /^## / && flag {flag=0; exit}
+    flag {print}
+  ' "$LATEST_BIG"
+fi
+
 # Project handoffs ล่าสุด (1 บรรทัด/project — auto-discover จาก filesystem)
 if [ -d handoffs ]; then
   echo ""
