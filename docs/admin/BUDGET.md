@@ -1,5 +1,5 @@
 # BUDGET — Horatad Expense Tracker
-Updated: 2026-05-24
+Updated: 2026-05-24 (hardware itemized จาก invoice V2)
 
 ---
 
@@ -23,7 +23,40 @@ Updated: 2026-05-24
 | รายการ | วันที่ | ราคา (฿) | Amortize/เดือน | หมายเหตุ |
 |---|---|---|---|---|
 | Domain horatad.com | ไม่ทราบ | ? | ? | ต้องอัปเดต |
-| Computer (i5-14400 build) | 2026-05-24 | 56,870 | 1,580 | amortize 36 เดือน |
+| **Computer รวม (incl. VAT 7%)** | **2026-05-24** | **56,870** | **1,580** | **amortize 36 เดือน** |
+
+### รายละเอียด Hardware (จาก Invoice V2)
+
+**Hardware**
+
+| รายการ | ราคา (฿) |
+|---|---:|
+| CPU: Intel Core i5-14400 (Socket 1700) | 6,490 |
+| Mainboard: MSI B760M Gaming Plus WiFi DDR5 | 3,860 |
+| RAM: G.Skill Trident Z5 RGB DDR5 32GB (16GBx2) 5600MHz | 15,990 |
+| PSU: Thermaltake Toughpower GT 750W (80+ Gold) | 3,190 |
+| SSD: M.2 NVMe PCIe 4.0 WD Blue SN5000 2TB | 8,190 |
+| CPU Cooler: Be Quiet Pure Rock Pro 3 LX | 1,990 |
+| Case: Deepcool CG530U 4F Black (ATX) | 2,990 |
+| **รวม Hardware** | **42,710** |
+
+**Peripherals & OS**
+
+| รายการ | ราคา (฿) |
+|---|---:|
+| Monitor: Samsung IPS 24" 120Hz (x2) | 5,300 |
+| Keyboard: Fantech MK921 Wireless (Brown Switch) | 1,790 |
+| Mouse: Logitech M185R Wireless | 290 |
+| OS: Windows 11 Pro 64-bit (FPP USB) | 6,790 |
+| **รวม Peripherals & OS** | **14,170** |
+
+**สรุปราคา**
+
+| | ฿ |
+|---|---:|
+| รวมก่อนภาษี | 53,149.53 |
+| VAT 7% | 3,720.47 |
+| **รวมทั้งสิ้น** | **56,870.00** |
 
 ---
 
