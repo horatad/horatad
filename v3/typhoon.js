@@ -585,3 +585,33 @@ export async function interpret(pos, ascSign, kbRules, natalPayload, options={})
 
   return{text,rules:matched,fallback};
 }
+
+/**
+ * send_chat(messages, options?) — conversational mode (voice chat)
+ * messages: [{role:'system'|'user'|'assistant', content:string}]
+ */
+export async function send_chat(messages,options={}){
+  const body=JSON.stringify({
+    model:TYPHOON_MODEL,
+    max_tokens:400,
+    messages,
+    stream:false,
+  });
+  let resp;
+  try{
+    resp=await fetch(TYPHOON_WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body,
+      signal:options.signal||null,
+    });
+  }catch(err){
+    throw new Error('[Chat] เชื่อมต่อ API ไม่ได้: '+err.message);
+  }
+  if(!resp.ok)throw new Error(`[Chat] HTTP ${resp.status}`);
+  let data;
+  try{data=await resp.json();}catch(_err){throw new Error('[Chat] parse response ไม่ได้');}
+  const raw=data.choices?.[0]?.message?.content?.trim()||data.content?.[0]?.text?.trim();
+  if(!raw)throw new Error('[Chat] response ว่างเปล่า');
+  return raw;
+}

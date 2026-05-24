@@ -6,9 +6,9 @@
 //     ตอน user ยังไม่ผูกดวง
 //   - KB_PATH ใส่ ?v=APP_VERSION ให้ตรงกับ SW CORE_ASSETS key → offline ทำงาน
 
-import { get_lagna, buildNatalState, matchRulesV24 } from './engine.js';
+import { get_lagna, buildNatalState, matchRulesV24, ZODIAC_TH } from './engine.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
-import { match_rules, send_to_typhoon, _ruleId } from './typhoon.js';
+import { match_rules, send_to_typhoon, send_chat, _ruleId } from './typhoon.js';
 import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
 
 // ── M8: แปลง compose_local_prediction() output → display text ──────────────
@@ -82,6 +82,159 @@ window.v3CycleRate = function() {
   _v3SpeakRate = _RATE_STEPS[(idx + 1) % _RATE_STEPS.length];
   localStorage.setItem('v3_speak_rate', String(_v3SpeakRate));
   _syncRateBtn();
+};
+
+// ── Voice Chat ─────────────────────────────────────────────
+let _vcHistory = [];   // [{role:'user'|'assistant', content:string}]
+let _vcRecog = null;   // SpeechRecognition instance
+let _vcPanelOpen = false;
+
+function _vcSystemPrompt() {
+  const natal = typeof getNatal === 'function' ? getNatal() : null;
+  let ctx = '';
+  if (natal && natal.pos) {
+    const asc = get_lagna(natal.pos);
+    ctx = '\nข้อมูลดวงชาตาของผู้ใช้: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
+  }
+  return 'คุณคือโหราจารย์ไทยระบบ Horatad ตอบคำถามโหราศาสตร์สุริยยาตร์ไทย ภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำต่อคำตอบ' + ctx;
+}
+
+function _vcSetStatus(text) {
+  const el = _el('v3-vc-status');
+  if (el) el.textContent = text;
+}
+
+function _vcSetMicState(state) {
+  const btn = _el('v3-vc-mic');
+  if (!btn) return;
+  btn.classList.remove('listening', 'thinking', 'speaking');
+  if (state !== 'idle') btn.classList.add(state);
+  btn.disabled = state === 'thinking';
+  btn.textContent = state === 'listening' ? '⏹' : state === 'speaking' ? '🔊' : '🎤';
+}
+
+function _vcAppendBubble(role, text) {
+  const el = _el('v3-vc-history');
+  if (!el) return;
+  const div = document.createElement('div');
+  div.className = 'v3-vc-bubble ' + (role === 'user' ? 'v3-vc-user' : 'v3-vc-ai');
+  div.textContent = text;
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+
+async function _vcSendMessage(userText) {
+  _vcHistory.push({ role: 'user', content: userText });
+  _vcAppendBubble('user', userText);
+  _vcSetStatus('กำลังคิด...');
+  _vcSetMicState('thinking');
+
+  const recent = _vcHistory.slice(-10); // keep last 5 exchanges
+  try {
+    const reply = await send_chat([
+      { role: 'system', content: _vcSystemPrompt() },
+      ...recent,
+    ]);
+    _vcHistory.push({ role: 'assistant', content: reply });
+    _vcAppendBubble('assistant', reply);
+    _vcSetStatus('กำลังพูด...');
+    _vcSetMicState('speaking');
+    nokSpeak(reply, {
+      rate: _v3SpeakRate,
+      onState: (event) => {
+        if (event === 'end' || event === 'error') {
+          _vcSetStatus('กดไมค์เพื่อพูด');
+          _vcSetMicState('idle');
+        }
+      },
+    });
+  } catch(err) {
+    console.warn('[VC]', err);
+    _vcSetStatus('เกิดข้อผิดพลาด — ลองอีกครั้ง');
+    _vcSetMicState('idle');
+  }
+}
+
+window.v3MicToggle = function() {
+  // กดขณะพูดอยู่ → หยุดพูด
+  if (nokIsSpeaking()) {
+    nokStop();
+    _vcSetMicState('idle');
+    _vcSetStatus('กดไมค์เพื่อพูด');
+    return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    _vcSetStatus('เบราว์เซอร์นี้ไม่รองรับการฟังเสียง');
+    return;
+  }
+
+  // กดขณะฟังอยู่ → ยกเลิก
+  if (_vcRecog) {
+    _vcRecog.abort();
+    _vcRecog = null;
+    _vcSetMicState('idle');
+    _vcSetStatus('กดไมค์เพื่อพูด');
+    return;
+  }
+
+  const r = new SR();
+  r.lang = 'th-TH';
+  r.continuous = false;
+  r.interimResults = false;
+  _vcRecog = r;
+
+  let _handled = false;
+
+  r.onstart = () => { _vcSetMicState('listening'); _vcSetStatus('ฟังอยู่...'); };
+
+  r.onresult = (e) => {
+    _handled = true;
+    _vcRecog = null;
+    const text = e.results[0][0].transcript.trim();
+    if (text) _vcSendMessage(text);
+    else { _vcSetMicState('idle'); _vcSetStatus('กดไมค์เพื่อพูด'); }
+  };
+
+  r.onerror = (e) => {
+    _handled = true;
+    _vcRecog = null;
+    _vcSetMicState('idle');
+    _vcSetStatus(e.error === 'no-speech' ? 'ไม่ได้ยินเสียง — ลองอีกครั้ง' : 'เกิดข้อผิดพลาด: ' + e.error);
+  };
+
+  r.onend = () => {
+    if (!_handled) { _vcRecog = null; _vcSetMicState('idle'); _vcSetStatus('กดไมค์เพื่อพูด'); }
+  };
+
+  r.start();
+};
+
+window.v3VcClear = function() {
+  _vcHistory = [];
+  const el = _el('v3-vc-history');
+  if (el) el.innerHTML = '';
+  if (nokIsSpeaking()) nokStop();
+  if (_vcRecog) { _vcRecog.abort(); _vcRecog = null; }
+  _vcSetMicState('idle');
+  _vcSetStatus('กดไมค์เพื่อพูด');
+};
+
+window.v3VcTogglePanel = function() {
+  const body = _el('v3-vc-body');
+  const toggle = _el('v3-vc-toggle');
+  const arrow = _el('v3-vc-arrow');
+  if (!body) return;
+  _vcPanelOpen = !_vcPanelOpen;
+  body.classList.toggle('hidden', !_vcPanelOpen);
+  if (toggle) toggle.classList.toggle('open', _vcPanelOpen);
+  if (arrow) arrow.textContent = _vcPanelOpen ? '▲' : '▼';
+  if (!_vcPanelOpen) {
+    if (_vcRecog) { _vcRecog.abort(); _vcRecog = null; }
+    if (nokIsSpeaking()) nokStop();
+    _vcSetMicState('idle');
+  }
 };
 
 // ── KB loader ─────────────────────────────────────────────
@@ -449,6 +602,8 @@ window.v3Copy = v3Copy;
 window.v3Speak = v3Speak;
 window.v3TogglePanel = v3TogglePanel;
 window.v3SetMode = v3SetMode;
+// voice chat (already assigned as window.* above)
+// window.v3MicToggle, window.v3VcClear, window.v3VcTogglePanel
 
 // ── Bootstrap ────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
