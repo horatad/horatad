@@ -1,5 +1,5 @@
 # BUDGET — Horatad Expense Tracker
-Updated: 2026-05-24
+Updated: 2026-05-24 (v2: เพิ่ม Google One AI Premium)
 
 ---
 
@@ -23,7 +23,8 @@ Updated: 2026-05-24
 | รายการ | วันที่ | ราคา (฿) | หมายเหตุ |
 |---|---|---:|---|
 | Domain horatad.com | ไม่ทราบ | ? | ต้องอัปเดต |
-| Computer + peripherals + OS | 2026-05-24 | 56,870 | invoice V2 |
+| Computer + peripherals + OS | 2026-05-24 | 56,870 | invoice V2 — จ่ายครั้งเดียว |
+| Google One AI Premium (Gemini Pro + 5TB Drive) | 2026-05-12 | 7,500 | รายปี — ต่ออายุ 12 พ.ค. ทุกปี |
 
 ### รายละเอียด (Invoice V2)
 
@@ -50,7 +51,8 @@ Updated: 2026-05-24
 |---|---:|---|
 | Services รายเดือน | 0 | ทั้งหมด free tier |
 | Hardware + peripherals + OS | 56,870 | จ่ายครั้งเดียว 2026-05-24 |
-| Domain | ? | ต้องอัปเดต |
+| Google One AI Premium | 7,500 | รายปี (ต่ออายุ 12 พ.ค. ทุกปี) |
+| Domain horatad.com | ? | ต้องอัปเดต |
 
 ---
 
