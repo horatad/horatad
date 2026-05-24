@@ -157,10 +157,13 @@ async function processQuery(query, progress, batchFile, today) {
       : null;
 
     const astroId = b.astroId?.value || null;
-    // accuracy: D = date only (Wikidata precision=day, no time)
-    //          C = time present (Wikidata precision>=13 with hour/minute)
-    // Astrotheme enrichment step จะ upgrade เป็น C ถ้าเจอเวลามี cited source
-    const accuracy = time_utc ? 'C' : 'D';
+    // accuracy grading:
+    //   D = Wikidata only — date-only OR hour-precision (precision=13 → round hour, not verified)
+    //   C = Wikidata minute-precision (precision=14, recorded carefully)
+    //     OR upgraded by Astrotheme / Wikipedia TH enrichment (cited source)
+    // เหตุผล: precision=13 distribution กระจุกที่ round hour (7:00, 8:00, 16:00…)
+    // = editor กรอกประมาณ — ไม่ใช่ official birth time ควรเป็น D
+    const accuracy = (time_utc && birthPrecNum >= 14) ? 'C' : 'D';
     records.push({
       jd: birth.jd, name,
       event_label: query.label, type: 'human',
