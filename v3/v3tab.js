@@ -6,7 +6,7 @@
 //     ตอน user ยังไม่ผูกดวง
 //   - KB_PATH ใส่ ?v=APP_VERSION ให้ตรงกับ SW CORE_ASSETS key → offline ทำงาน
 
-import { get_lagna } from './engine.js';
+import { get_lagna, buildNatalState, matchRulesV24 } from './engine.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
 import { match_rules, send_to_typhoon, _ruleId } from './typhoon.js';
 import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
@@ -31,11 +31,35 @@ function _renderComposed(predictions) {
   return lines.join('\n').trim();
 }
 
+// ── V24 renderer — แสดง r.meaning จาก NATAL_ATOMIC/NATAL_COMBINATION/TRANSIT_NATAL ─
+function _renderV24(matched) {
+  const pred = matched.filter(r =>
+    r.type === 'NATAL_ATOMIC' || r.type === 'NATAL_COMBINATION' || r.type === 'TRANSIT_NATAL'
+  );
+  if (!pred.length) return '[ไม่พบกฎที่ตรงกับดวง]';
+  const groups = {};
+  for (const r of pred) {
+    const icon = r.polarity === '+' ? '✅' : r.polarity === '-' ? '⚠️' : '📋';
+    const key = icon + (r.domain ? ' ' + r.domain : '');
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(r.meaning);
+  }
+  const lines = [];
+  for (const [header, texts] of Object.entries(groups)) {
+    lines.push(header);
+    texts.forEach(t => lines.push('• ' + t));
+    lines.push('');
+  }
+  return lines.join('\n').trim();
+}
+
 // ── Config ────────────────────────────────────────────────
 const KB_PATH = './v3/kb.json?v=' + (window.APP_VERSION || '0');
+const KB_PATH_V24 = './v3/kb_v24-3.json?v=' + (window.APP_VERSION || '0');
 
 // ── State ─────────────────────────────────────────────────
 let _v3KbRules = null;
+let _v3KbRulesV24 = null;
 let _v3Running = false;
 let _v3Mode = 'natal'; // 'natal' | 'transit' | 'both'
 
@@ -47,6 +71,15 @@ async function _loadKb() {
   const data = await resp.json();
   _v3KbRules = Array.isArray(data) ? data : (data.rules || []);
   return _v3KbRules;
+}
+
+async function _loadKbV24() {
+  if (_v3KbRulesV24) return _v3KbRulesV24;
+  const resp = await fetch(KB_PATH_V24);
+  if (!resp.ok) throw new Error('kb_v24.json โหลดไม่ได้: HTTP ' + resp.status);
+  const data = await resp.json();
+  _v3KbRulesV24 = Array.isArray(data) ? data : (data.rules || []);
+  return _v3KbRulesV24;
 }
 
 // ── DOM helpers ─────────────────────────────────────────────
@@ -131,8 +164,8 @@ function _showRulesPanel(matched, payload) {
   const preds = compose_local_prediction(matched, payload);
   matched.forEach((r, i) => {
     const p = preds[i] || {};
-    const pol = p.polarity || '~';
-    const domain = p.domain || '';
+    const pol = p.polarity || r.polarity || '~';
+    const domain = p.domain || r.domain || '';
     const polClass = pol === '+' ? 'pol-pos' : pol === '-' ? 'pol-neg' : 'pol-neu';
     const polLabel = pol === '+' ? '+' : pol === '-' ? '−' : '~';
     const rid = _ruleId(r);
@@ -240,24 +273,23 @@ async function v3Local() {
   _showSpinner(true);
 
   try {
-    const kbRules = await _loadKb();
+    const v24Rules = await _loadKbV24();
     const pos = natal.pos;
-    const ascSign = get_lagna(pos);
-    const payload = build_natal_payload(pos, ascSign);
+    const natalState = buildNatalState(pos);
     const transit = typeof getTransit === 'function' ? getTransit() : null;
     const transitPos = transit?.pos || null;
-    if (transitPos) payload._include_transit = true;
-    const allMatched = match_rules(pos, ascSign, kbRules, transitPos, payload);
-    const matched = _filterByMode(allMatched);
+    const transitState = transitPos ? buildNatalState(transitPos, null, natalState.ascSign) : null;
     if (_v3Mode !== 'natal' && !transitPos) {
       _showToastV3('ไม่มีข้อมูลดาวจร — กรุณาตั้งวันดาวจรที่แท็บ "วันนี้" ก่อน');
     }
-    const predictions = compose_local_prediction(matched, payload);
+    const allMatched = matchRulesV24(natalState, v24Rules, transitState)
+      .map(r => ({...r, _isTransit: r.type === 'TRANSIT_NATAL'}));
+    const matched = _filterByMode(allMatched);
     _showSpinner(false);
-    _showRulesPanel(matched, payload);
+    _showRulesPanel(matched, null);
     _setInputPanelLocal();
     const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';
-    _showResult(_renderComposed(predictions), false, `📋 กฎท้องถิ่น (${matched.length} กฎ) ${modeLabel}`);
+    _showResult(_renderV24(matched), false, `📋 กฎท้องถิ่น V24 (${matched.length} กฎ) ${modeLabel}`);
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] local error:', err);
