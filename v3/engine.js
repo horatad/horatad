@@ -191,3 +191,80 @@ export function get_tanu_lagna(ascSign){
 }
 
 export {KASET_MAP,EXALT_MAP,STD_SCORE,HOUSE_SCORE,MEAN_SPEEDS,get_j};
+
+// ── Rule Matching — kb_v24-3.json schema ──────────────────────────────────
+// Compatible with structured BIBLE KB (planet_ids / type / contexts / polarity)
+// ไม่ compatible กับ kb_embedded.json (tag-based) — ใช้ _matchRules() ใน script.js แทน
+
+function _lagnaAspect(house){
+  if(house===1)return'KUM';                      // กุมลัคนา
+  if(house===7)return'LENG';                     // เล็ง
+  if(house===4||house===10)return'YOK';          // โยค
+  if(house===5||house===9)return'TRI';           // ตรีโกณ
+  return'NONE';
+}
+
+/**
+ * buildNatalState(pos, vel?, ascSignOverride?) → planet state map
+ * ascSignOverride: pass natalState.ascSign when building transit state
+ * Returns { ascSign, planets: { [1..10]: { sign, quality, qualScore, house, lagnaAsp, strength } } }
+ */
+export function buildNatalState(pos,vel=null,ascSignOverride=null){
+  const ascSign=ascSignOverride!==null?ascSignOverride:Math.trunc(pos[0]/1800);
+  const planets={};
+  for(let i=1;i<=10;i++){
+    const sign=Math.trunc(pos[i]/1800);
+    const quality=getStandards(pos,i);
+    const qualScore=compute_std_score(pos,i);
+    const house=getHouse(pos,i,ascSign);
+    const lagnaAsp=_lagnaAspect(house);
+    const[strength]=getStrength(pos,vel,i,ascSign);
+    planets[i]={sign,quality,qualScore,house,lagnaAsp,strength};
+  }
+  return{ascSign,planets};
+}
+
+/**
+ * matchRulesV24(natalState, rules, transitState?) → matched rules[]
+ * natalState: from buildNatalState(natalPos)
+ * transitState: from buildNatalState(transitPos, null, natalState.ascSign)
+ * rules: array from kb_v24-3.json (BIBLE structured schema)
+ */
+export function matchRulesV24(natalState,rules,transitState=null){
+  const matched=[];
+  for(const r of rules){
+    if(r.rule_use==='case_study')continue;
+
+    const pids=r.planet_ids||[];
+    const rtype=r.type||'';
+    const ctx=r.contexts||['natal'];
+
+    // DEFINITION / PRINCIPLE / REFERENCE — include unconditionally (no planet trigger)
+    if(rtype==='DEFINITION'||rtype==='PRINCIPLE'||rtype==='REFERENCE'){
+      if(pids.length===0)matched.push(r);
+      continue;
+    }
+
+    if(rtype==='NATAL_ATOMIC'||rtype==='NATAL_COMBINATION'){
+      if(!ctx.includes('natal'))continue;
+      // principle-style match rule with no specific planets → always include
+      if(pids.length===0){matched.push(r);continue;}
+      // ALL planet_ids must have a lagna aspect (กุม/เล็ง/โยค/ตรีโกณ)
+      if(pids.every(pid=>{
+        const ps=natalState.planets[pid];
+        return ps&&ps.lagnaAsp!=='NONE';
+      }))matched.push(r);
+
+    }else if(rtype==='TRANSIT_NATAL'){
+      if(!transitState)continue;
+      if(!ctx.includes('transit'))continue;
+      if(pids.length===0){matched.push(r);continue;}
+      // ALL transit planet_ids must aspect natal lagna from transit positions
+      if(pids.every(pid=>{
+        const ts=transitState.planets[pid];
+        return ts&&ts.lagnaAsp!=='NONE';
+      }))matched.push(r);
+    }
+  }
+  return matched;
+}
