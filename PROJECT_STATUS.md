@@ -91,15 +91,18 @@
 
 ### Architecture (NEW 2026-05-24) — Raw Source Buckets
 - ✅ **Phase 1**: dual-write raw — `workers/julian_raw_writer.mjs` + scrapers ทั้ง 3 เขียน `data/julian_raw/<source>.jsonl`
-- ✅ **Phase 2**: standalone merge — `workers/julian_merge.mjs` priority: seed > wiki_th > astrotheme > wikidata > existing
+- ✅ **Phase 2**: standalone merge — `workers/julian_merge.mjs` priority: seed > wiki_th > astrotheme > wikidata_coord > wikidata > existing
 - ⏸ **Phase 3**: validate (deferred จนกว่า raw มี data)
-- 🔴 **Phase 4 BLOCKED**: GUARD ต้อง patch workflow yaml ให้ `git add data/julian_raw/` — ดู `handoffs/GUARD_20260523_v3.md` Incoming
+- 🔴 **Phase 4 BLOCKED**: GUARD ต้อง patch workflow yaml ให้ `git add data/julian_raw/` + wire wikidata_coord step
+
+### Data quality improvements (2026-05-24 continuation)
+- ✅ **Accuracy fix**: scraper.mjs precision>=14 only for C (เดิม overgrade precision-13 → C)
+- ✅ **Wiki TH parser**: 4 patterns ใหม่ (ฤกษ์เกิด/ดวงเกิด/ลืมตา/เกิดในเวลา) — tests 13/13
+- ✅ **Wikidata P19+P625 enricher**: `workers/julian_wikidata_coord.mjs` แทน Astrotheme lat/lng broken — tests 12/12 + merge integrated
 
 ### Next (Claude ทำได้)
 - [ ] Phase 3 validate.mjs — รอ raw buckets accumulate (post Phase 4 GUARD)
-- [ ] ขยาย Wikipedia TH parser — pattern "ฤกษ์เกิด", "ดวงเกิด"
-- [ ] Wikidata P19+P625 coord enricher — แยก script (ทดแทน Astrotheme lat/lng)
-- [ ] Fix accuracy overgrade bug — scraper.mjs:162 ใช้ precision==14 (ไม่ใช่ ≥13) สำหรับ C
+- [ ] Backfill 602 C-grade records — re-scrape Wikidata get precision → re-grade
 
 ### Blocked (รอ user/อื่น)
 - [ ] 🔴 **Phase 4** — GUARD session patch `.github/workflows/julian_sync.yml` ให้ commit raw bucket files
