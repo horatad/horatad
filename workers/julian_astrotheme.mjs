@@ -10,8 +10,9 @@
 // Output: JSONL enriched → pipe เข้า julian_import.mjs
 //   node julian_astrotheme.mjs input.jsonl | node julian_import.mjs /dev/stdin > enrich.sql
 
-import { readFileSync, existsSync, appendFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { createInterface } from 'readline';
+import { appendRaw } from './julian_raw_writer.mjs';
 
 const USER_AGENT  = 'JULIAN-bot/1.0 (horatad.com; empirical-astro-research)';
 const DELAY_MS    = 2500;   // polite gap — astrotheme อนุญาต crawl แต่ไม่ควรถี่
@@ -42,7 +43,7 @@ function to24h(h, m, ampm) {
 }
 
 // ── parse HTML → { time_utc, lat, lng } ──────────────────────────────────────
-function parseAstrotheme(html, name) {
+function parseAstrotheme(html, _name) {
   const result = { time_utc: null, lat: null, lng: null };
 
   // ── Birth time patterns ────────────────────────────────────────────────────
@@ -182,6 +183,7 @@ async function main() {
     const result = await enrichOne(record);
     if (result) {
       process.stdout.write(JSON.stringify(result) + '\n');
+      appendRaw('astrotheme', result);
       enriched++;
     }
   }

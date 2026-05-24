@@ -11,8 +11,8 @@
 //   6. commit กลับ repo
 // ไม่ต้องมีมนุษย์ approve ทุกขั้นตอน
 
-import { readFileSync, writeFileSync, execSync } from 'fs';
-import { execSync as exec } from 'child_process';
+import { readFileSync, writeFileSync } from 'fs';
+import { execSync } from 'child_process';
 
 const KB_FILE          = new URL('../v3/kb.json',           import.meta.url).pathname;
 const MIN_SAMPLES      = 30;   // rule ต้องมี >= 30 samples จึงมี statistical significance

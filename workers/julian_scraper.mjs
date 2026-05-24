@@ -5,6 +5,7 @@
 
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from 'fs';
 import { CONFIG } from './julian_config.mjs';
+import { appendRawBatch } from './julian_raw_writer.mjs';
 
 const PROGRESS_FILE  = new URL('./julian_progress.json', import.meta.url).pathname;
 const OVERRIDE_FILE  = new URL('./julian_override.json', import.meta.url).pathname;
@@ -181,6 +182,7 @@ async function processQuery(query, progress, batchFile, today) {
 
   if (records.length > 0) {
     appendFileSync(batchFile, records.map(r => JSON.stringify(r)).join('\n') + '\n');
+    appendRawBatch('wikidata', records);
     progress.total    += records.length;
     progress.seen_qids = [...seenSet];
     progress.runs.push({ date: today, query: query.id, count: records.length });

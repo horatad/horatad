@@ -17,6 +17,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { createInterface } from 'readline';
+import { appendRaw } from './julian_raw_writer.mjs';
 
 const USER_AGENT  = 'JULIAN-bot/1.0 (horatad.com; empirical-astro-research)';
 const DELAY_MS    = 1500;   // polite gap — Wikimedia limit ~200/min
@@ -263,6 +264,7 @@ async function main() {
     const result = await enrichOne(record);
     if (result) {
       process.stdout.write(JSON.stringify(result) + '\n');
+      appendRaw('wikipedia_th', result);
       enriched++;
     }
   }
