@@ -268,7 +268,6 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
 
     const pName=PLANET_NAMES_TH[i];
     const pNameKB=_kbName(pName);
-    const pSign=Math.trunc(pos[i]/1800);
     const pQualRaw=getStandards(pos,i);
     const pQuals=pQualRaw
       ?pQualRaw.split('/').map(q=>QUAL_MAP[q]||q).filter(q=>QLABELS[q])
@@ -481,7 +480,7 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   let data;
   try{
     data=await resp.json();
-  }catch(err){
+  }catch(_err){
     throw new Error('[Typhoon] parse response ไม่ได้');
   }
 

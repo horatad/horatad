@@ -4,7 +4,6 @@
 
 import {
   get_lagna,
-  get_all_houses,
   getHouse,
   getStandards,
   getStrength,
@@ -146,7 +145,6 @@ export function sort_by_manifestation(pos,ascSign){
  * @returns {Object} natal_payload
  */
 export function build_natal_payload(pos,ascSign){
-  const houses=get_all_houses(pos,ascSign);
   const tanuIdx=get_tanu_lagna(ascSign);
   const tanuSignIdx=Math.trunc(pos[tanuIdx]/1800);
   const tanuOfTanuIdx=KASET_MAP[tanuSignIdx]; // เจ้าเรือนของตนุลัคน์
@@ -163,12 +161,6 @@ export function build_natal_payload(pos,ascSign){
 
   // ดาวเล็ง/โยค/ตรีโกณ (ไม่ใช่กุม)
   const otherAspects=effects.filter(e=>e.aspect!=='KUM'&&e.idx!==tanuIdx);
-
-  // H10 กัมมะ
-  const h10Planets=[...effects,...potentials].filter(e=>e.house===10);
-  const h10Owner=KASET_MAP[Math.trunc(pos[0]/1800+9)%12]; // เจ้าเรือน H10 (ascSign+9)%12
-  const h10OwnerSign=(ascSign+9)%12;
-  const h10OwnerEntry=[...effects,...potentials].find(e=>e.idx===KASET_MAP[h10OwnerSign]);
 
   // ภพอื่นๆ (H2,H3,H4,H5,H6,H7,H8,H9,H11,H12)
   const houseMap={};
