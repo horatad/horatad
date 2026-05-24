@@ -24,7 +24,7 @@
 
 **Self-improving loop:**
 ```
-Wikidata → JULIAN D1 → match_rules() → empirical_p → kb.json → BIBLE แม่นขึ้น
+Wikidata → JULIAN data/ → match_rules() → empirical_p → kb.json → BIBLE แม่นขึ้น
     ↑                                                                    |
     └──────────────────── ข้อมูลเพิ่มขึ้นเรื่อย ๆ ──────────────────────┘
 ```
@@ -167,7 +167,7 @@ LINE OA รับวันเกิดจาก user
   → HORATAD: UX, deploy, mobile
 
 ระดับ 3 (MEDIUM):     Infrastructure + data
-  → JULIAN: CF D1 setup, import pipeline, data collection
+  → JULIAN: data collection, parser improvements, accuracy upgrade
   → PLATFORM: chatbot, content tools
 
 ระดับ 4 (LOW):        Growth + expansion
@@ -257,10 +257,9 @@ LINE OA รับวันเกิดจาก user
 ### Developer Tools
 | Component | Tech |
 |---|---|
-| Import pipeline | `workers/julian_import.mjs` (Node.js) |
-| D1 deploy | `wrangler d1 execute` |
+| JULIAN scraper | `workers/julian_scraper.mjs` (Node.js, GitHub Actions cron) |
 | Worker deploy | `wrangler deploy` |
-| Data tools | `tools/julian_keygen.html`, `tools/julian_scraper.html`, `tools/hora_db_import.html` |
+| Data tools | `tools/julian_keygen.html`, `tools/julian_scraper.html`, `tools/julian_seed_input.html` |
 
 ---
 
@@ -301,10 +300,10 @@ GUARD (cross-cutting watchdog)
 | ภาพรวม + architecture | `ECOSYSTEM.md` (ไฟล์นี้) |
 | งานที่ต้องทำวันนี้ | `PROJECT_STATUS.md` |
 | Claude instructions | `CLAUDE.md` |
-| HORATAD detail | `docs/HORATAD.md` + `handoffs/HORATAD_*.md` |
-| BIBLE detail | `docs/BIBLE_MISSION.md` + `handoffs/BIBLE_*.md` |
-| JULIAN detail | `docs/JULIAN_MISSION.md` + `handoffs/JULIAN_*.md` |
-| NOK detail | `handoffs/NOK_*.md` (Phase 1 deployed; voice/TTS roadmap) |
+| HORATAD technical ref | `docs/HORATAD.md` + `handoffs/HORATAD_*.md` |
+| BIBLE detail | `handoffs/BIBLE_memory.md` + `handoffs/BIBLE_*.md` |
+| JULIAN detail | `handoffs/JULIAN_memory.md` + `handoffs/JULIAN_*.md` |
+| NOK detail | `handoffs/NOK_memory.md` + `handoffs/NOK_*.md` |
 | PLATFORM detail | `ECOSYSTEM.md` §PLATFORM + `PROJECT_STATUS.md` PLATFORM section |
 | GUARD detail | `docs/GUARD_MISSION.md` + `handoffs/GUARD_*.md` |
 
