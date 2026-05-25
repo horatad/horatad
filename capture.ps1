@@ -24,7 +24,7 @@ public class FPForm : Form, DPFP.Capture.EventHandler {
 
     public FPForm(string path) {
         outputPath = path;
-        this.Text            = "กำลังสแกนลายนิ้วมือ";
+        this.Text            = "Fingerprint Capture";
         this.FormBorderStyle = FormBorderStyle.FixedDialog;
         this.MaximizeBox     = false;
         this.MinimizeBox     = false;
@@ -33,7 +33,7 @@ public class FPForm : Form, DPFP.Capture.EventHandler {
         this.StartPosition   = FormStartPosition.CenterScreen;
 
         label = new Label();
-        label.Text      = "วางนิ้วบน scanner...";
+        label.Text      = "Place finger on scanner...";
         label.Dock      = DockStyle.Fill;
         label.TextAlign = ContentAlignment.MiddleCenter;
         label.Font      = new Font("Segoe UI", 12f);
@@ -86,7 +86,7 @@ public class FPForm : Form, DPFP.Capture.EventHandler {
 
     public void OnFingerTouch(object c, string s) {
         Console.Error.WriteLine("DBG: FingerTouch");
-        this.BeginInvoke(new Action(() => { label.Text = "กำลังอ่าน..."; }));
+        this.BeginInvoke(new Action(() => { label.Text = "Reading..."; }));
     }
     public void OnFingerGone(object c, string s)       { Console.Error.WriteLine("DBG: FingerGone"); }
     public void OnReaderConnect(object c, string s)    { Console.Error.WriteLine("DBG: ReaderConnect " + s); }
