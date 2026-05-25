@@ -386,6 +386,17 @@ function renderForm() {
   // reset source classes
   card.classList.remove('source-qr', 'source-julian');
 
+  // ── Empty state: unlock ฟอร์ม + ใส่วันนี้เป็น default
+  // → user พิมพ์ทับได้ทันที ไม่ต้องกด "✏️ แก้ไข"
+  if (!slot1 && !editMode) {
+    editMode = true;
+    editDraft = { name: 'ดวงใหม่', gender: 'ชาย' };
+    const today = new Date();
+    document.getElementById('fDate').value = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()+543}`;
+    document.getElementById('fTime').value = '12:00';
+    document.getElementById('fProv').value = 'กรุงเทพมหานคร';
+  }
+
   if (slot1) {
     document.getElementById('formName').textContent = slot1.name;
     document.getElementById('fDate').value = fmtDate(slot1);
@@ -417,15 +428,10 @@ function renderForm() {
       meta.style.display = 'none';
     }
   } else {
-    document.getElementById('formName').textContent = '— ยังไม่ได้เลือก —';
-    badge.innerHTML = '';
-    meta.style.display = 'none';
-    document.getElementById('fDate').value = '';
-    document.getElementById('fTime').value = '';
-    document.getElementById('fProv').value = '';
-    const today = new Date();
-    document.getElementById('fDate').placeholder = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()+543}`;
-    document.getElementById('fTime').placeholder = '12:00';
+    document.getElementById('formName').textContent = '🆕 กรอกดวงใหม่';
+    badge.innerHTML = '<span class="source-badge form">🔮 พร้อมผูกดวง</span>';
+    meta.style.display = 'block';
+    meta.innerHTML = '💡 พิมพ์ทับวันนี้ได้เลย หรือกด <strong>📂 เลือกดวง</strong> ถ้าเคยบันทึกไว้';
   }
   const inputs = ['fDate', 'fTime', 'fProv'];
   inputs.forEach(id => document.getElementById(id).disabled = !editMode);
