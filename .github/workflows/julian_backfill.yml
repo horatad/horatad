@@ -1,0 +1,66 @@
+name: JULIAN Backfill Accuracy
+
+# One-shot fix สำหรับ re-grade 588 C records จาก wikidata source
+# (scraper.mjs:166 เปลี่ยนกฎ precision >= 14 → C เมื่อ 2026-05-24)
+# รัน manual ผ่าน workflow_dispatch ไม่มี schedule
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'apply การเปลี่ยนแปลง (false = dry-run แสดง summary เท่านั้น)'
+        type: boolean
+        default: false
+      limit:
+        description: 'จำกัดจำนวน records (เว้นว่าง = ทั้งหมด ~588)'
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Run backfill
+        run: |
+          ARGS=""
+          if [ "${{ inputs.apply }}" = "true" ]; then
+            ARGS="$ARGS --apply"
+          fi
+          if [ -n "${{ inputs.limit }}" ]; then
+            ARGS="$ARGS --limit ${{ inputs.limit }}"
+          fi
+          echo "Running: node workers/julian_backfill_accuracy.mjs $ARGS"
+          node workers/julian_backfill_accuracy.mjs $ARGS
+
+      - name: Commit changes
+        if: inputs.apply == true
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/julian_all.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "JULIAN: backfill accuracy re-grade (one-shot)
+
+ลด C records ที่ scraped ก่อน precision >= 14 fix (2026-05-24)
+ดู workers/julian_backfill_accuracy.mjs สำหรับ logic"
+            git push
+          fi
