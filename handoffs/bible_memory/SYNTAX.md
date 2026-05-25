@@ -79,3 +79,31 @@ type:
 **Principle**: เมื่อดาวจรคู่มิตร N คู่ activate พร้อมกัน → โชคใหญ่
 **PASS**: กฎที่ extract ต้อง score CH036 ว่า positive outcome ได้
 **FAIL**: ถ้ากฎระบุเสาร์+อังคาร → โชค (ผิด — เป็นคู่ศัตรู)
+
+---
+## Claude-derive pattern (process lesson, 2026-05-25)
+
+**When skeleton _note says "Claude ไม่เติม" but derivation rule exists:**
+
+หลายครั้ง skeleton notes ใน v3/master_dict_meanings.json เขียนไว้ตอนที่ Claude ยังไม่มี method ชัด. ตอนนี้ถ้ามี **derivation rule ที่ traceable**, Claude ทำได้โดยไม่ถือเป็น hallucination:
+
+**Test แบบ 4 ข้อ ก่อน fill:**
+1. ✅ มี source structural ใน BIBLE memory ที่ verifiable ไหม (เช่น SIGNS.md, PLANETS.md)?
+2. ✅ มี derivation rule ที่อธิบายเป็น text ได้ใน 1 ประโยคไหม?
+3. ✅ Trace ได้ว่าค่าแต่ละ field มาจากไหน?
+4. ✅ Status field flag ว่า "Claude-derived, user refines" + `_derivation_method` documented?
+
+ถ้าครบ 4 → fill ได้. ถ้าขาดข้อใด → skip, ถาม user หรือ pend.
+
+**ตัวอย่าง applied นี้ session:**
+- signs.represents/keywords ← derived จาก ruler.represents + element semantics + nature modifier
+- house_rulers_by_lagna ← derived จาก signs[].ruler_planet_id (mechanical)
+- lagna_concepts ← extracted จาก workers/chapter_texts.json ch013 (text → structured)
+- planet_positions ← compiled จาก SIGNS.md (BIBLE memory ground-truth)
+
+**ตัวอย่างที่ NOT applied (ยังถาม user):**
+- ch004-006 deeper planet meanings — text มีแต่ Claude ต้อง careful วิเคราะห์
+- KB extraction ใหม่ — ต้องการ LLM ที่ Claude ไม่ได้ใช้ตรง (sandbox)
+- Wording selection policy — business decision
+
+**กฎเสริม:** ถ้า derive แล้วเปลี่ยน status จาก "user refines" → "verified" ต้องมี user confirm (ไม่ self-promote)

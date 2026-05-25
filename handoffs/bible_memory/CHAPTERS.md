@@ -46,3 +46,30 @@ Queue: `workers/claude_extraction_queue.json` → pending=0, done=102
 - ch056-ch075: ส่วนใหญ่ Q&A สั้น ซ้ำ rules เดิม density ต่ำ
 - ch076-ch099: สมพงศ์ + เสาร์จรทับลัคนา — มีประโยชน์สูง
 - ch101: case study ยืนยัน principles สำคัญ (กุมลัคนา priority, 4 ดาวจรร้าย)
+
+---
+## Raw text access (appended 2026-05-25)
+
+ทุก chapter content readable via `workers/chapter_texts.json`:
+```bash
+node -e "const d=require('./workers/chapter_texts.json'); console.log(d['ch013'])"
+```
+- Object keys = chapter IDs ("ch000"..."ch101")
+- Section sub-numbering: "13.1", "13.2", etc. (find via indexOf)
+- **ใช้ก่อนถาม user เสมอ** — ก่อน 18:30 2026-05-25 Claude คิดว่าต้อง Q&A กับ user สำหรับ ch013
+
+## Extraction depth notes (appended 2026-05-25)
+
+Chapters used by master_dict so far:
+| Chapter | Used by | Status |
+|---|---|---|
+| ch001 | signs (structural via SIGNS.md) | ✅ |
+| ch004-ch008 | planet_positions, planet_pairs | ✅ |
+| ch013 | lagna_concepts (full 13.1-13.3 extraction) | ✅ |
+| ch038 | special_configs.kum_lakkana_priority (R248, partial) | 🟡 partial |
+| ch101 | special_configs (4-evil + mahachakra cases) | 🟡 partial |
+
+Pending deeper extraction (future sessions, sandbox-feasible):
+- ch004-006: deeper planet trait amplification
+- ch038: kum_lakkana per-aspect expansion (ตรีโกณ/โยค/เล็ง variants per planet)
+- ch026: transit rules per-planet (52K chars, dense)

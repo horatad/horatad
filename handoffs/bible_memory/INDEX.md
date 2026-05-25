@@ -113,3 +113,35 @@ Confidence: สูง / กลาง / ต่ำ
 - Trigger: พบ pattern ใหม่ / process lesson / KB gap / ยืนยัน/หักล้าง assumption
 - Format: `## YYYY-MM-DDTHH:MM — [Session/Topic]`
 - ห้ามแก้ entry เก่า — ถ้า outdated ให้เพิ่ม entry ใหม่ว่า "supersedes YYYY-MM-DD"
+
+---
+
+## Repo resources (appended 2026-05-25 — Claude must check before asking user)
+
+**Raw chapter text:**
+- `workers/chapter_texts.json` — มี ch000-ch101+ raw content (object keys = chapter IDs)
+- ใช้: `node -e "console.log(require('./workers/chapter_texts.json')['ch013'])"`
+- Section numbering: บทใช้ "13.1", "13.2", "13.3" → `indexOf("13.2")` หา section
+- **กฎ:** ก่อนถาม user เรื่อง chapter content → check ไฟล์นี้ก่อนเสมอ
+
+**KB data files:**
+- `v3/kb_v24-3.json` (290 rules, baseline)
+- `v3/kb_v24-3_fp.json` (with fingerprints, schema 2.0-fingerprint)
+- `v3/kb_merged.json` (after merge, schema 2.0-merged)
+- `v3/kb_v24-final.json` (after apply, schema 2.0-final — created when user reviews)
+
+**Master dict:**
+- `v3/master_dict_meanings.json` v1.4.0-complete — domain vocabulary + relationships
+- 11 sections: planets/houses/qualities/domains/aspect_strengths/signs/planet_positions/planet_pairs/lagna_concepts/house_rulers_by_lagna/special_configs
+
+**Tools (browser):**
+- `tools/kb_extract.html` — user runs Groq/Typhoon extractions
+- `tools/kb_review.html` — user reviews CONFLICT/INTERNAL_DUPE
+- URL: `https://horatad.github.io/horatad/tools/<filename>.html`
+
+**Pipeline scripts (Node):**
+- `workers/kb_add_fingerprint.mjs` — migrate to v2 schema
+- `workers/kb_merge_by_fingerprint.mjs` — triangulate sources
+- `workers/kb_deep_parse.mjs` — extract lagna_relation/inline fields
+- `workers/kb_apply_review_decisions.mjs` — apply user decisions → final KB
+- `workers/kb_wording_prompt_poc.mjs` — KB equalizer test prompt generator
