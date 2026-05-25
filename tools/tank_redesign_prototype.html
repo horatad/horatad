@@ -181,6 +181,11 @@
       <input id="fProv" type="text" disabled placeholder="-">
     </div>
   </div>
+  <!-- Tag selector — เห็นเฉพาะตอน input mode -->
+  <div id="fTagsRow" style="display:none; margin-top: 8px;">
+    <label style="font-size:12px; color:var(--muted); display:block; margin-bottom:4px;">🏷️ แท็ก (เลือกหลายได้)</label>
+    <div class="row" id="fTagsList" style="flex-wrap:wrap; gap:4px;"></div>
+  </div>
   <div class="row" style="margin-top: 10px; justify-content: space-between;">
     <div class="row" style="gap: 6px;" id="formActions">
       <button onclick="openLoadPicker()">📂 เลือกดวง</button>
@@ -263,6 +268,7 @@
       <div class="kind-tile" onclick="switchSource('qr')" id="srcQr"><div class="icon">📤</div><div class="label">QR</div></div>
       <div class="kind-tile" onclick="switchSource('julian')" id="srcJulian"><div class="icon">⭐</div><div class="label">Julian</div></div>
     </div>
+    <div class="row" id="loadFilters" style="flex-wrap:wrap; gap:6px; margin-bottom:8px; display:none;"></div>
     <div class="picker-list" id="loadList"></div>
   </div>
 </div>
@@ -311,18 +317,23 @@
 // ============================================================
 // MOCK DATA — เลียนสภาพจริง ไม่ต้อง localStorage
 // ============================================================
+const TAG_OPTIONS = {
+  private: ['ตัวเอง','ครอบครัว','เพื่อน','คนรู้จัก','ทดลอง','อื่น ๆ'],
+  julian:  ['ราชวงศ์','นักการเมือง','ดารา','นักกีฬา','นักวิทยาศาสตร์','ศิลปิน','อื่น ๆ'],
+};
+
 const mockPrivate = [
-  { id: 'p1', name: 'สมชาย (ฉัน)',  gender: 'ชาย', d:15, m:3, y:2534, t:'09:30', prov:'กรุงเทพมหานคร' },
-  { id: 'p2', name: 'คุณพ่อ',       gender: 'ชาย', d:5,  m:10, y:2502, t:'14:00', prov:'เชียงใหม่' },
-  { id: 'p3', name: 'คู่ครอง',      gender: 'หญิง', d:22, m:7, y:2535, t:'06:15', prov:'ขอนแก่น' },
+  { id: 'p1', name: 'สมชาย (ฉัน)',  gender: 'ชาย', d:15, m:3, y:2534, t:'09:30', prov:'กรุงเทพมหานคร', tags:['ตัวเอง'] },
+  { id: 'p2', name: 'คุณพ่อ',       gender: 'ชาย', d:5,  m:10, y:2502, t:'14:00', prov:'เชียงใหม่', tags:['ครอบครัว'] },
+  { id: 'p3', name: 'คู่ครอง',      gender: 'หญิง', d:22, m:7, y:2535, t:'06:15', prov:'ขอนแก่น', tags:['ครอบครัว'] },
 ];
 const mockQr = [
-  { id: 'q1', name: 'เพื่อนสมร',   gender: 'หญิง', d:1, m:1, y:2540, t:'12:00', prov:'นครราชสีมา' },
+  { id: 'q1', name: 'เพื่อนสมร',   gender: 'หญิง', d:1, m:1, y:2540, t:'12:00', prov:'นครราชสีมา', tags:[] },
 ];
 const mockJulian = [
-  { id: 'j1', name: 'รัชกาลที่ ๙', gender: 'ชาย', d:5, m:12, y:2470, t:'18:45', prov:'(ต่างประเทศ)', accuracy:'C', srcUrl:'wikidata:Q47481' },
-  { id: 'j2', name: 'อัลเบิร์ต ไอน์สไตน์', gender: 'ชาย', d:14, m:3, y:2422, t:'11:30', prov:'(ต่างประเทศ)', accuracy:'C', srcUrl:'astrotheme.com/einstein' },
-  { id: 'j3', name: 'สตีฟ จอบส์', gender: 'ชาย', d:24, m:2, y:2498, t:'19:15', prov:'(ต่างประเทศ)', accuracy:'D', srcUrl:'wikidata:Q19837' },
+  { id: 'j1', name: 'รัชกาลที่ ๙', gender: 'ชาย', d:5, m:12, y:2470, t:'18:45', prov:'(ต่างประเทศ)', accuracy:'C', srcUrl:'wikidata:Q47481', tags:['ราชวงศ์'] },
+  { id: 'j2', name: 'อัลเบิร์ต ไอน์สไตน์', gender: 'ชาย', d:14, m:3, y:2422, t:'11:30', prov:'(ต่างประเทศ)', accuracy:'C', srcUrl:'astrotheme.com/einstein', tags:['นักวิทยาศาสตร์'] },
+  { id: 'j3', name: 'สตีฟ จอบส์', gender: 'ชาย', d:24, m:2, y:2498, t:'19:15', prov:'(ต่างประเทศ)', accuracy:'D', srcUrl:'wikidata:Q19837', tags:['นักการเมือง'] },
 ];
 // mock receivedFrom สำหรับ QR
 mockQr[0].receivedFrom = 'คุณป้าน้อย';
@@ -357,6 +368,7 @@ let curSrc = 'private';
 let curKind = 'person';
 let labelMode = 'sign';     // 'sign' | 'house' | 'off'
 let momentMode = 'cal';     // 'cal' | 'search'
+let activeTags = new Set(); // Set<string> — filter tags (OR)
 
 // ============================================================
 // HELPERS
@@ -559,21 +571,60 @@ function openLoadPicker() {
 
 function switchSource(src) {
   curSrc = src;
+  activeTags.clear();  // reset filter when switching source
   ['Private','Qr','Julian'].forEach(s => {
     document.getElementById('src'+s).classList.toggle('active', src === s.toLowerCase());
   });
+  renderSourceList();
+}
+
+function toggleTag(tag) {
+  if (activeTags.has(tag)) activeTags.delete(tag);
+  else activeTags.add(tag);
+  renderSourceList();
+}
+
+function renderSourceList() {
+  const src = curSrc;
   const list = document.getElementById('loadList');
+  const filterArea = document.getElementById('loadFilters');
   const data = getSource(src);
-  if (!data.length) {
-    list.innerHTML = '<div class="empty-hint">ยังไม่มีดวงใน '+src+'</div>';
+  // tag filter chips (เฉพาะ Private/Julian)
+  const tagPool = TAG_OPTIONS[src] || [];
+  if (tagPool.length && data.length) {
+    filterArea.style.display = 'flex';
+    filterArea.innerHTML = `
+      <span style="font-size:11px; color:var(--muted); align-self:center;">🏷️</span>
+      ${tagPool.map(t => `
+        <span class="chip ${activeTags.has(t)?'history':''}" onclick="toggleTag('${t}')" style="font-size:12px; padding:4px 8px;">${t}</span>
+      `).join('')}
+      ${activeTags.size ? `<button onclick="clearTags()" style="padding:4px 8px; font-size:12px;">ล้าง</button>` : ''}
+    `;
+  } else {
+    filterArea.style.display = 'none';
+  }
+  // filter data
+  const filtered = activeTags.size
+    ? data.filter(p => (p.tags||[]).some(t => activeTags.has(t)))
+    : data;
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-hint">${activeTags.size ? 'ไม่มีดวงที่ตรง tag ที่เลือก' : `ยังไม่มีดวงใน ${src}`}</div>`;
     return;
   }
-  list.innerHTML = data.map(p => `
-    <div class="picker-item" onclick='loadTank1(${JSON.stringify(p).replace(/'/g, "&apos;")}, "${src}")'>
-      <div><strong>${p.name}</strong> <span class="meta">${p.gender}</span></div>
-      <div class="meta">${fmtDate(p)} · ${p.t}</div>
-    </div>
-  `).join('');
+  list.innerHTML = filtered.map(p => {
+    const tagBadges = (p.tags||[]).map(t => `<span style="font-size:10px; padding:1px 6px; background:var(--accent-soft); border-radius:8px; margin-left:3px;">${t}</span>`).join('');
+    return `
+      <div class="picker-item" onclick='loadTank1(${JSON.stringify(p).replace(/'/g, "&apos;")}, "${src}")'>
+        <div><strong>${p.name}</strong> <span class="meta">${p.gender}</span>${tagBadges}</div>
+        <div class="meta">${fmtDate(p)} · ${p.t}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function clearTags() {
+  activeTags.clear();
+  renderSourceList();
 }
 
 function loadTank1(p, source) {
@@ -595,16 +646,34 @@ function enterInputMode() {
   // "✏️ ใส่ข้อมูล" — ล้างฟอร์ม + unlock + เริ่มกรอกใหม่
   // ตามกฎ user: ฟอร์มเป็น display-only เว้นแต่กดปุ่มนี้
   editMode = true;
-  editDraft = { name:'', gender:'ชาย', d:'', m:'', y:'', t:'', prov:'' };
+  editDraft = { name:'', gender:'ชาย', d:'', m:'', y:'', t:'', prov:'', tags: new Set() };
   document.getElementById('fDate').value = '';
   document.getElementById('fTime').value = '';
   document.getElementById('fProv').value = '';
   // ถ้ามี slot1 อยู่ — แสดงปุ่ม "📋 คัดลอกค่าเดิม" ให้ user เลือก paste ค่าเดิมถ้าต้องการ
   document.getElementById('btnCopyCur').style.display = slot1 ? 'inline-block' : 'none';
+  // แสดง tag selector + render chips
+  document.getElementById('fTagsRow').style.display = 'block';
+  renderTagSelector();
   log('เข้า input mode — ล้างฟอร์มแล้ว');
   renderAll();
-  // focus ฟิลด์แรก เพื่อ user เริ่มกรอกทันที
   setTimeout(() => document.getElementById('fDate').focus(), 50);
+}
+
+function renderTagSelector() {
+  const list = document.getElementById('fTagsList');
+  const tags = TAG_OPTIONS.private;  // ดวงที่ user กรอกเอง = Private → ใช้ tag pool ของ Private
+  list.innerHTML = tags.map(t => {
+    const on = editDraft.tags && editDraft.tags.has(t);
+    return `<span class="chip ${on?'history':''}" onclick="toggleDraftTag('${t}')" style="font-size:12px; padding:4px 8px;">${t}</span>`;
+  }).join('');
+}
+
+function toggleDraftTag(t) {
+  if (!editDraft.tags) editDraft.tags = new Set();
+  if (editDraft.tags.has(t)) editDraft.tags.delete(t);
+  else editDraft.tags.add(t);
+  renderTagSelector();
 }
 
 function copyCurrentToForm() {
@@ -619,7 +688,8 @@ function copyCurrentToForm() {
 function cancelEdit() {
   editMode = false;
   editDraft = null;
-  log('ยกเลิก edit');
+  document.getElementById('fTagsRow').style.display = 'none';
+  log('ยกเลิก input mode');
   renderAll();
 }
 
@@ -658,9 +728,10 @@ function saveCopyToPrivate() {
 
 function saveEdit() {
   editMode = false;
-  // Mock save — ไม่ parse จริง
+  document.getElementById('fTagsRow').style.display = 'none';
   const dateStr = document.getElementById('fDate').value || '?/?/?';
   const [d,m,y] = dateStr.split('/').map(s => parseInt(s) || 0);
+  const tagsArr = editDraft && editDraft.tags ? [...editDraft.tags] : [];
   const newP = {
     id: 'p' + Date.now(),
     name: 'ดวงใหม่ ' + new Date().toLocaleTimeString(),
@@ -668,10 +739,11 @@ function saveEdit() {
     d: d||1, m: m||1, y: y||2569,
     t: document.getElementById('fTime').value || '12:00',
     prov: document.getElementById('fProv').value || 'กรุงเทพมหานคร',
+    tags: tagsArr,
   };
   slot1 = { ...newP, source: 'form', kind: 'person' };
-  log(`บันทึก Tank1 ใหม่ → ${slot1.name}`, true);
-  mockPrivate.push(newP);  // mock — เพิ่มเข้า Private
+  log(`บันทึก Tank1 ใหม่ → ${slot1.name} [tags: ${tagsArr.join(',') || '—'}]`, true);
+  mockPrivate.push(newP);
   renderAll();
 }
 
