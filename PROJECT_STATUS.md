@@ -99,10 +99,10 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 **Priority:** distinct birthdate (jd) สำคัญกว่า total count | birth time = optional (validate หน้างานด้วย accuracy A-F)
 
-### สถานะ (2026-05-23)
+### สถานะ (2026-05-25)
 - Schema: ✅ + `accuracy` field A/B/C/D/F | JD: ✅
-- **Records: 58,428 / 100,000 (58.4%)** — เพิ่มจาก 2 workflow runs
-- Accuracy distribution: A=0 B=0 C=599 D=57,819 F=10
+- **Records: 63,804 / 100,000 (63.8%)** — เพิ่มจาก workflow runs
+- Accuracy distribution: A=0 B=0 C=616 D=63,168 F=10 ⚠️ **รอ backfill ลด C → D ที่ควรเป็น**
 - Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
 - Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
 - Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
@@ -110,6 +110,7 @@
 - Wikipedia TH enrichment: ✅ +112 records (เจอจังหวัด 98%, เวลา 10/112) — first Thai time!
 - Tier 1 Thai time_utc: 0 → **11 records** ✅
 - **Manual seed input tool**: `tools/julian_seed_input.html` + workflow merge step (รอ user เริ่มกรอก)
+- **🆕 Backfill workflow**: `.github/workflows/julian_backfill.yml` พร้อม manual trigger
 
 ### Accuracy grades
 - **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user เติมผ่าน tool)
@@ -131,15 +132,16 @@
 
 ### Next (Claude ทำได้)
 - [ ] Phase 3 validate.mjs — รอ raw buckets accumulate (post Phase 4 GUARD)
-- [ ] Backfill 602 C-grade records — re-scrape Wikidata get precision → re-grade
+- [x] ~~Backfill 602 C-grade records~~ ✅ script + workflow ready → ⭐ รอ user trigger
 
 ### Blocked (รอ user/อื่น)
+- [ ] ⭐ **trigger `JULIAN Backfill Accuracy` workflow** (dry-run → apply, 2 clicks)
 - [ ] 🔴 **Phase 4** — GUARD session patch `.github/workflows/julian_sync.yml` ให้ commit raw bucket files
 - [ ] ⭐ **เปิด `tools/julian_seed_input.html`** กรอก records accuracy A/B/C
 - [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ" (schema ไม่เปลี่ยน — ควรใช้ได้)
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260524_v1.md`
+`handoffs/JULIAN_20260525_v1.md`
 
 ---
 
