@@ -1,6 +1,6 @@
-// HORATAD:SCRIPT:3.3.32
-// Version 3.3.32 | 2026-05-25
-// Changes: [V3.3.32] feat(about): เพิ่ม music player เพลงพระราชนิพนธ์ เกาะในฝัน ในหน้าเกี่ยวกับ
+// HORATAD:SCRIPT:3.3.33
+// Version 3.3.33 | 2026-05-25
+// Changes: [V3.3.33] fix(bgm): stop about/lunar BGM ไม่ซ้อนทับกัน + stop lunar เมื่อออก tab
 // Changes: [V3.3.28] fix(nok): wire voiceschanged → refreshSpeakBtn, ปุ่มตรวจสอบใหม่ใน TTS guide
 // Changes: [V3.3.27] feat(voice-chat): voice โต้ตอบ real-time — STT+Typhoon+TTS, push-to-talk, history 5 turns
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
@@ -22,7 +22,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.32';
+const APP_VERSION='3.3.33';;
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -191,7 +191,7 @@ function switchTab(n){
     if(!_donateInitialized){_updateDonateQR(_donateAmount);_donateInitialized=true;}
     startAboutBgm();
   }
-  if(n!==2)stopAboutBgm();
+  if(n!==2){stopAboutBgm();stopLunarBgm();}
   // V2.1.9: hide H1 logo when About active
   document.body.classList.toggle('about-active',n===2);
   document.querySelectorAll('.tab-content').forEach((el,i)=>el.classList.toggle('hidden',i!==n));
@@ -3583,17 +3583,22 @@ function hideContactPage(){
   document.getElementById('about-contact').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
 }
+function stopLunarBgm(){
+  const a=document.getElementById('lunar-bgm');
+  if(a&&!a.paused){a.pause();a.currentTime=0;}
+}
 function showLunarPage(){
+  stopAboutBgm();
   document.getElementById('about-main').classList.add('hidden');
   document.getElementById('about-lunar').classList.remove('hidden');
   const a=document.getElementById('lunar-bgm');
   if(a)a.play().catch(()=>{});
 }
 function hideLunarPage(){
+  stopLunarBgm();
   document.getElementById('about-lunar').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
-  const a=document.getElementById('lunar-bgm');
-  if(a&&!a.paused){a.pause();a.currentTime=0;}
+  startAboutBgm();
 }
 // ── V2.2.17: Rule Matching ───────────────────────────────
 function _matchRules(natal,transit){
