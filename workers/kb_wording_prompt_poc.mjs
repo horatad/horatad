@@ -78,24 +78,49 @@ const planetToHouse = chart.planets || {};
 function ruleScore(rule) {
   const e = rule.elements || {};
   const pids = e.planet_ids || (e.planet_id ? [e.planet_id] : []);
+  const type = e.type || '';
+  const ruleUse = rule.rule_use || '';
   let score = 0;
 
-  // planet present in chart
+  // ---------- planet presence (mild signal, capped) ----------
+  // Cap planet-presence bonus at 6 so a rule listing all-10 planets ≠ unbeatable.
+  let presenceMatches = 0;
   for (const pid of pids) {
-    if (chartPlanetSet.has(String(pid))) score += 2;
+    if (chartPlanetSet.has(String(pid))) presenceMatches++;
   }
+  score += Math.min(presenceMatches * 2, 6);
 
-  // planet+house pair match
+  // ---------- planet+house pair match (strong signal) ----------
   const houseField = e.house_id || (e.house_ids && e.house_ids[0]) || null;
   for (const pid of pids) {
     if (chartPlanetSet.has(String(pid)) && houseField && +planetToHouse[pid] === +houseField) {
-      score += 5;   // strong signal
+      score += 8;   // strong: planet IS in that house
     }
   }
 
-  // sign matches sign_id? — we'd need planet→sign mapping in chart. skip for now (chart is house-only)
+  // ---------- planet+lagna-relation match (strong signal) ----------
+  // KUM_LAKKANA = planet conjuncts ลัคนา (= same house as lagna)
+  const lagnaRel = e.lagna_relation || null;
+  if (lagnaRel === 'KUM_LAKKANA') {
+    for (const pid of pids) {
+      if (chartPlanetSet.has(String(pid)) && +planetToHouse[pid] === +chart.lagna) score += 7;
+    }
+  }
 
-  // lagna rules
+  // ---------- type-based weighting ----------
+  // NATAL_ATOMIC / NATAL_COMBINATION / TRANSIT_NATAL are concrete predictions
+  // REFERENCE / DEFINITION / PRINCIPLE are background — useful but shouldn't dominate
+  if (type === 'NATAL_ATOMIC') score += 3;
+  else if (type === 'NATAL_COMBINATION') score += 2;
+  else if (type === 'TRANSIT_NATAL') score += 1;
+  else if (type === 'REFERENCE' || type === 'DEFINITION') score -= 5;
+  else if (type === 'PRINCIPLE') score -= 2;
+
+  // rule_use redundancy (kept for backward-compat)
+  if (ruleUse === 'reference') score -= 3;
+  if (ruleUse === 'match') score += 1;
+
+  // ---------- lagna rules ----------
   if (e.context === 'lagna' || (e.contexts || []).includes('lagna')) score += 1;
 
   return score;

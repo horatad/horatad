@@ -451,3 +451,93 @@ v3/kb_v24-final.json (schema 2.0-final, production-ready flags)
 Blocking item to ship: user runs Groq + Typhoon extractions to populate
 kb_v24-1_fp.json + kb_v24-2_fp.json — without 2nd/3rd source, every rule is
 UNIQUE and triangulation has no signal.
+
+## 2026-05-25T16:00 — POC scoring v2 + planet_positions complete + ID schema plan
+
+### POC scoring v2 — penalize REFERENCE rules
+
+`workers/kb_wording_prompt_poc.mjs` ruleScore() updated:
+
+| Signal | Old score | New score |
+|---|---|---|
+| Planet in chart | +2 each (uncapped) | +2 each, **capped at +6** total |
+| Planet+house pair match | +5 | +8 |
+| KUM_LAKKANA + planet in lagna house | (not handled) | +7 |
+| type=NATAL_ATOMIC | 0 | +3 |
+| type=NATAL_COMBINATION | 0 | +2 |
+| type=TRANSIT_NATAL | 0 | +1 |
+| type=REFERENCE / DEFINITION | 0 | **-5** |
+| type=PRINCIPLE | 0 | -2 |
+| rule_use=reference | 0 | -3 |
+| rule_use=match | 0 | +1 |
+| context=lagna | +1 | +1 |
+
+**Effect on default chart (อังคาร in lagna):**
+- Old top 5: all REFERENCE rules (R003, R007, R048, R248, R025) — generic
+- New top 5: R248 KUM_LAKKANA summary, R013/R117 อังคารกุมลัคนา specific, R164/R165 with quality conditions
+- Output prompt now actionable for KB equalizer test (specific position rules dominate)
+
+### Master dict planet_positions — complete for 8 main planets
+
+Filled all 8 planets (1-8) with full positional data from SIGNS.md:
+- `uchcha`, `nicha`, `kaset`, `prakaset`, `mahachak`
+- `uchajavilas`, `uchajaphimukh` (uchcha-neighbor signs, ≈60% strength)
+- Each position has both `sign_id` (master_dict 1-12 scheme) and where applicable `canonical_sign_id` (0-11)
+- เกตุ(9) + มฤตยู(10) explicitly null with notes — สุริยยาตร์ไม่ใช้ position concepts สำหรับ 2 ดาวนี้
+
+`rajayok` field left empty for all — ราชาโชค คือ configuration (specific aspect+placement combo) ไม่ใช่ single-position. ดูใน `special_configs` แทน.
+
+### ⚠ ID schema mismatch — TWO incompatible schemes documented
+
+**Sign IDs:**
+- master_dict.signs: keys 1-12 (1=เมษ, 12=มีน)
+- KB canonical (kb_v24-3.json, SIGNS.md, ch001 quote): 0-11 (0=เมษ, 11=มีน)
+- Bridge: each entry has `canonical_sign_id` field
+
+**Planet IDs (worse — same number = different planet):**
+- master_dict.planet_positions / master_dict.planets: keys 1-10
+  - 9 = เกตุ, 10 = มฤตยู
+- KB canonical (kb_v24-3.json, PLANETS.md): 0-9
+  - 0 = เกตุ, 9 = มฤตยู
+- Number "9" means เกตุ in master_dict but มฤตยู in KB — easy bug source
+- Bridge: each entry has `canonical_planet_id` field (added this session)
+
+### Schema migration plan (deferred until major bump)
+
+**Recommendation:** unify to KB canonical (0-11 for signs, 0-9 for planets) on next major version.
+
+**Migration steps (do not execute now):**
+1. Add `_meta.id_scheme: "canonical-zero-based"` to master_dict_meanings.json
+2. Rewrite signs keys: `"1"` → `"0"`, ..., `"12"` → `"11"`
+3. Rewrite planet_positions/planets keys: `"1"` → `"1"` (no change for 1-8), but `"9"` → `"0"` (เกตุ) and `"10"` → `"9"` (มฤตยู)
+4. Search codebase for consumers:
+   ```bash
+   grep -rn "master_dict_meanings\|planet_positions\|signs\[" --include="*.js" --include="*.mjs"
+   ```
+5. Update each consumer with `_meta.id_scheme` check + key offset logic
+6. Bump master_dict_meanings.json version to 2.0.0
+7. Remove `canonical_*_id` bridge fields (becomes redundant)
+
+**Why defer:**
+- Engine.js (HORATAD scope) currently uses kb_v24-3 directly with canonical IDs — unaffected
+- master_dict_meanings.json is mostly read by KB tooling + future LLM context — not in critical render path yet
+- Triangulation pipeline not blocked by this
+- Bridge fields (`canonical_sign_id`, `canonical_planet_id`) make current usage safe
+
+**Risk of NOT migrating:**
+- Every new consumer must remember to add +1 / -1 offsets
+- Higher bug surface area as code grows
+- Confusing for new contributors
+
+**Migration trigger conditions:**
+- master_dict reaches "complete" (all 6 sections filled + production usage)
+- OR engine.js starts consuming master_dict directly
+- OR third consumer (after KB tooling + LLM prompts) needs it
+
+### Session decisions taken (not requiring user input)
+
+1. `rajayok` field stays empty per planet — moved to `special_configs` semantically
+2. `uchajavilas` + `uchajaphimukh` added per planet — derivable but inline-included for ease of access
+3. เกตุ + มฤตยู uchcha/nicha set to `null` (not empty object) — semantic difference: "no concept exists" vs "concept exists but unknown"
+4. `mahachak` entries include `with_partner` string for human readability — pure data would be `partner_planet_id` + `partner_sign_id` but verbose string is easier to verify
+5. `kaset` for เสาร์ uses `"rank": "secondary"` on the 2nd entry (กุมภ์) — marks the disputed/lesser rulership per SIGNS.md
