@@ -101,6 +101,7 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 | `horatad_v3_db2` | QR tank persons | array |
 | `horatad_v3_db3` | JULIAN tank persons | array |
 | `horatad_pin_unlocked` | PIN state (session) | bool |
+| `v3_speak_rate` | TTS rate 1.0/1.25/1.5/1.75 (V3.3.26) | number |
 
 **กฎ**: save index ไม่ใช่ object สำหรับ synastry/event (db backing อยู่แล้ว) — transitCursor เป็น exception เพราะไม่มี db
 
@@ -165,3 +166,4 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 | วันที่ | trigger | สิ่งที่เรียนรู้ |
 |---|---|---|
 | 2026-05-23 | สร้างไฟล์ | architecture post-Step0, module map (tier 1-5), state machine compareMode 0-3, localStorage 7 keys, bugs (XSS/cursor/SW/numpad), platform quirks (iOS/Android/Desktop), security (PIN bypass + CSP Report-Only), WHY LOG |
+| 2026-05-25 | V3.3.25-31 doc drift recap | (1) **handoff drift = silent failure** — 8 versions ไม่ update → session ใหม่อ่าน "autonomous หมด" ทั้งที่ feature ใหม่ 7 ตัว → ตัดสินใจผิดทั้งหมด. กฎใหม่: PROJECT_STATUS.md version line + ✅ DONE bullet ต้อง update ทุก commit (cheap, 1 บรรทัด), handoff file ทำตอนจบ session. (2) **kb_v24-3 wire local only** — `v3Typhoon()` ยังใช้ kb.json V2.3 (ต้องการ r.p field) → 2 paths คู่กันไม่ break. ถ้า migrate full ต้อง add `r.p` field ใน kb_v24-3 ก่อน. (3) **voice-chat conversational** — `send_chat(messages[])` history 5 + system prompt (ลัคนา+ชื่อ) + max_tokens=400 เพื่อ reply สั้นพอ TTS speak. (4) **BGM auto-play risk** — iOS Safari autoplay policy block ถ้าไม่มี user gesture ก่อน — switchTab(2) คือ tap = gesture จึงน่าจะผ่าน แต่ต้องทดสอบจริง. (5) **localStorage key ใหม่**: `v3_speak_rate` |

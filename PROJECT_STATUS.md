@@ -5,37 +5,39 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.24 | **URL:** horatad.com
+**Version:** V3.3.31 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
 - 3-tank memory: Private / QR / JULIAN ✅ (V3.3.16-17)
-- Chart redesign M1-M6 ✅ ครบทุก milestone (V3.3.18-22):
-  - M1: state vars _compareMode/_outerDisplay/_transitCursor/_transitUnit + synastry/eventChart/transit buffers
-  - M2: T1/T2 buttons ใน chart-nav-header (btn-t1/btn-t2) + cycleCompareMode/cycleOuterDisplay
-  - M3: transit unit popup (fixed+planet) + sign-change algorithm + cursor helpers
-  - M4: rename natal1→natal / natal2→synastry ทั้งไฟล์ (V3.3.20)
-  - M5: eventChart full support + cycleMemory _eventIdx + _updateNavHeader compareMode-aware (V3.3.21)
-  - M6: localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (V3.3.22)
+- Chart redesign M1-M6 ✅ ครบ (V3.3.18-22)
+- **V3.3.24** ✅ KB_RULES extract — script.js 393KB→199KB (-49%) async load
+- **V3.3.25** ✅ wire matchRulesV24 + kb_v24-3 (290 rules) เข้าปุ่ม "ดูกฎ" V3 tab local
+- **V3.3.26** ✅ speak-rate ปุ่ม cycle 1×/1.25×/1.5×/1.75× + save localStorage
+- **V3.3.27** ✅ voice-chat real-time — push-to-talk + Typhoon send_chat + TTS reply
+- **V3.3.28** ✅ TTS voice detection — voiceschanged refresh ปุ่ม + ปุ่มตรวจสอบใหม่ใน guide
+- **V3.3.29** ✅ music player "เกาะในฝัน" หน้าเกี่ยวกับ (clip 47s) + cache offline
+- **V3.3.30** ✅ TTS guide เพิ่ม Windows + macOS sections (ไม่ใช่ Android-only)
+- **V3.3.31** ✅ BGM auto-play เมื่อเข้าหน้าเกี่ยวกับ + auto-stop เมื่อออก (loop 45s)
 
 ### Next (Claude ทำได้)
-- [x] ~~Phase 2 Step 0 — KB_RULES extract~~ ✅ V3.3.24 — script.js 393KB→199KB (-49%)
-- [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1
-- [ ] Phase 2 Step 2 — db/ Tier 2 (io/tank/core/natal/events)
-- [ ] PROVINCES extract (5KB, easy pattern after KB)
+- [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1 — ⚠️ รอ CSP enforce
+- [ ] Phase 2 Step 2 — db/ Tier 2 (io/tank/core/natal/events) — รอ Step 1
+- [ ] PROVINCES extract (5KB) — DEFERRED hot calc path
 - [ ] julian_all.json move (รอ user เลือก target)
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.24 บนมือถือ — KB async load (กดทำนายปกติทำงานไหม) + Lighthouse re-run (คาดว่า TBT ลดลงเพราะ script.js -49%)
-- [ ] [ทดลองใช้] ทดสอบ V3.3.22 บนมือถือ — M6 persist (refresh แล้ว transit cursor/synastry/event idx ยังเดิม) + nav header compareMode===3
-- [ ] [ทดลองใช้] ทดสอบ V3.3.21 บนมือถือ — T1/T2 buttons + transit unit popup + eventChart cycling
-- [ ] [ทดลองใช้] ทดสอบ NOK TTS guide บน Android Chrome
+- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.31 บนมือถือ — BGM auto-play หน้าเกี่ยวกับ (iOS autoplay policy risk)
+- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.27 voice-chat — push-to-talk flow ครบ + TTS reply
+- [ ] [ทดลองใช้] ทดสอบ V3.3.25-30 features (matchRulesV24 / speak-rate / TTS detection / music player / TTS guide)
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker → **GUARD T-02 owns rate-limit policy**
+- [ ] [ทดลองใช้] Lighthouse mobile + desktop V3.3.31 — `docs/admin/USER_TASKS_lighthouse_csp_2026-05-24.md` Part 1
+- [ ] [ทดลองใช้] CSP violations 1 wk → Phase 2 P2-A enforce (deadline ~2026-05-30)
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B/C → **GUARD R-07 owner**
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260524_v1.md`
+`handoffs/HORATAD_20260525_v1.md`
 
 ---
 
@@ -228,7 +230,7 @@
 
 | Project | Version | ไฟล์หลัก | สถานะ |
 |---|---|---|---|
-| Horatad PWA | HORATAD V3.3.24 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 ✅ + Phase2 Step0 ✅ (KB extract -49%) |
+| Horatad PWA | HORATAD V3.3.31 | script.js, v3/*, index.html | 🟡 Pre-launch — M1-M6 ✅ + KB extract -49% + voice-chat + BGM |
 | Wording Engine | BIBLE KB V2.3.0 | v3/kb.json, v3/interpretation.js, tools/kb_reviewer.html | 🟢 Active — รอ review |
 | Empirical DB | JULIAN 53,148/100,000 | workers/julian_scraper.mjs, workers/julian_seed_merge.mjs, tools/julian_seed_input.html | 🟢 Automation + manual seed tool ready |
 | Voice TTS | NOK Phase 1 | v3/tts.js (in HORATAD frontend) | 🟢 Deployed — รอ mobile test |
@@ -244,4 +246,4 @@
 3. Cross-project request → Claude บันทึกใน handoff project ปลายทาง ไม่ทำใน session นี้
 
 ---
-*อัปเดตล่าสุด: 2026-05-23 BIG | V3.3.24 | Memory files ครบทุก project (HORATAD/BIBLE/JULIAN/NOK) | clean-branch pattern + session scope enforcement | handoffs/BIG_20260523_v1.md*
+*อัปเดตล่าสุด: 2026-05-25 HORATAD | V3.3.31 | Doc sync drift 8 versions (V3.3.25→31) | handoffs/HORATAD_20260525_v1.md*
