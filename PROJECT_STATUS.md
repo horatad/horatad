@@ -5,7 +5,7 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.31 | **URL:** horatad.com
+**Version:** V3.3.34 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
@@ -19,6 +19,9 @@
 - **V3.3.29** ✅ music player "เกาะในฝัน" หน้าเกี่ยวกับ (clip 47s) + cache offline
 - **V3.3.30** ✅ TTS guide เพิ่ม Windows + macOS sections (ไม่ใช่ Android-only)
 - **V3.3.31** ✅ BGM auto-play เมื่อเข้าหน้าเกี่ยวกับ + auto-stop เมื่อออก (loop 45s)
+- **V3.3.32** ✅ BGM หน้าการคำนวณวันจันทรคติ + ปรับ about BGM
+- **V3.3.33** ✅ fix BGM overlap about/lunar เล่นซ้อนกัน
+- **V3.3.34** ✅ ลบ lunar BGM + ลบ info bar แสดงชื่อเพลง (about BGM เล่น silent)
 
 ### Next (Claude ทำได้)
 - [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1 — ⚠️ รอ CSP enforce
