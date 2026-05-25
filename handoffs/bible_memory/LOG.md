@@ -739,3 +739,52 @@ LOG entry กลายเป็น reference content เมื่อ:
 3. Compact enough to inline (ไม่ใช่ "go read ch013")
 
 Anti-pattern: copy session DONE list ไป reference. DONE list อยู่ใน handoff/LOG เท่านั้น.
+
+## 2026-05-26T00:00 — 📌 PINNED v3: INTERPRETATION PRINCIPLE — natal = 80%, transit = stimulator only
+
+**User confirmed this principle (corrects my prior weak weighting):**
+
+### หลัก
+- **พื้นดวง (natal) = 80% ของการพยากรณ์ทั้งหมด**
+- **ดวงจร (transit) = stimulator** — ทำให้เหตุการณ์ที่ **natal บอกไว้แล้ว** ปรากฏขึ้นมา
+- **ดวงจรไม่สามารถสร้างผลที่ natal ไม่มี** — ไม่ใช่ "transit สร้างเหตุการณ์"
+
+### Implications (logic ที่ใช้ได้)
+1. Transit rule alone = ไร้ความหมาย — ต้อง pair กับ natal anchor เสมอ
+2. กฎ TRANSIT_NATAL ที่ valid = "เมื่อ natal มี condition X + transit มี aspect Y → trigger Z" (Z ต้องเป็นสิ่งที่ X บอกไว้)
+3. ถ้า natal เข้มแข็ง + transit ร้าย → ทนได้ (R289 รับรอง)
+4. ถ้า natal อ่อน + transit ดี → ไม่ raise — ได้แค่ "ติด ๆ ดับ ๆ"
+5. Quality configs (ราชาโชค/เทวีโชค/มหาจักร) ใน natal → transit activate ได้บ่อยขึ้น
+6. ถ้า natal ไม่มี config นั้น → transit ของดาวเดียวกัน trigger ไม่ขึ้น
+
+### Engine logic flow (corrected)
+```
+Step 1: resolve natal base interpretation (80% weight)
+   - ลัคนา / ตนุเศษ / ตนุลัคน์ / กุมลัคนา
+   - planet positions (kaset/uchcha/...) + special_configs ที่ปรากฏใน natal
+   - identify what natal "บอกไว้แล้ว" — possibility space
+Step 2: transit overlay (20% weight — timing + intensity)
+   - which natal possibilities are activated ขณะนี้
+   - มี aspect natal element ไหนบ้าง
+   - duration/window จาก transit speed
+Step 3: NEVER predict outcome that's not in natal's possibility space
+```
+
+### POC scoring revision (apply next session)
+ปัจจุบัน: TRANSIT_NATAL +1
+ควรปรับ: TRANSIT_NATAL alone (no natal context) → 0 หรือ -1
+TRANSIT_NATAL + matching natal condition in chart → +6 (combined signal)
+
+### Validation rule for KB
+- Rule with type=TRANSIT_NATAL ต้องมี natal precondition explicit (lagna/planet position required)
+- ถ้า extract rule "transit X → outcome Y" without natal qualifier → review as principle, not rule
+
+### Cross-ref to existing memory
+- VOCAB.md "ดาวสัมพันธ์ลัคนา → ถูกโฉลก" = natal layer (ดาวอยู่ภพดี + aspect ลัคนา = pre-existing potential)
+- QUALITY.md กฎลบ-ลบ=บวก = natal interaction, not transit-driven
+- R289 (4 ดาวจรร้าย + ดวงเข้มแข็ง → ไม่ถึงฆาต) = direct evidence ของหลักนี้
+- KB stats: 46 transit rules ใน 290 — ต้อง review ทีละข้อว่ามี natal precondition ครบไหม
+
+### Memory enforcement
+ก่อนทำ interpretation/extraction/POC scoring ใดๆ → อ่าน entry นี้ก่อน
+ห้าม implement transit logic ที่ standalone — ต้อง pair กับ natal เสมอ

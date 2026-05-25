@@ -1,6 +1,51 @@
 # BIBLE Memory — INDEX
 # อ่านไฟล์นี้ก่อนทุก BIBLE session (แทน BIBLE_memory.md เดิม)
-# Last updated: 2026-05-25 (📌 PINNED ground-truth procedures)
+# Last updated: 2026-05-26
+
+═══════════════════════════════════════════════════════════════════════
+🔴🔴🔴 FOUNDATIONAL RULE #1 — อ่านก่อนทุกอย่าง 🔴🔴🔴
+═══════════════════════════════════════════════════════════════════════
+
+  พื้นดวง (natal) = 80% ของคำพยากรณ์ทั้งหมด
+  ดวงจร (transit) = stimulator เท่านั้น — activate สิ่งที่ natal บอกไว้แล้ว
+  ดวงจรไม่สร้างผลที่ natal ไม่มี
+
+  ⇒ ก่อนเขียน wording / extract rule / score POC / implement engine
+     ใดๆ ก็ตาม — RESOLVE NATAL BASE ก่อนเสมอ
+  ⇒ TRANSIT_NATAL rule ที่ไม่มี natal precondition = invalid
+
+═══════════════════════════════════════════════════════════════════════
+
+(Detail + engine flow + validation rules + evidence — ใน PINNED v3 ด้านล่าง
+ หรือ LOG.md section "2026-05-26T00:00")
+
+---
+
+## 🔴 PINNED v3 (2026-05-26) — INTERPRETATION PRINCIPLE (apply BEFORE any prediction logic)
+
+**ใช้ก่อนคิดเรื่อง wording/extraction/scoring/engine ใดๆ:**
+
+- **พื้นดวง (natal) = 80%** ของการพยากรณ์ทั้งหมด
+- **ดวงจร (transit) = stimulator** เท่านั้น — activate สิ่งที่ natal บอกไว้แล้ว
+- **ดวงจรไม่สร้างผลที่ natal ไม่มี** — ถ้า natal ไม่บอก → transit ทำให้เกิดไม่ได้
+- **TRANSIT_NATAL rule alone = ไร้ความหมาย** — ต้อง pair กับ natal anchor เสมอ
+
+**Engine flow ที่ถูก:**
+```
+Step 1: natal base interpretation (80%)
+   → ลัคนา + ตนุเศษ + ตนุลัคน์ + กุมลัคนา + special_configs ใน natal
+   → identify possibility space (สิ่งที่ "บอกไว้แล้ว")
+Step 2: transit overlay (20% — timing + intensity)
+   → activate which natal possibilities ขณะนี้
+   → duration จาก transit speed
+Step 3: NEVER predict outcome ที่ไม่อยู่ใน natal possibility space
+```
+
+**Validation rule:** TRANSIT_NATAL rule ต้องมี natal precondition explicit (lagna/planet position). ถ้าไม่มี → review เป็น principle, not rule.
+
+**Evidence:** R289 (4 ดาวจรร้าย + ดวงเข้มแข็ง → ไม่ถึงฆาต) = direct proof ของหลักนี้
+
+**ดู LOG.md "2026-05-26T00:00" สำหรับ POC scoring revision + KB validation checklist**
 
 ---
 

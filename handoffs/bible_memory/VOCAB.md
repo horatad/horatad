@@ -1,6 +1,14 @@
 # BIBLE Memory — VOCABULARY
 # Type: Reference (editable — เพิ่มเมื่อพบคำใหม่)
-# Last updated: 2026-05-23
+# Last updated: 2026-05-26
+
+═══════════════════════════════════════════════════════════════════════
+🔴 FOUNDATIONAL RULE — natal = 80%, transit = stimulator only
+═══════════════════════════════════════════════════════════════════════
+พื้นดวง บอกอะไรไว้ → transit แค่ activate ขึ้นมา
+พื้นดวงไม่บอก → transit ทำให้เกิดไม่ได้ (ดู INDEX.md FOUNDATIONAL RULE #1)
+═══════════════════════════════════════════════════════════════════════
+
 
 ## Compound Words (คำประสม — ห้ามตัด)
 ```
