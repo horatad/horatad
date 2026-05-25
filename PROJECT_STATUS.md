@@ -26,10 +26,15 @@
 - **V3.3.36** ✅ restore เกาะในฝัน BGM บนหน้า About (ถูกลบโดยไม่ตั้งใจใน V3.3.34)
 
 ### Next (Claude ทำได้)
+- [x] ~~Tank redesign Phase A~~ ✅ V3.3.34+1 — source/tags fields + helpers + LAST_SLOT1_UID — spec: `docs/HORATAD_tank_redesign.md`
+- [ ] **Tank redesign Phase B** — slot1/slot2 abstraction + form "✏️ ใส่ข้อมูล" + start=last slot1 — spec ready, รอ user เริ่ม
+- [ ] **Tank redesign Phase C** — visible UI refactor (picker popup + outer toggle + source-aware) — ⚠️ รอ CSP enforce (touch inline handlers)
 - [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1 — ⚠️ รอ CSP enforce
 - [ ] Phase 2 Step 2 — db/ Tier 2 (io/tank/core/natal/events) — รอ Step 1
 - [ ] PROVINCES extract (5KB) — DEFERRED hot calc path
 - [ ] Retroactive backup v3.3.25–v3.3.32 — SHA หาได้จาก git log
+- [ ] julian_all.json move (รอ user เลือก target)
+- **Prototype:** `tools/tank_redesign_prototype.html` — validated by user iterations 2026-05-25/26
 
 ### Blocked (รอ user)
 - [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.36 — BGM เกาะในฝัน หน้า About กดปุ่มเล่น/หยุดได้ปกติ
@@ -41,7 +46,7 @@
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B/C → **GUARD R-07 owner**
 
 ### Handoff ล่าสุด
-`handoffs/HORATAD_20260525_v1.md`
+`handoffs/HORATAD_20260526_v1.md`
 
 ---
 

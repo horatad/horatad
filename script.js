@@ -1872,6 +1872,7 @@ const SCHEMA_VERSION=4;
 const SCHEMA_VERSION_KEY='horatad_schema_v';
 const DB_KEY='horatad_db_v4';
 const MIGRATION_NOTICE_KEY='horatad_v4_notice_shown';
+const LAST_SLOT1_UID_KEY='horatad_last_slot1_uid';
 
 function _migrateSchemaV4(){
   const cur=parseInt(localStorage.getItem(SCHEMA_VERSION_KEY)||'0',10);
@@ -1945,7 +1946,9 @@ function _v3Record(input,type='natal'){
     gender,d,m,y_be,t,
     prov,lat:lat2,lng:lng2,
     jd:(d&&m&&y_be)?Math.trunc(_calcJD(d,m,y_be)):null,
-    pos,vel,savedAt:Date.now()
+    pos,vel,savedAt:Date.now(),
+    source:(input&&input.source)||'private',
+    tags:Array.isArray(input&&input.tags)?[...input.tags]:[]
   };
   if(type==='person'||type==='event')rec.linkedNatalUid=linkedNatalUid;
   if(type==='group'){rec.memberUids=[];['d','m','y_be','t','prov','lat','lng','jd','pos','vel'].forEach(k=>delete rec[k]);}
@@ -1972,8 +1975,37 @@ function _v3UpsertDB1(rec){
   }else{
     db.unshift(normed);
   }
-  _dbSave(db);return normed;
+  _dbSave(db);
+  try{localStorage.setItem(LAST_SLOT1_UID_KEY,normed.uid);}catch{}
+  return normed;
 }
+
+// ── Tank redesign Phase A helpers — spec: docs/HORATAD_tank_redesign.md ────
+function _dbGetByTag(tag,type){
+  return _dbLoad().filter(r=>(type?r.type===type:true)&&Array.isArray(r.tags)&&r.tags.includes(tag));
+}
+function _dbAddTag(uid,tag){
+  const r=_dbFind(uid);if(!r)return false;
+  if(!Array.isArray(r.tags))r.tags=[];
+  if(!r.tags.includes(tag))r.tags.push(tag);
+  return _dbUpsert(r)&&true;
+}
+function _dbRemoveTag(uid,tag){
+  const r=_dbFind(uid);if(!r||!Array.isArray(r.tags))return false;
+  r.tags=r.tags.filter(t=>t!==tag);
+  return _dbUpsert(r)&&true;
+}
+function _dbSetSource(uid,source){
+  const r=_dbFind(uid);if(!r)return false;
+  r.source=source;return _dbUpsert(r)&&true;
+}
+function _dbRecentLinks(natalUid,limit=5){
+  return _dbLoad()
+    .filter(r=>(r.type==='person'||r.type==='event')&&r.linkedNatalUid===natalUid)
+    .sort((a,b)=>(b.savedAt||0)-(a.savedAt||0))
+    .slice(0,limit);
+}
+function _loadLastSlot1Uid(){try{return localStorage.getItem(LAST_SLOT1_UID_KEY)||null;}catch{return null;}}
 
 // One-time notice หลัง migrate
 function _v3MaybeShowMigrateNotice(){
