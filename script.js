@@ -1,6 +1,6 @@
-// HORATAD:SCRIPT:3.3.31
-// Version 3.3.31 | 2026-05-25
-// Changes: [V3.3.31] feat(about): เพิ่ม music player เพลงพระราชนิพนธ์ เกาะในฝัน ในหน้าเกี่ยวกับ
+// HORATAD:SCRIPT:3.3.32
+// Version 3.3.32 | 2026-05-25
+// Changes: [V3.3.32] feat(about): เพิ่ม music player เพลงพระราชนิพนธ์ เกาะในฝัน ในหน้าเกี่ยวกับ
 // Changes: [V3.3.28] fix(nok): wire voiceschanged → refreshSpeakBtn, ปุ่มตรวจสอบใหม่ใน TTS guide
 // Changes: [V3.3.27] feat(voice-chat): voice โต้ตอบ real-time — STT+Typhoon+TTS, push-to-talk, history 5 turns
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
@@ -22,7 +22,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.31';
+const APP_VERSION='3.3.32';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -3586,10 +3586,14 @@ function hideContactPage(){
 function showLunarPage(){
   document.getElementById('about-main').classList.add('hidden');
   document.getElementById('about-lunar').classList.remove('hidden');
+  const a=document.getElementById('lunar-bgm');
+  if(a)a.play().catch(()=>{});
 }
 function hideLunarPage(){
   document.getElementById('about-lunar').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
+  const a=document.getElementById('lunar-bgm');
+  if(a&&!a.paused){a.pause();a.currentTime=0;}
 }
 // ── V2.2.17: Rule Matching ───────────────────────────────
 function _matchRules(natal,transit){
