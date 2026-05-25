@@ -1,4 +1,4 @@
-// Version 3.0.10 | 2026-05-22
+// Version 3.0.11 | 2026-05-25
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
