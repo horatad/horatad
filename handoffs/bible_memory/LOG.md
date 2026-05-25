@@ -145,3 +145,160 @@
 - Procedures conversation: this session 2026-05-25 (BIBLE session, claude/bible-b5bFe @ 1cf5d6f)
 - Existing tools that align: `tools/master_dict_editor.html`, `v3/master_dict_meanings.json`
 - Existing memory aligned: PLANETS.md (rule elements), TAXONOMY.md (rule schema spec)
+
+## 2026-05-25 — 📌 PINNED v2: TRIANGULATION ARCHITECTURE (supersedes v1 above)
+
+**Why this entry:** earlier today v1 PINNED framed ground truth as "100CH verbatim only" — user corrected:
+- LLMs (Gemini etc.) อ้างอิงกฎโหราศาสตร์ไทยได้ถูกต้องเกือบหมด แม้ vocabulary บางตัวไม่ใน 100CH (เช่น คู่ทรหด, คู่วิวาทะ, คู่ธาตุ) — เป็นธรรมเนียมจริง
+- BIBLE real job: **preserve essence ของธรรมเนียม + ให้ traceable provenance** ไม่ใช่บังคับ literal match
+
+### NEW Mental Model
+
+```
+Ground truth = ธรรมเนียมสุริยยาตร์ทั้งหมด (broader)
+100CH        = anchor/primary reference (ไม่ใช่จักรวาลปิด)
+LLMs         = extract กฎที่ถูกต้องจาก training data ได้ (Gemini proven)
+User         = final verification authority สำหรับ "ธรรมเนียมจริงไหม"
+```
+
+### Triangulation Architecture — KB main rules = สามแหล่งบรรจบ
+
+```
+Source A: 100CH → claude extraction → v3/kb_v24-3.json (290 rules) ✅ มีแล้ว
+Source B: LLM general knowledge (Gemini/Typhoon) → v3/kb_v24-1.json, v3/kb_v24-2.json
+Source C: User direct input (ครู/ประสบการณ์) → optional layer
+
+           ↓ MERGE by element fingerprint
+
+v3/kb_merged.json — 3 verification states:
+  • AUTO_VERIFIED  : ≥2 sources agree on elements + polarity  → ผ่าน
+  • CONFLICT       : same elements, different polarity/domain → user decides
+  • UNIQUE         : only 1 source has this element combo     → user reviews
+```
+
+**Insight:** ลดงาน user จาก "verify 290 rules ทีละข้อ" → "review เฉพาะ CONFLICT + UNIQUE"
+
+### Element Fingerprint — กุญแจของระบบ
+
+Rule เดียวกัน = elements ตรงกัน (ไม่ใช่ wording ตรง)
+
+```
+fingerprint format: "p<planet>+p<planet2>+h<house>+s<sign>+q<quality>+a<aspect>+ctx:<context>"
+null/missing → "_" positional
+
+ตัวอย่าง:
+  อาทิตย์ในภพปุตตะ (natal)     → "p1+_+h5+_+_+_+ctx:natal"
+  อังคารกุมเสาร์ (natal)        → "p3+p7+_+_+_+a:KUM+ctx:natal"
+  เสาร์จรทับลัคนา                → "p7+_+h1+_+_+a:KUM+ctx:transit"
+  อาทิตย์อุจในเมษ               → "p1+_+_+s1+q:UCH+_+ctx:natal"
+```
+
+### NEW Rule Schema (extends current — backward compatible)
+
+```json
+{
+  "rule_id": "R001",
+  "elements": {
+    "planet_id": "1", "planet_id_2": null,
+    "house_id": "5", "sign_id": null,
+    "quality": null, "aspect": null,
+    "context": "natal",
+    "fingerprint": "p1+_+h5+_+_+_+ctx:natal"
+  },
+  "polarity": "+",
+  "domain": ["ครอบครัว"],
+  "wordings": [
+    {
+      "text": "อาทิตย์ในภพปุตตะ จะมีลูกที่เก่ง",
+      "source": "ch004",
+      "source_type": "IN_BOOK",
+      "extracted_by": "claude-session-2026-05-23"
+    },
+    {
+      "text": "อาทิตย์ในภพ 5 ลูกมีศักดิ์ศรี",
+      "source": "gemini-pro",
+      "source_type": "FROM_LLM",
+      "extracted_by": "session-2026-05-25"
+    }
+  ],
+  "verification_status": "AUTO_VERIFIED",
+  "verification_sources": 2,
+  "memory_ref": "LOG 2026-05-25 v2"
+}
+```
+
+### Source Types (REPLACES v1 4-level)
+
+| Tag | Meaning | Verification |
+|---|---|---|
+| `IN_BOOK` | ปรากฏใน 100CH + cite chapter | self-verifying (quotable) |
+| `IN_TRADITION` | ในธรรมเนียมสุริยยาตร์ (เช่น คู่ทรหด) | user verifies once |
+| `FROM_LLM` | extract จาก LLM (Gemini/Typhoon/Claude) | needs triangulation |
+| `LLM_COMBINED` | LLM ประกอบจากหลาย rule | needs user review |
+| `USER_INPUT` | user ป้อนตรง (ครู/ประสบการณ์) | trusted |
+| `NEEDS_REVIEW` | uncertain — fall-through | user decides |
+
+### KB Equalizer Principle
+
+```
+Without KB: LLM พึ่ง training (Gemini ชนะ เพราะ Thai data เยอะ)
+With KB:    LLM ใช้ KB เป็น authoritative source → ต่างยี่ห้อ output คุณภาพใกล้กัน
+```
+
+→ BIBLE ทำให้ horatad app **independent จาก LLM vendor** สลับ Typhoon ↔ Claude ↔ Groq ได้
+
+### Implementation Procedure (4 steps, ordered)
+
+**Step 1: Migrate kb_v24-3.json** (no LLM dep — ทำได้ทันที)
+- Script: `workers/kb_add_fingerprint.mjs`
+- Logic: read v3/kb_v24-3.json → compute fingerprint per rule → wrap prediction text as wordings[0] → output v3/kb_v24-3_fp.json (or in-place patch)
+- Validate: 290 in = 290 out, fingerprints generated correctly
+
+**Step 2: Build merge tool**
+- Script: `workers/kb_merge_by_fingerprint.mjs`
+- Input: array of kb_*_fp.json files
+- Output: kb_merged.json + report (AUTO/CONFLICT/UNIQUE counts)
+- Group by fingerprint → tag verification_status → collect wordings
+
+**Step 3: Conflict review** (skip if minor)
+- Tool: `tools/kb_conflict_review.html` or flat JSON
+- Show: CONFLICT (same elements, different polarity) + UNIQUE (1-source)
+- User decisions → write back to JSON
+
+**Step 4: Extract more sources** (ongoing, requires user)
+- Gemini extraction → kb_v24-1.json (browser tool)
+- Typhoon extraction → kb_v24-2.json
+- Re-run step 2 with new sources
+
+### Open Decisions (pending user)
+
+| Decision | Options | Status |
+|---|---|---|
+| Wording selection at app runtime | (a) IN_BOOK first (b) rotate (c) chart-context | **PENDING** |
+| When rule is "production-ready" | (a) ≥2 sources (b) user marks ✓ (c) both | **PENDING** |
+| User input mechanism | (a) edit JSON (b) HTML form (c) chat | **PENDING** |
+
+### Memory Protocol for Future Sessions
+
+**ถ้า session ถัดไปทำงาน KB merging / extraction / rule schema:**
+1. อ่าน entry นี้ก่อนทำงาน — มี framing + schema + procedure ครบ
+2. ห้าม fallback ไป v1 framing (strict 100CH verbatim) — superseded
+3. ถ้า user สั่งงานใหม่ขัดกับ entry นี้ → ถาม clarification ก่อน อย่า assume
+4. Schema patches ต้อง backward-compatible (field เก่ายังอยู่ได้)
+5. ทุก output ใหม่ใส่ `memory_ref` ชี้กลับมาที่ entry นี้
+
+### Why this matters to user (not Claude)
+
+- user จะ verify 5-20% ของ rules (CONFLICT + UNIQUE) ไม่ใช่ 100%
+- Trust ของ KB สูงขึ้นทุกครั้งที่เพิ่ม source ใหม่ (triangulation effect)
+- App horatad ไม่ผูกกับ LLM ใดตัวหนึ่ง → cost flexibility + vendor independence
+- คุณ ship app เร็วขึ้น เพราะไม่ต้อง audit ทุก rule
+
+### Validation Test ที่ user ทำได้
+
+```
+Step A: prompt เดียวกัน 3 ที่ (Gemini/Typhoon/Claude) ไม่แนบ KB
+Step B: prompt เดียวกัน 3 ที่ แนบ KB rules ที่เกี่ยวข้อง
+ทำนาย: A ต่างกันมาก, B ใกล้กัน → ยืนยัน KB equalizer
+```
+ถ้าผลตรง = architecture นี้ถูก, ไม่ตรง = ต้องคิดใหม่

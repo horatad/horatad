@@ -4,22 +4,24 @@
 
 ---
 
-## 📌 MUST READ FIRST — Ground-truth extraction procedures (2026-05-25)
+## 📌 MUST READ FIRST — BIBLE Architecture (2026-05-25, current = v2 TRIANGULATION)
 
-**Mission:** BIBLE = รักษา ground truth ของ KB → ป้องกัน hallucination ทุก rule ตรวจกับตำรา 102 บทได้
+**Mission:** BIBLE = preserve essence ของธรรมเนียมสุริยยาตร์ + ให้ traceable provenance + ทำให้ user verify ง่าย
+
+**Latest architecture decision:** **TRIANGULATION** (LOG entry "2026-05-25 — 📌 PINNED v2")
+- Ground truth = ธรรมเนียม (ไม่ใช่ 100CH verbatim เท่านั้น)
+- KB = merge from 100CH + LLMs + user input — by **element fingerprint**
+- 3 verification states: AUTO_VERIFIED (≥2 sources agree) / CONFLICT / UNIQUE
+- User reviews only CONFLICT + UNIQUE ไม่ใช่ทุก rule
 
 **ก่อนทำงาน BIBLE ใดๆ:**
-1. อ่าน `LOG.md` section `2026-05-25 — 📌 PINNED: Ground-truth extraction architecture` **ครบทั้ง section**
-2. อ่าน `v3/master_dict_meanings.json` ครบทุก section
-3. อ่านบทที่จะแตะจาก `workers/chapter_texts.json` (ไม่ใช่ docx)
-4. ห้าม extract rule ที่ใช้ element ไม่อยู่ใน dict — เสนอเพิ่ม dict ก่อน
-5. ทุก rule ใหม่ใส่ tag: `source_type` (PRIMARY/DERIVED_FROM_CASE/INFERRED/SECONDARY) + `source_chapter` + `source_quote`
+1. อ่าน `LOG.md` **section PINNED v2 (2026-05-25)** เป็นอันดับแรก — มี framing + schema + procedure ครบ
+2. ถ้าทำงาน extraction → อ่าน LOG ทุก section + master_dict + chapter_texts.json
+3. ถ้าทำงาน merge/schema → focus ที่ PINNED v2 + kb_*.json ปัจจุบัน
+4. ทุก rule ใหม่ใส่ `elements.fingerprint` + `wordings[]` array + `source_type` + `verification_status`
+5. **ห้าม fallback ไป v1 framing** (strict 100CH verbatim) — superseded by v2
 
-**4-Level content separation** (จำให้ได้):
-- L1 PRIMARY rule (ตำราบอกตรง) → KB
-- L2 Element (atom: ดาว/ราศี/ภพ/คุณภาพ) → master dict
-- L3 Prediction (case study output) → ห้ามเป็น rule
-- L4 Secondary (derivation/opinion/Q&A) → KB ได้แต่ tag SECONDARY
+**Source types ปัจจุบัน:** IN_BOOK / IN_TRADITION / FROM_LLM / LLM_COMBINED / USER_INPUT / NEEDS_REVIEW
 
 ---
 
