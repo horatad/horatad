@@ -50,26 +50,29 @@
 ### สถานะ
 - KB V2.3: 342 rules (production, ใช้งานอยู่) | Engine 3.1.0 ✅
 - kb_v24-3: ✅ COMPLETE — 102 บท → 290 rules (2026-05-23)
-- **🆕 Triangulation architecture (PINNED v2, 2026-05-25)**:
+- **🆕 Triangulation architecture (PINNED v2, 2026-05-25)** — pipeline end-to-end COMPLETE:
   - Schema v2.0-fingerprint shipped — kb_v24-3_fp.json (239 unique fp, 207 perfectly-unique, 198/290 deep-parsed)
-  - Pipeline พร้อม: extract → merge → review (รอ Groq/Typhoon extractions)
-- Master dict: 5 complete + 6 skeleton sections — รอ user เติม
+  - **Pipeline พร้อม end-to-end**: extract → merge → review → **apply** (Step 5 shipped 2026-05-25 v2)
+  - รอ user รัน Groq/Typhoon extractions เพื่อปลดล็อก real triangulation
+- Master dict: 5 complete + signs structural complete + 5 skeleton sections เหลือ
 
 ### Files map (triangulation infra)
-- Scripts: `workers/kb_add_fingerprint.mjs` · `kb_merge_by_fingerprint.mjs` · `kb_deep_parse.mjs`
-- Data: `v3/kb_v24-3_fp.json` · `v3/kb_merged.json`
+- Scripts: `workers/kb_add_fingerprint.mjs` · `kb_merge_by_fingerprint.mjs` · `kb_deep_parse.mjs` · **`kb_apply_review_decisions.mjs` (NEW)** · **`kb_wording_prompt_poc.mjs` (NEW)**
+- Data: `v3/kb_v24-3_fp.json` · `v3/kb_merged.json` · (target: `v3/kb_v24-final.json`)
 - Tools: `tools/kb_extract.html` (v2 + deep-parse embed) · `tools/kb_review.html` (review)
-- Memory: `handoffs/bible_memory/LOG.md` PINNED v2
+- Memory: `handoffs/bible_memory/LOG.md` PINNED v2 + 2026-05-25T15:00 (pipeline completion)
 
 ### Next (Claude ทำได้)
-- [ ] `workers/kb_apply_review_decisions.mjs` — apply decisions → kb_v24-final.json
-- [ ] Fill master_dict 6 skeleton sections via chat Q&A (เริ่ม signs)
-- [ ] KB equalizer test — Gemini vs Typhoon vs Claude output with KB
+- [ ] Fill master_dict 5 remaining skeleton sections: planet_positions / planet_pairs / lagna_concepts / house_rulers_by_lagna / special_configs
+- [ ] Fill signs[].represents[] + signs[].keywords[] (narrative content)
+- [ ] Iterate `kb_wording_prompt_poc.mjs` scoring — penalize REFERENCE-type rules to surface specific-position rules
+- [ ] Schema migration plan: master_dict signs keys 1-12 → 0-11 (match KB canonical)
 
 ### Blocked (รอ user)
 - [ ] [ทดลองใช้] ⭐ รัน Groq mode → kb_v24-1_fp.json | URL: tools/kb_extract.html
 - [ ] [ทดลองใช้] ⭐ รัน Typhoon mode → kb_v24-2_fp.json
 - [ ] [ทดลองใช้] เปิด `kb_review.html` → review 32 INTERNAL_DUPE → export decisions
+- [ ] [ทดลองใช้] KB equalizer test — รัน `node workers/kb_wording_prompt_poc.mjs --out prompt.txt` → paste Gemini/Typhoon/Claude.web → เปรียบเทียบ
 
 ### Deferred (รอ decision)
 - [ ] **Wording selection policy** — IN_BOOK first / rotate / chart-context
@@ -80,7 +83,7 @@
 - update `v3/engine.js` to load kb_v24-final.json (wordings[] array — เลือก per policy)
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260525_v1.md`
+`handoffs/BIBLE_20260525_v2.md`
 
 ---
 
