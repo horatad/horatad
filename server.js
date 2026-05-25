@@ -66,16 +66,26 @@ async function loadGallery(){
   const files=await(await fetch('/list')).json()
   const el=document.getElementById('gallery')
   el.innerHTML=''
-  files.forEach(f=>{
+  if(!files.length){el.innerHTML='<p style="color:#8b949e;text-align:center;grid-column:1/-1">No images yet</p>';return}
+  files.forEach(function(f){
     const url='/images/'+f
     const ts=f.replace('fp_','').replace('.png','')
     const date=ts?new Date(parseInt(ts)).toLocaleString('th-TH'):f
     const card=document.createElement('div')
     card.className='card'
-    card.innerHTML='<img src="'+url+'" alt="fingerprint" loading="lazy" onclick="openModal(\''+url+'\')" onerror="this.style.background=\'#f85149\';this.style.height=\'80px\'"><div class="card-info"><span>'+date+'</span><button class="btn-del" onclick="del(\''+f+'\')">ลบ</button></div>'
+    const img=document.createElement('img')
+    img.src=url;img.alt='fingerprint';img.loading='lazy';img.style.cursor='zoom-in'
+    img.addEventListener('click',function(){openModal(url)})
+    img.addEventListener('error',function(){this.style.background='#f85149';this.style.height='80px'})
+    const info=document.createElement('div')
+    info.className='card-info'
+    const span=document.createElement('span');span.textContent=date
+    const btn=document.createElement('button');btn.className='btn-del';btn.textContent='Delete'
+    btn.addEventListener('click',function(){del(f)})
+    info.appendChild(span);info.appendChild(btn)
+    card.appendChild(img);card.appendChild(info)
     el.appendChild(card)
   })
-  if(!files.length)el.innerHTML='<p style="color:#8b949e;text-align:center;grid-column:1/-1">ยังไม่มีรูป</p>'
 }
 async function del(f){
   if(!confirm('ลบ '+f+'?'))return
