@@ -89,6 +89,7 @@ Step 3: NEVER predict outcome ที่ไม่อยู่ใน natal possibi
 | [VOCAB.md](VOCAB.md) | compound words, key concepts, domain keywords | Reference | extraction session |
 | [CHAPTERS.md](CHAPTERS.md) | chapter map, extraction progress | Editable | check progress |
 | [PROMPTS.md](PROMPTS.md) | extraction prompt templates (Template 1-4), QC checklist, tuning log | Reference | extraction session |
+| [LLM_CONTROL.md](LLM_CONTROL.md) | 6-layer Constrained Generation architecture (Layer 1-6 for prediction) | Reference | engine design / prediction prompt session |
 | **[LOG.md](LOG.md)** | **session log — append-only, date-time** | **Append-only** | **ทุก session** |
 
 ## Session Start Protocol
