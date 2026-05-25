@@ -28,3 +28,6 @@ Thumbs.db
 
 # Misc
 *.log
+
+# Per-session ephemeral state — ห้าม commit (race condition ระหว่าง sandboxes)
+.claude/hooks/session_scope
