@@ -32,7 +32,7 @@
 - [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1 — ⚠️ รอ CSP enforce
 - [ ] Phase 2 Step 2 — db/ Tier 2 (io/tank/core/natal/events) — รอ Step 1
 - [ ] PROVINCES extract (5KB) — DEFERRED hot calc path
-- [ ] Retroactive backup v3.3.25–v3.3.32 — SHA หาได้จาก git log
+- [x] ~~Retroactive backup v3.3.25–v3.3.32~~ ✅ + v3.3.35 — pushed 7 branches (26/27/28/29/30/31/35)
 - [ ] julian_all.json move (รอ user เลือก target)
 - **Prototype:** `tools/tank_redesign_prototype.html` — validated by user iterations 2026-05-25/26
 
