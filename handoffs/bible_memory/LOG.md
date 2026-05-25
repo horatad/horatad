@@ -356,3 +356,98 @@ User must run LLM extractions:
 - `workers/kb_deep_parse.mjs` parseConditionText() + vocab maps
 
 If you change one, **update the other** to stay in sync. Both files note this in code comment.
+
+## 2026-05-25T15:00 — Pipeline completion + master_dict signs
+
+### Apply tool shipped (`workers/kb_apply_review_decisions.mjs`)
+
+Closes the triangulation pipeline (Step 5):
+```
+kb_merged.json + decisions.json (+ optional source files) → kb_v24-final.json
+```
+
+**Decision semantics implemented:**
+- `merge`        → keep grouping, mark `production_ready=true`
+- `separate`     → split into N rules using `source_rule_ids` (re-read source files)
+- `skip`         → keep as-is, `production_ready=false`
+- (no decision)  → keep as-is; production_ready derived from `verification_status`
+  - AUTO_VERIFIED → true
+  - UNIQUE / INTERNAL_DUPE (undecided) / CONFLICT (undecided) → false
+
+**Fallback for `separate` without source files:** split per-wording (1 wording → 1 rule).
+Warning printed; not lossy but loses original condition_text grouping.
+
+**Output schema (`v3/kb_v24-final.json`, schema_version: "2.0-final"):**
+- Each rule: rule_id (RF###), elements, polarity, domain, wordings[],
+  verification_status, production_ready, decision_applied, parent_merged_id,
+  origin_source_rule_id (for separated rules)
+- _meta tracks decisions_from, sources_used_for_separate, summary
+
+**Smoke test passed:** 5 synthetic decisions on kb_merged.json (239 rules)
+→ 240 rules out (1 separate produced +1), 3 production-ready (merged).
+
+### Wording prompt POC (`workers/kb_wording_prompt_poc.mjs`)
+
+Generates KB-augmented prompt for KB equalizer test. Selects top-N rules by
+element match with chart (planet present: +2, planet+house pair: +5, lagna: +1).
+
+Default chart = synthetic 10-planet placement. Output ≈9KB prompt with 25 rules.
+
+**Usage for KB equalizer test (user runs):**
+1. `node workers/kb_wording_prompt_poc.mjs --out prompt.txt`
+2. Paste `prompt.txt` into Gemini, Typhoon, Claude.web separately
+3. Compare outputs — if KB equalizer works, outputs should be ใกล้กัน
+
+**Known limitation:** scoring favors REFERENCE rules (all-10-planet matches).
+Consider penalizing rule_use=reference in v2 if outputs are too generic.
+
+### Master dict — signs section: structural fields filled
+
+Filled 12 ราศี with `ruler_planet_id`, `ruler_planet_name`, `element`,
+`element_phase`, `nature` from `handoffs/bible_memory/SIGNS.md` (BIBLE memory
+ground-truth from ch001+ch007).
+
+**represents[] + keywords[] still empty** — those need narrative content beyond
+SIGNS.md (user Q&A or chapter quotes).
+
+### ⚠ ID scheme mismatch discovered (action required)
+
+`v3/master_dict_meanings.json` uses keys **1-12** (เมษ=1) but the canonical
+sign_id used throughout the KB (kb_v24-3.json, SIGNS.md, ch001 quote) is **0-11**
+(เมษ=0).
+
+Added `canonical_sign_id` field per sign to bridge the gap, but downstream
+consumers (engine.js, etc.) need to be aware:
+- master_dict access:  `signs[String(canonical_id + 1)]`
+- canonical lookup:    each entry has `canonical_sign_id` field
+
+**Recommendation:** future schema migration → make master_dict use 0-11 keys
+to match KB (breaking change, defer until next major bump).
+
+### Schema additions
+
+**signs entries now have:**
+- `ruler_planet_name` (helper, e.g. "อังคาร")
+- `element_phase` ("ต้น" / "กลาง" / "ปลาย")  — useful for cusp-dignity logic
+- `canonical_sign_id` (0-11)
+- `alias` (for กุมภ์/มกร alternate spellings — มกร also called มังกร)
+- `ruler_secondary_planet_id` / `ruler_secondary_planet_name` (only for กุมภ์: ราหู primary, เสาร์ secondary)
+
+### Pipeline now complete end-to-end
+
+```
+SOURCE (kb_v24-3.json + future kb_v24-1_fp + kb_v24-2_fp)
+  ↓ kb_add_fingerprint.mjs / kb_extract.html (Groq/Typhoon mode)
+*_fp.json (schema 2.0-fingerprint)
+  ↓ kb_merge_by_fingerprint.mjs
+kb_merged.json (schema 2.0-merged)
+  ↓ tools/kb_review.html (user reviews CONFLICT/INTERNAL_DUPE)
+kb_review_decisions_*.json
+  ↓ kb_apply_review_decisions.mjs                  ← NEW (this session)
+v3/kb_v24-final.json (schema 2.0-final, production-ready flags)
+  ↓ (HORATAD scope) engine.js loads → runtime wording selection
+```
+
+Blocking item to ship: user runs Groq + Typhoon extractions to populate
+kb_v24-1_fp.json + kb_v24-2_fp.json — without 2nd/3rd source, every rule is
+UNIQUE and triangulation has no signal.

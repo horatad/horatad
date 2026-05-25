@@ -11,7 +11,7 @@
       "qualities": "complete (11/11)",
       "domains": "complete (7/7)",
       "aspect_strengths": "complete (5/5)",
-      "signs": "SKELETON — names filled, meanings need user input",
+      "signs": "structural complete (ruler/element/nature from SIGNS.md) — represents/keywords still pending user input",
       "planet_positions": "SKELETON — structure only, all values need user input from ch004-ch006",
       "planet_pairs": "SKELETON — needs user input from ch008",
       "lagna_concepts": "SKELETON — needs user input from ch013",
@@ -244,19 +244,21 @@
   },
 
   "signs": {
-    "_skeleton_note": "TODO: เติม ruler/element/nature/keywords จาก ch001 (ราศีทั้ง 12) และตำราอ้างอิง — Claude ไม่เติม content เพื่อ ป้องกัน hallucination",
-    "1":  {"name": "เมษ",     "name_en": "Aries",       "ruler_planet_id": "TODO", "element": "TODO (ไฟ/ดิน/ลม/น้ำ)", "nature": "TODO (จร/คงที่/สามัญ)", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "2":  {"name": "พฤษภ",   "name_en": "Taurus",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "3":  {"name": "มิถุน",   "name_en": "Gemini",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "4":  {"name": "กรกฎ",   "name_en": "Cancer",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "5":  {"name": "สิงห์",   "name_en": "Leo",         "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "6":  {"name": "กันย์",   "name_en": "Virgo",       "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "7":  {"name": "ตุล",     "name_en": "Libra",       "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "8":  {"name": "พิจิก",   "name_en": "Scorpio",     "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "9":  {"name": "ธนู",     "name_en": "Sagittarius", "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "10": {"name": "มกร",     "name_en": "Capricorn",   "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "11": {"name": "กุมภ์",   "name_en": "Aquarius",    "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
-    "12": {"name": "มีน",     "name_en": "Pisces",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"}
+    "_skeleton_note": "Structural fields (ruler/element/nature) filled from handoffs/bible_memory/SIGNS.md (BIBLE memory ground-truth, sourced from ch001+ch007). represents[]/keywords[] still need user input from chapter readings. ID NOTE: master_dict keys use 1-12 (1=เมษ), but canonical sign_id in KB rules uses 0-11 (0=เมษ) — see SIGNS.md.",
+    "_status": "structural_complete, narrative_pending",
+    "_updated": "2026-05-25 (BIBLE session)",
+    "1":  {"name": "เมษ",     "name_en": "Aries",       "ruler_planet_id": "3", "ruler_planet_name": "อังคาร",  "element": "ไฟ",  "element_phase": "ต้น",   "nature": "จร",      "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 0},
+    "2":  {"name": "พฤษภ",   "name_en": "Taurus",      "ruler_planet_id": "6", "ruler_planet_name": "ศุกร์",    "element": "ดิน", "element_phase": "กลาง",  "nature": "คงที่",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 1},
+    "3":  {"name": "มิถุน",   "name_en": "Gemini",      "ruler_planet_id": "4", "ruler_planet_name": "พุธ",      "element": "ลม",  "element_phase": "ปลาย",  "nature": "สามัญ",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 2},
+    "4":  {"name": "กรกฎ",   "name_en": "Cancer",      "ruler_planet_id": "2", "ruler_planet_name": "จันทร์",   "element": "น้ำ", "element_phase": "ต้น",   "nature": "จร",      "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 3},
+    "5":  {"name": "สิงห์",   "name_en": "Leo",         "ruler_planet_id": "1", "ruler_planet_name": "อาทิตย์",  "element": "ไฟ",  "element_phase": "กลาง",  "nature": "คงที่",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 4},
+    "6":  {"name": "กันย์",   "name_en": "Virgo",       "ruler_planet_id": "4", "ruler_planet_name": "พุธ",      "element": "ดิน", "element_phase": "ปลาย",  "nature": "สามัญ",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 5},
+    "7":  {"name": "ตุล",     "name_en": "Libra",       "ruler_planet_id": "6", "ruler_planet_name": "ศุกร์",    "element": "ลม",  "element_phase": "ต้น",   "nature": "จร",      "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 6},
+    "8":  {"name": "พิจิก",   "name_en": "Scorpio",     "ruler_planet_id": "3", "ruler_planet_name": "อังคาร",   "element": "น้ำ", "element_phase": "กลาง",  "nature": "คงที่",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 7},
+    "9":  {"name": "ธนู",     "name_en": "Sagittarius", "ruler_planet_id": "5", "ruler_planet_name": "พฤหัสบดี", "element": "ไฟ",  "element_phase": "ปลาย",  "nature": "สามัญ",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 8},
+    "10": {"name": "มกร",     "name_en": "Capricorn",   "ruler_planet_id": "7", "ruler_planet_name": "เสาร์",    "element": "ดิน", "element_phase": "ต้น",   "nature": "จร",      "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 9, "alias": "มังกร"},
+    "11": {"name": "กุมภ์",   "name_en": "Aquarius",    "ruler_planet_id": "8", "ruler_planet_name": "ราหู",     "ruler_secondary_planet_id": "7", "ruler_secondary_planet_name": "เสาร์", "element": "ลม",  "element_phase": "กลาง",  "nature": "คงที่",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 10, "note": "ราหู=primary ruler, เสาร์=secondary (per SIGNS.md)"},
+    "12": {"name": "มีน",     "name_en": "Pisces",      "ruler_planet_id": "5", "ruler_planet_name": "พฤหัสบดี", "element": "น้ำ", "element_phase": "ปลาย",  "nature": "สามัญ",   "represents": [], "keywords": [], "source_chapter": "ch001", "canonical_sign_id": 11}
   },
 
   "planet_positions": {
