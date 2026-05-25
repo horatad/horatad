@@ -302,3 +302,57 @@ Step B: prompt เดียวกัน 3 ที่ แนบ KB rules ที่
 ทำนาย: A ต่างกันมาก, B ใกล้กัน → ยืนยัน KB equalizer
 ```
 ถ้าผลตรง = architecture นี้ถูก, ไม่ตรง = ต้องคิดใหม่
+
+## 2026-05-25 — Implementation log (Triangulation infra complete)
+
+### Files shipped (all on main, see commit history fbb68f5..df7b552)
+
+**Scripts (`workers/`):**
+- `kb_add_fingerprint.mjs` — schema migrate old KB → v2.0-fingerprint
+- `kb_merge_by_fingerprint.mjs` — triangulation merge (N sources → kb_merged.json)
+- `kb_deep_parse.mjs` — extract lagna_relation/ruler_of_house/inline sign/quality/house from condition_text
+
+**Data (`v3/`):**
+- `kb_v24-3_fp.json` — kb_v24-3 migrated + deep-parsed (290 rules, 239 unique fp)
+- `kb_merged.json` — single-source merge baseline (will populate AUTO_VERIFIED when LLMs arrive)
+
+**Browser tools (`tools/`):**
+- `kb_extract.html` — outputs v2 schema directly + embedded deep-parse (1-step workflow)
+- `kb_review.html` — review CONFLICT/INTERNAL_DUPE/UNIQUE with merge/separate/skip decisions
+
+### Discrimination gain measured
+
+| Stage | Unique fp | Perfectly-unique rules | Dupe groups | Top dupe |
+|---|---|---|---|---|
+| Raw migrate (no domain) | 106 | 75 | 31 | 28x |
+| + domain in fp | 171 | 122 | 49 | 12x |
+| + deep parse | **239** | **207** | **32** | **9x** |
+
+Deep parse hits per field:
+- lagna_relation: 132 rules (46% of KB)
+- inline_quality: 37 | inline_house: 31 | inline_sign: 21 | ruler_of_house: 7
+
+### What blocks Step 4 (real triangulation)
+
+User must run LLM extractions:
+1. Open `https://horatad.github.io/horatad/tools/kb_extract.html`
+2. Run Groq mode → download `kb_v24-1_fp.json` → commit `v3/`
+3. Run Typhoon mode → download `kb_v24-2_fp.json` → commit `v3/`
+4. Re-run: `node workers/kb_merge_by_fingerprint.mjs v3/kb_merged.json v3/kb_v24-1_fp.json v3/kb_v24-2_fp.json v3/kb_v24-3_fp.json`
+5. Open `https://horatad.github.io/horatad/tools/kb_review.html` → review CONFLICT/INTERNAL_DUPE
+6. Export decisions JSON → (future) apply tool merges decisions back to KB
+
+### Still pending (next session)
+
+- **Apply tool** — `workers/kb_apply_review_decisions.mjs` reads decisions JSON + kb_merged.json → outputs `kb_v24-final.json` (final production KB)
+- **Engine switch** — update `v3/engine.js` to load `kb_v24-final.json` instead of `kb_v24-3.json` (HORATAD scope, not BIBLE)
+- **Wording selection at runtime** — open decision: IN_BOOK first / rotate / chart-context
+- **Master dict skeletons** — 6 sections still need user fill (signs/positions/pairs/lagna_concepts/house_rulers/special_configs)
+
+### Sync warning for future sessions
+
+⚠️ `tools/kb_extract.html` JS embeds duplicates of:
+- `workers/kb_add_fingerprint.mjs` makeFingerprint()
+- `workers/kb_deep_parse.mjs` parseConditionText() + vocab maps
+
+If you change one, **update the other** to stay in sync. Both files note this in code comment.
