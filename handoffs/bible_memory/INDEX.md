@@ -14,6 +14,12 @@
      ใดๆ ก็ตาม — RESOLVE NATAL BASE ก่อนเสมอ
   ⇒ TRANSIT_NATAL rule ที่ไม่มี natal precondition = invalid
 
+  Corollary (ดวงคล้ายกัน):
+  • 2 คนที่ natal คล้ายกัน → outcome TYPE เดียวกัน (เพราะ natal เหมือน)
+  • สิ่งที่ทำให้ต่างกันคือ "ดาวจร (transit)" — ไม่ใช่ปัจจัยอื่น
+  • ดาวจร กำหนด: clarity (ผลชัด/ไม่ชัด) · magnitude (ผลมาก/น้อย) · timing · frequency
+  • ผล TYPE ไม่เปลี่ยน — เปลี่ยนแค่ขนาด/ความชัด/เวลา
+
 ═══════════════════════════════════════════════════════════════════════
 
 (Detail + engine flow + validation rules + evidence — ใน PINNED v3 ด้านล่าง

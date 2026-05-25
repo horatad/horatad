@@ -788,3 +788,62 @@ TRANSIT_NATAL + matching natal condition in chart → +6 (combined signal)
 ### Memory enforcement
 ก่อนทำ interpretation/extraction/POC scoring ใดๆ → อ่าน entry นี้ก่อน
 ห้าม implement transit logic ที่ standalone — ต้อง pair กับ natal เสมอ
+
+## 2026-05-26T00:30 — Corollary to PINNED v3: similar-natal differentiation = ดาวจร
+
+**User-confirmed corollary:**
+> "ดวงที่คล้ายกัน สิ่งที่ต่างกันคือดาวจร ทำให้ดวงหนึ่งเห็นผลชัดกว่าอีกดวง หรือผลมากน้อยกว่าอีกดวง"
+
+### ตรรกะตามมาจาก Rule #1
+
+| มิติ | กำหนดโดย | หมายเหตุ |
+|---|---|---|
+| **WHAT** (type ของผล) | natal | fixed ที่เกิด — ไม่เปลี่ยน |
+| **WHEN** (timing) | ดาวจร | activate window |
+| **HOW CLEAR** (ผลชัด/ไม่ชัด) | ดาวจร | aspect quality + duration |
+| **HOW MUCH** (ผลมาก/น้อย) | ดาวจร | activation intensity |
+| **HOW OFTEN** (frequency) | ดาวจร | cycle ผ่าน aspect |
+
+### ตัวอย่าง (Engine validation case)
+
+ดวง A และดวง B — natal คล้ายกันมาก: ทั้งคู่มี พฤหัสกุมลัคนา (เป็นครู, ใจดี)
+- ดวง A: ดาวจรพฤหัสผ่าน aspect ดี (กุม/โยค/ตรีโกณ ลัคนา) บ่อย → เป็นครูดัง สอนเยอะ ผลชัด
+- ดวง B: ดาวจรพฤหัสผ่าน aspect ดี น้อย หรือ ดาวจรร้าย (เสาร์/ราหู) มา block → เป็นครู เหมือนกัน แต่ในวงเล็ก ผลไม่ค่อยปรากฏ
+
+**ทั้งคู่ "เป็นครู" (TYPE เหมือน เพราะ natal เหมือน)** — ต่างกันแค่ขนาด/ความชัด/เวลา
+
+### Engine logic implication
+
+```javascript
+outcome_type   = derive_from_natal_only(chart)     // 80% weight, fixed
+intensity      = combine(natal_strength, transit_activation_pattern)
+                                                    // ดาวจร อย่างเดียวกำหนดส่วนนี้
+clarity        = transit_aspect_quality(natal_anchor, current_transit)
+timing_window  = transit_speed(active_planet) × aspect_duration
+frequency      = cycle_count(transit_planet, natal_anchor) per year
+```
+
+**กฎเหล็ก:** outcome_type ห้ามขึ้นกับ transit factor — ถ้า code ทำ → bug
+
+### Anti-pattern ที่ต้องหลีกเลี่ยง
+
+❌ "ดาวจรเสาร์ผ่านลัคนา → จะเสียงาน" (เด็ดขาด)
+✅ "ดาวจรเสาร์ผ่านลัคนา → activate ความเสี่ยงเรื่องงานที่ natal บอกไว้ (เช่น พุธในภพกรรมแย่)" 
+   — ถ้า natal ไม่มี indicator ทางอาชีพแย่ → transit เสาร์ก็แค่ "เครียดเรื่องอื่น" ไม่ใช่เสียงาน
+
+❌ "ดาวจรพฤหัสทับลาภะ → จะรวย"
+✅ "ดาวจรพฤหัสทับลาภะ → activate potential ที่ natal บอก (ลาภะดี + พฤหัสตำแหน่งดีใน natal)"
+
+### Validation rule for wording generation
+
+ก่อน LLM สร้าง wording เรื่อง transit:
+1. หา natal anchor ที่เกี่ยวข้อง (planet/house/aspect)
+2. ถ้าหาไม่เจอ → transit standalone — REJECT, ไม่ generate
+3. ถ้าหาเจอ → wording ต้องอ้าง natal anchor ด้วย ("เพราะมี X ใน natal, transit Y มา activate")
+
+### KB rule audit checklist (apply เมื่อ review transit rules)
+
+46 transit rules ใน kb_v24-3 → review:
+- [ ] มี natal precondition ใน condition_text ไหม
+- [ ] ถ้าไม่มี → เปลี่ยน type เป็น PRINCIPLE (วิธีการ) ไม่ใช่ rule
+- [ ] หรือ split: "principle: ดาวจร X = stimulator" + "rule: ดาวจร X + natal Y → trigger Z"
