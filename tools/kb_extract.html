@@ -47,14 +47,14 @@ h1 small{font-size:11px;color:#555;margin-left:8px}
 </style>
 </head>
 <body>
-<h1>📖 BIBLE KB Extractor <small id="h1Sub">Groq LLaMA 3.3 70B → kb_v24-1.json | V2.4 schema</small></h1>
+<h1>📖 BIBLE KB Extractor <small id="h1Sub">Groq LLaMA 3.3 70B → kb_v24-1_fp.json | schema v2.0-fingerprint</small></h1>
 
 <div class="cfg">
   <div>
     <label>โหมด Extraction</label>
     <select id="modeSelect" onchange="onModeChange()" style="background:#1e2130;border:1px solid #2e3249;color:#ddd;padding:5px 8px;border-radius:4px;font-size:12px;min-width:260px">
-      <option value="groq">Groq เท่านั้น → kb_v24-1.json</option>
-      <option value="typhoon">Typhoon เท่านั้น → kb_v24-2.json</option>
+      <option value="groq">Groq เท่านั้น → kb_v24-1_fp.json</option>
+      <option value="typhoon">Typhoon เท่านั้น → kb_v24-2_fp.json</option>
     </select>
   </div>
   <div id="groqKeyDiv">
@@ -81,10 +81,11 @@ h1 small{font-size:11px;color:#555;margin-left:8px}
 <div class="log" id="log">กำลังโหลดบทต่างๆ...</div>
 <div class="chapters" id="chapterGrid"></div>
 <div class="note">
-  🔵 <b>Groq mode</b>: ต้องใส่ Groq API Key — download <code>kb_v24-1.json</code> → commit เป็น <code>v3/kb_v24-1.json</code><br>
-  🟣 <b>Typhoon mode</b>: ไม่ต้อง key — ผ่าน CF Worker (horatad.com origin) — download <code>kb_v24-2.json</code> → commit เป็น <code>v3/kb_v24-2.json</code><br>
+  🔵 <b>Groq mode</b>: ต้องใส่ Groq API Key — download <code>kb_v24-1_fp.json</code> → commit เป็น <code>v3/kb_v24-1_fp.json</code><br>
+  🟣 <b>Typhoon mode</b>: ไม่ต้อง key — ผ่าน CF Worker (horatad.com origin) — download <code>kb_v24-2_fp.json</code> → commit เป็น <code>v3/kb_v24-2_fp.json</code><br>
+  ⚙ Output schema: <code>v2.0-fingerprint</code> (triangulation-ready) — รัน <code>node workers/kb_merge_by_fingerprint.mjs</code> เพื่อ merge<br>
   ✅ Progress แยก localStorage ต่อโหมด — resume ได้โดยไม่ปนกัน<br>
-  📋 หลัง 3 ไฟล์ครบ (kb_v24-1, -2, -3) → Claude เปรียบเทียบ + ออก kb_v24-final.json
+  📋 หลัง 3 ไฟล์ครบ (kb_v24-1_fp, -2_fp, -3_fp) → <code>node workers/kb_merge_by_fingerprint.mjs v3/kb_merged.json v3/kb_v24-1_fp.json v3/kb_v24-2_fp.json v3/kb_v24-3_fp.json</code> → triangulation auto report
 </div>
 
 <script>
@@ -122,8 +123,8 @@ function onModeChange() {
   if (!state.review) state.review = [];
   document.getElementById('groqKeyDiv').style.display = mode === 'typhoon' ? 'none' : 'block';
   document.getElementById('h1Sub').textContent = mode === 'typhoon'
-    ? 'Typhoon via CF Worker → kb_v24-2.json | V2.4 schema'
-    : 'Groq LLaMA 3.3 70B → kb_v24-1.json | V2.4 schema';
+    ? 'Typhoon via CF Worker → kb_v24-2_fp.json | schema v2.0-fingerprint'
+    : 'Groq LLaMA 3.3 70B → kb_v24-1_fp.json | schema v2.0-fingerprint';
   document.getElementById('btnDl').disabled = true;
   renderGrid();
   updateStats();
@@ -412,33 +413,103 @@ function stopExtraction() {
   log('⏹ หยุดแล้ว — กด ▶ เพื่อ resume');
 }
 
-// ── Download ──────────────────────────────────────────────────────────────────
+// ── Fingerprint (mirror workers/kb_add_fingerprint.mjs — must stay in sync) ────
+// memory_ref: handoffs/bible_memory/LOG.md "2026-05-25 PINNED v2"
+function makeFingerprint(rule) {
+  const parts = [];
+  if (rule.planet_ids?.length) {
+    parts.push('p' + [...rule.planet_ids].sort((a,b)=>a-b).join(','));
+  }
+  if (rule.sign_id != null) parts.push('s' + rule.sign_id);
+  else if (rule.sign_ids?.length) parts.push('s' + [...rule.sign_ids].sort((a,b)=>a-b).join(','));
+  if (rule.quality) parts.push('q:' + rule.quality);
+  if (rule.quality_req) parts.push('qr:' + rule.quality_req);
+  if (rule.aspect) parts.push('a:' + rule.aspect);
+  if (rule.condition_type) parts.push('cnd:' + rule.condition_type);
+  if (rule.contexts?.length) parts.push('ctx:' + [...rule.contexts].sort().join(','));
+  if (rule.domain) parts.push('d:' + rule.domain);
+  parts.push('t:' + rule.type);
+  return parts.join('+') || 'EMPTY';
+}
+
+// ── Download (schema v2.0-fingerprint — triangulation-ready) ──────────────────
 function downloadResult() {
   const mode = getMode();
-  const filename = mode === 'typhoon' ? 'kb_v24-2.json' : 'kb_v24-1.json';
-  const sourceLabel = mode === 'typhoon'
-    ? 'Typhoon via CF Worker (independent extraction)'
-    : 'Groq LLaMA 3.3 70B primary + Typhoon cross-validate';
-  const allRules = state.rules.map((r, i) => ({
-    id: `R${String(i+1).padStart(3,'0')}`,
-    ...r
-  }));
+  const sourceName = mode === 'typhoon' ? 'kb_v24-2' : 'kb_v24-1';
+  const filename = sourceName + '_fp.json';
+  const extractedBy = mode === 'typhoon'
+    ? 'typhoon-via-cfworker-' + new Date().toISOString().slice(0,10)
+    : 'groq-llama-3.3-70b-' + new Date().toISOString().slice(0,10);
+
+  // Each LLM rule → v2.0-fingerprint structure
+  // source_type=IN_BOOK because rules are extracted from 100CH chapter texts
+  // (LLM is the agent, but the book is the source)
+  const migrated = state.rules.map((r, i) => {
+    const rule_id = `R${String(i+1).padStart(3,'0')}`;
+    const fp = makeFingerprint(r);
+    return {
+      rule_id,
+      elements: {
+        planet_ids: r.planet_ids || [],
+        sign_id: r.sign_id ?? null,
+        sign_ids: r.sign_ids || null,
+        quality: r.quality || null,
+        quality_req: r.quality_req || null,
+        aspect: r.aspect || null,
+        contexts: r.contexts || [],
+        condition_type: r.condition_type || null,
+        type: r.type,
+        fingerprint: fp
+      },
+      polarity: r.polarity,
+      domain: r.domain,
+      rule_use: r.rule_use,
+      tier: r.tier,
+      condition_text: r.c,
+      wordings: [{
+        text: r.meaning,
+        source: r.ch,
+        source_type: 'IN_BOOK',
+        extracted_by: extractedBy,
+        notes: r.notes || null,
+        quality_condition: r.quality_condition || null
+      }],
+      verification_status: 'UNIQUE',
+      verification_sources: 1,
+      memory_ref: 'LOG 2026-05-25 v2'
+    };
+  });
+
+  const fpCounts = {};
+  migrated.forEach(r => {
+    fpCounts[r.elements.fingerprint] = (fpCounts[r.elements.fingerprint] || 0) + 1;
+  });
+  const dupCount = Object.values(fpCounts).filter(n => n > 1).length;
+
   const kb = {
-    version: '2.4.0',
-    updated: new Date().toISOString().slice(0,10),
-    total: allRules.length,
-    engine_min_version: '3.1.0',
-    source: sourceLabel,
-    rules: allRules
+    _meta: {
+      schema_version: '2.0-fingerprint',
+      source: sourceName,
+      source_type: 'IN_BOOK',
+      extracted_by: extractedBy,
+      extracted_at: new Date().toISOString(),
+      memory_ref: 'LOG 2026-05-25 v2',
+      rule_count: migrated.length,
+      unique_fingerprints: Object.keys(fpCounts).length,
+      duplicate_fingerprint_count: dupCount,
+      llm_mode: mode
+    },
+    rules: migrated
   };
   const blob = new Blob([JSON.stringify(kb, null, 2)], {type:'application/json'});
   const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download: filename});
   a.click();
   URL.revokeObjectURL(a.href);
+  log(`⬇ Downloaded ${filename} — ${migrated.length} rules, ${Object.keys(fpCounts).length} unique fingerprints (${dupCount} dupes)`);
 
   if (state.review.length > 0) {
     const b2 = new Blob([JSON.stringify(state.review, null, 2)], {type:'application/json'});
-    const a2 = Object.assign(document.createElement('a'), {href:URL.createObjectURL(b2), download:'kb_v24_review.json'});
+    const a2 = Object.assign(document.createElement('a'), {href:URL.createObjectURL(b2), download: sourceName + '_review.json'});
     setTimeout(() => { a2.click(); URL.revokeObjectURL(a2.href); }, 500);
   }
 }
