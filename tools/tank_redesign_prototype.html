@@ -192,7 +192,8 @@
     </div>
     <div class="row" style="gap: 6px; display:none;" id="editActions">
       <button onclick="cancelEdit()">↩️ ยกเลิก</button>
-      <button class="primary" onclick="saveEdit()">💾 บันทึก & ใช้</button>
+      <button class="primary" onclick="castChart()">🔮 ผูกดวง</button>
+      <button onclick="saveEdit()">💾 บันทึกลง Private</button>
     </div>
   </div>
 </div>
@@ -415,7 +416,7 @@ function renderForm() {
       private: { cls: 'private', icon: '📂', text: 'Private' },
       qr:      { cls: 'qr',      icon: '📤', text: 'รับจาก QR' },
       julian:  { cls: 'julian',  icon: '⭐', text: `Julian · accuracy ${slot1.accuracy || '?'}` },
-      form:    { cls: 'form',    icon: '✏️', text: 'กรอกใหม่' },
+      form:    { cls: 'form',    icon: '🔮', text: slot1._ephemeral ? 'ชั่วคราว (ยังไม่บันทึก)' : 'กรอกใหม่' },
     };
     const L = labels[s] || labels.private;
     badge.innerHTML = `<span class="source-badge ${L.cls}">${L.icon} ${L.text}</span>`;
@@ -450,10 +451,18 @@ function renderForm() {
   document.getElementById('formActions').style.display = editMode ? 'none' : 'flex';
   document.getElementById('editActions').style.display = editMode ? 'flex' : 'none';
 
-  // source-aware buttons: read-only sources hide แก้ไข + show Save Copy
+  // source-aware buttons:
+  // - QR/Julian: hide แก้ไข, show Save Copy
+  // - ephemeral (form, _ephemeral): show Save Copy (เพื่อ commit ดวงชั่วคราว)
+  // - Private: show แก้ไข ปกติ
   if (slot1 && (slot1.source === 'qr' || slot1.source === 'julian')) {
-    document.getElementById('btnEdit').style.display = 'none';
+    document.getElementById('btnEdit').style.display = 'inline-block'; // ดูได้ ลองแก้ได้ (ผลจะกลายเป็นชั่วคราว)
     document.getElementById('btnSaveCopy').style.display = 'inline-block';
+    document.getElementById('btnSaveCopy').textContent = '💾 Save Copy to Private';
+  } else if (slot1 && slot1._ephemeral) {
+    document.getElementById('btnEdit').style.display = 'inline-block';
+    document.getElementById('btnSaveCopy').style.display = 'inline-block';
+    document.getElementById('btnSaveCopy').textContent = '💾 บันทึกชั่วคราวลง Private';
   } else {
     document.getElementById('btnEdit').style.display = 'inline-block';
     document.getElementById('btnSaveCopy').style.display = 'none';
@@ -610,6 +619,26 @@ function cancelEdit() {
   editMode = false;
   editDraft = null;
   log('ยกเลิก edit');
+  renderAll();
+}
+
+function castChart() {
+  // ผูกดวง = คำนวณชั่วคราว ไม่บันทึก (slot1 ephemeral)
+  editMode = false;
+  const dateStr = document.getElementById('fDate').value || '?/?/?';
+  const [d,m,y] = dateStr.split('/').map(s => parseInt(s) || 0);
+  slot1 = {
+    id: 'tmp_' + Date.now(),
+    name: 'ดวงชั่วคราว ' + new Date().toLocaleTimeString('th-TH', {hour:'2-digit', minute:'2-digit'}),
+    gender: 'ชาย',
+    d: d||1, m: m||1, y: y||2569,
+    t: document.getElementById('fTime').value || '12:00',
+    prov: document.getElementById('fProv').value || 'กรุงเทพมหานคร',
+    source: 'form',
+    kind: 'person',
+    _ephemeral: true,
+  };
+  log(`🔮 ผูกดวงชั่วคราว: ${slot1.name} (ยังไม่ได้บันทึก)`, true);
   renderAll();
 }
 
