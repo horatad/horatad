@@ -1,6 +1,6 @@
-// HORATAD:SCRIPT:3.3.29
-// Version 3.3.29 | 2026-05-25
-// Changes: [V3.3.29] feat(about): เพิ่ม music player เพลงพระราชนิพนธ์ เกาะในฝัน ในหน้าเกี่ยวกับ
+// HORATAD:SCRIPT:3.3.30
+// Version 3.3.30 | 2026-05-25
+// Changes: [V3.3.30] feat(about): เพิ่ม music player เพลงพระราชนิพนธ์ เกาะในฝัน ในหน้าเกี่ยวกับ
 // Changes: [V3.3.28] fix(nok): wire voiceschanged → refreshSpeakBtn, ปุ่มตรวจสอบใหม่ใน TTS guide
 // Changes: [V3.3.27] feat(voice-chat): voice โต้ตอบ real-time — STT+Typhoon+TTS, push-to-talk, history 5 turns
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
@@ -22,7 +22,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.29';
+const APP_VERSION='3.3.30';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
