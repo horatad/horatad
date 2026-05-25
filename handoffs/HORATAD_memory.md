@@ -221,6 +221,10 @@ function stopFEATUREBgm(){
 |---|---|---|---|---|
 | `audio/dream-island-clip.mp3` | เกาะในฝัน (ร.9) | 0:23–1:08 (45s) | หน้าเกี่ยวกับ | V3.3.31 |
 
+> ⚠️ **PROTECTED — ห้ามลบ:** `about-bgm` (เกาะในฝัน) เป็น feature ถาวรของหน้า About — ห้ามลบโดยไม่มี user สั่งโดยตรง
+> ถูกลบโดยไม่ตั้งใจใน V3.3.34 (overshoot จาก task "ลบ lunar BGM") → คืนใน V3.3.36
+> เมื่อได้รับ task เกี่ยวกับ BGM ให้ระบุ ID element (`about-bgm` vs `lunar-bgm`) ในขอบเขตก่อนทำเสมอ
+
 ---
 
 ## 9. LOG — session learnings (append-only)
@@ -233,3 +237,4 @@ function stopFEATUREBgm(){
 | 2026-05-23 | สร้างไฟล์ | architecture post-Step0, module map (tier 1-5), state machine compareMode 0-3, localStorage 7 keys, bugs (XSS/cursor/SW/numpad), platform quirks (iOS/Android/Desktop), security (PIN bypass + CSP Report-Only), WHY LOG |
 | 2026-05-25 | V3.3.25-31 doc drift recap | (1) **handoff drift = silent failure** — 8 versions ไม่ update → session ใหม่อ่าน "autonomous หมด" ทั้งที่ feature ใหม่ 7 ตัว → ตัดสินใจผิดทั้งหมด. กฎใหม่: PROJECT_STATUS.md version line + ✅ DONE bullet ต้อง update ทุก commit (cheap, 1 บรรทัด), handoff file ทำตอนจบ session. (2) **kb_v24-3 wire local only** — `v3Typhoon()` ยังใช้ kb.json V2.3 (ต้องการ r.p field) → 2 paths คู่กันไม่ break. ถ้า migrate full ต้อง add `r.p` field ใน kb_v24-3 ก่อน. (3) **voice-chat conversational** — `send_chat(messages[])` history 5 + system prompt (ลัคนา+ชื่อ) + max_tokens=400 เพื่อ reply สั้นพอ TTS speak. (4) **BGM auto-play risk** — iOS Safari autoplay policy block ถ้าไม่มี user gesture ก่อน — switchTab(2) คือ tap = gesture จึงน่าจะผ่าน แต่ต้องทดสอบจริง. (5) **localStorage key ใหม่**: `v3_speak_rate` |
 | 2026-05-25 | เพิ่ม audio feature | procedure ครบ: yt-dlp → .webm upload → ffmpeg trim → audio/ → SW cache → switchTab wire. Gotchas: PowerShell .\, Permission denied → Desktop path, no ffmpeg → .webm fallback |
+| 2026-05-25 | BGM overshoot bug | `about-bgm` ถูกลบโดยไม่ตั้งใจใน V3.3.34 เพราะ task "ลบ lunar BGM" แต่ diff กว้างเกิน — กฎป้องกัน: (1) task BGM ต้องระบุ element ID ชัดเจน (2) review `git diff` ทุกบรรทัดก่อน commit ที่ลบ code (3) `about-bgm` = PROTECTED feature ห้ามลบโดยไม่ถาม user |
