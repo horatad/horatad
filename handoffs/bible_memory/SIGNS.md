@@ -53,3 +53,26 @@
 [4,3]: พุธ(4) ใน เมษ(0)/พิจิก(7) / อังคาร(3) ใน มิถุน(2)/กันย์(5)
 [5,6]: พฤหัส(5) ใน พฤษภ(1)/ตุล(6) / ศุกร์(6) ใน ธนู(8)/มีน(11)
 ```
+
+---
+## ⚠️ Correction 2026-05-26 — ราหู uchcha/nicha (supersedes 2026-05-23 tables above)
+
+User verified rule: **"นิจกับอุจอยู่ตรงข้ามกันเสมอ"** (nicha = uchcha + 6 mod 12)
+
+| ดาว | OLD (wrong) | NEW (correct) |
+|---|---|---|
+| **ราหู (8) uchcha** | พฤษภ (sign 1) ❌ | **พิจิก (sign 7)** ✅ |
+| **ราหู (8) nicha** | พิจิก (sign 7) ❌ | **พฤษภ (sign 1)** ✅ |
+| **ราหู uchajavilas** | เมษ (sign 0) ❌ | **ตุล (sign 6)** ✅ |
+| **ราหู uchajaphimukh** | มิถุน (sign 2) ❌ | **ธนู (sign 8)** ✅ |
+
+(sign_ids ในตารางใช้ canonical 0-11 scheme)
+
+**Verification rule (universal):**
+```
+nicha_sign = (uchcha_sign + 6) mod 12
+```
+
+ใช้ตรวจสอบทุก planet — ผมตรวจแล้ว 7 ดาวอื่นถูก, เฉพาะ ราหู ที่ผิด memory เดิม
+
+Master dict v3/master_dict_meanings.json planet_positions[8] แก้แล้ว — entry มี `"corrected": "2026-05-26"` flag
