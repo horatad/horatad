@@ -88,6 +88,7 @@ window.v3CycleRate = function() {
 let _vcHistory = [];   // [{role:'user'|'assistant', content:string}]
 let _vcRecog = null;   // SpeechRecognition instance
 let _vcPanelOpen = false;
+let _vcRulesCtx = '';  // natal rules context injected into system prompt
 
 function _vcSystemPrompt() {
   const natal = typeof getNatal === 'function' ? getNatal() : null;
@@ -96,7 +97,22 @@ function _vcSystemPrompt() {
     const asc = get_lagna(natal.pos);
     ctx = '\nข้อมูลดวงชาตาของผู้ใช้: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
   }
-  return 'คุณคือโหราจารย์ไทยระบบ Horatad ตอบคำถามโหราศาสตร์สุริยยาตร์ไทย ภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำต่อคำตอบ' + ctx;
+  const rulesSection = _vcRulesCtx ? '\n\nกฎโหราศาสตร์สุริยยาตร์ที่ตรงกับดวง (ใช้ข้อมูลนี้ตอบ):\n' + _vcRulesCtx : '';
+  return 'คุณคือโหราจารย์ไทยระบบ Horatad ตอบคำถามโหราศาสตร์สุริยยาตร์ไทย ภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำต่อคำตอบ' + ctx + rulesSection;
+}
+
+async function _vcBuildRulesCtx() {
+  const natal = typeof getNatal === 'function' ? getNatal() : null;
+  if (!natal || !natal.pos) return;
+  try {
+    const v24Rules = await _loadKbV24();
+    const natalState = buildNatalState(natal.pos);
+    const matched = matchRulesV24(natalState, v24Rules)
+      .filter(r => r.type === 'NATAL_ATOMIC' || r.type === 'NATAL_COMBINATION')
+      .sort((a, b) => (a.tier || 9) - (b.tier || 9))
+      .slice(0, 20);
+    _vcRulesCtx = matched.map(r => '• ' + r.meaning).join('\n');
+  } catch(_) { _vcRulesCtx = ''; }
 }
 
 function _vcSetStatus(text) {
@@ -230,6 +246,7 @@ window.v3VcTogglePanel = function() {
   body.classList.toggle('hidden', !_vcPanelOpen);
   if (toggle) toggle.classList.toggle('open', _vcPanelOpen);
   if (arrow) arrow.textContent = _vcPanelOpen ? '▲' : '▼';
+  if (_vcPanelOpen && !_vcRulesCtx) _vcBuildRulesCtx();
   if (!_vcPanelOpen) {
     if (_vcRecog) { _vcRecog.abort(); _vcRecog = null; }
     if (nokIsSpeaking()) nokStop();
@@ -386,14 +403,19 @@ function _filterByMode(matched) {
   return matched; // 'both'
 }
 
-// อัปเดต toggle button UI
+function _hasNatal() {
+  const n = typeof getNatal === 'function' ? getNatal() : null;
+  return !!(n && n.pos);
+}
+
 function v3SetMode(mode) {
   _v3Mode = mode;
   ['natal','transit','both'].forEach(m => {
     const b = _el('v3-m-' + m);
     if (b) b.classList.toggle('on', m === mode);
   });
-  _clearResult();
+  if (_hasNatal()) v3Local();
+  else _clearResult();
 }
 
 // transit label สำหรับ toast/badge
@@ -527,8 +549,10 @@ async function v3Typhoon() {
 // ── NOK: Speak (Text-to-Speech) ──────────────────────────────
 function v3Speak() {
   const btn = _el('v3-speak-btn');
-  const text = _el('v3-result') ? _el('v3-result').textContent : '';
-  if (!text) return;
+  const raw = _el('v3-result') ? _el('v3-result').textContent : '';
+  if (!raw) return;
+  // ตัด rule ID เช่น [R01] ออกก่อนพูด — user ไม่ต้องได้ยินหมายเลขกฎ
+  const text = raw.replace(/\[R\d+\]\s*/g, '');
 
   // กดซ้ำขณะกำลังพูด → หยุด
   if (nokIsSpeaking()) {
