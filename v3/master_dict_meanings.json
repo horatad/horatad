@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "version": "1.1.0-skeleton",
-    "updated": "2026-05-25",
+    "version": "1.2.0-structural",
+    "updated": "2026-05-25 (v1.2.0: signs structural + planet_positions + planet_pairs + house_rulers_by_lagna complete)",
     "description": "User-editable meanings layer for Thai astrology (Suriyayat). Claude owns master_dict.js (computation), user owns this file (meanings/labels/corrections).",
     "owner": "user",
     "sync_protocol": "Claude proposes rows in LOG.md → user validates → user edits this file → Claude reads next session",
@@ -13,9 +13,9 @@
       "aspect_strengths": "complete (5/5)",
       "signs": "structural complete (ruler/element/nature from SIGNS.md) — represents/keywords still pending user input",
       "planet_positions": "complete for planets 1-8 (uchcha/nicha/kaset/prakaset/mahachak + uchaja-neighbors from SIGNS.md ch004-ch008). เกตุ+มฤตยู have no position-based concepts in สุริยยาตร์ (aspect-based only). rajayok is configuration-based — see special_configs.",
-      "planet_pairs": "SKELETON — needs user input from ch008",
+      "planet_pairs": "complete (mitr/satru from R054/R057, mahamitr from BIBLE memory). mahasatru intentionally empty (not in standard ตำรา). neutral pairs derivable (not enumerated).",
       "lagna_concepts": "SKELETON — needs user input from ch013",
-      "house_rulers_by_lagna": "SKELETON — 12×12 matrix needs user input",
+      "house_rulers_by_lagna": "complete — 12×12 matrix derived from signs[].ruler_planet_id (mechanical derivation)",
       "special_configs": "SKELETON — needs user input as encountered"
     },
     "provenance_policy": "Every entry should include source_chapter and source_quote when possible. Atoms in this dict are the ground-truth verification layer for rules in kb_v24-3.json."
@@ -288,12 +288,44 @@
   },
 
   "planet_pairs": {
-    "_skeleton_note": "TODO: เติมจาก ch008 (ดาวคู่ 4 ประเภท). format: array of [planet_id_a, planet_id_b]. คู่มิตรใหญ่ = mahamitr (ช่วยเหลือกันมาก เช่น เสาร์-ราหู ที่ LOG ระบุ)",
-    "mitr":       {"description": "คู่มิตร — ส่งเสริมกัน",                "pairs": [], "source_chapter": "ch008"},
-    "mahamitr":   {"description": "คู่มิตรใหญ่ — ช่วยเหลือกันมาก",        "pairs": [], "source_chapter": "ch008", "known_examples": [["7","8"]]},
-    "satru":      {"description": "คู่ศัตรู — ขัดแย้งกัน",                  "pairs": [], "source_chapter": "ch008"},
-    "mahasatru":  {"description": "คู่ศัตรูใหญ่ (ถ้าตำราระบุ)",            "pairs": [], "source_chapter": "ch008"},
-    "neutral":    {"description": "เป็นกลาง — ไม่ส่งเสริมไม่ขัดแย้ง",    "pairs": [], "source_chapter": "ch008"}
+    "_skeleton_note": "Filled from R054 (มิตร) + R057 (ศัตรู) in kb_v24-3.json. ครอบคลุม 8 ดาวหลัก (1-8) เท่านั้น — เกตุ(9)/มฤตยู(10) ไม่เข้าระบบคู่. แต่ละดาวมีคู่มิตร 1 ดวง + คู่ศัตรู 1 ดวง + neutral 5 ดวง (คือดาวที่เหลือ). planet_id ใช้ KB canonical (1-8).",
+    "_status": "complete (mitr/satru); mahasatru not in standard ตำรา — empty by design",
+    "_updated": "2026-05-25 (BIBLE session v3)",
+    "mitr": {
+      "description": "คู่มิตร — ส่งเสริมกัน เมื่ออยู่ร่วมกันให้ผลดี",
+      "pairs": [["1","5"], ["2","4"], ["3","6"], ["7","8"]],
+      "pair_names": ["อาทิตย์-พฤหัสบดี", "จันทร์-พุธ", "อังคาร-ศุกร์", "เสาร์-ราหู"],
+      "rule_ref": "R054",
+      "source_chapter": "ch008"
+    },
+    "mahamitr": {
+      "description": "คู่มิตรใหญ่ — ช่วยเหลือกันมากที่สุด (sub-set of mitr)",
+      "pairs": [["7","8"]],
+      "pair_names": ["เสาร์-ราหู"],
+      "note": "ตำราระบุ เสาร์-ราหู เป็นคู่มิตรใหญ่ (อ้าง bible_memory/PLANETS.md). คู่มิตรอื่นใน mitr ถือเป็นมิตรธรรมดา",
+      "source_chapter": "ch008"
+    },
+    "satru": {
+      "description": "คู่ศัตรู — ขัดแย้งกัน เมื่ออยู่ร่วมกันให้ผลร้าย",
+      "pairs": [["1","3"], ["4","8"], ["6","7"], ["2","5"]],
+      "pair_names": ["อาทิตย์-อังคาร", "พุธ-ราหู", "ศุกร์-เสาร์", "จันทร์-พฤหัสบดี"],
+      "notes": {"2-5": "คู่เล็กสุด — ดีกันก็ไม่จริง ร้ายกันก็ไม่มาก (per R057)"},
+      "rule_ref": "R057",
+      "source_chapter": "ch008"
+    },
+    "mahasatru": {
+      "description": "คู่ศัตรูใหญ่ — ไม่ปรากฏใน 100CH; ถ้าพบในตำราอื่นให้เพิ่ม",
+      "pairs": [],
+      "source_chapter": "ch008",
+      "note": "intentionally empty — สุริยยาตร์ standard ไม่แยก mahasatru จาก satru"
+    },
+    "neutral": {
+      "description": "เป็นกลาง — ไม่ส่งเสริมไม่ขัดแย้ง; ทุกคู่ที่ไม่อยู่ใน mitr/satru",
+      "pairs": [],
+      "computation": "ทุก pair (a,b) จาก {1..8} ที่ไม่ปรากฏใน mitr.pairs หรือ satru.pairs",
+      "source_chapter": "ch008",
+      "note": "ไม่ list ออกมา — derive ได้จาก mitr+satru (10 ของ 28 possible pairs = 18 neutral pairs)"
+    }
   },
 
   "lagna_concepts": {
@@ -332,19 +364,26 @@
   },
 
   "house_rulers_by_lagna": {
-    "_skeleton_note": "TODO: 12×12 matrix. key = lagna sign_id (1-12), value = array 12 ตัวของ planet_id ที่เป็นเจ้าเรือนภพ 1..12 ตามลำดับ. คำนวณได้จาก planet_positions.kaset ถ้าเติมครบ — user เลือกว่าจะเติมมือ หรือให้ Claude derive หลัง kaset เสร็จ",
-    "1":  {"lagna_sign": "เมษ",     "rulers_house_1_to_12": []},
-    "2":  {"lagna_sign": "พฤษภ",   "rulers_house_1_to_12": []},
-    "3":  {"lagna_sign": "มิถุน",   "rulers_house_1_to_12": []},
-    "4":  {"lagna_sign": "กรกฎ",   "rulers_house_1_to_12": []},
-    "5":  {"lagna_sign": "สิงห์",   "rulers_house_1_to_12": []},
-    "6":  {"lagna_sign": "กันย์",   "rulers_house_1_to_12": []},
-    "7":  {"lagna_sign": "ตุล",     "rulers_house_1_to_12": []},
-    "8":  {"lagna_sign": "พิจิก",   "rulers_house_1_to_12": []},
-    "9":  {"lagna_sign": "ธนู",     "rulers_house_1_to_12": []},
-    "10": {"lagna_sign": "มกร",     "rulers_house_1_to_12": []},
-    "11": {"lagna_sign": "กุมภ์",   "rulers_house_1_to_12": []},
-    "12": {"lagna_sign": "มีน",     "rulers_house_1_to_12": []}
+    "_skeleton_note": "Derived from signs[].ruler_planet_id. For lagna sign L (1-12), house i (1-12) contains sign ((L-1+i-1) % 12) + 1, whose ruler is signs[that_sign].ruler_planet_id. planet_id uses KB canonical (1-8 main planets; 7=เสาร์ is primary ruler of กุมภ์, ราหู=8 is secondary — here we use the secondary ruler ราหู per signs.11.ruler_planet_id which follows สุริยยาตร์ ratio).",
+    "_status": "complete (all 12 lagnas × 12 houses derived)",
+    "_updated": "2026-05-25 (BIBLE session v3)",
+    "_legend": {
+      "lagna_sign_id": "1-12 (master_dict scheme; canonical = lagna_sign_id - 1)",
+      "signs_house_1_to_12": "sign_id occupying each house (index 0 = house 1)",
+      "rulers_house_1_to_12": "planet_id ruling each house (index 0 = house 1 = lagna sign's ruler)"
+    },
+    "1": {"lagna_sign": "เมษ", "lagna_sign_id": 1, "signs_house_1_to_12": [1,2,3,4,5,6,7,8,9,10,11,12], "rulers_house_1_to_12": ["3","6","4","2","1","4","6","3","5","7","8","5"]},
+    "2": {"lagna_sign": "พฤษภ", "lagna_sign_id": 2, "signs_house_1_to_12": [2,3,4,5,6,7,8,9,10,11,12,1], "rulers_house_1_to_12": ["6","4","2","1","4","6","3","5","7","8","5","3"]},
+    "3": {"lagna_sign": "มิถุน", "lagna_sign_id": 3, "signs_house_1_to_12": [3,4,5,6,7,8,9,10,11,12,1,2], "rulers_house_1_to_12": ["4","2","1","4","6","3","5","7","8","5","3","6"]},
+    "4": {"lagna_sign": "กรกฎ", "lagna_sign_id": 4, "signs_house_1_to_12": [4,5,6,7,8,9,10,11,12,1,2,3], "rulers_house_1_to_12": ["2","1","4","6","3","5","7","8","5","3","6","4"]},
+    "5": {"lagna_sign": "สิงห์", "lagna_sign_id": 5, "signs_house_1_to_12": [5,6,7,8,9,10,11,12,1,2,3,4], "rulers_house_1_to_12": ["1","4","6","3","5","7","8","5","3","6","4","2"]},
+    "6": {"lagna_sign": "กันย์", "lagna_sign_id": 6, "signs_house_1_to_12": [6,7,8,9,10,11,12,1,2,3,4,5], "rulers_house_1_to_12": ["4","6","3","5","7","8","5","3","6","4","2","1"]},
+    "7": {"lagna_sign": "ตุล", "lagna_sign_id": 7, "signs_house_1_to_12": [7,8,9,10,11,12,1,2,3,4,5,6], "rulers_house_1_to_12": ["6","3","5","7","8","5","3","6","4","2","1","4"]},
+    "8": {"lagna_sign": "พิจิก", "lagna_sign_id": 8, "signs_house_1_to_12": [8,9,10,11,12,1,2,3,4,5,6,7], "rulers_house_1_to_12": ["3","5","7","8","5","3","6","4","2","1","4","6"]},
+    "9": {"lagna_sign": "ธนู", "lagna_sign_id": 9, "signs_house_1_to_12": [9,10,11,12,1,2,3,4,5,6,7,8], "rulers_house_1_to_12": ["5","7","8","5","3","6","4","2","1","4","6","3"]},
+    "10": {"lagna_sign": "มกร", "lagna_sign_id": 10, "signs_house_1_to_12": [10,11,12,1,2,3,4,5,6,7,8,9], "rulers_house_1_to_12": ["7","8","5","3","6","4","2","1","4","6","3","5"]},
+    "11": {"lagna_sign": "กุมภ์", "lagna_sign_id": 11, "signs_house_1_to_12": [11,12,1,2,3,4,5,6,7,8,9,10], "rulers_house_1_to_12": ["8","5","3","6","4","2","1","4","6","3","5","7"]},
+    "12": {"lagna_sign": "มีน", "lagna_sign_id": 12, "signs_house_1_to_12": [12,1,2,3,4,5,6,7,8,9,10,11], "rulers_house_1_to_12": ["5","3","6","4","2","1","4","6","3","5","7","8"]}
   },
 
   "special_configs": {

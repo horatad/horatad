@@ -541,3 +541,66 @@ Filled all 8 planets (1-8) with full positional data from SIGNS.md:
 3. เกตุ + มฤตยู uchcha/nicha set to `null` (not empty object) — semantic difference: "no concept exists" vs "concept exists but unknown"
 4. `mahachak` entries include `with_partner` string for human readability — pure data would be `partner_planet_id` + `partner_sign_id` but verbose string is easier to verify
 5. `kaset` for เสาร์ uses `"rank": "secondary"` on the 2nd entry (กุมภ์) — marks the disputed/lesser rulership per SIGNS.md
+
+## 2026-05-25T17:00 — Master dict v1.2.0: planet_pairs + house_rulers_by_lagna complete
+
+### Files written
+
+**v3/master_dict_meanings.json bumped to v1.2.0-structural**
+Sections completed this session: signs (structural) + planet_positions + planet_pairs + house_rulers_by_lagna
+
+### planet_pairs
+
+Filled from R054 (มิตร) + R057 (ศัตรู):
+- `mitr`: [[1,5], [2,4], [3,6], [7,8]] (อาทิตย์-พฤหัส, จันทร์-พุธ, อังคาร-ศุกร์, เสาร์-ราหู)
+- `satru`: [[1,3], [4,8], [6,7], [2,5]] (อาทิตย์-อังคาร, พุธ-ราหู, ศุกร์-เสาร์, จันทร์-พฤหัส)
+- `mahamitr`: [[7,8]] only (เสาร์-ราหู) — per BIBLE memory PLANETS.md
+- `mahasatru`: empty by design — ไม่มีในตำราสุริยยาตร์ standard
+- `neutral`: empty list, but documented as "all pairs not in mitr/satru" (18 of 28 possible pairs from 8 planets)
+
+Pattern observation: each main planet (1-8) has exactly 1 mitr + 1 satru + 5 neutral relationships.
+เกตุ(9)/มฤตยู(10) sit outside the pair system.
+
+### house_rulers_by_lagna — fully derived (12×12 = 144 entries)
+
+Mechanical derivation, no human input needed:
+```
+ruler_of_house(L, i) = signs[((L-1 + i-1) mod 12) + 1].ruler_planet_id
+```
+where L = lagna sign (1-12), i = house number (1-12).
+
+Each lagna entry stores:
+- `signs_house_1_to_12`: array of 12 sign_ids occupying houses 1-12
+- `rulers_house_1_to_12`: array of 12 planet_ids ruling those signs
+
+Verification: spot-check สิงห์ lagna (L=5), house 5 (ปุตตะ) → sign 9 (ธนู), ruler 5 (พฤหัส) ✅
+
+**Important caveat:** กุมภ์ uses ราหู(8) as primary ruler per signs[11].ruler_planet_id. If consumer needs Saturn-based interpretation (เสาร์ rules กุมภ์ in some traditions), they must check `signs[11].ruler_secondary_planet_id`. Not embedded here to avoid 2-ruler-per-house ambiguity in matrix.
+
+### Completion status snapshot (master_dict v1.2.0)
+
+| Section | Status |
+|---|---|
+| planets | complete (10/10) ✅ |
+| houses | complete (12/12) ✅ |
+| qualities | complete (11/11) ✅ |
+| domains | complete (7/7) ✅ |
+| aspect_strengths | complete (5/5) ✅ |
+| signs | structural complete (narrative pending) 🟡 |
+| planet_positions | complete (8/8 + null for เกตุ/มฤตยู) ✅ |
+| planet_pairs | complete ✅ |
+| house_rulers_by_lagna | complete (12×12 derived) ✅ |
+| lagna_concepts | SKELETON 🔴 (needs user input ch013 — ลัคนา/ตนุเศษ/ตนุลัคน์ distinction) |
+| special_configs | partial (mrittyu_lagna + 4-evil already; add as encountered) 🟡 |
+
+**Score: 7 of 11 fully complete, 2 partial, 2 remaining (1 needs user, 1 grows organically).**
+
+### Why derived data is shipped instead of computed at runtime
+
+For `house_rulers_by_lagna` (mechanical from signs[].ruler):
+- 144 entries pre-computed = ~3KB JSON = negligible
+- Engine.js can lookup in O(1) instead of computing
+- Verifiable: human can scan table and spot errors
+- Documentation value: makes the schema relationship explicit
+
+Trade-off accepted: if signs[].ruler_planet_id ever changes (e.g. ราหู vs เสาร์ debate for กุมภ์), the matrix must be regenerated. Added note in `_skeleton_note` referencing which sign's ruler determines what.
