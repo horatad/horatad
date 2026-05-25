@@ -40,6 +40,21 @@
     box-shadow: var(--shadow);
   }
   .card.locked { background: var(--locked); }
+  .card.source-qr { background: #eef4f8; border-color: #7da6c3; }
+  .card.source-julian { background: #faf3e0; border-color: #c9a951; }
+  .source-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 12px;
+    font-size: 11px; font-weight: 500;
+  }
+  .source-badge.private { background: #e0e8d8; color: #2d4a1a; }
+  .source-badge.qr      { background: #cee0ec; color: #1a3a5a; }
+  .source-badge.julian  { background: #f0e0a8; color: #5a4a1a; }
+  .source-badge.form    { background: #f5e0e0; color: #5a1a1a; }
+  .meta-strip {
+    font-size: 11px; color: var(--muted); margin-top: 4px;
+    padding: 4px 0; border-top: 1px dashed var(--line);
+  }
   .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
   .row > * { flex-shrink: 0; }
   .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; flex: 1; }
@@ -152,8 +167,9 @@
 <div class="card locked" id="formCard">
   <div class="row" style="margin-bottom: 8px;">
     <strong id="formName" style="font-size: 16px;">— ยังไม่ได้เลือก —</strong>
-    <span id="formSource" style="margin-left:auto; font-size:11px; color:var(--muted);"></span>
+    <span id="formSourceBadge" style="margin-left:auto;"></span>
   </div>
+  <div id="formMeta" class="meta-strip" style="display:none;"></div>
   <div class="row" style="gap: 6px;">
     <div class="field"><label>วัน/เดือน/ปี</label>
       <input id="fDate" type="text" disabled placeholder="-/-/-">
@@ -168,7 +184,8 @@
   <div class="row" style="margin-top: 10px; justify-content: space-between;">
     <div class="row" style="gap: 6px;" id="formActions">
       <button onclick="openLoadPicker()">📂 เลือกดวง</button>
-      <button onclick="unlockForm()">✏️ แก้ไข</button>
+      <button id="btnEdit" onclick="unlockForm()">✏️ แก้ไข</button>
+      <button id="btnSaveCopy" onclick="saveCopyToPrivate()" style="display:none;" class="primary">💾 Save Copy to Private</button>
       <!-- mini nav slot1 — browse Private list ทีละคน -->
       <button onclick="navSlot1(-1)" title="ดวงก่อนหน้าใน Private" style="padding: 8px 10px;">◀</button>
       <button onclick="navSlot1(1)" title="ดวงถัดไปใน Private" style="padding: 8px 10px;">▶</button>
@@ -319,10 +336,13 @@ const mockQr = [
   { id: 'q1', name: 'เพื่อนสมร',   gender: 'หญิง', d:1, m:1, y:2540, t:'12:00', prov:'นครราชสีมา' },
 ];
 const mockJulian = [
-  { id: 'j1', name: 'รัชกาลที่ ๙', gender: 'ชาย', d:5, m:12, y:2470, t:'18:45', prov:'(ต่างประเทศ)' },
-  { id: 'j2', name: 'อัลเบิร์ต ไอน์สไตน์', gender: 'ชาย', d:14, m:3, y:2422, t:'11:30', prov:'(ต่างประเทศ)' },
-  { id: 'j3', name: 'สตีฟ จอบส์', gender: 'ชาย', d:24, m:2, y:2498, t:'19:15', prov:'(ต่างประเทศ)' },
+  { id: 'j1', name: 'รัชกาลที่ ๙', gender: 'ชาย', d:5, m:12, y:2470, t:'18:45', prov:'(ต่างประเทศ)', accuracy:'C', srcUrl:'wikidata:Q47481' },
+  { id: 'j2', name: 'อัลเบิร์ต ไอน์สไตน์', gender: 'ชาย', d:14, m:3, y:2422, t:'11:30', prov:'(ต่างประเทศ)', accuracy:'C', srcUrl:'astrotheme.com/einstein' },
+  { id: 'j3', name: 'สตีฟ จอบส์', gender: 'ชาย', d:24, m:2, y:2498, t:'19:15', prov:'(ต่างประเทศ)', accuracy:'D', srcUrl:'wikidata:Q19837' },
 ];
+// mock receivedFrom สำหรับ QR
+mockQr[0].receivedFrom = 'คุณป้าน้อย';
+mockQr[0].receivedAt = '20 พ.ค. 69';
 const mockEvents = [
   { id: 'e1', name: 'แต่งงาน', d:12, m:1, y:2566, t:'09:09', prov:'กรุงเทพมหานคร' },
   { id: 'e2', name: 'เริ่มงานใหม่', d:1, m:6, y:2565, t:'08:30', prov:'กรุงเทพมหานคร' },
@@ -377,19 +397,49 @@ function getSource(src) {
 // ============================================================
 function renderForm() {
   const card = document.getElementById('formCard');
+  const badge = document.getElementById('formSourceBadge');
+  const meta = document.getElementById('formMeta');
+
+  // reset source classes
+  card.classList.remove('source-qr', 'source-julian');
+
   if (slot1) {
     document.getElementById('formName').textContent = slot1.name;
-    document.getElementById('formSource').textContent = `(จาก ${slot1.source === 'form' ? 'กรอกใหม่' : slot1.source})`;
     document.getElementById('fDate').value = fmtDate(slot1);
     document.getElementById('fTime').value = slot1.t;
     document.getElementById('fProv').value = slot1.prov;
+
+    // source-specific styling
+    const s = slot1.source;
+    const labels = {
+      private: { cls: 'private', icon: '📂', text: 'Private' },
+      qr:      { cls: 'qr',      icon: '📤', text: 'รับจาก QR' },
+      julian:  { cls: 'julian',  icon: '⭐', text: `Julian · accuracy ${slot1.accuracy || '?'}` },
+      form:    { cls: 'form',    icon: '✏️', text: 'กรอกใหม่' },
+    };
+    const L = labels[s] || labels.private;
+    badge.innerHTML = `<span class="source-badge ${L.cls}">${L.icon} ${L.text}</span>`;
+
+    if (s === 'qr') card.classList.add('source-qr');
+    if (s === 'julian') card.classList.add('source-julian');
+
+    // metadata strip
+    if (s === 'qr' && slot1.receivedFrom) {
+      meta.style.display = 'block';
+      meta.textContent = `📤 ได้รับจาก ${slot1.receivedFrom} เมื่อ ${slot1.receivedAt}`;
+    } else if (s === 'julian' && slot1.srcUrl) {
+      meta.style.display = 'block';
+      meta.innerHTML = `⭐ แหล่ง: <code>${slot1.srcUrl}</code>`;
+    } else {
+      meta.style.display = 'none';
+    }
   } else {
     document.getElementById('formName').textContent = '— ยังไม่ได้เลือก —';
-    document.getElementById('formSource').textContent = '';
+    badge.innerHTML = '';
+    meta.style.display = 'none';
     document.getElementById('fDate').value = '';
     document.getElementById('fTime').value = '';
     document.getElementById('fProv').value = '';
-    // Default = วันนี้
     const today = new Date();
     document.getElementById('fDate').placeholder = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()+543}`;
     document.getElementById('fTime').placeholder = '12:00';
@@ -399,6 +449,15 @@ function renderForm() {
   card.classList.toggle('locked', !editMode);
   document.getElementById('formActions').style.display = editMode ? 'none' : 'flex';
   document.getElementById('editActions').style.display = editMode ? 'flex' : 'none';
+
+  // source-aware buttons: read-only sources hide แก้ไข + show Save Copy
+  if (slot1 && (slot1.source === 'qr' || slot1.source === 'julian')) {
+    document.getElementById('btnEdit').style.display = 'none';
+    document.getElementById('btnSaveCopy').style.display = 'inline-block';
+  } else {
+    document.getElementById('btnEdit').style.display = 'inline-block';
+    document.getElementById('btnSaveCopy').style.display = 'none';
+  }
 }
 
 function renderChart() {
@@ -552,6 +611,19 @@ function cancelEdit() {
   editDraft = null;
   log('ยกเลิก edit');
   renderAll();
+}
+
+function saveCopyToPrivate() {
+  if (!slot1) return;
+  const copy = {
+    id: 'p' + Date.now(),
+    name: slot1.name + ' (copy)',
+    gender: slot1.gender,
+    d: slot1.d, m: slot1.m, y: slot1.y, t: slot1.t, prov: slot1.prov,
+  };
+  mockPrivate.push(copy);
+  log(`💾 บันทึก copy เข้า Private: ${copy.name}`, true);
+  loadTank1(copy, 'private');
 }
 
 function saveEdit() {
