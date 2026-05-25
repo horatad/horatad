@@ -8,7 +8,22 @@
     "memory_ref": "LOG 2026-05-25 v2",
     "rule_count": 290,
     "unique_fingerprints": 171,
-    "duplicate_fingerprint_count": 49
+    "duplicate_fingerprint_count": 49,
+    "deep_parsed": true,
+    "deep_parsed_at": "2026-05-25T08:22:00.281Z",
+    "deep_parse_stats": {
+      "enriched_count": 198,
+      "field_hits": {
+        "lagna_relation": 132,
+        "ruler_of_house": 7,
+        "inline_house": 31,
+        "inline_sign": 21,
+        "inline_quality": 37
+      },
+      "unique_fingerprints": 239,
+      "perfectly_unique_rules": 207,
+      "dupe_groups": 32
+    }
   },
   "rules": [
     {
@@ -26,7 +41,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -61,7 +77,9 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:เกษตร+t:REFERENCE",
+        "inline_quality": "เกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -108,7 +126,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -150,7 +169,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p1,3,5,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p1,3,5,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -188,7 +208,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8,9+ctx:transit+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p8,9+ctx:transit+d:ทั่วไป+t:NATAL_ATOMIC",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -227,7 +248,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0,8,9+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p0,8,9+ctx:natal+d:ทั่วไป+iq:เกษตร+t:NATAL_ATOMIC",
+        "inline_quality": "เกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -273,7 +296,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -308,7 +332,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -343,7 +368,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ความสูญเสีย+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ความสูญเสีย+ih:8+t:NATAL_ATOMIC",
+        "inline_house": 8,
+        "domain": "ความสูญเสีย"
       },
       "polarity": "-",
       "domain": "ความสูญเสีย",
@@ -378,7 +405,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:การเงิน+ih:2+t:NATAL_ATOMIC",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -415,7 +444,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -452,7 +483,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p2+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -489,7 +522,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -526,7 +561,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -563,7 +600,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -600,7 +639,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p6+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -637,7 +678,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -674,7 +717,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "-",
       "domain": "ตัวตน",
@@ -711,7 +756,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p9+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p9+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -748,7 +795,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "-",
       "domain": "ตัวตน",
@@ -785,7 +834,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -823,7 +873,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p6,8+ctx:natal+d:หน้าที่การงาน+t:NATAL_COMBINATION"
+        "fingerprint": "p6,8+ctx:natal+d:หน้าที่การงาน+t:NATAL_COMBINATION",
+        "domain": "หน้าที่การงาน"
       },
       "polarity": "~",
       "domain": "หน้าที่การงาน",
@@ -861,7 +912,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p4,7+ctx:natal+d:ตัวตน+t:NATAL_COMBINATION"
+        "fingerprint": "p4,7+ctx:natal+d:ตัวตน+t:NATAL_COMBINATION",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -899,7 +951,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p2,4+ctx:natal+d:ตัวตน+t:NATAL_COMBINATION"
+        "fingerprint": "p2,4+ctx:natal+d:ตัวตน+t:NATAL_COMBINATION",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -944,7 +997,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -979,7 +1033,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:เกษตร+t:DEFINITION",
+        "inline_quality": "เกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1014,7 +1070,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:ประเกษตร+t:DEFINITION",
+        "inline_quality": "ประเกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -1049,7 +1107,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:อุจ+t:DEFINITION",
+        "inline_quality": "อุจ",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1084,7 +1144,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:นิจ+t:DEFINITION",
+        "inline_quality": "นิจ",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -1119,7 +1181,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:มหาจักร+t:DEFINITION",
+        "inline_quality": "มหาจักร",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1154,7 +1218,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:ราชาโชค+t:DEFINITION",
+        "inline_quality": "ราชาโชค",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1189,7 +1255,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:อุจจาวิลาส+t:DEFINITION",
+        "inline_quality": "อุจจาวิลาส",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1224,7 +1292,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+iq:อุจจาภิมุข+t:DEFINITION",
+        "inline_quality": "อุจจาภิมุข",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1261,7 +1331,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+s4+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p1+s4+q:เกษตร+ctx:natal+d:ทั่วไป+is:5+t:NATAL_ATOMIC",
+        "inline_sign": 5,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1298,7 +1370,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+s3+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p2+s3+q:เกษตร+ctx:natal+d:ทั่วไป+is:4+t:NATAL_ATOMIC",
+        "inline_sign": 4,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1338,7 +1412,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+s0,7+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p3+s0,7+q:เกษตร+ctx:natal+d:ทั่วไป+is:1+t:NATAL_ATOMIC",
+        "inline_sign": 1,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1378,7 +1454,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+s2,5+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p4+s2,5+q:เกษตร+ctx:natal+d:ทั่วไป+is:3+t:NATAL_ATOMIC",
+        "inline_sign": 3,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1418,7 +1496,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+s8,11+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p5+s8,11+q:เกษตร+ctx:natal+d:ทั่วไป+is:9+t:NATAL_ATOMIC",
+        "inline_sign": 9,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1458,7 +1538,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+s1,6+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p6+s1,6+q:เกษตร+ctx:natal+d:ทั่วไป+is:2+t:NATAL_ATOMIC",
+        "inline_sign": 2,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1495,7 +1577,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+s9+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p7+s9+q:เกษตร+ctx:natal+d:ทั่วไป+is:10+t:NATAL_ATOMIC",
+        "inline_sign": 10,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1532,7 +1616,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+s10+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p7+s10+q:เกษตร+ctx:natal+d:ทั่วไป+is:11+t:NATAL_ATOMIC",
+        "inline_sign": 11,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1569,7 +1655,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+s10+q:เกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p8+s10+q:เกษตร+ctx:natal+d:ทั่วไป+is:11+t:NATAL_ATOMIC",
+        "inline_sign": 11,
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1606,7 +1694,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+s10+q:ประเกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p1+s10+q:ประเกษตร+ctx:natal+d:ทั่วไป+is:11+t:NATAL_ATOMIC",
+        "inline_sign": 11,
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -1643,7 +1733,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+s9+q:ประเกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p2+s9+q:ประเกษตร+ctx:natal+d:ทั่วไป+is:10+t:NATAL_ATOMIC",
+        "inline_sign": 10,
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -1680,7 +1772,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+s4+q:ประเกษตร+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p8+s4+q:ประเกษตร+ctx:natal+d:ทั่วไป+is:5+iq:ประเกษตร+t:NATAL_ATOMIC",
+        "inline_sign": 5,
+        "inline_quality": "ประเกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -1715,7 +1810,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "qr:มหาจักร+ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "qr:มหาจักร+ctx:natal+d:การเงิน+lr:KUM_LAKKANA+iq:มหาจักร+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "มหาจักร",
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -1759,7 +1857,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p1,2,3,4,5,6,7,8+q:มหาจักร+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "p1,2,3,4,5,6,7,8+q:มหาจักร+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1806,7 +1905,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -1842,7 +1942,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -1877,7 +1978,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1915,7 +2017,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1,7+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p1,7+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -1953,7 +2056,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1,7+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC"
+        "fingerprint": "p1,7+ctx:natal+d:ทั่วไป+t:NATAL_ATOMIC",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -1989,7 +2093,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2034,7 +2139,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2073,7 +2179,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p7,8+ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "p7,8+ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2109,7 +2216,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -2154,7 +2262,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -2192,7 +2301,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p2,5+ctx:natal+d:ตัวตน+t:NATAL_COMBINATION"
+        "fingerprint": "p2,5+ctx:natal+d:ตัวตน+t:NATAL_COMBINATION",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -2228,7 +2338,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2273,7 +2384,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "p1,2,3,4,5,6,7,8+ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -2309,7 +2421,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -2344,7 +2457,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ตัวตน+t:NATAL_ATOMIC",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2379,7 +2493,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+iq:เกษตร+t:NATAL_COMBINATION",
+        "inline_quality": "เกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -2414,7 +2530,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+iq:ประเกษตร+t:NATAL_COMBINATION",
+        "inline_quality": "ประเกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2449,7 +2567,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+iq:อุจ+t:NATAL_COMBINATION",
+        "inline_quality": "อุจ",
+        "domain": "ทั่วไป"
       },
       "polarity": "-",
       "domain": "ทั่วไป",
@@ -2484,7 +2604,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "a:เล็ง+ctx:natal+d:ทั่วไป+iq:นิจ+t:NATAL_COMBINATION",
+        "inline_quality": "นิจ",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2519,7 +2641,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "q:อนุเกษตร+a:สลับเรือนเกษตร+ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "q:อนุเกษตร+a:สลับเรือนเกษตร+ctx:natal+d:ทั่วไป+iq:เกษตร+t:NATAL_COMBINATION",
+        "inline_quality": "เกษตร",
+        "domain": "ทั่วไป"
       },
       "polarity": "+",
       "domain": "ทั่วไป",
@@ -2554,7 +2678,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:NATAL_COMBINATION",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -2589,7 +2714,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:TANUSESH+t:DEFINITION",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2626,7 +2753,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2663,7 +2792,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p2+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -2700,7 +2831,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p3+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -2737,7 +2870,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -2774,7 +2909,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p5+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -2811,7 +2948,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p6+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2848,7 +2987,9 @@
         ],
         "condition_type": "tanu_sert",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+cnd:tanu_sert+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p7+cnd:tanu_sert+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2883,7 +3024,9 @@
         ],
         "condition_type": null,
         "type": "DEFINITION",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:DEFINITION"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:TANULAGN+t:DEFINITION",
+        "lagna_relation": "TANULAGN",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2920,7 +3063,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:5+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 5,
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -2957,7 +3103,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p2+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:4+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 4,
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -2994,7 +3143,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p3+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:1+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 1,
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3031,7 +3183,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:3+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 3,
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -3068,7 +3223,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p5+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:9+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 9,
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -3105,7 +3263,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p6+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:2+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 2,
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3142,7 +3303,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p7+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:10+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 10,
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3179,7 +3343,10 @@
         ],
         "condition_type": "tanu_lagn",
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+cnd:tanu_lagn+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p8+cnd:tanu_lagn+ctx:natal+d:ตัวตน+lr:TANULAGN+is:11+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_sign": 11,
+        "domain": "ตัวตน"
       },
       "polarity": "-",
       "domain": "ตัวตน",
@@ -3214,7 +3381,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3249,7 +3418,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -3285,7 +3456,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:REFERENCE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -3321,7 +3493,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal,transit+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -3356,7 +3529,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -3393,7 +3567,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:ตัวตน+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3430,7 +3606,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:ตัวตน+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -3467,7 +3645,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:ตัวตน+lr:NO_RELATE_LAKKANA+ih:8+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "inline_house": 8,
+        "domain": "ตัวตน"
       },
       "polarity": "-",
       "domain": "ตัวตน",
@@ -3504,7 +3685,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:ตัวตน+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3541,7 +3724,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:ตัวตน+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3578,7 +3763,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:โชคชะตา+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:โชคชะตา+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "โชคชะตา"
       },
       "polarity": "+",
       "domain": "โชคชะตา",
@@ -3615,7 +3802,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:โชคชะตา+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:โชคชะตา+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "โชคชะตา"
       },
       "polarity": "-",
       "domain": "โชคชะตา",
@@ -3650,7 +3839,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:TANUSESH+t:PRINCIPLE",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3687,7 +3878,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3724,7 +3917,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p2+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3761,7 +3956,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3798,7 +3995,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3835,7 +4034,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3872,7 +4073,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p6+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3909,7 +4112,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:ตัวตน+lr:TANUSESH+t:NATAL_ATOMIC",
+        "lagna_relation": "TANUSESH",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3944,7 +4149,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:PRINCIPLE",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -3981,7 +4188,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:ปัตนิ+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:ปัตนิ+ih:7+t:NATAL_ATOMIC",
+        "inline_house": 7,
+        "domain": "ปัตนิ"
       },
       "polarity": "-",
       "domain": "ปัตนิ",
@@ -4018,7 +4227,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:อาชีพ+ih:10+t:NATAL_ATOMIC",
+        "inline_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "-",
       "domain": "อาชีพ",
@@ -4056,7 +4267,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0,3+ctx:natal+d:สุขภาพ+t:NATAL_COMBINATION"
+        "fingerprint": "p0,3+ctx:natal+d:สุขภาพ+t:NATAL_COMBINATION",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -4094,7 +4306,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p7,8+ctx:natal+d:โชคชะตา+t:NATAL_COMBINATION"
+        "fingerprint": "p7,8+ctx:natal+d:โชคชะตา+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "โชคชะตา"
       },
       "polarity": "+",
       "domain": "โชคชะตา",
@@ -4133,7 +4347,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0,5,9+ctx:natal+d:สุขภาพจิต+t:NATAL_COMBINATION"
+        "fingerprint": "p0,5,9+ctx:natal+d:สุขภาพจิต+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "สุขภาพจิต"
       },
       "polarity": "-",
       "domain": "สุขภาพจิต",
@@ -4168,7 +4384,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ปัตนิ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ปัตนิ+ih:7+t:NATAL_ATOMIC",
+        "inline_house": 7,
+        "domain": "ปัตนิ"
       },
       "polarity": "~",
       "domain": "ปัตนิ",
@@ -4203,7 +4421,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -4240,7 +4459,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "+",
       "domain": "ตัวตน",
@@ -4277,7 +4498,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "-",
       "domain": "ตัวตน",
@@ -4314,7 +4537,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p2+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4351,7 +4576,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4388,7 +4615,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4425,7 +4654,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4462,7 +4693,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p6+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4499,7 +4732,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4536,7 +4771,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4573,7 +4810,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:ตัวตน+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "-",
       "domain": "ตัวตน",
@@ -4608,7 +4847,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+lr:KUM_LAKKANA+t:PRINCIPLE",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -4643,7 +4884,10 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:TANULAGN+iq:เกษตร+t:PRINCIPLE",
+        "lagna_relation": "TANULAGN",
+        "inline_quality": "เกษตร",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4678,7 +4922,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:TANULAGN+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -4713,7 +4959,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -4748,7 +4995,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ปัตนิ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ปัตนิ+lr:TANULAGN+ih:7+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "inline_house": 7,
+        "domain": "ปัตนิ"
       },
       "polarity": "+",
       "domain": "ปัตนิ",
@@ -4783,7 +5033,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ปัตนิ+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ปัตนิ+ih:7+t:NATAL_COMBINATION",
+        "inline_house": 7,
+        "domain": "ปัตนิ"
       },
       "polarity": "-",
       "domain": "ปัตนิ",
@@ -4820,7 +5072,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0+ctx:natal+d:ปัตนิ+t:NATAL_COMBINATION"
+        "fingerprint": "p0+ctx:natal+d:ปัตนิ+ih:7+t:NATAL_COMBINATION",
+        "inline_house": 7,
+        "domain": "ปัตนิ"
       },
       "polarity": "-",
       "domain": "ปัตนิ",
@@ -4855,7 +5109,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ทรัพย์+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ทรัพย์+ih:2+t:NATAL_ATOMIC",
+        "inline_house": 2,
+        "domain": "ทรัพย์"
       },
       "polarity": "+",
       "domain": "ทรัพย์",
@@ -4892,7 +5148,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:ทรัพย์+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:ทรัพย์+ih:2+t:NATAL_ATOMIC",
+        "inline_house": 2,
+        "domain": "ทรัพย์"
       },
       "polarity": "-",
       "domain": "ทรัพย์",
@@ -4929,7 +5187,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:สุขภาพ+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:สุขภาพ+ih:8+t:NATAL_ATOMIC",
+        "inline_house": 8,
+        "domain": "สุขภาพ"
       },
       "polarity": "~",
       "domain": "สุขภาพ",
@@ -4966,7 +5226,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ทรัพย์+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ทรัพย์+iq:มหาจักร+ih:11+t:NATAL_ATOMIC",
+        "inline_house": 11,
+        "inline_quality": "มหาจักร",
+        "domain": "ทรัพย์"
       },
       "polarity": "+",
       "domain": "ทรัพย์",
@@ -5001,7 +5264,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+ih:8+t:PRINCIPLE",
+        "inline_house": 8,
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5036,7 +5301,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5071,7 +5337,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ตัวตน+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ตัวตน+lr:NO_RELATE_LAKKANA+t:PRINCIPLE",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "ตัวตน"
       },
       "polarity": "~",
       "domain": "ตัวตน",
@@ -5106,7 +5374,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+ih:8+t:PRINCIPLE",
+        "inline_house": 8,
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5141,7 +5411,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5176,7 +5447,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:โชคชะตา+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:โชคชะตา+lr:KUM_LAKKANA+iq:เกษตร+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "เกษตร",
+        "domain": "โชคชะตา"
       },
       "polarity": "~",
       "domain": "โชคชะตา",
@@ -5211,7 +5485,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5246,7 +5521,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5281,7 +5557,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -5318,7 +5595,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:โชคชะตา+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:โชคชะตา+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "โชคชะตา"
       },
       "polarity": "+",
       "domain": "โชคชะตา",
@@ -5355,7 +5634,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p8+ctx:transit+d:โชคชะตา+t:TRANSIT_NATAL"
+        "fingerprint": "p8+ctx:transit+d:โชคชะตา+t:TRANSIT_NATAL",
+        "domain": "โชคชะตา"
       },
       "polarity": "~",
       "domain": "โชคชะตา",
@@ -5393,7 +5673,8 @@
         ],
         "condition_type": null,
         "type": "REFERENCE",
-        "fingerprint": "p6,8+ctx:natal+d:ชื่อเสียง+t:REFERENCE"
+        "fingerprint": "p6,8+ctx:natal+d:ชื่อเสียง+t:REFERENCE",
+        "domain": "ชื่อเสียง"
       },
       "polarity": "~",
       "domain": "ชื่อเสียง",
@@ -5428,7 +5709,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:อาชีพ+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:อาชีพ+t:PRINCIPLE",
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5465,7 +5747,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5502,7 +5786,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p2+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p2+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5539,7 +5825,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5576,7 +5864,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5613,7 +5903,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5650,7 +5942,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p6+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5687,7 +5981,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:อาชีพ+rh:10+t:NATAL_ATOMIC",
+        "ruler_of_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5724,7 +6020,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p6+ctx:natal+d:อาชีพ+t:NATAL_COMBINATION"
+        "fingerprint": "p6+ctx:natal+d:อาชีพ+t:NATAL_COMBINATION",
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -5759,7 +6056,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "+",
       "domain": "หลักการ",
@@ -5794,7 +6093,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -5829,7 +6130,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -5864,7 +6167,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -5899,7 +6204,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:TANULAGN+t:NATAL_COMBINATION",
+        "lagna_relation": "TANULAGN",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -5934,7 +6241,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -5971,7 +6279,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6008,7 +6318,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p1+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p1+ctx:natal+d:นิสัย+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -6045,7 +6357,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:นิสัย+lr:KUM_LAKKANA+iq:อุจ+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "อุจ",
+        "domain": "นิสัย"
       },
       "polarity": "+",
       "domain": "นิสัย",
@@ -6082,7 +6397,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:นิสัย+lr:KUM_LAKKANA+iq:มหาจักร+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "มหาจักร",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6119,7 +6437,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:นิสัย+lr:KUM_LAKKANA+iq:นิจ+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "นิจ",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -6156,7 +6477,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:อาชีพ+lr:NO_RELATE_LAKKANA+ih:10+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "inline_house": 10,
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -6193,7 +6517,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:นิสัย+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -6230,7 +6556,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6267,7 +6595,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:นิสัย+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -6304,7 +6634,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+is:3+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "inline_sign": 3,
+        "domain": "นิสัย"
       },
       "polarity": "+",
       "domain": "นิสัย",
@@ -6341,7 +6674,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:หลักการ+t:NATAL_ATOMIC",
+        "domain": "หลักการ"
       },
       "polarity": "+",
       "domain": "หลักการ",
@@ -6378,7 +6712,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p6+ctx:natal+d:นิสัย+t:NATAL_ATOMIC",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6415,7 +6750,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p6+ctx:natal+d:อาชีพ+t:NATAL_ATOMIC"
+        "fingerprint": "p6+ctx:natal+d:อาชีพ+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "อาชีพ"
       },
       "polarity": "~",
       "domain": "อาชีพ",
@@ -6452,7 +6789,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:นิสัย+lr:KUM_LAKKANA+iq:นิจ+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "นิจ",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -6489,7 +6829,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:หลักการ+t:NATAL_ATOMIC",
+        "domain": "หลักการ"
       },
       "polarity": "+",
       "domain": "หลักการ",
@@ -6527,7 +6868,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p7+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -6565,7 +6907,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p6,7+ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "p6,7+ctx:natal+d:หลักการ+t:NATAL_COMBINATION",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -6602,7 +6945,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:นิสัย+lr:TANULAGN+t:NATAL_ATOMIC",
+        "lagna_relation": "TANULAGN",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6639,7 +6984,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6676,7 +7023,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -6714,7 +7063,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p8+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p8+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -6752,7 +7102,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p4,8+ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "p4,8+ctx:natal+d:หลักการ+t:NATAL_COMBINATION",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -6789,7 +7140,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p9+ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "p9+ctx:natal+d:หลักการ+t:NATAL_COMBINATION",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -6826,7 +7178,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:หลักการ+t:NATAL_ATOMIC",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -6863,7 +7216,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -6901,7 +7256,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0,3+ctx:natal+d:สุขภาพ+t:NATAL_COMBINATION"
+        "fingerprint": "p0,3+ctx:natal+d:สุขภาพ+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -6936,7 +7293,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+iq:ประเกษตร+t:NATAL_ATOMIC",
+        "inline_quality": "ประเกษตร",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -6971,7 +7330,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:methodology+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:methodology+t:NATAL_ATOMIC",
+        "domain": "methodology"
       },
       "polarity": "~",
       "domain": "methodology",
@@ -7006,7 +7366,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:methodology+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:methodology+t:NATAL_ATOMIC",
+        "domain": "methodology"
       },
       "polarity": "~",
       "domain": "methodology",
@@ -7047,7 +7408,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p1,5,7,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p1,5,7,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7090,7 +7452,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p1,3,5,6,7,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p1,3,5,6,7,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7130,7 +7493,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p2,4,5+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p2,4,5+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7171,7 +7535,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p1,2,5,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p1,2,5,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7213,7 +7578,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p1,2,3,4,6+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p1,2,3,4,6+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7252,7 +7618,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p3,7+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p3,7+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "-",
       "domain": "โชคลาภ",
@@ -7288,7 +7655,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7326,7 +7694,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION",
+        "domain": "นิสัย"
       },
       "polarity": "+",
       "domain": "นิสัย",
@@ -7364,7 +7733,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -7402,7 +7772,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -7440,7 +7811,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p5,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p5,8+ctx:natal+d:นิสัย+iq:อุจ+t:NATAL_COMBINATION",
+        "inline_quality": "อุจ",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -7476,7 +7849,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL",
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -7512,7 +7886,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:การเงิน+iq:อุจจาวิลาส+t:TRANSIT_NATAL",
+        "inline_quality": "อุจจาวิลาส",
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -7551,7 +7927,10 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7,8+ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "p7,8+ctx:natal,transit+d:การเงิน+iq:อุจจาวิลาส+ih:2+t:TRANSIT_NATAL",
+        "inline_house": 2,
+        "inline_quality": "อุจจาวิลาส",
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -7590,7 +7969,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7,8+ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "p7,8+ctx:natal,transit+d:การเงิน+ih:2+t:TRANSIT_NATAL",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -7628,7 +8009,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p0+ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "p0+ctx:natal,transit+d:การเงิน+ih:2+t:TRANSIT_NATAL",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -7667,7 +8050,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p6,7+ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "p6,7+ctx:natal,transit+d:การเงิน+ih:2+t:TRANSIT_NATAL",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -7706,7 +8091,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p4,8+ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "p4,8+ctx:natal,transit+d:การเงิน+ih:2+t:TRANSIT_NATAL",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -7742,7 +8129,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:ความสัมพันธ์+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:ความสัมพันธ์+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "+",
       "domain": "ความสัมพันธ์",
@@ -7784,7 +8173,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p0,3,5,7,8+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p0,3,5,7,8+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -7820,7 +8210,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -7858,7 +8249,10 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p7+ctx:natal,transit+d:ดาวจร+lr:RELATES_LAKKANA+ih:1+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "inline_house": 1,
+        "domain": "ดาวจร"
       },
       "polarity": "-",
       "domain": "ดาวจร",
@@ -7897,7 +8291,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7,8+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p7,8+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL",
+        "domain": "ดาวจร"
       },
       "polarity": "+",
       "domain": "ดาวจร",
@@ -7936,7 +8331,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7,8+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p7,8+ctx:natal,transit+d:โชคลาภ+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -7975,7 +8372,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p6,7+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p6,7+ctx:natal,transit+d:ดาวจร+lr:TANULAGN+t:TRANSIT_NATAL",
+        "lagna_relation": "TANULAGN",
+        "domain": "ดาวจร"
       },
       "polarity": "-",
       "domain": "ดาวจร",
@@ -8013,7 +8412,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p7+ctx:natal,transit+d:ดาวจร+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ดาวจร"
       },
       "polarity": "-",
       "domain": "ดาวจร",
@@ -8052,7 +8453,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p0,7+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p0,7+ctx:natal,transit+d:สุขภาพ+lr:TANULAGN+t:TRANSIT_NATAL",
+        "lagna_relation": "TANULAGN",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8091,7 +8494,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7,8+ctx:natal,transit+d:การเงิน+t:TRANSIT_NATAL"
+        "fingerprint": "p7,8+ctx:natal,transit+d:การเงิน+ih:2+t:TRANSIT_NATAL",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -8129,7 +8534,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p3+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p3+ctx:natal,transit+d:สุขภาพ+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8170,7 +8577,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p3,5,6,8+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p3,5,6,8+ctx:natal,transit+d:ดาวจร+lr:TANULAGN+t:TRANSIT_NATAL",
+        "lagna_relation": "TANULAGN",
+        "domain": "ดาวจร"
       },
       "polarity": "+",
       "domain": "ดาวจร",
@@ -8209,7 +8618,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p1,3+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p1,3+ctx:natal,transit+d:สุขภาพ+lr:TANULAGN+t:TRANSIT_NATAL",
+        "lagna_relation": "TANULAGN",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8247,7 +8658,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p8+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p8+ctx:natal,transit+d:ดาวจร+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ดาวจร"
       },
       "polarity": "-",
       "domain": "ดาวจร",
@@ -8286,7 +8699,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p4,8+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p4,8+ctx:natal,transit+d:สุขภาพ+lr:KUM_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8324,7 +8739,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p8+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p8+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -8362,7 +8778,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p5+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p5+ctx:natal,transit+d:ดาวจร+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ดาวจร"
       },
       "polarity": "+",
       "domain": "ดาวจร",
@@ -8401,7 +8819,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p0,5+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p0,5+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8440,7 +8859,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p1,5+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL"
+        "fingerprint": "p1,5+ctx:natal,transit+d:โชคลาภ+t:TRANSIT_NATAL",
+        "domain": "โชคลาภ"
       },
       "polarity": "+",
       "domain": "โชคลาภ",
@@ -8478,7 +8898,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p9+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p9+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -8514,7 +8935,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:หลักการ+lr:TANULAGN+t:TRANSIT_NATAL",
+        "lagna_relation": "TANULAGN",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -8551,7 +8974,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "-",
       "domain": "ลักษณะนิสัย",
@@ -8588,7 +9013,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "-",
       "domain": "ลักษณะนิสัย",
@@ -8625,7 +9052,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+lr:RELATES_LAKKANA+iq:มหาจักร+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "inline_quality": "มหาจักร",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "-",
       "domain": "ลักษณะนิสัย",
@@ -8662,7 +9092,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:ลักษณะนิสัย+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "+",
       "domain": "ลักษณะนิสัย",
@@ -8702,7 +9134,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p1,3,5,8+ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "p1,3,5,8+ctx:natal+d:หลักการ+t:NATAL_COMBINATION",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -8737,7 +9170,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_COMBINATION",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -8774,7 +9208,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:หลักการ+lr:NO_RELATE_LAKKANA+iq:มหาจักร+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "inline_quality": "มหาจักร",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -8811,7 +9248,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p8+ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "p8+ctx:natal+d:การเงิน+t:NATAL_ATOMIC",
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -8847,7 +9285,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -8886,7 +9325,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p5,7+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p5,7+ctx:natal,transit+d:สุขภาพ+ih:12+t:TRANSIT_NATAL",
+        "inline_house": 12,
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8926,7 +9367,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p0,4,8+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL"
+        "fingerprint": "p0,4,8+ctx:natal,transit+d:สุขภาพ+t:TRANSIT_NATAL",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -8961,7 +9403,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC",
+        "domain": "หลักการ"
       },
       "polarity": "+",
       "domain": "หลักการ",
@@ -8996,7 +9439,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -9031,7 +9475,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+lr:KUM_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "+",
       "domain": "ความสัมพันธ์",
@@ -9066,7 +9512,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+lr:KUM_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "-",
       "domain": "ความสัมพันธ์",
@@ -9105,7 +9553,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p4,8+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p4,8+ctx:natal,transit+d:ดาวจร+lr:KUM_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ดาวจร"
       },
       "polarity": "-",
       "domain": "ดาวจร",
@@ -9140,7 +9590,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "+",
       "domain": "ความสัมพันธ์",
@@ -9175,7 +9626,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+ih:7+t:NATAL_ATOMIC",
+        "inline_house": 7,
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "-",
       "domain": "ความสัมพันธ์",
@@ -9221,7 +9674,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p0,1,2,3,4,5,6,7,8,9+ctx:natal+d:ลักษณะนิสัย+lr:KUM_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "0",
       "domain": "ลักษณะนิสัย",
@@ -9259,7 +9714,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0,9+ctx:natal+d:สุขภาพ+t:NATAL_COMBINATION"
+        "fingerprint": "p0,9+ctx:natal+d:สุขภาพ+lr:KUM_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -9296,7 +9753,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:หลักการ+lr:RELATES_LAKKANA+iq:ประเกษตร+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "inline_quality": "ประเกษตร",
+        "domain": "หลักการ"
       },
       "polarity": "+",
       "domain": "หลักการ",
@@ -9333,7 +9793,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:ลักษณะนิสัย+ih:11+t:NATAL_ATOMIC",
+        "inline_house": 11,
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "0",
       "domain": "ลักษณะนิสัย",
@@ -9368,7 +9830,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:การเงิน+ih:2+t:NATAL_ATOMIC",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -9403,7 +9867,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -9440,7 +9906,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:ลักษณะนิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:ลักษณะนิสัย+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "-",
       "domain": "ลักษณะนิสัย",
@@ -9480,7 +9948,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p3,4,6,7+ctx:natal+d:ลักษณะนิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p3,4,6,7+ctx:natal+d:ลักษณะนิสัย+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "+",
       "domain": "ลักษณะนิสัย",
@@ -9518,7 +9988,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p5,8+ctx:natal+d:ลักษณะนิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p5,8+ctx:natal+d:ลักษณะนิสัย+iq:อุจ+t:NATAL_COMBINATION",
+        "inline_quality": "อุจ",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "-",
       "domain": "ลักษณะนิสัย",
@@ -9556,7 +10028,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p7,8+ctx:natal+d:การเงิน+t:NATAL_COMBINATION"
+        "fingerprint": "p7,8+ctx:natal+d:การเงิน+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "การเงิน"
       },
       "polarity": "+",
       "domain": "การเงิน",
@@ -9594,7 +10068,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7+ctx:natal,transit+d:ดาวจร+t:TRANSIT_NATAL"
+        "fingerprint": "p7+ctx:natal,transit+d:ดาวจร+ih:7+t:TRANSIT_NATAL",
+        "inline_house": 7,
+        "domain": "ดาวจร"
       },
       "polarity": "-",
       "domain": "ดาวจร",
@@ -9634,7 +10110,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0,3,7,8+ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "p0,3,7,8+ctx:natal+d:หลักการ+t:NATAL_COMBINATION",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -9673,7 +10150,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p0,5,9+ctx:natal+d:สุขภาพ+t:NATAL_COMBINATION"
+        "fingerprint": "p0,5,9+ctx:natal+d:สุขภาพ+lr:KUM_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -9710,7 +10189,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:สุขภาพ+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:สุขภาพ+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "สุขภาพ"
       },
       "polarity": "-",
       "domain": "สุขภาพ",
@@ -9747,7 +10228,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p3+ctx:natal+d:สุขภาพ+t:NATAL_ATOMIC"
+        "fingerprint": "p3+ctx:natal+d:สุขภาพ+t:NATAL_ATOMIC",
+        "domain": "สุขภาพ"
       },
       "polarity": "~",
       "domain": "สุขภาพ",
@@ -9782,7 +10264,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:นิสัย+lr:KUM_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -9819,7 +10303,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p4+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p4+ctx:natal+d:นิสัย+lr:NO_RELATE_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "NO_RELATE_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -9854,7 +10340,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -9889,7 +10377,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "+",
       "domain": "ความสัมพันธ์",
@@ -9926,7 +10415,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:การเงิน+ih:2+t:NATAL_ATOMIC",
+        "inline_house": 2,
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -9961,7 +10452,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:ทั่วไป+t:PRINCIPLE",
+        "domain": "ทั่วไป"
       },
       "polarity": "~",
       "domain": "ทั่วไป",
@@ -9996,7 +10488,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+lr:KUM_LAKKANA+iq:ประเกษตร+t:NATAL_ATOMIC",
+        "lagna_relation": "KUM_LAKKANA",
+        "inline_quality": "ประเกษตร",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "-",
       "domain": "ความสัมพันธ์",
@@ -10031,7 +10526,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:หลักการ+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -10068,7 +10565,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p7+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p7+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -10103,7 +10602,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:การเงิน+t:NATAL_ATOMIC",
+        "domain": "การเงิน"
       },
       "polarity": "-",
       "domain": "การเงิน",
@@ -10138,7 +10638,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:การเงิน+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:การเงิน+iq:มหาจักร+t:NATAL_ATOMIC",
+        "inline_quality": "มหาจักร",
+        "domain": "การเงิน"
       },
       "polarity": "~",
       "domain": "การเงิน",
@@ -10176,7 +10678,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p4,6+ctx:natal+d:อาชีพ+t:NATAL_COMBINATION"
+        "fingerprint": "p4,6+ctx:natal+d:อาชีพ+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "อาชีพ"
       },
       "polarity": "+",
       "domain": "อาชีพ",
@@ -10213,7 +10717,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p5+ctx:natal+d:นิสัย+t:NATAL_ATOMIC"
+        "fingerprint": "p5+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+iq:อุจ+t:NATAL_ATOMIC",
+        "lagna_relation": "RELATES_LAKKANA",
+        "inline_quality": "อุจ",
+        "domain": "นิสัย"
       },
       "polarity": "~",
       "domain": "นิสัย",
@@ -10248,7 +10755,10 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_ATOMIC"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+iq:เกษตร+ih:7+t:NATAL_ATOMIC",
+        "inline_house": 7,
+        "inline_quality": "เกษตร",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "+",
       "domain": "ความสัมพันธ์",
@@ -10287,7 +10797,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p1,3,8+ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p1,3,8+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "+",
       "domain": "นิสัย",
@@ -10322,7 +10834,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:หลักการ+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:หลักการ+t:PRINCIPLE",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -10357,7 +10870,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:หลักการ+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:RELATES_LAKKANA+t:PRINCIPLE",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -10393,7 +10908,8 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -10428,7 +10944,8 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION"
+        "fingerprint": "ctx:natal+d:ความสัมพันธ์+t:NATAL_COMBINATION",
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "+",
       "domain": "ความสัมพันธ์",
@@ -10465,7 +10982,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_ATOMIC",
-        "fingerprint": "p0+ctx:natal+d:ความสัมพันธ์+t:NATAL_ATOMIC"
+        "fingerprint": "p0+ctx:natal+d:ความสัมพันธ์+ih:7+t:NATAL_ATOMIC",
+        "inline_house": 7,
+        "domain": "ความสัมพันธ์"
       },
       "polarity": "-",
       "domain": "ความสัมพันธ์",
@@ -10503,7 +11022,9 @@
         ],
         "condition_type": null,
         "type": "NATAL_COMBINATION",
-        "fingerprint": "p3,6+ctx:natal+d:นิสัย+t:NATAL_COMBINATION"
+        "fingerprint": "p3,6+ctx:natal+d:นิสัย+lr:RELATES_LAKKANA+t:NATAL_COMBINATION",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "นิสัย"
       },
       "polarity": "-",
       "domain": "นิสัย",
@@ -10541,7 +11062,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p7+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p7+ctx:natal,transit+d:หลักการ+lr:TANULAGN+t:TRANSIT_NATAL",
+        "lagna_relation": "TANULAGN",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -10576,7 +11099,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:หลักการ+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:หลักการ+t:PRINCIPLE",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -10612,7 +11136,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal,transit+d:หลักการ+t:PRINCIPLE"
+        "fingerprint": "ctx:natal,transit+d:หลักการ+t:PRINCIPLE",
+        "domain": "หลักการ"
       },
       "polarity": "~",
       "domain": "หลักการ",
@@ -10649,7 +11174,10 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "p3+ctx:natal+d:ลักษณะนิสัย+t:PRINCIPLE"
+        "fingerprint": "p3+ctx:natal+d:ลักษณะนิสัย+lr:RELATES_LAKKANA+iq:มหาจักร+t:PRINCIPLE",
+        "lagna_relation": "RELATES_LAKKANA",
+        "inline_quality": "มหาจักร",
+        "domain": "ลักษณะนิสัย"
       },
       "polarity": "0",
       "domain": "ลักษณะนิสัย",
@@ -10684,7 +11212,9 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:หลักการ+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:หลักการ+lr:KUM_LAKKANA+t:PRINCIPLE",
+        "lagna_relation": "KUM_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "0",
       "domain": "หลักการ",
@@ -10724,7 +11254,9 @@
         ],
         "condition_type": null,
         "type": "TRANSIT_NATAL",
-        "fingerprint": "p0,3,7+ctx:natal,transit+d:หลักการ+t:TRANSIT_NATAL"
+        "fingerprint": "p0,3,7+ctx:natal,transit+d:หลักการ+lr:RELATES_LAKKANA+t:TRANSIT_NATAL",
+        "lagna_relation": "RELATES_LAKKANA",
+        "domain": "หลักการ"
       },
       "polarity": "-",
       "domain": "หลักการ",
@@ -10759,7 +11291,8 @@
         ],
         "condition_type": null,
         "type": "PRINCIPLE",
-        "fingerprint": "ctx:natal+d:อ้างอิง+t:PRINCIPLE"
+        "fingerprint": "ctx:natal+d:อ้างอิง+t:PRINCIPLE",
+        "domain": "อ้างอิง"
       },
       "polarity": "0",
       "domain": "อ้างอิง",
