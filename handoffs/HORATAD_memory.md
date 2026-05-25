@@ -158,6 +158,71 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 
 ---
 
+## 10. Audio / BGM — Procedure เพิ่มเพลงใน feature
+
+### ขั้นตอนครบ (ทำครั้งเดียวต่อ feature)
+
+#### A. หาและ download ไฟล์เสียง (user ทำบนเครื่องตัวเอง)
+```powershell
+# Windows PowerShell — ต้องมี yt-dlp.exe อยู่ใน folder เดียวกัน
+.\yt-dlp.exe -x --audio-format mp3 --audio-quality 0 -o "$env:USERPROFILE\Desktop\%(title)s.%(ext)s" "YOUTUBE_URL"
+# ถ้า error "ffprobe not found" → ได้ .webm แทน MP3 → upload .webm มาให้ Claude ทำต่อ
+# ติดตั้ง ffmpeg: winget install ffmpeg แล้วรันใหม่
+```
+
+#### B. Trim ด้วย ffmpeg ใน sandbox (Claude ทำ)
+```bash
+# sandbox ต้องติดตั้ง ffmpeg ก่อน: sudo apt-get install -y ffmpeg
+ffmpeg -y -i "input.webm" -ss 00:00:23 -to 00:01:08 -acodec libmp3lame -q:a 2 /home/user/horatad/audio/NAME-clip.mp3
+ffprobe audio/NAME-clip.mp3 2>&1 | grep Duration   # verify
+```
+
+#### C. HTML — วาง `<audio>` ในตำแหน่งที่ต้องการ
+```html
+<audio id="FEATURE-bgm" src="audio/NAME-clip.mp3?v=APP_VERSION" preload="none" loop></audio>
+```
+- `preload="none"` — ไม่โหลดจนกว่าจะ play (ประหยัด bandwidth)
+- `loop` — วนซ้ำ, ลบถ้าต้องการเล่นครั้งเดียว
+
+#### D. JS — play/stop pattern
+```javascript
+// Auto-play เมื่อเข้า feature + หยุดเมื่อออก
+function startFEATUREBgm(){
+  const a=document.getElementById('FEATURE-bgm');
+  if(a&&a.paused)a.play().catch(()=>{});
+}
+function stopFEATUREBgm(){
+  const a=document.getElementById('FEATURE-bgm');
+  if(a&&!a.paused){a.pause();a.currentTime=0;}
+}
+// Wire เข้า switchTab หรือ event ที่เหมาะสม
+```
+
+#### E. SW CORE_ASSETS — เพิ่มใน sw.js
+```javascript
+'./audio/NAME-clip.mp3?v='+V,
+```
+
+#### F. Bump version (6 ไฟล์ — ดู §Version Bump Checklist ใน docs/HORATAD.md)
+
+---
+
+### Gotchas ที่เจอ
+| ปัญหา | สาเหตุ | วิธีแก้ |
+|---|---|---|
+| yt-dlp ใน PowerShell ไม่เจอ | Windows PATH | ใช้ `.\yt-dlp.exe` (เติม `.\`) |
+| Permission denied เขียนไฟล์ | รันจากโฟลเดอร์ restricted | เพิ่ม `-o "$env:USERPROFILE\Desktop\..."` |
+| ได้ .webm แทน MP3 | ไม่มี ffmpeg บนเครื่อง | upload .webm มาให้ Claude trim ด้วย sandbox ffmpeg |
+| autoplay ถูก block | browser policy ต้องมี user gesture ก่อน | ปกติ — user ต้องคลิก page ก่อน 1 ครั้ง |
+| sandbox ดึงไฟล์เสียงจาก URL ไม่ได้ | IP block จาก host | user download เองแล้ว upload มาเสมอ |
+
+### Audio files ที่ใช้อยู่
+| ไฟล์ | เพลง | ช่วง | Feature | Version |
+|---|---|---|---|---|
+| `audio/dream-island-clip.mp3` | เกาะในฝัน (ร.9) | 0:23–1:08 (45s) | หน้าเกี่ยวกับ | V3.3.31 |
+
+---
+
 ## 9. LOG — session learnings (append-only)
 
 <!-- append ลง table นี้ทุกครั้งที่ session update ไฟล์นี้ — ห้ามแก้ entry เก่า -->
@@ -167,3 +232,4 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 |---|---|---|
 | 2026-05-23 | สร้างไฟล์ | architecture post-Step0, module map (tier 1-5), state machine compareMode 0-3, localStorage 7 keys, bugs (XSS/cursor/SW/numpad), platform quirks (iOS/Android/Desktop), security (PIN bypass + CSP Report-Only), WHY LOG |
 | 2026-05-25 | V3.3.25-31 doc drift recap | (1) **handoff drift = silent failure** — 8 versions ไม่ update → session ใหม่อ่าน "autonomous หมด" ทั้งที่ feature ใหม่ 7 ตัว → ตัดสินใจผิดทั้งหมด. กฎใหม่: PROJECT_STATUS.md version line + ✅ DONE bullet ต้อง update ทุก commit (cheap, 1 บรรทัด), handoff file ทำตอนจบ session. (2) **kb_v24-3 wire local only** — `v3Typhoon()` ยังใช้ kb.json V2.3 (ต้องการ r.p field) → 2 paths คู่กันไม่ break. ถ้า migrate full ต้อง add `r.p` field ใน kb_v24-3 ก่อน. (3) **voice-chat conversational** — `send_chat(messages[])` history 5 + system prompt (ลัคนา+ชื่อ) + max_tokens=400 เพื่อ reply สั้นพอ TTS speak. (4) **BGM auto-play risk** — iOS Safari autoplay policy block ถ้าไม่มี user gesture ก่อน — switchTab(2) คือ tap = gesture จึงน่าจะผ่าน แต่ต้องทดสอบจริง. (5) **localStorage key ใหม่**: `v3_speak_rate` |
+| 2026-05-25 | เพิ่ม audio feature | procedure ครบ: yt-dlp → .webm upload → ffmpeg trim → audio/ → SW cache → switchTab wire. Gotchas: PowerShell .\, Permission denied → Desktop path, no ffmpeg → .webm fallback |
