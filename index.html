@@ -912,7 +912,10 @@ canvas{max-width:100%;height:auto}
     <li>กลับมาที่แอปแล้วกดปุ่ม 🔊 อีกครั้ง</li>
   </ol>
   <p class="tts-guide-note">Samsung: ตั้งค่า → การจัดการทั่วไป → ภาษา → การอ่านออกเสียง</p>
-  <button onclick="closeTTSGuide()" class="memory-close" style="margin-top:12px">ปิด</button>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button onclick="v3RecheckVoice()" class="memory-close" style="flex:1;background:#1a3a5c;border:1px solid #2d6a9f">ตรวจสอบใหม่</button>
+    <button onclick="closeTTSGuide()" class="memory-close" style="flex:1">ปิด</button>
+  </div>
 </div>
 
 <!-- V3 Dev Access Popup -->

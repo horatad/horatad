@@ -132,12 +132,15 @@ export function speak(text, opts = {}) {
 }
 
 // Pre-warm voice list — iOS Safari load voices async
-export function preload() {
+// onReady() fires when voice list is populated (may be immediate or async)
+export function preload(onReady) {
   if (!isSupported()) return;
   try {
-    window.speechSynthesis.getVoices();
-    if ('onvoiceschanged' in window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = () => {};
+    const voices = window.speechSynthesis.getVoices();
+    if (voices.length) {
+      onReady?.();
+    } else if ('onvoiceschanged' in window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = () => onReady?.();
     }
   } catch (_) {}
 }

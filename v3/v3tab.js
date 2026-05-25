@@ -610,5 +610,15 @@ document.addEventListener('DOMContentLoaded', () => {
   _watchTab3();
   _syncRateBtn();
   _loadKb().catch(err => console.warn('[v3tab] kb preload failed:', err));
-  nokPreload(); // NOK: pre-warm voice list (iOS Safari load async)
+  nokPreload(_refreshSpeakBtn); // NOK: pre-warm, update btn when voices load
 });
+
+window.v3RecheckVoice = function() {
+  if (nokHasThaiVoice()) {
+    window.closeTTSGuide();
+    _refreshSpeakBtn();
+    _showToastV3('พบเสียงไทย พร้อมใช้งาน ✓');
+  } else {
+    _showToastV3('ยังไม่พบเสียงไทย — ลองปิดแล้วเปิดแอปใหม่หลังติดตั้ง');
+  }
+};
