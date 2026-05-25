@@ -1,6 +1,27 @@
 # BIBLE Memory — INDEX
 # อ่านไฟล์นี้ก่อนทุก BIBLE session (แทน BIBLE_memory.md เดิม)
-# Last updated: 2026-05-23 (added PROMPTS.md)
+# Last updated: 2026-05-25 (📌 PINNED ground-truth procedures)
+
+---
+
+## 📌 MUST READ FIRST — Ground-truth extraction procedures (2026-05-25)
+
+**Mission:** BIBLE = รักษา ground truth ของ KB → ป้องกัน hallucination ทุก rule ตรวจกับตำรา 102 บทได้
+
+**ก่อนทำงาน BIBLE ใดๆ:**
+1. อ่าน `LOG.md` section `2026-05-25 — 📌 PINNED: Ground-truth extraction architecture` **ครบทั้ง section**
+2. อ่าน `v3/master_dict_meanings.json` ครบทุก section
+3. อ่านบทที่จะแตะจาก `workers/chapter_texts.json` (ไม่ใช่ docx)
+4. ห้าม extract rule ที่ใช้ element ไม่อยู่ใน dict — เสนอเพิ่ม dict ก่อน
+5. ทุก rule ใหม่ใส่ tag: `source_type` (PRIMARY/DERIVED_FROM_CASE/INFERRED/SECONDARY) + `source_chapter` + `source_quote`
+
+**4-Level content separation** (จำให้ได้):
+- L1 PRIMARY rule (ตำราบอกตรง) → KB
+- L2 Element (atom: ดาว/ราศี/ภพ/คุณภาพ) → master dict
+- L3 Prediction (case study output) → ห้ามเป็น rule
+- L4 Secondary (derivation/opinion/Q&A) → KB ได้แต่ tag SECONDARY
+
+---
 
 ## ไฟล์ย่อย
 

@@ -72,3 +72,76 @@
 - ข้อเสียที่รู้แล้ว: schema เปลี่ยน → ต้อง update tool; export JSON แล้วต้อง commit มือ
 - ข้อเสียของ Google Sheets: sync manual, export JSON เอง — แต่คุ้นเคยกว่า
 - Decision: HTML tool เป็นจุดเริ่มต้น, Google Sheets ถ้า user ต้องการ
+
+## 2026-05-25 — 📌 PINNED: Ground-truth extraction architecture (user-defined)
+
+**Context:** user ชี้ว่า BIBLE mission หลัก = **รักษา ground truth ของ KB เพื่อป้องกัน hallucination**
+ทุก rule ใน `kb_v24-3.json` ต้องตรวจสอบกับตำราต้นฉบับ 102 บทได้
+
+### Source of truth location (verified 2026-05-25)
+- ✅ `source/CH000.docx ... CH101.docx` — 102 ไฟล์ตำราต้นฉบับ (immutable)
+- ✅ `workers/chapter_texts.json` — pre-extracted text 1.4MB ครบ ch000-ch101
+- **ใช้ chapter_texts.json อ่าน** (เร็วกว่า unpack docx ทุกครั้ง)
+
+### 4-Level Content Separation Framework (user-defined)
+ทุก content ที่เจอในตำราต้องจัดอยู่ใน 1 ใน 4 ระดับ:
+
+| ระดับ | คำนิยาม | ไปไหน |
+|---|---|---|
+| **1. PRIMARY rule** | ผู้เขียนกล่าวเป็นกฎตรงๆ — declarative + universal | `kb_v24-3.json` ติด tag PRIMARY |
+| **2. Rule element** | atom: planet, sign, house, quality, aspect, polarity, context, domain | master dictionary (ไม่ใช่ rule) |
+| **3. Prediction** | ผลที่ apply rule กับ chart เฉพาะ (case study output) | **ห้ามเข้า KB เป็น rule** — ใช้เป็น evidence backing rule |
+| **4. Ambiguity / Secondary** | derivation, opinion, Q&A answer, author commentary | KB ได้แต่ tag SECONDARY — แยกออกจาก PRIMARY |
+
+### Schema patch (mandatory ทุก rule ใหม่ตั้งแต่นี้)
+```json
+{
+  "id": "R###",
+  "source_type": "PRIMARY | DERIVED_FROM_CASE | INFERRED | SECONDARY",  // ⭐ NEW
+  "source_chapter": "ch###",                                              // ⭐ NEW
+  "source_quote": "<verbatim quote จากตำรา ถ้า PRIMARY>",                  // ⭐ NEW
+  ...existing fields...
+}
+```
+- `grep '"source_type":"PRIMARY"' kb_v24-3.json` → ได้รายการตรวจกับ 100 บทได้
+- ทุก rule ปัจจุบัน 290 ตัว = **ยังไม่มี tag** → ต้อง re-audit (งานหนัก ทำครั้งเดียวจบ)
+
+### Atomic Learning Model (leveraged audit)
+```
+ตำรา 102 บท (immutable) → Claude อ่านหลายรอบ → ตกผลึก rule elements
+        → Master Dictionary (verification truth ของ user)
+        → user audit dict (~100 atoms) → catches rule errors (290 molecules) auto
+        → user แก้ที่ dict ไม่ใช่ที่ rule
+        → Claude อ่าน dict ก่อน extract ทุกครั้ง → consistent + no hallucination
+```
+
+**Effect:** verify N atoms = validate N² combinations (high leverage สำหรับ user)
+
+### Master Dictionary status (2026-05-25)
+**มีแล้ว** (5/11 sections): planets, houses, qualities, domains, aspect_strengths
+
+**ขาด** (6 critical atoms — รอ user เติม):
+1. `signs` (12 ราศี) — เมษ..มีน + ruler/element/quality
+2. `planet_positions` — อุจ/นิจ/เกษตร/ประเกษตร/มหาจักร/ราชาโชค positions per planet
+3. `planet_pairs` — คู่มิตร/คู่ศัตรู/คู่มิตรใหญ่ (ch008)
+4. `lagna_concepts` — ลัคนา/ตนุเศษ/ตนุลัคน์ distinction (ch013)
+5. `house_rulers` — เจ้าเรือนของแต่ละภพ (depends on rising sign)
+6. `special_configs` — มฤตยูสัมพันธ์ลัคนา, etc.
+
+### Procedures for NEXT BIBLE session (📌 enforced)
+ก่อนทำ extraction หรือ Q&A ใดๆ ต้อง:
+1. **อ่าน master_dict_meanings.json ครบทุก section** — ห้ามใช้ element ที่ไม่อยู่ใน dict
+2. **อ่านบทตำราที่จะ extract จาก chapter_texts.json** ก่อน (verbatim ดู source)
+3. **Extract rule** ใส่ tag source_type + source_chapter + source_quote ทุกตัว
+4. **ถ้าไม่แน่ใจว่าเป็น PRIMARY** → tag DERIVED_FROM_CASE หรือ SECONDARY แทน (conservative)
+5. **ถ้าใช้ element ที่ dict ยังไม่มี** → หยุด เสนอเพิ่มใน dict ก่อน อย่า hallucinate
+
+### Why this matters to user (not Claude)
+- 6 เดือนหน้า user จะตรวจ KB ของตัวเองได้ทุกบรรทัด vs ตำราจริง
+- ถ้า user ไม่กล้า ship app เพราะไม่มั่นใจ KB ของตัวเอง → mission BIBLE fail
+- model นี้ทำให้ user "เป็นเจ้าของ" KB จริง ไม่ใช่แค่ "ใช้ของที่ Claude เขียน"
+
+### Reference back-links
+- Procedures conversation: this session 2026-05-25 (BIBLE session, claude/bible-b5bFe @ 1cf5d6f)
+- Existing tools that align: `tools/master_dict_editor.html`, `v3/master_dict_meanings.json`
+- Existing memory aligned: PLANETS.md (rule elements), TAXONOMY.md (rule schema spec)

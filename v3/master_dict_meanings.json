@@ -1,10 +1,24 @@
 {
   "_meta": {
-    "version": "1.0.0",
-    "updated": "2026-05-23",
+    "version": "1.1.0-skeleton",
+    "updated": "2026-05-25",
     "description": "User-editable meanings layer for Thai astrology (Suriyayat). Claude owns master_dict.js (computation), user owns this file (meanings/labels/corrections).",
     "owner": "user",
-    "sync_protocol": "Claude proposes rows in LOG.md → user validates → user edits this file → Claude reads next session"
+    "sync_protocol": "Claude proposes rows in LOG.md → user validates → user edits this file → Claude reads next session",
+    "completion_status": {
+      "planets": "complete (10/10)",
+      "houses": "complete (12/12)",
+      "qualities": "complete (11/11)",
+      "domains": "complete (7/7)",
+      "aspect_strengths": "complete (5/5)",
+      "signs": "SKELETON — names filled, meanings need user input",
+      "planet_positions": "SKELETON — structure only, all values need user input from ch004-ch006",
+      "planet_pairs": "SKELETON — needs user input from ch008",
+      "lagna_concepts": "SKELETON — needs user input from ch013",
+      "house_rulers_by_lagna": "SKELETON — 12×12 matrix needs user input",
+      "special_configs": "SKELETON — needs user input as encountered"
+    },
+    "provenance_policy": "Every entry should include source_chapter and source_quote when possible. Atoms in this dict are the ground-truth verification layer for rules in kb_v24-3.json."
   },
   "planets": {
     "1": {
@@ -227,5 +241,113 @@
     "YOK":  {"name": "โยค",     "degree": 90,  "strength_pct": 50,  "note": "90°/270°"},
     "TRI":  {"name": "ตรีโกณ", "degree": 120, "strength_pct": 25,  "note": "120°/240°"},
     "NONE": {"name": "ไม่สัมพันธ์", "degree": null, "strength_pct": 0, "note": "ไม่มี aspect"}
+  },
+
+  "signs": {
+    "_skeleton_note": "TODO: เติม ruler/element/nature/keywords จาก ch001 (ราศีทั้ง 12) และตำราอ้างอิง — Claude ไม่เติม content เพื่อ ป้องกัน hallucination",
+    "1":  {"name": "เมษ",     "name_en": "Aries",       "ruler_planet_id": "TODO", "element": "TODO (ไฟ/ดิน/ลม/น้ำ)", "nature": "TODO (จร/คงที่/สามัญ)", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "2":  {"name": "พฤษภ",   "name_en": "Taurus",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "3":  {"name": "มิถุน",   "name_en": "Gemini",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "4":  {"name": "กรกฎ",   "name_en": "Cancer",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "5":  {"name": "สิงห์",   "name_en": "Leo",         "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "6":  {"name": "กันย์",   "name_en": "Virgo",       "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "7":  {"name": "ตุล",     "name_en": "Libra",       "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "8":  {"name": "พิจิก",   "name_en": "Scorpio",     "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "9":  {"name": "ธนู",     "name_en": "Sagittarius", "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "10": {"name": "มกร",     "name_en": "Capricorn",   "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "11": {"name": "กุมภ์",   "name_en": "Aquarius",    "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"},
+    "12": {"name": "มีน",     "name_en": "Pisces",      "ruler_planet_id": "TODO", "element": "TODO", "nature": "TODO", "represents": [], "keywords": [], "source_chapter": "ch001"}
+  },
+
+  "planet_positions": {
+    "_skeleton_note": "TODO: เติมจาก ch004-ch006 (ความหมายดาว, ดวงมาตรฐาน 10 อย่าง) — ตำแหน่ง uchcha(อุจ)/nicha(นิจ)/kaset(เกษตร)/prakaset(ประเกษตร)/mahachak(มหาจักร)/rajayok(ราชาโชค) ของแต่ละดาว. ใส่ sign_id (1-12) และ degree (ถ้าตำราระบุ). Claude ไม่เติมเพื่อป้องกัน hallucination",
+    "1":  {"planet": "อาทิตย์",   "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "2":  {"planet": "จันทร์",    "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "3":  {"planet": "อังคาร",    "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "4":  {"planet": "พุธ",       "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "5":  {"planet": "พฤหัสบดี", "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "6":  {"planet": "ศุกร์",     "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "7":  {"planet": "เสาร์",     "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "8":  {"planet": "ราหู",      "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "9":  {"planet": "เกตุ",      "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"},
+    "10": {"planet": "มฤตยู",     "uchcha": {"sign_id": "TODO", "degree": null}, "nicha": {"sign_id": "TODO", "degree": null}, "kaset": [], "prakaset": [], "mahachak": [], "rajayok": [], "source_chapter": "ch004-ch006"}
+  },
+
+  "planet_pairs": {
+    "_skeleton_note": "TODO: เติมจาก ch008 (ดาวคู่ 4 ประเภท). format: array of [planet_id_a, planet_id_b]. คู่มิตรใหญ่ = mahamitr (ช่วยเหลือกันมาก เช่น เสาร์-ราหู ที่ LOG ระบุ)",
+    "mitr":       {"description": "คู่มิตร — ส่งเสริมกัน",                "pairs": [], "source_chapter": "ch008"},
+    "mahamitr":   {"description": "คู่มิตรใหญ่ — ช่วยเหลือกันมาก",        "pairs": [], "source_chapter": "ch008", "known_examples": [["7","8"]]},
+    "satru":      {"description": "คู่ศัตรู — ขัดแย้งกัน",                  "pairs": [], "source_chapter": "ch008"},
+    "mahasatru":  {"description": "คู่ศัตรูใหญ่ (ถ้าตำราระบุ)",            "pairs": [], "source_chapter": "ch008"},
+    "neutral":    {"description": "เป็นกลาง — ไม่ส่งเสริมไม่ขัดแย้ง",    "pairs": [], "source_chapter": "ch008"}
+  },
+
+  "lagna_concepts": {
+    "_skeleton_note": "TODO: เติมจาก ch013 (ลัคนา-ตนุเศษ-ตนุลัคน์). LOG ระบุว่า '3 ระดับที่แตกต่างกัน' (s1 2026-05-22) — user verify exact distinction",
+    "lakkana": {
+      "name_th": "ลัคนา",
+      "name_en": "Lagna / Ascendant",
+      "definition": "TODO",
+      "calculation_note": "TODO",
+      "priority": "highest",
+      "source_chapter": "ch013",
+      "memory_ref": "LOG 2026-05-22 s1"
+    },
+    "tanusesh": {
+      "name_th": "ตนุเศษ",
+      "name_en": "Tanusesh",
+      "definition": "TODO",
+      "calculation_note": "TODO",
+      "priority": "second",
+      "source_chapter": "ch013"
+    },
+    "tanulagn": {
+      "name_th": "ตนุลัคน์",
+      "name_en": "Tanulagn",
+      "definition": "TODO",
+      "calculation_note": "TODO",
+      "priority": "third",
+      "source_chapter": "ch013"
+    },
+    "kum_lakkana": {
+      "name_th": "กุมลัคนา",
+      "definition": "TODO — ดาวที่อยู่ในภพตนุ (ภพ 1)",
+      "effect_note": "TODO — แสดงออกก่อนดาวตรีโกณ/โยค/เล็งเสมอ (R288)",
+      "source_chapter": "TODO (ระบุบทที่อธิบายชัด)"
+    }
+  },
+
+  "house_rulers_by_lagna": {
+    "_skeleton_note": "TODO: 12×12 matrix. key = lagna sign_id (1-12), value = array 12 ตัวของ planet_id ที่เป็นเจ้าเรือนภพ 1..12 ตามลำดับ. คำนวณได้จาก planet_positions.kaset ถ้าเติมครบ — user เลือกว่าจะเติมมือ หรือให้ Claude derive หลัง kaset เสร็จ",
+    "1":  {"lagna_sign": "เมษ",     "rulers_house_1_to_12": []},
+    "2":  {"lagna_sign": "พฤษภ",   "rulers_house_1_to_12": []},
+    "3":  {"lagna_sign": "มิถุน",   "rulers_house_1_to_12": []},
+    "4":  {"lagna_sign": "กรกฎ",   "rulers_house_1_to_12": []},
+    "5":  {"lagna_sign": "สิงห์",   "rulers_house_1_to_12": []},
+    "6":  {"lagna_sign": "กันย์",   "rulers_house_1_to_12": []},
+    "7":  {"lagna_sign": "ตุล",     "rulers_house_1_to_12": []},
+    "8":  {"lagna_sign": "พิจิก",   "rulers_house_1_to_12": []},
+    "9":  {"lagna_sign": "ธนู",     "rulers_house_1_to_12": []},
+    "10": {"lagna_sign": "มกร",     "rulers_house_1_to_12": []},
+    "11": {"lagna_sign": "กุมภ์",   "rulers_house_1_to_12": []},
+    "12": {"lagna_sign": "มีน",     "rulers_house_1_to_12": []}
+  },
+
+  "special_configs": {
+    "_skeleton_note": "TODO: configurations พิเศษ — เพิ่มทีละตัวเมื่อเจอ. ตัวอย่างที่ LOG ระบุไว้แล้ว: มฤตยูสัมพันธ์ลัคนา (ch101 R186), กุมลัคนา priority (R288), 4 ดาวจรร้ายพร้อมกัน (R289), เสาร์ราหูคู่มิตรใหญ่",
+    "mrittyu_lagna_relation": {
+      "name_th": "มฤตยูสัมพันธ์ลัคนา",
+      "definition": "TODO — ดาว 0 (มฤตยู) มี aspect กับลัคนา (กุม/เล็ง/โยค/ตรีโกณ)",
+      "effect": "ทำให้มีเซนส์ลึกลับ (ถ้าไม่สัมพันธ์ = ไม่มี)",
+      "source_chapter": "ch101",
+      "rule_ref": "R186"
+    },
+    "four_evil_transit_strong_chart": {
+      "name_th": "4 ดาวจรร้าย + ดวงเข้มแข็ง + คู่มิตรรับ",
+      "definition": "TODO",
+      "effect": "ไม่ถึงฆาต",
+      "source_chapter": "ch101",
+      "rule_ref": "R289"
+    }
   }
 }
