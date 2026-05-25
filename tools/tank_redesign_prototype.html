@@ -197,7 +197,6 @@
     </div>
     <div class="row" style="gap: 6px; display:none;" id="editActions">
       <button onclick="cancelEdit()">↩️ ยกเลิก</button>
-      <button onclick="copyCurrentToForm()" id="btnCopyCur" style="display:none;">📋 คัดลอกค่าเดิม</button>
       <button class="primary" onclick="castChart()">🔮 เพิ่มชื่อ</button>
       <button onclick="saveEdit()">💾 บันทึกลง Private</button>
     </div>
@@ -209,13 +208,41 @@
   (วงในยังว่าง — เลือกดวงก่อน)
 </div>
 
-<!-- chart toolbar: mode label + annotation toggle -->
+<!-- chart toolbar: mode label + annotation toggle + rectify -->
 <div class="row" style="justify-content: space-between; gap: 8px; margin: 8px 0;">
   <div class="mode-label" id="modeLabel" style="flex:1; margin: 0;">ดวงเดี่ยว</div>
   <button class="chip" onclick="cycleLabelMode()" id="labelToggle" title="สลับการแสดงชื่อราศี/ภพ">
     <span id="labelIcon">🅰️</span>
     <span id="labelText">ราศี</span>
   </button>
+  <button class="chip" onclick="toggleRectifyMode()" id="rectifyToggle" title="ปรับเวลาเกิดให้ลัคนาตรง" style="background:#fff3cd; border-color:#ffc107;">
+    🎯 <span id="rectifyText">ปรับลัคนา</span>
+  </button>
+</div>
+
+<!-- rectify banner — โผล่ขึ้นมาเฉพาะตอน rectify mode -->
+<div id="rectifyBanner" style="display:none; padding: 10px 12px; background:#fff3cd; border:1px solid #ffc107; border-radius:8px; margin-bottom: 8px;">
+  <div class="row" style="justify-content: space-between; align-items: flex-start;">
+    <div style="flex:1;">
+      <strong>🎯 กำลังปรับลัคนา</strong>
+      <div style="font-size: 12px; color:#5a4a1a; margin-top: 4px;">
+        ใช้ <strong>◀▶</strong> ใต้แผนภูมิเลื่อนเวลา · เวลาในฟอร์มจะอัปเดตตาม
+      </div>
+      <div style="font-size: 11px; color:var(--muted); margin-top: 4px;">
+        เดิม: <span id="rectifyOrigTime">—</span> · ใหม่: <strong id="rectifyNewTime">—</strong>
+      </div>
+    </div>
+    <select id="rectifyStepSel" onchange="rectifyStep=parseInt(this.value)" style="padding: 4px 6px; font-size: 12px;">
+      <option value="1">±1 นาที</option>
+      <option value="5">±5 นาที</option>
+      <option value="10">±10 นาที</option>
+      <option value="30">±30 นาที</option>
+    </select>
+  </div>
+  <div class="row" style="gap: 6px; margin-top: 8px;">
+    <button onclick="cancelRectify()" style="flex:1;">↩️ ยกเลิก (กลับเวลาเดิม)</button>
+    <button class="primary" onclick="confirmSaveRectify()" style="flex:1;">💾 บันทึกเวลาใหม่</button>
+  </div>
 </div>
 
 <!-- chart-nav-header: ◀▶ เลื่อน slot2 -->
@@ -382,6 +409,9 @@ let curKind = 'person';
 let labelMode = 'sign';     // 'sign' | 'house' | 'off'
 let momentMode = 'cal';     // 'cal' | 'search'
 let activeTags = new Set(); // Set<string> — filter tags (OR)
+let rectifyMode = false;    // true = ใช้ ◀▶ บนแผนภูมิเลื่อนลัคนา (เวลาเปลี่ยนตาม)
+let rectifyOriginal = null; // snapshot slot1 ก่อนเข้า rectify (สำหรับ revert)
+let rectifyStep = 1;        // ก้าวต่อคลิก: นาทีของเวลาเกิด
 
 // ============================================================
 // HELPERS
@@ -529,6 +559,13 @@ function renderChartNav() {
   const nav = document.getElementById('chartNav');
   const hint = document.getElementById('navHint');
   const stepSel = document.getElementById('momentStep');
+  // rectify mode: ◀▶ เลื่อนเวลา (ใช้ rectifyStepSel ใน banner แทน)
+  if (rectifyMode) {
+    nav.style.display = 'flex';
+    hint.innerHTML = `🎯 เวลา: <strong>${slot1?.t || '—'}</strong> (เลื่อนเพื่อขยับลัคนา)`;
+    stepSel.style.display = 'none';
+    return;
+  }
   if (!slot2) {
     nav.style.display = 'none';
     return;
@@ -721,9 +758,6 @@ function enterInputMode() {
   document.getElementById('fDate').value = '';
   document.getElementById('fTime').value = '';
   document.getElementById('fProv').value = '';
-  // ถ้ามี slot1 อยู่ — แสดงปุ่ม "📋 คัดลอกค่าเดิม" ให้ user เลือก paste ค่าเดิมถ้าต้องการ
-  document.getElementById('btnCopyCur').style.display = slot1 ? 'inline-block' : 'none';
-  // แสดง tag selector + render chips
   document.getElementById('fTagsRow').style.display = 'block';
   renderTagSelector();
   log('เข้า input mode — ล้างฟอร์มแล้ว');
@@ -733,7 +767,7 @@ function enterInputMode() {
 
 function renderTagSelector() {
   const list = document.getElementById('fTagsList');
-  const tags = TAG_OPTIONS.private;  // ดวงที่ user กรอกเอง = Private → ใช้ tag pool ของ Private
+  const tags = TAG_OPTIONS.private;
   list.innerHTML = tags.map(t => {
     const on = editDraft.tags && editDraft.tags.has(t);
     return `<span class="chip ${on?'history':''}" onclick="toggleDraftTag('${t}')" style="font-size:12px; padding:4px 8px;">${t}</span>`;
@@ -745,15 +779,6 @@ function toggleDraftTag(t) {
   if (editDraft.tags.has(t)) editDraft.tags.delete(t);
   else editDraft.tags.add(t);
   renderTagSelector();
-}
-
-function copyCurrentToForm() {
-  // optional helper: paste ค่าเดิมเข้า input mode (ถ้า user อยากทำ variation)
-  if (!slot1) return;
-  document.getElementById('fDate').value = fmtDate(slot1);
-  document.getElementById('fTime').value = slot1.t;
-  document.getElementById('fProv').value = slot1.prov;
-  log('คัดลอกค่าเดิมเข้าฟอร์ม (แก้ตรงไหนก็ได้)');
 }
 
 function cancelEdit() {
@@ -1039,7 +1064,91 @@ function loadMomentFromSearch(d, m, y, label) {
   renderAll();
 }
 
+// ============================================================
+// RECTIFY MODE — ปรับลัคนา (ลองเวลาเกิดใกล้เคียง)
+// ============================================================
+function toggleRectifyMode() {
+  if (!slot1) {
+    alert('กรุณาเลือกดวงก่อน');
+    return;
+  }
+  if (rectifyMode) {
+    cancelRectify();
+    return;
+  }
+  rectifyMode = true;
+  rectifyOriginal = { ...slot1 };  // snapshot สำหรับ revert
+  document.getElementById('rectifyBanner').style.display = 'block';
+  document.getElementById('rectifyToggle').style.background = '#ffc107';
+  document.getElementById('rectifyText').textContent = 'เลิกปรับ';
+  document.getElementById('rectifyOrigTime').textContent = slot1.t;
+  updateRectifyTimeDisplay();
+  log('🎯 เข้า rectify mode — ◀▶ จะเลื่อนเวลา ลัคนาจะขยับตาม', true);
+}
+
+function updateRectifyTimeDisplay() {
+  document.getElementById('rectifyNewTime').textContent = slot1.t;
+}
+
+function navRectify(dir) {
+  if (!slot1) return;
+  // เลื่อนเวลา ±step นาที (mock simulation — ลัคนาจะขยับตามใน real engine)
+  const [h, m] = slot1.t.split(':').map(Number);
+  let total = h * 60 + m + dir * rectifyStep;
+  if (total < 0) total += 24 * 60;
+  if (total >= 24 * 60) total -= 24 * 60;
+  const nh = Math.floor(total / 60), nm = total % 60;
+  slot1.t = `${String(nh).padStart(2,'0')}:${String(nm).padStart(2,'0')}`;
+  updateRectifyTimeDisplay();
+  renderForm();  // ฟอร์ม mirror slot1 — เวลาใหม่ขึ้นทันที (lock mode ยังไม่ save)
+  renderChart();
+  log(`🎯 rectify ${dir > 0 ? '+' : ''}${dir * rectifyStep} นาที → ${slot1.t}`);
+}
+
+function cancelRectify() {
+  if (rectifyOriginal) {
+    slot1 = { ...rectifyOriginal };
+    log(`↩️ ยกเลิก rectify — กลับเวลาเดิม ${slot1.t}`, true);
+  }
+  rectifyMode = false;
+  rectifyOriginal = null;
+  document.getElementById('rectifyBanner').style.display = 'none';
+  document.getElementById('rectifyToggle').style.background = '#fff3cd';
+  document.getElementById('rectifyText').textContent = 'ปรับลัคนา';
+  renderAll();
+}
+
+function confirmSaveRectify() {
+  if (!slot1 || !rectifyOriginal) return;
+  const oldT = rectifyOriginal.t, newT = slot1.t;
+  if (oldT === newT) {
+    alert('เวลาไม่เปลี่ยน — ไม่ต้องบันทึก');
+    return;
+  }
+  // confirm dialog
+  if (!confirm(`บันทึกเวลาเกิดใหม่ของ "${slot1.name}"?\n\nเดิม: ${oldT}\nใหม่: ${newT}\n\nจะเขียนทับใน Private — แน่ใจไหม?`)) {
+    return;
+  }
+  // commit: update Private record
+  const idx = mockPrivate.findIndex(p => p.id === slot1.id);
+  if (idx >= 0) {
+    mockPrivate[idx] = { ...mockPrivate[idx], t: newT };
+    log(`💾 บันทึก rectify: ${slot1.name} เวลา ${oldT} → ${newT}`, true);
+  } else {
+    log(`⚠️ ไม่พบ record ใน Private — slot1 อาจเป็น QR/Julian (ใช้ Save Copy แทน)`);
+  }
+  rectifyMode = false;
+  rectifyOriginal = null;
+  document.getElementById('rectifyBanner').style.display = 'none';
+  document.getElementById('rectifyToggle').style.background = '#fff3cd';
+  document.getElementById('rectifyText').textContent = 'ปรับลัคนา';
+  saveLastSlot1();
+  renderAll();
+}
+
 function navSlot2(dir) {
+  // ถ้าอยู่ใน rectify mode → ◀▶ เลื่อนเวลา/ลัคนา (ไม่ใช่ slot2)
+  if (rectifyMode) { navRectify(dir); return; }
   if (!slot2) { log('⚠️ วงนอกปิด — ◀▶ disabled'); return; }
   if (slot2.kind === 'moment') {
     const step = document.getElementById('momentStep').value;
