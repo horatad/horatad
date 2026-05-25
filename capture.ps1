@@ -86,12 +86,18 @@ public class FPForm : Form, DPFP.Capture.EventHandler {
 
     public void OnFingerTouch(object c, string s) {
         Console.Error.WriteLine("DBG: FingerTouch");
-        this.BeginInvoke(new Action(() => { label.Text = "Reading..."; }));
+        this.BeginInvoke(new Action(() => { label.Text = "Hold still... (2-3 sec)"; }));
     }
-    public void OnFingerGone(object c, string s)       { Console.Error.WriteLine("DBG: FingerGone"); }
+    public void OnFingerGone(object c, string s) {
+        Console.Error.WriteLine("DBG: FingerGone");
+        this.BeginInvoke(new Action(() => { label.Text = "Place finger on scanner..."; }));
+    }
     public void OnReaderConnect(object c, string s)    { Console.Error.WriteLine("DBG: ReaderConnect " + s); }
     public void OnReaderDisconnect(object c, string s) { Console.Error.WriteLine("DBG: ReaderDisconnect"); }
-    public void OnSampleQuality(object c, string s, CaptureFeedback f) { Console.Error.WriteLine("DBG: Quality " + f); }
+    public void OnSampleQuality(object c, string s, CaptureFeedback f) {
+        Console.Error.WriteLine("DBG: Quality " + f);
+        this.BeginInvoke(new Action(() => { label.Text = "Quality: " + f; }));
+    }
 
     protected override void OnFormClosed(FormClosedEventArgs e) {
         if (capture != null) {
