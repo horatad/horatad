@@ -198,7 +198,7 @@
     <div class="row" style="gap: 6px; display:none;" id="editActions">
       <button onclick="cancelEdit()">↩️ ยกเลิก</button>
       <button onclick="copyCurrentToForm()" id="btnCopyCur" style="display:none;">📋 คัดลอกค่าเดิม</button>
-      <button class="primary" onclick="castChart()">🔮 ผูกดวง</button>
+      <button class="primary" onclick="castChart()">🔮 เพิ่มชื่อ</button>
       <button onclick="saveEdit()">💾 บันทึกลง Private</button>
     </div>
   </div>
@@ -261,14 +261,27 @@
   <div class="modal">
     <div class="modal-head">
       <h3>📂 เลือกดวง</h3>
-      <button onclick="closeModal('modalLoad')">×</button>
+      <div class="row" style="gap: 4px;">
+        <button onclick="doImport()" title="นำเข้าจากไฟล์ .json" style="padding: 4px 8px;">📥</button>
+        <button onclick="doExport()" title="ส่งออกเป็นไฟล์ .json" style="padding: 4px 8px;">📤</button>
+        <button onclick="closeModal('modalLoad')" style="padding: 4px 10px;">×</button>
+      </div>
     </div>
     <div class="kind-tiles">
       <div class="kind-tile active" onclick="switchSource('private')" id="srcPrivate"><div class="icon">📂</div><div class="label">Private</div></div>
       <div class="kind-tile" onclick="switchSource('qr')" id="srcQr"><div class="icon">📤</div><div class="label">QR</div></div>
       <div class="kind-tile" onclick="switchSource('julian')" id="srcJulian"><div class="icon">⭐</div><div class="label">Julian</div></div>
     </div>
-    <div class="row" id="loadFilters" style="flex-wrap:wrap; gap:6px; margin-bottom:8px; display:none;"></div>
+    <div class="row" style="justify-content: space-between; gap: 6px; margin-bottom: 8px;">
+      <div class="row" id="loadFilters" style="flex:1; flex-wrap:wrap; gap:6px; display:none;"></div>
+      <select id="sortMode" onchange="renderSourceList()" style="padding: 6px; border: 1px solid var(--line); border-radius: 6px; font-size: 12px;">
+        <option value="name_az">⇅ ชื่อ A-Z</option>
+        <option value="name_za">⇅ ชื่อ Z-A</option>
+        <option value="recent">⇅ ใหม่ล่าสุด</option>
+        <option value="bday_new">⇅ วันเกิดล่าสุด</option>
+        <option value="bday_old">⇅ วันเกิดเก่าสุด</option>
+      </select>
+    </div>
     <div class="picker-list" id="loadList"></div>
   </div>
 </div>
@@ -432,9 +445,9 @@ function renderForm() {
   } else if (editMode) {
     // input mode (เพิ่งกด "✏️ ใส่ข้อมูล")
     document.getElementById('formName').textContent = '✏️ กำลังใส่ข้อมูลใหม่';
-    badge.innerHTML = '<span class="source-badge form">🔮 รอข้อมูล</span>';
+    badge.innerHTML = '<span class="source-badge form">🔮 แสดงผล</span>';
     meta.style.display = 'block';
-    meta.innerHTML = '💡 กรอกข้อมูล แล้วกด <strong>🔮 ผูกดวง</strong> (ทดลอง) หรือ <strong>💾 บันทึก</strong>';
+    meta.innerHTML = '💡 กรอกข้อมูล แล้วกด <strong>🔮 เพิ่มชื่อ</strong> (ทดลอง) หรือ <strong>💾 บันทึก</strong>';
   } else {
     // empty state — no slot1, no edit
     document.getElementById('formName').textContent = '— ยังไม่มีดวง —';
@@ -603,10 +616,19 @@ function renderSourceList() {
   } else {
     filterArea.style.display = 'none';
   }
-  // filter data
-  const filtered = activeTags.size
+  // filter
+  let filtered = activeTags.size
     ? data.filter(p => (p.tags||[]).some(t => activeTags.has(t)))
-    : data;
+    : [...data];
+  // sort
+  const sortMode = document.getElementById('sortMode').value;
+  const yToNum = p => (p.y || 0) * 10000 + (p.m || 0) * 100 + (p.d || 0);
+  if (sortMode === 'name_az') filtered.sort((a,b) => a.name.localeCompare(b.name, 'th'));
+  if (sortMode === 'name_za') filtered.sort((a,b) => b.name.localeCompare(a.name, 'th'));
+  if (sortMode === 'recent')  filtered.sort((a,b) => (b.id > a.id ? 1 : -1));  // mock: id-based
+  if (sortMode === 'bday_new') filtered.sort((a,b) => yToNum(b) - yToNum(a));
+  if (sortMode === 'bday_old') filtered.sort((a,b) => yToNum(a) - yToNum(b));
+
   if (!filtered.length) {
     list.innerHTML = `<div class="empty-hint">${activeTags.size ? 'ไม่มีดวงที่ตรง tag ที่เลือก' : `ยังไม่มีดวงใน ${src}`}</div>`;
     return;
@@ -620,6 +642,55 @@ function renderSourceList() {
       </div>
     `;
   }).join('');
+}
+
+// ============================================================
+// IMPORT / EXPORT
+// ============================================================
+function doExport() {
+  const all = {
+    private: mockPrivate,
+    qr: mockQr,
+    relationships: mockRels,
+    events: mockEvents,
+    exportedAt: new Date().toISOString(),
+  };
+  const json = JSON.stringify(all, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `horatad-export-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  log(`📤 Export → ดาวน์โหลด ${a.download}`, true);
+}
+
+function doImport() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.private) mockPrivate.push(...data.private.filter(p => !mockPrivate.find(x => x.id === p.id)));
+        if (data.qr) mockQr.push(...data.qr.filter(p => !mockQr.find(x => x.id === p.id)));
+        if (data.relationships) Object.assign(mockRels, data.relationships);
+        if (data.events) mockEvents.push(...data.events.filter(e => !mockEvents.find(x => x.id === e.id)));
+        log(`📥 Import สำเร็จ — เพิ่ม ${data.private?.length||0} private, ${data.qr?.length||0} QR`, true);
+        renderSourceList();
+      } catch(err) {
+        log(`❌ Import error: ${err.message}`, true);
+        alert('ไฟล์ไม่ถูกต้อง: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
 }
 
 function clearTags() {
