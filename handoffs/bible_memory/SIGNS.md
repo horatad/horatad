@@ -76,3 +76,23 @@ nicha_sign = (uchcha_sign + 6) mod 12
 ใช้ตรวจสอบทุก planet — ผมตรวจแล้ว 7 ดาวอื่นถูก, เฉพาะ ราหู ที่ผิด memory เดิม
 
 Master dict v3/master_dict_meanings.json planet_positions[8] แก้แล้ว — entry มี `"corrected": "2026-05-26"` flag
+
+---
+## ⚠️ Correction 2026-05-26 — มหาจักร table DEPRECATED (supersedes 2026-05-23 มหาจักร pairs section above)
+
+**User verification:** แต่ละดาวมีมหาจักร 1 ราศี (ไม่ใช่ 2 ตามที่ memory code "๗๒ ๑๘ ๔๓ ๕๖" บอก)
+
+| ดาว | มหาจักร (ราศี) | จุลจักร (ตรงข้าม +6) | Verified |
+|---|---|---|---|
+| 1 อาทิตย์ | กรกฎ (canonical 3) | มกร (canonical 9) | ✅ user 2026-05-26 |
+| 2 จันทร์ | ? | ? | รอ user |
+| 3 อังคาร | ? | ? | รอ user |
+| 4 พุธ | ? | ? | รอ user |
+| 5 พฤหัส | ? | ? | รอ user |
+| 6 ศุกร์ | ? | ? | รอ user |
+| 7 เสาร์ | ? | ? | รอ user |
+| 8 ราหู | ? | ? | รอ user |
+
+**Note about R047:** R047 wording "[(7,2)(1,8)(4,3)(5,6)] กุมกัน ในเรือนเกษตรของกันและกัน → มหาจักร" describes a CONJUNCTION rule (2 planets in same sign), NOT individual planet mahachakra. ห้าม conflate กัน
+
+**Memory code "๗๒ ๑๘ ๔๓ ๕๖":** ยังไม่ชัดว่าหมายถึงอะไรกันแน่ — อาจไม่เกี่ยวกับ planet-level mahachakra. ต้องสอบทานกับ user

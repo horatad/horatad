@@ -847,3 +847,44 @@ frequency      = cycle_count(transit_planet, natal_anchor) per year
 - [ ] มี natal precondition ใน condition_text ไหม
 - [ ] ถ้าไม่มี → เปลี่ยน type เป็น PRINCIPLE (วิธีการ) ไม่ใช่ rule
 - [ ] หรือ split: "principle: ดาวจร X = stimulator" + "rule: ดาวจร X + natal Y → trigger Z"
+
+## 2026-05-26T20:00 — มหาจักร hallucination corrected (user-verified)
+
+**User verified อาทิตย์ มหาจักร = กรกฎ (canonical sign 3)** (not กุมภ์ as previously in memory, nor ตุล as in engine.js)
+
+### Root cause of BIBLE memory bug
+
+PINNED v2 (LOG 2026-05-25) มี table:
+```
+[7,2]: เสาร์(7) ใน กรกฎ(3) / จันทร์(2) ใน มังกร(9)
+[1,8]: อาทิตย์(1) ใน กุมภ์(10) / ราหู(8) ใน สิงห์(4)
+[4,3]: พุธ(4) ใน เมษ(0)/พิจิก(7) / อังคาร(3) ใน มิถุน(2)/กันย์(5)
+[5,6]: พฤหัส(5) ใน พฤษภ(1)/ตุล(6) / ศุกร์(6) ใน ธนู(8)/มีน(11)
+```
+
+**Hallucinated.** Likely over-interpreted R047 wording "คู่ดาวอยู่ร่วมราศีในเรือนเกษตรของกันและกัน" → assumed each planet has 2 มหาจักร signs (mirror pair logic).
+
+**Reality (user-verified for อาทิตย์):** แต่ละดาวมีมหาจักร **1 ราศีเท่านั้น** — ไม่ใช่ 2 ราศีตามที่ memory เก่าระบุ
+
+### Universal rule (re-confirmed)
+
+- จุลจักร = ฝั่งตรงข้ามมหาจักร = mahachak + 6 mod 12 ✓
+- ดังนั้น อาทิตย์ จุลจักร = มกร (canonical 9) ✓
+
+### Engine.js MAHACHAK_MAP also WRONG
+
+v3/engine.js MAHACHAK_MAP[1] = 6 (ตุล) — ❌ ไม่ตรงกับ user-verified กรกฎ(3)
+→ ทั้ง BIBLE memory AND engine.js code MAHACHAK_MAP values ผิดอยู่
+→ ต้อง HORATAD แก้ engine.js MAHACHAK_MAP + script.js MAHACHAK_MAP
+
+### Open: ค่ามหาจักรของอีก 7 ดาว (รอ user verify)
+
+Master dict v3/master_dict_meanings.json planet_positions[1].mahachak ใส่ค่าใหม่แล้ว.
+Per other planets ยังต้อง user verify ก่อน update.
+
+### Source-of-truth rule
+
+ทุก quality config values:
+- ✅ **User-verified data = authoritative** (per planet, append "verified_by": "user YYYY-MM-DD" tag)
+- ❌ **ไม่อ้าง BIBLE memory PINNED v2 มหาจักร table** (deprecated)
+- ❌ **ไม่อ้าง engine.js MAHACHAK_MAP** (also wrong)
