@@ -54,10 +54,9 @@
   - Schema v2.0-fingerprint shipped — kb_v24-3_fp.json (239 unique fp, 207 perfectly-unique, 198/290 deep-parsed)
   - **Pipeline พร้อม end-to-end**: extract → merge → review → **apply** (Step 5 shipped 2026-05-25 v2)
   - รอ user รัน Groq/Typhoon extractions เพื่อปลดล็อก real triangulation
-- **Master dict v1.2.0-structural** (2026-05-25 session v3): 7 of 11 fully complete · 2 partial · 2 remaining
-  - ✅ Complete: planets, houses, qualities, domains, aspect_strengths, planet_positions, planet_pairs, house_rulers_by_lagna (derived)
-  - 🟡 Partial: signs (structural done, narrative pending) · special_configs (organic growth)
-  - 🔴 Remaining: lagna_concepts (needs ch013)
+- **Master dict v1.4.0-complete** (2026-05-25 session v4): 10 ✅ · 1 🟡 (by design)
+  - ✅ Complete: planets, houses, qualities, domains, aspect_strengths, signs (structural+narrative), planet_positions, planet_pairs, lagna_concepts, house_rulers_by_lagna
+  - 🟡 special_configs (11 entries, grows organically)
 
 ### Files map (triangulation infra)
 - Scripts: `workers/kb_add_fingerprint.mjs` · `kb_merge_by_fingerprint.mjs` · `kb_deep_parse.mjs` · **`kb_apply_review_decisions.mjs` (NEW)** · **`kb_wording_prompt_poc.mjs` (NEW)**
@@ -86,7 +85,7 @@
 - update `v3/engine.js` to load kb_v24-final.json (wordings[] array — เลือก per policy)
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260525_v3.md`
+`handoffs/BIBLE_20260525_v4.md`
 
 ---
 
