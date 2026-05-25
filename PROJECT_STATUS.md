@@ -5,7 +5,7 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.34 | **URL:** horatad.com
+**Version:** V3.3.36 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
@@ -21,20 +21,21 @@
 - **V3.3.31** ✅ BGM auto-play เมื่อเข้าหน้าเกี่ยวกับ + auto-stop เมื่อออก (loop 45s)
 - **V3.3.32** ✅ BGM หน้าการคำนวณวันจันทรคติ + ปรับ about BGM
 - **V3.3.33** ✅ fix BGM overlap about/lunar เล่นซ้อนกัน
-- **V3.3.34** ✅ ลบ lunar BGM + ลบ info bar แสดงชื่อเพลง (about BGM เล่น silent)
+- **V3.3.34** ✅ ลบ lunar BGM + ลบ info bar แสดงชื่อเพลง
+- **V3.3.35** ✅ mode buttons auto-refresh + TTS strip rule IDs + voice chat KB rules inject
+- **V3.3.36** ✅ restore เกาะในฝัน BGM บนหน้า About (ถูกลบโดยไม่ตั้งใจใน V3.3.34)
 
 ### Next (Claude ทำได้)
 - [ ] **Phase 2 Step 1** — core/ Tier 1 (engine/lunar/varga/transit) split — spec: `docs/HORATAD_modules.md` §2 Tier 1 — ⚠️ รอ CSP enforce
 - [ ] Phase 2 Step 2 — db/ Tier 2 (io/tank/core/natal/events) — รอ Step 1
 - [ ] PROVINCES extract (5KB) — DEFERRED hot calc path
-- [ ] julian_all.json move (รอ user เลือก target)
+- [ ] Retroactive backup v3.3.25–v3.3.32 — SHA หาได้จาก git log
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.31 บนมือถือ — BGM auto-play หน้าเกี่ยวกับ (iOS autoplay policy risk)
-- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.27 voice-chat — push-to-talk flow ครบ + TTS reply
-- [ ] [ทดลองใช้] ทดสอบ V3.3.25-30 features (matchRulesV24 / speak-rate / TTS detection / music player / TTS guide)
+- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.36 — BGM เกาะในฝัน หน้า About กดปุ่มเล่น/หยุดได้ปกติ
+- [ ] [ทดลองใช้] ⭐ ทดสอบ V3.3.35 mode buttons auto-refresh + voice-chat (push-to-talk ครบ flow)
 - [ ] [ทดลองใช้] CF: deploy horatad-ai Worker → **GUARD T-02 owns rate-limit policy**
-- [ ] [ทดลองใช้] Lighthouse mobile + desktop V3.3.31 — `docs/admin/USER_TASKS_lighthouse_csp_2026-05-24.md` Part 1
+- [ ] [ทดลองใช้] Lighthouse mobile + desktop V3.3.36 — `docs/admin/USER_TASKS_lighthouse_csp_2026-05-24.md` Part 1
 - [ ] [ทดลองใช้] CSP violations 1 wk → Phase 2 P2-A enforce (deadline ~2026-05-30)
 - [ ] [BLOCKED] cloud sync — รอ server confirm
 - [ ] [BLOCKED] QR URL privacy — รอ Option A/B/C → **GUARD R-07 owner**
