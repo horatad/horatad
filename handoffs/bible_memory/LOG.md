@@ -888,3 +888,62 @@ Per other planets ยังต้อง user verify ก่อน update.
 - ✅ **User-verified data = authoritative** (per planet, append "verified_by": "user YYYY-MM-DD" tag)
 - ❌ **ไม่อ้าง BIBLE memory PINNED v2 มหาจักร table** (deprecated)
 - ❌ **ไม่อ้าง engine.js MAHACHAK_MAP** (also wrong)
+
+## 2026-05-26T22:00 — มหาจักร table complete (user-verified all 8 planets) + new single-source-of-truth file
+
+### Action taken
+- Created `v3/quality_maps.json` — single source of truth for quality config detection
+- Updated `v3/master_dict_meanings.json` planet_positions[1-8]:
+  - All `mahachak` values corrected (user-verified 2026-05-26)
+  - Added `chunlachak` field (derived = mahachak + 6 mod 12)
+  - Removed hallucinated `with_partner` annotations
+  - Added `verified_by` + `corrected` tags
+
+### Complete มหาจักร table (user-verified)
+
+| ดาว | มหาจักร | จุลจักร (+6) | engine.js MAHACHAK_MAP | engine matches user? |
+|---|---|---|---|---|
+| 1 อาทิตย์ | กรกฎ (3) | มกร (9) | 6 ตุล | ❌ wrong |
+| 2 จันทร์ | เมษ (0) | ตุล (6) | 0 เมษ | ✓ |
+| 3 อังคาร | กันย์ (5) | มีน (11) | 5 กันย์ | ✓ |
+| 4 พุธ | สิงห์ (4) | กุมภ์ (10) | 4 สิงห์ | ✓ |
+| 5 พฤหัส | พิจิก (7) | พฤษภ (1) | 7 พิจิก | ✓ |
+| 6 ศุกร์ | ธนู (8) | มิถุน (2) | 8 ธนู | ✓ |
+| 7 เสาร์ | พฤษภ (1) | พิจิก (7) | 1 พฤษภ | ✓ |
+| 8 ราหู | มกร (9) | กรกฎ (3) | 9 มกร | ✓ |
+
+### Net findings — engine.js MAHACHAK_MAP เกือบถูก (7/8)
+
+**Only `MAHACHAK_MAP[1] = 6` ผิด** (ต้องเป็น 3 = กรกฎ).
+→ HORATAD fix scope = แค่ 1 บรรทัด, ไม่ใช่ rewrite ทั้งหมด
+
+### BIBLE memory bug fully traced
+
+PINNED v2 มหาจักร pair table = hallucinated mostly:
+- บางคู่ตรง partial (e.g., อังคาร มี กันย์ ใน pair list ✓)
+- แต่ structure "1 ดาว → 2 ราศี" = ผิด
+- จริงคือ "1 ดาว → 1 ราศี"
+
+Likely source of hallucination: previous Claude session over-interpreted R047 wording "ในเรือนเกษตรของกันและกัน" → expanded to pair-of-signs structure
+
+### KB extraction impact reassessment (corrected from earlier overstatement)
+
+| Quality | Actual planets affected | Rule risk |
+|---|---|---|
+| อุจ/นิจ | only ราหู (1/8) | ~5-11 rules (those mentioning ราหู+อุจ/นิจ) |
+| มหาจักร | only อาทิตย์ (1/8) per engine | ~few rules with อาทิตย์+มหาจักร |
+| อุจจาวิลาส/อุจจาภิมุข | **label SWAPPED in code** (all 8) | 🔴 ~19 rules affected |
+| ราชาโชค/เทวีโชค | unverified | unknown |
+| เกษตร/ประเกษตร | none | 🟢 OK |
+
+**Real exposure:** ~25-30 rules of 290 (~8-10%) need re-audit — not "all KB" as I initially overstated
+
+### New file v3/quality_maps.json — schema v1.0
+
+Authoritative for:
+- Engine quality detection (replaces hardcoded MAPs)
+- LLM extraction prompts (replaces v3/master_dict.js hardcoded constants)
+- BIBLE master_dict (planet_positions can derive from here)
+
+Pending user verification:
+- rajayok per-planet (8 values) — only ศุกร์ inferable from chart screenshot

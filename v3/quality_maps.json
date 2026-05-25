@@ -1,0 +1,172 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "purpose": "Single source of truth for Thai astrology (สุริยยาตร์) quality config detection. Used by v3/engine.js (replacing hardcoded MAPs), v3/master_dict.js (LLM extraction prompts), v3/master_dict_meanings.json (BIBLE master dict).",
+    "id_scheme": "canonical 0-11 for signs, 1-8 for main planets (0=มฤตยู, 9=เกตุ — no quality concepts in สุริยยาตร์)",
+    "created": "2026-05-26",
+    "supersedes_previous": [
+      "v3/engine.js KASET_MAP / EXALT_MAP / MAHACHAK_MAP / RACHA_MAP (hardcoded — drift risk)",
+      "v3/master_dict.js UCH_POSITIONS / NIT_POSITIONS / KASED_POSITIONS / MAHACHAK_PAIRS (extraction prompt — drift risk)",
+      "v3/master_dict_meanings.json planet_positions[N].mahachak with 'with_partner' (hallucinated pair-expansion — wrong)",
+      "handoffs/bible_memory/SIGNS.md PINNED v2 มหาจักร pair table (deprecated 2026-05-26)"
+    ],
+    "verification_protocol": "Every planet's quality field requires 'verified_by' attribution. null = pending user verify."
+  },
+
+  "signs_th": ["เมษ","พฤษภ","มิถุน","กรกฎ","สิงห์","กันย์","ตุล","พิจิก","ธนู","มกร","กุมภ์","มีน"],
+
+  "planets_th": {
+    "0": "มฤตยู",
+    "1": "อาทิตย์",
+    "2": "จันทร์",
+    "3": "อังคาร",
+    "4": "พุธ",
+    "5": "พฤหัสบดี",
+    "6": "ศุกร์",
+    "7": "เสาร์",
+    "8": "ราหู",
+    "9": "เกตุ"
+  },
+
+  "sign_rulers": {
+    "_comment": "sign_id (0-11) → planet_id that owns this sign (KASET reverse map)",
+    "0": 3, "1": 6, "2": 4, "3": 2, "4": 1, "5": 4,
+    "6": 6, "7": 3, "8": 5, "9": 7, "10": 8, "11": 5,
+    "_secondary_rulers": {
+      "10": [7],
+      "_note": "กุมภ์(10) primary=ราหู(8), secondary=เสาร์(7)"
+    },
+    "verified_by": "engine.js KASET_MAP + BIBLE memory SIGNS.md (cross-checked 2026-05-26)"
+  },
+
+  "planets": {
+    "1": {
+      "name": "อาทิตย์",
+      "kaset": [4],
+      "uchcha": 0,
+      "mahachak": 3,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "2": {
+      "name": "จันทร์",
+      "kaset": [3],
+      "uchcha": 1,
+      "mahachak": 0,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "3": {
+      "name": "อังคาร",
+      "kaset": [0, 7],
+      "uchcha": 9,
+      "mahachak": 5,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "4": {
+      "name": "พุธ",
+      "kaset": [2, 5],
+      "uchcha": 5,
+      "mahachak": 4,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "5": {
+      "name": "พฤหัสบดี",
+      "kaset": [8, 11],
+      "uchcha": 3,
+      "mahachak": 7,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "6": {
+      "name": "ศุกร์",
+      "kaset": [1, 6],
+      "uchcha": 11,
+      "mahachak": 8,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "7": {
+      "name": "เสาร์",
+      "kaset": [9, 10],
+      "kaset_note": "มกร(9)=primary, กุมภ์(10)=secondary",
+      "uchcha": 6,
+      "mahachak": 1,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+    },
+    "8": {
+      "name": "ราหู",
+      "kaset": [10],
+      "uchcha": 7,
+      "mahachak": 9,
+      "rajayok": null,
+      "verified_by": "user 2026-05-26 (uchcha + mahachak); engine.js + BIBLE (kaset)",
+      "history_note": "uchcha was previously swapped (had พฤษภ instead of พิจิก) in BIBLE memory + v3/master_dict.js — corrected 2026-05-26. engine.js EXALT_MAP was already correct."
+    }
+  },
+
+  "derivation_rules": {
+    "_purpose": "Computed qualities (do not store, derive at runtime)",
+    "nicha": {
+      "formula": "(planets[N].uchcha + 6) mod 12",
+      "rule": "นิจ ↔ อุจ ตรงข้ามเสมอ (universal across all planets)",
+      "verified_by": "user 2026-05-26"
+    },
+    "prakaset": {
+      "formula": "for each k in planets[N].kaset: (k + 6) mod 12",
+      "rule": "ประเกษตร = ราศีตรงข้ามเกษตร",
+      "verified_by": "BIBLE memory + engine.js"
+    },
+    "uchajavilas": {
+      "formula": "(planets[N].uchcha - 1 + 12) mod 12",
+      "rule": "อุจจาวิลาส = ราศีก่อนอุจ (~60% strength)",
+      "warning": "v3/engine.js + script.js code has LABEL SWAPPED with อุจจาภิมุข — HORATAD must fix"
+    },
+    "uchajaphimukh": {
+      "formula": "(planets[N].uchcha + 1) mod 12",
+      "rule": "อุจจาภิมุข = ราศีหลังอุจ (~60% strength)",
+      "warning": "v3/engine.js + script.js code has LABEL SWAPPED with อุจจาวิลาส — HORATAD must fix"
+    },
+    "chunlachak": {
+      "formula": "(planets[N].mahachak + 6) mod 12",
+      "rule": "จุลจักร = ราศีตรงข้ามมหาจักร (~40-60% strength)",
+      "verified_by": "user 2026-05-26"
+    },
+    "thevichok": {
+      "formula": "(planets[N].rajayok + 6) mod 12",
+      "rule": "เทวีโชค = ราศีตรงข้ามราชาโชค (~40% strength, ~60% of ราชาโชค)",
+      "pending": "Per-planet rajayok values not yet user-verified"
+    }
+  },
+
+  "quality_strengths_pct": {
+    "_purpose": "Score weights (range -100% to +100%) per script.js STD_SCORE × 20",
+    "อุจ": 100,
+    "เกษตร": 80,
+    "มหาจักร": 80,
+    "ราชาโชค": 60,
+    "อุจจาวิลาส": 60,
+    "อุจจาภิมุข": 60,
+    "จุลจักร": 40,
+    "เทวีโชค": 40,
+    "ประเกษตร": -60,
+    "นิจ": -100
+  },
+
+  "rules": {
+    "เกตุ_0": "หรือ 9 — ไม่มีตำแหน่งใน quality config ทั้งหมด (use aspect-based interpretation only)",
+    "ลบ-ลบ=บวก": {
+      "applicable_to": ["เกษตร", "ประเกษตร", "อุจ", "นิจ"],
+      "NOT_applicable_to": ["มหาจักร", "อุจจาวิลาส", "อุจจาภิมุข", "ราชาโชค", "เทวีโชค", "จุลจักร"],
+      "source": "R068"
+    }
+  },
+
+  "pending_user_verification": [
+    "rajayok per-planet (8 values)",
+    "Confirm derivation rule for thevichok = rajayok + 6 (sample chart shows ศุกร์ใน มกร(9) = เทวีโชค → if rajayok of ศุกร์ = กรกฎ(3), then +6 = มกร(9) ✓ matches; but rajayok of ศุกร์ not formally user-verified)"
+  ]
+}
