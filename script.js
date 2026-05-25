@@ -1,6 +1,6 @@
-// HORATAD:SCRIPT:3.3.28
-// Version 3.3.28 | 2026-05-24
-// Changes: [V3.3.28] fix(v3tab): mode buttons auto-refresh, strip rule IDs from TTS, inject KB rules into voice chat context
+// HORATAD:SCRIPT:3.3.35
+// Version 3.3.35 | 2026-05-24
+// Changes: [V3.3.35] fix(v3tab): mode buttons auto-refresh, strip rule IDs from TTS, inject KB rules into voice chat context
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
 // Changes: [V3.3.22] feat(M6+_navHeader): localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (จร)
 // Changes: [V3.3.21] feat(M5): eventChart full support — _compareMode===2 path, cycleMemory _eventIdx, _updateNavHeader compareMode-aware
@@ -20,7 +20,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.28';
+const APP_VERSION='3.3.35';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
