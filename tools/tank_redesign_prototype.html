@@ -184,14 +184,15 @@
   <div class="row" style="margin-top: 10px; justify-content: space-between;">
     <div class="row" style="gap: 6px;" id="formActions">
       <button onclick="openLoadPicker()">📂 เลือกดวง</button>
-      <button id="btnEdit" onclick="unlockForm()">✏️ แก้ไข</button>
-      <button id="btnSaveCopy" onclick="saveCopyToPrivate()" style="display:none;" class="primary">💾 Save Copy to Private</button>
+      <button id="btnEdit" onclick="enterInputMode()" class="primary">✏️ ใส่ข้อมูล</button>
+      <button id="btnSaveCopy" onclick="saveCopyToPrivate()" style="display:none;">💾 Save Copy to Private</button>
       <!-- mini nav slot1 — browse Private list ทีละคน -->
       <button onclick="navSlot1(-1)" title="ดวงก่อนหน้าใน Private" style="padding: 8px 10px;">◀</button>
       <button onclick="navSlot1(1)" title="ดวงถัดไปใน Private" style="padding: 8px 10px;">▶</button>
     </div>
     <div class="row" style="gap: 6px; display:none;" id="editActions">
       <button onclick="cancelEdit()">↩️ ยกเลิก</button>
+      <button onclick="copyCurrentToForm()" id="btnCopyCur" style="display:none;">📋 คัดลอกค่าเดิม</button>
       <button class="primary" onclick="castChart()">🔮 ผูกดวง</button>
       <button onclick="saveEdit()">💾 บันทึกลง Private</button>
     </div>
@@ -386,17 +387,6 @@ function renderForm() {
   // reset source classes
   card.classList.remove('source-qr', 'source-julian');
 
-  // ── Empty state: unlock ฟอร์ม + ใส่วันนี้เป็น default
-  // → user พิมพ์ทับได้ทันที ไม่ต้องกด "✏️ แก้ไข"
-  if (!slot1 && !editMode) {
-    editMode = true;
-    editDraft = { name: 'ดวงใหม่', gender: 'ชาย' };
-    const today = new Date();
-    document.getElementById('fDate').value = `${today.getDate()}/${today.getMonth()+1}/${today.getFullYear()+543}`;
-    document.getElementById('fTime').value = '12:00';
-    document.getElementById('fProv').value = 'กรุงเทพมหานคร';
-  }
-
   if (slot1) {
     document.getElementById('formName').textContent = slot1.name;
     document.getElementById('fDate').value = fmtDate(slot1);
@@ -427,11 +417,21 @@ function renderForm() {
     } else {
       meta.style.display = 'none';
     }
-  } else {
-    document.getElementById('formName').textContent = '🆕 กรอกดวงใหม่';
-    badge.innerHTML = '<span class="source-badge form">🔮 พร้อมผูกดวง</span>';
+  } else if (editMode) {
+    // input mode (เพิ่งกด "✏️ ใส่ข้อมูล")
+    document.getElementById('formName').textContent = '✏️ กำลังใส่ข้อมูลใหม่';
+    badge.innerHTML = '<span class="source-badge form">🔮 รอข้อมูล</span>';
     meta.style.display = 'block';
-    meta.innerHTML = '💡 พิมพ์ทับวันนี้ได้เลย หรือกด <strong>📂 เลือกดวง</strong> ถ้าเคยบันทึกไว้';
+    meta.innerHTML = '💡 กรอกข้อมูล แล้วกด <strong>🔮 ผูกดวง</strong> (ทดลอง) หรือ <strong>💾 บันทึก</strong>';
+  } else {
+    // empty state — no slot1, no edit
+    document.getElementById('formName').textContent = '— ยังไม่มีดวง —';
+    badge.innerHTML = '';
+    meta.style.display = 'block';
+    meta.innerHTML = '💡 กด <strong>✏️ ใส่ข้อมูล</strong> เพื่อเริ่ม หรือ <strong>📂 เลือกดวง</strong> ถ้าเคยบันทึก';
+    document.getElementById('fDate').value = '';
+    document.getElementById('fTime').value = '';
+    document.getElementById('fProv').value = '';
   }
   const inputs = ['fDate', 'fTime', 'fProv'];
   inputs.forEach(id => document.getElementById(id).disabled = !editMode);
@@ -591,16 +591,29 @@ function loadTank1(p, source) {
 // ============================================================
 // EDIT FORM
 // ============================================================
-function unlockForm() {
-  if (!slot1) {
-    log('Tank1 ว่าง → unlock = สร้างใหม่');
-    editDraft = { name:'', gender:'ชาย', d:'', m:'', y:'', t:'', prov:'' };
-  } else {
-    editDraft = { ...slot1 };
-  }
+function enterInputMode() {
+  // "✏️ ใส่ข้อมูล" — ล้างฟอร์ม + unlock + เริ่มกรอกใหม่
+  // ตามกฎ user: ฟอร์มเป็น display-only เว้นแต่กดปุ่มนี้
   editMode = true;
-  log('เข้า edit mode');
+  editDraft = { name:'', gender:'ชาย', d:'', m:'', y:'', t:'', prov:'' };
+  document.getElementById('fDate').value = '';
+  document.getElementById('fTime').value = '';
+  document.getElementById('fProv').value = '';
+  // ถ้ามี slot1 อยู่ — แสดงปุ่ม "📋 คัดลอกค่าเดิม" ให้ user เลือก paste ค่าเดิมถ้าต้องการ
+  document.getElementById('btnCopyCur').style.display = slot1 ? 'inline-block' : 'none';
+  log('เข้า input mode — ล้างฟอร์มแล้ว');
   renderAll();
+  // focus ฟิลด์แรก เพื่อ user เริ่มกรอกทันที
+  setTimeout(() => document.getElementById('fDate').focus(), 50);
+}
+
+function copyCurrentToForm() {
+  // optional helper: paste ค่าเดิมเข้า input mode (ถ้า user อยากทำ variation)
+  if (!slot1) return;
+  document.getElementById('fDate').value = fmtDate(slot1);
+  document.getElementById('fTime').value = slot1.t;
+  document.getElementById('fProv').value = slot1.prov;
+  log('คัดลอกค่าเดิมเข้าฟอร์ม (แก้ตรงไหนก็ได้)');
 }
 
 function cancelEdit() {
@@ -931,9 +944,49 @@ function closeModal(id) {
 }
 
 // ============================================================
+// PERSISTENCE — last slot1 (mock localStorage)
+// ============================================================
+const LS_KEY = 'horatad_proto_last_slot1';
+
+function saveLastSlot1() {
+  if (slot1 && !slot1._ephemeral) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(slot1)); } catch(e) {}
+  }
+}
+
+function loadLastSlot1() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      slot1 = JSON.parse(raw);
+      log(`📥 โหลดดวงล่าสุด: ${slot1.name} (จาก localStorage)`);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+// hook saveLastSlot1 ทุกครั้งที่ slot1 เปลี่ยน
+const _origLoadTank1 = loadTank1;
+loadTank1 = function(p, source) {
+  _origLoadTank1(p, source);
+  saveLastSlot1();
+};
+const _origSaveEdit = saveEdit;
+saveEdit = function() {
+  _origSaveEdit();
+  saveLastSlot1();
+};
+
+// ============================================================
 // INIT
 // ============================================================
-log('Prototype พร้อมใช้งาน — เริ่มโดยกด "📂 เลือกดวง"');
+loadLastSlot1();
+if (slot1) {
+  log(`Prototype พร้อมใช้งาน — แสดงดวงล่าสุด: ${slot1.name}`);
+} else {
+  log('Prototype พร้อมใช้งาน — ครั้งแรก: กด "✏️ ใส่ข้อมูล" หรือ "📂 เลือกดวง"');
+}
 renderAll();
 </script>
 </body>
