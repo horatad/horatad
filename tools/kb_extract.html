@@ -413,22 +413,66 @@ function stopExtraction() {
   log('⏹ หยุดแล้ว — กด ▶ เพื่อ resume');
 }
 
-// ── Fingerprint (mirror workers/kb_add_fingerprint.mjs — must stay in sync) ────
+// ── Deep parse + Fingerprint (mirrors workers/kb_deep_parse.mjs — keep in sync) ─
 // memory_ref: handoffs/bible_memory/LOG.md "2026-05-25 PINNED v2"
-function makeFingerprint(rule) {
-  const parts = [];
-  if (rule.planet_ids?.length) {
-    parts.push('p' + [...rule.planet_ids].sort((a,b)=>a-b).join(','));
+const HOUSE_BY_NAME = {
+  'ตนุ': 1, 'กฎุมพะ': 2, 'สหัชชะ': 3, 'พันธุ': 4, 'ปุตตะ': 5, 'อริ': 6,
+  'ปัตนิ': 7, 'มรณะ': 8, 'ศุภะ': 9, 'กัมมะ': 10, 'ลาภะ': 11, 'วินาศ': 12
+};
+const SIGN_BY_NAME = {
+  'เมษ': 1, 'พฤษภ': 2, 'มิถุน': 3, 'กรกฎ': 4, 'สิงห์': 5, 'กันย์': 6,
+  'ตุล': 7, 'พิจิก': 8, 'ธนู': 9, 'มกร': 10, 'มังกร': 10, 'กุมภ์': 11, 'มีน': 12
+};
+const QUALITY_KEYWORDS = [
+  'อุจจาวิลาส', 'อุจจาภิมุข', 'มหาจักร', 'จุลจักร', 'ราชาโชค', 'เทวีโชค',
+  'ประเกษตร', 'อนุเกษตร', 'เกษตร', 'อุจ', 'นิจ'
+];
+
+function parseConditionText(c) {
+  if (!c) return {};
+  const out = {};
+  if (/ไม่สัมพันธ์(ถึง)?ลัคนา/.test(c)) out.lagna_relation = 'NO_RELATE_LAKKANA';
+  else if (/กุมลัคนา/.test(c))            out.lagna_relation = 'KUM_LAKKANA';
+  else if (/สัมพันธ์(ถึง)?ลัคนา/.test(c)) out.lagna_relation = 'RELATES_LAKKANA';
+  else if (/(เป็น)?ตนุเศษ/.test(c))       out.lagna_relation = 'TANUSESH';
+  else if (/(เป็น)?ตนุลัคน์/.test(c))     out.lagna_relation = 'TANULAGN';
+
+  for (const [name, id] of Object.entries(HOUSE_BY_NAME)) {
+    if (c.includes('เจ้า' + name)) { out.ruler_of_house = id; break; }
   }
-  if (rule.sign_id != null) parts.push('s' + rule.sign_id);
-  else if (rule.sign_ids?.length) parts.push('s' + [...rule.sign_ids].sort((a,b)=>a-b).join(','));
-  if (rule.quality) parts.push('q:' + rule.quality);
-  if (rule.quality_req) parts.push('qr:' + rule.quality_req);
-  if (rule.aspect) parts.push('a:' + rule.aspect);
-  if (rule.condition_type) parts.push('cnd:' + rule.condition_type);
-  if (rule.contexts?.length) parts.push('ctx:' + [...rule.contexts].sort().join(','));
-  if (rule.domain) parts.push('d:' + rule.domain);
-  parts.push('t:' + rule.type);
+  const houseNum = c.match(/(?:ภพ|เรือน)\s*(\d+)/);
+  if (houseNum) out.inline_house = parseInt(houseNum[1]);
+  else for (const [name, id] of Object.entries(HOUSE_BY_NAME)) {
+    if (c.includes('ภพ' + name)) { out.inline_house = id; break; }
+  }
+  for (const [name, id] of Object.entries(SIGN_BY_NAME)) {
+    if (new RegExp('ราศี' + name + '|ใน' + name + '|อยู่' + name).test(c)) {
+      out.inline_sign = id; break;
+    }
+  }
+  for (const q of QUALITY_KEYWORDS) {
+    if (c.includes(q)) { out.inline_quality = q; break; }
+  }
+  return out;
+}
+
+function makeFingerprint(r) {
+  const parts = [];
+  if (r.planet_ids?.length) parts.push('p' + [...r.planet_ids].sort((a,b)=>a-b).join(','));
+  if (r.sign_id != null) parts.push('s' + r.sign_id);
+  else if (r.sign_ids?.length) parts.push('s' + [...r.sign_ids].sort((a,b)=>a-b).join(','));
+  if (r.quality) parts.push('q:' + r.quality);
+  if (r.quality_req) parts.push('qr:' + r.quality_req);
+  if (r.aspect) parts.push('a:' + r.aspect);
+  if (r.condition_type) parts.push('cnd:' + r.condition_type);
+  if (r.contexts?.length) parts.push('ctx:' + [...r.contexts].sort().join(','));
+  if (r.domain) parts.push('d:' + r.domain);
+  if (r.lagna_relation) parts.push('lr:' + r.lagna_relation);
+  if (r.ruler_of_house != null) parts.push('rh:' + r.ruler_of_house);
+  if (r.inline_sign != null) parts.push('is:' + r.inline_sign);
+  if (r.inline_quality) parts.push('iq:' + r.inline_quality);
+  if (r.inline_house != null) parts.push('ih:' + r.inline_house);
+  parts.push('t:' + r.type);
   return parts.join('+') || 'EMPTY';
 }
 
@@ -441,25 +485,32 @@ function downloadResult() {
     ? 'typhoon-via-cfworker-' + new Date().toISOString().slice(0,10)
     : 'groq-llama-3.3-70b-' + new Date().toISOString().slice(0,10);
 
-  // Each LLM rule → v2.0-fingerprint structure
+  // Each LLM rule → v2.0-fingerprint structure (with deep-parse enrichment)
   // source_type=IN_BOOK because rules are extracted from 100CH chapter texts
   // (LLM is the agent, but the book is the source)
+  let enrichedCount = 0;
   const migrated = state.rules.map((r, i) => {
     const rule_id = `R${String(i+1).padStart(3,'0')}`;
-    const fp = makeFingerprint(r);
+    const deep = parseConditionText(r.c);
+    if (Object.keys(deep).length > 0) enrichedCount++;
+    const elementsForFp = {
+      planet_ids: r.planet_ids || [],
+      sign_id: r.sign_id ?? null,
+      sign_ids: r.sign_ids || null,
+      quality: r.quality || null,
+      quality_req: r.quality_req || null,
+      aspect: r.aspect || null,
+      contexts: r.contexts || [],
+      condition_type: r.condition_type || null,
+      domain: r.domain,
+      type: r.type,
+      ...deep
+    };
     return {
       rule_id,
       elements: {
-        planet_ids: r.planet_ids || [],
-        sign_id: r.sign_id ?? null,
-        sign_ids: r.sign_ids || null,
-        quality: r.quality || null,
-        quality_req: r.quality_req || null,
-        aspect: r.aspect || null,
-        contexts: r.contexts || [],
-        condition_type: r.condition_type || null,
-        type: r.type,
-        fingerprint: fp
+        ...elementsForFp,
+        fingerprint: makeFingerprint(elementsForFp)
       },
       polarity: r.polarity,
       domain: r.domain,
@@ -493,6 +544,8 @@ function downloadResult() {
       source_type: 'IN_BOOK',
       extracted_by: extractedBy,
       extracted_at: new Date().toISOString(),
+      deep_parsed: true,
+      deep_parse_stats: { enriched_count: enrichedCount },
       memory_ref: 'LOG 2026-05-25 v2',
       rule_count: migrated.length,
       unique_fingerprints: Object.keys(fpCounts).length,
@@ -505,7 +558,7 @@ function downloadResult() {
   const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download: filename});
   a.click();
   URL.revokeObjectURL(a.href);
-  log(`⬇ Downloaded ${filename} — ${migrated.length} rules, ${Object.keys(fpCounts).length} unique fingerprints (${dupCount} dupes)`);
+  log(`⬇ Downloaded ${filename} — ${migrated.length} rules, ${Object.keys(fpCounts).length} unique fp, ${enrichedCount} deep-parsed (${dupCount} dupes)`);
 
   if (state.review.length > 0) {
     const b2 = new Blob([JSON.stringify(state.review, null, 2)], {type:'application/json'});
