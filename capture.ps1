@@ -18,15 +18,27 @@ using DPFP.Capture;
 public class FPForm : Form, DPFP.Capture.EventHandler {
     private Capture capture;
     private string outputPath;
+    private Label label;
     public bool Captured;
     public string ErrorMessage;
 
     public FPForm(string path) {
         outputPath = path;
-        this.Text = "FP";
-        this.WindowState  = FormWindowState.Minimized;
-        this.ShowInTaskbar = false;
-        this.Opacity      = 0;
+        this.Text            = "กำลังสแกนลายนิ้วมือ";
+        this.FormBorderStyle = FormBorderStyle.FixedDialog;
+        this.MaximizeBox     = false;
+        this.MinimizeBox     = false;
+        this.TopMost         = true;
+        this.Size            = new Size(260, 100);
+        this.StartPosition   = FormStartPosition.CenterScreen;
+
+        label = new Label();
+        label.Text      = "วางนิ้วบน scanner...";
+        label.Dock      = DockStyle.Fill;
+        label.TextAlign = ContentAlignment.MiddleCenter;
+        label.Font      = new Font("Segoe UI", 12f);
+        this.Controls.Add(label);
+
         this.Load += OnLoad;
     }
 
@@ -48,7 +60,6 @@ public class FPForm : Form, DPFP.Capture.EventHandler {
 
     public void OnComplete(object c, string serial, DPFP.Sample sample) {
         Console.Error.WriteLine("DBG: OnComplete");
-        string err = null;
         try {
             if (sample != null) {
                 var conv = new SampleConversion();
@@ -62,20 +73,21 @@ public class FPForm : Form, DPFP.Capture.EventHandler {
                 }
             }
         } catch (Exception ex) {
-            err = ex.Message;
+            ErrorMessage = ex.Message;
             Console.Error.WriteLine("COMPLETE_ERR: " + ex.ToString());
         }
-        // Stop + Dispose + Close — all on UI thread to ensure SDK releases handle
         this.BeginInvoke(new Action(() => {
             try { if (capture != null) capture.StopCapture(); } catch {}
             try { if (capture != null) { capture.Dispose(); capture = null; } } catch {}
-            Thread.Sleep(300); // let SDK release device handle to service
-            if (err != null) ErrorMessage = err;
+            Thread.Sleep(300);
             this.Close();
         }));
     }
 
-    public void OnFingerTouch(object c, string s)      { Console.Error.WriteLine("DBG: FingerTouch"); }
+    public void OnFingerTouch(object c, string s) {
+        Console.Error.WriteLine("DBG: FingerTouch");
+        this.BeginInvoke(new Action(() => { label.Text = "กำลังอ่าน..."; }));
+    }
     public void OnFingerGone(object c, string s)       { Console.Error.WriteLine("DBG: FingerGone"); }
     public void OnReaderConnect(object c, string s)    { Console.Error.WriteLine("DBG: ReaderConnect " + s); }
     public void OnReaderDisconnect(object c, string s) { Console.Error.WriteLine("DBG: ReaderDisconnect"); }
