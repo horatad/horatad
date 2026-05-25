@@ -55,7 +55,7 @@ async function scan(){
   st.textContent='กำลังสแกน... วางนิ้ว → ยก → วางอีกครั้งค้างไว้'
   st.style.color='#8b949e'
   try{
-    const r=await fetch('/scan',{signal:AbortSignal.timeout(60000)})
+    const r=await fetch('/scan')
     const d=await r.json()
     if(d.ok){st.textContent='สำเร็จ — '+d.filename;st.style.color='#3fb950';loadGallery()}
     else{st.textContent='ไม่สำเร็จ: '+(d.error||'unknown');st.style.color='#f85149'}
