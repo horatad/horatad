@@ -44,30 +44,43 @@
 
 ---
 
-## BIBLE — Prediction Wording Engine 🟢 Active — kb_v24-3 COMPLETE
-**เป้าหมาย:** rules → keywords → LLM wordings — ground-truth based, zero hallucination
+## BIBLE — Prediction Wording Engine 🟢 Active — Triangulation infra COMPLETE
+**เป้าหมาย:** rules → keywords → LLM wordings — ground-truth via triangulation (100CH + LLMs + user)
 
 ### สถานะ
-- KB V2.3: 342 rules (ใช้งานอยู่) | Engine 3.1.0 ✅
-- **kb_v24-3: ✅ COMPLETE** — 102 บท → 290 rules (2026-05-23)
-- Triple extraction pipeline: Groq (kb_v24-1) + Typhoon (kb_v24-2) + Claude (kb_v24-3 ✅)
-- kb_v24-1: รอ browser tool Groq | kb_v24-2: รอรันหลัง Groq
-- tools/kb_extract.html: เพิ่ม mode selector (Groq/Typhoon) แล้ว ✅
+- KB V2.3: 342 rules (production, ใช้งานอยู่) | Engine 3.1.0 ✅
+- kb_v24-3: ✅ COMPLETE — 102 บท → 290 rules (2026-05-23)
+- **🆕 Triangulation architecture (PINNED v2, 2026-05-25)**:
+  - Schema v2.0-fingerprint shipped — kb_v24-3_fp.json (239 unique fp, 207 perfectly-unique, 198/290 deep-parsed)
+  - Pipeline พร้อม: extract → merge → review (รอ Groq/Typhoon extractions)
+- Master dict: 5 complete + 6 skeleton sections — รอ user เติม
+
+### Files map (triangulation infra)
+- Scripts: `workers/kb_add_fingerprint.mjs` · `kb_merge_by_fingerprint.mjs` · `kb_deep_parse.mjs`
+- Data: `v3/kb_v24-3_fp.json` · `v3/kb_merged.json`
+- Tools: `tools/kb_extract.html` (v2 + deep-parse embed) · `tools/kb_review.html` (review)
+- Memory: `handoffs/bible_memory/LOG.md` PINNED v2
 
 ### Next (Claude ทำได้)
-- [x] ~~GUARD T-05: validate_inputs()~~ ✅ v3/engine.js get_data() — RangeError guards ครบ 6 จุด
-- [ ] Comparison: หลัง 3 ไฟล์ครบ → `session BIBLE — compare` → v3/kb_v24.json final
+- [ ] `workers/kb_apply_review_decisions.mjs` — apply decisions → kb_v24-final.json
+- [ ] Fill master_dict 6 skeleton sections via chat Q&A (เริ่ม signs)
+- [ ] KB equalizer test — Gemini vs Typhoon vs Claude output with KB
 
 ### Blocked (รอ user)
-- [ ] [ทดลองใช้] ⭐ รอ browser tool Groq เสร็จ → download kb_v24-1.json → commit v3/kb_v24-1.json
-- [ ] [ทดลองใช้] รัน Typhoon mode ใน browser tool → download kb_v24-2.json → commit v3/kb_v24-2.json
+- [ ] [ทดลองใช้] ⭐ รัน Groq mode → kb_v24-1_fp.json | URL: tools/kb_extract.html
+- [ ] [ทดลองใช้] ⭐ รัน Typhoon mode → kb_v24-2_fp.json
+- [ ] [ทดลองใช้] เปิด `kb_review.html` → review 32 INTERNAL_DUPE → export decisions
 
-### ไฟล์หลัก
-`v3/kb.json` (V2.3 current) | `v3/kb_v24-3.json` (290 rules ✅) | `v3/kb_v24-1.json` `v3/kb_v24-2.json` (รอ)
-`tools/kb_extract.html` | `workers/claude_extraction_queue.json` (done=102) | `workers/kb_extract_gha.mjs`
+### Deferred (รอ decision)
+- [ ] **Wording selection policy** — IN_BOOK first / rotate / chart-context
+- [ ] **Production-ready threshold** — ≥2 sources / user marks ✓ / both
+- [ ] kb_v24-4 — รอหนังสือใหม่
+
+### 📨 Note to HORATAD — engine switch when kb_v24-final.json พร้อม
+- update `v3/engine.js` to load kb_v24-final.json (wordings[] array — เลือก per policy)
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260523_v1.md`
+`handoffs/BIBLE_20260525_v1.md`
 
 ---
 
