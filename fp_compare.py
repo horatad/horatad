@@ -31,7 +31,7 @@ def compare(path1, path2):
     print(f"Keypoints : {len(kp1)} / {len(kp2)}")
     print(f"Matches   : {len(good)} good / {len(matches)} total")
     print(f"Score     : {score:.1f}%")
-    print(f"Result    : {'MATCH ✓' if verdict else 'NO MATCH ✗'}  (threshold {MATCH_THRESH}%)")
+    print(f"Result    : {'MATCH' if verdict else 'NO MATCH'}  (threshold {MATCH_THRESH}%)")
 
     # draw matching lines
     out = cv2.drawMatches(
