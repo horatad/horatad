@@ -1,0 +1,29 @@
+flowchart TD
+    START([Encountering a skeleton field])
+
+    T1{Test 1:<br/>structural source<br/>verify ได้ใน BIBLE memory?}
+    T2{Test 2:<br/>derivation rule<br/>อธิบายเป็น 1 ปย. ได้?}
+    T3{Test 3:<br/>trace ค่าทุก field<br/>กลับมาได้?}
+    T4{Test 4:<br/>status flag user refines<br/>+ _derivation_method?}
+
+    FILL([✅ FILL])
+    SKIP1([❌ skip, ask user])
+    SKIP2([❌ skip])
+    SKIP3([❌ skip])
+    SKIP4([❌ skip])
+
+    START --> T1
+    T1 -- no --> SKIP1
+    T1 -- yes --> T2
+    T2 -- no --> SKIP2
+    T2 -- yes --> T3
+    T3 -- no --> SKIP3
+    T3 -- yes --> T4
+    T4 -- no --> SKIP4
+    T4 -- yes --> FILL
+
+    style FILL fill:#d4edda,stroke:#155724,stroke-width:3px
+    style SKIP1 fill:#f8d7da
+    style SKIP2 fill:#f8d7da
+    style SKIP3 fill:#f8d7da
+    style SKIP4 fill:#f8d7da

@@ -1,0 +1,27 @@
+flowchart TB
+    subgraph ATOMIC["★ ATOMIC BUILDING BLOCKS"]
+        P[planets - 10]
+        H[houses - 12]
+        S[signs - 12]
+        Q[qualities - 11]
+        D[domains - 7]
+        A[aspect_strengths - 5]
+    end
+
+    subgraph DERIVED["★ DERIVED RELATIONSHIPS"]
+        PP[planet_positions<br/>uchcha/nicha/kaset/...]
+        PR[planet_pairs<br/>mitr/satru/mahamitr]
+        HR[house_rulers_by_lagna<br/>12×12 matrix]
+        LC[lagna_concepts<br/>ลัคนา/ตนุเศษ/ตนุลัคน์]
+        SC[special_configs<br/>mahachakra/rajayok/...]
+    end
+
+    S -.ruler.-> HR
+    S -.ruler.-> LC
+    P -.represents.-> S
+    PR -.mitr pairs.-> SC
+    PP -.positions.-> SC
+    Q -.quality types.-> SC
+
+    style ATOMIC fill:#e1f5ff
+    style DERIVED fill:#fff3cd

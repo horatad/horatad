@@ -1,0 +1,26 @@
+flowchart TB
+    L6["🔺 Layer 6: Triangulation<br/>━━━━━━━━━━━━<br/>Gemini + Typhoon + Claude<br/>→ vote by rule_id citation overlap<br/>🟡 architecture spec ready"]
+
+    L5["🔧 Layer 5: Tool-use<br/>━━━━━━━━━━━━<br/>LLM calls lookup_planet(),<br/>find_rules_for_chart()...<br/>🔴 pending (master_dict v1.4 ready)"]
+
+    L4["🧩 Layer 4: Decomposition<br/>━━━━━━━━━━━━<br/>3-phase: NATAL → TRANSIT → PROSE<br/>🔴 pending"]
+
+    L3["🛡 Layer 3: Validator loop<br/>━━━━━━━━━━━━<br/>Output → validate → retry-with-feedback<br/>🔴 pending"]
+
+    L2["📋 Layer 2: Structured output<br/>━━━━━━━━━━━━<br/>JSON schema:<br/>natal_base · transit_overlay · synthesis<br/>🟡 schema ready"]
+
+    L1["🎯 Layer 1: Pre-select rules<br/>━━━━━━━━━━━━<br/>Engine fingerprint-matches<br/>→ LLM gets matched only<br/>✅ SHIPPED"]
+
+    L6 --> L5 --> L4 --> L3 --> L2 --> L1
+
+    NOTE["★ leverage stack ★<br/>bottom = highest leverage<br/>top = lowest leverage"]
+
+    L1 -.- NOTE
+
+    style L1 fill:#d4edda,stroke:#155724,stroke-width:3px
+    style L2 fill:#fff3cd
+    style L3 fill:#f8d7da
+    style L4 fill:#f8d7da
+    style L5 fill:#f8d7da
+    style L6 fill:#fff3cd
+    style NOTE fill:#e1f5ff,stroke-dasharray:5

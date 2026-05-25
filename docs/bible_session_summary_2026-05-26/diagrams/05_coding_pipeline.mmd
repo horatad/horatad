@@ -1,0 +1,22 @@
+flowchart TD
+    CHART(["Chart - input<br/>lagna + planet positions"])
+
+    STEP1["[1] extractFacts(chart, master_dict)<br/>━━━━━━━━━━━━<br/>→ natalFP[], transitFP[]<br/>pure: master_dict tables resolve lookups"]
+
+    STEP2["[2] matchNatal(natalFP, kb)<br/>━━━━━━━━━━━━<br/>→ natalRules[]<br/>single filter: fingerprint set-intersection"]
+
+    STEP3["[3] matchTransit(transitFP, kb,<br/>REQUIRES natalRules)<br/>━━━━━━━━━━━━<br/>→ transitRules[]<br/>⚠ function signature ENFORCES Rule #1"]
+
+    STEP4["[4] rank(natalRules, transitRules, scoring)<br/>━━━━━━━━━━━━<br/>→ ranked[]<br/>pure: weighted sum, no branching"]
+
+    STEP5["[5] render(chart, ranked, wordings)<br/>━━━━━━━━━━━━<br/>→ prompt (template assembly)"]
+
+    LLM(["🤖 LLM"])
+    PROSE(["💬 prose"])
+
+    CHART --> STEP1 --> STEP2 --> STEP3 --> STEP4 --> STEP5 --> LLM --> PROSE
+
+    style CHART fill:#e1f5ff
+    style STEP3 fill:#fff3cd,stroke:#856404,stroke-width:3px
+    style LLM fill:#f0e6ff
+    style PROSE fill:#d4edda

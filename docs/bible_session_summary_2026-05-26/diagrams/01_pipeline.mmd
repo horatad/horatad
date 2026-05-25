@@ -1,0 +1,43 @@
+flowchart TD
+    subgraph SOURCES["📕 SOURCE LAYER"]
+        CH[100CH text<br/>102 บท]
+        GROQ[🤖 Groq<br/>browser tool]
+        TYPH[🤖 Typhoon<br/>browser tool]
+    end
+
+    CH --> CHJSON[ch001-101 extracted]
+    GROQ --> GROQJSON[kb_v24-1.json]
+    TYPH --> TYPHJSON[kb_v24-2.json]
+
+    CHJSON --> FP["⚙️ kb_add_fingerprint<br/>+ kb_deep_parse"]
+    GROQJSON --> FP
+    TYPHJSON --> FP
+
+    FP --> MERGE["⚙️ kb_merge_by_fingerprint"]
+    MERGE --> MERGED[("📄 kb_merged.json")]
+
+    MERGED --> AUTO["AUTO_VERIFIED<br/>≥2 sources agree"]
+    MERGED --> CONFLICT["CONFLICT<br/>same fp, diff polarity"]
+    MERGED --> DUPE["INTERNAL_DUPE<br/>1 src, ≥2 same fp"]
+    MERGED --> UNIQUE["UNIQUE<br/>only 1 source"]
+
+    CONFLICT --> REVIEW["🌐 kb_review.html<br/>user reviews"]
+    DUPE --> REVIEW
+    REVIEW --> DECISIONS[("📄 decisions.json")]
+
+    DECISIONS --> APPLY["⚙️ kb_apply_review_decisions<br/>✅ shipped"]
+    AUTO --> APPLY
+    UNIQUE --> APPLY
+
+    APPLY --> FINAL[("📄 kb_v24-final.json")]
+    FINAL --> ENGINE["🎯 engine.js<br/>HORATAD"]
+    ENGINE --> OUT["💬 คำพยากรณ์"]
+
+    style SOURCES fill:#e1f5ff
+    style AUTO fill:#d4edda
+    style CONFLICT fill:#fff3cd
+    style DUPE fill:#fff3cd
+    style UNIQUE fill:#f8d7da
+    style APPLY fill:#d4edda
+    style FINAL fill:#d1ecf1
+    style OUT fill:#f0e6ff

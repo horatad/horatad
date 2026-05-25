@@ -1,0 +1,13 @@
+flowchart TD
+    START([Input]) --> STEP1[Step 1<br/>process A]
+    STEP1 --> CHECK{Decision?}
+    CHECK -- yes --> STEP2[Step 2a<br/>handle yes]
+    CHECK -- no --> STEP3[Step 2b<br/>handle no]
+    STEP2 --> END([Output])
+    STEP3 --> END
+
+    style START fill:#e1f5ff
+    style END fill:#d1ecf1
+    style CHECK fill:#fff3cd
+    style STEP2 fill:#d4edda
+    style STEP3 fill:#f8d7da

@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph A["คน A"]
+        NA["natal<br/>(similar)"]
+        TA["ดาวจร<br/>(different from B)"]
+        RA["ผลชัด · มาก · เร็ว"]
+        NA --> TA --> RA
+    end
+
+    subgraph B["คน B"]
+        NB["natal<br/>(similar)"]
+        TB["ดาวจร<br/>(different from A)"]
+        RB["ผลไม่ชัด · น้อย · ช้า"]
+        NB --> TB --> RB
+    end
+
+    SAME["⬇ TYPE เดียวกัน<br/>(เพราะ natal เหมือน)"]
+    RA --> SAME
+    RB --> SAME
+
+    NA -.same possibility space.-> NB
+
+    style NA fill:#cce5ff
+    style NB fill:#cce5ff
+    style TA fill:#f8d7da
+    style TB fill:#f8d7da
+    style RA fill:#d4edda
+    style RB fill:#fff3cd
+    style SAME fill:#d1ecf1,stroke:#0c5460,stroke-width:3px

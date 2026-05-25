@@ -1,0 +1,49 @@
+flowchart TD
+    CHART([chart])
+    L1["[L1] pre-select KB rules"]
+    CHART --> L1
+
+    subgraph PNATAL["[L4] PHASE NATAL"]
+        N1["context = master_dict.lagna<br/>+ matched natal rules only"]
+        N2["LLM extracts possibility space<br/>→ JSON: natal_base[]"]
+        N3{"[L3] validate<br/>natal_base"}
+        N1 --> N2 --> N3
+    end
+    L1 --> N1
+
+    NRETRY["❌ retry with feedback"]
+    N3 -- fail --> NRETRY --> N1
+
+    subgraph PTRANSIT["[L4] PHASE TRANSIT"]
+        T1["context = natal_base[]<br/>+ matched transit rules"]
+        T2["LLM → JSON: transit_overlay[]<br/>each anchor_natal_id required"]
+        T3{"[L3] validate:<br/>anchor_natal_id in natal_base?<br/>outcome ⊂ natal possibility?"}
+        T1 --> T2 --> T3
+    end
+    N3 -- valid --> T1
+
+    TRETRY["❌ retry"]
+    T3 -- fail --> TRETRY --> T1
+
+    subgraph PPROSE["[L4] PHASE PROSE"]
+        P1["context = natal_base + transit_overlay<br/>→ Thai prose, no logic"]
+    end
+    T3 -- valid --> P1
+
+    L6{"[L6] Triangulate<br/>if critical?"}
+    P1 --> L6
+    L6 -- yes --> MULTI["Send to N LLMs<br/>aggregate by rule_id"]
+    L6 -- no --> FINAL([💬 final prose])
+    MULTI --> FINAL
+
+    TOOLS["[L5] Tool-use lookups<br/>(invoked anywhere<br/>LLM needs to recall)"]
+    N2 -.- TOOLS
+    T2 -.- TOOLS
+
+    style PNATAL fill:#e1f5ff
+    style PTRANSIT fill:#fff3cd
+    style PPROSE fill:#d4edda
+    style FINAL fill:#d1ecf1,stroke-width:3px
+    style NRETRY fill:#f8d7da
+    style TRETRY fill:#f8d7da
+    style TOOLS fill:#f0e6ff,stroke-dasharray:5

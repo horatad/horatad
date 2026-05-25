@@ -1,0 +1,38 @@
+flowchart TB
+    ROOT["handoffs/bible_memory/"]
+
+    subgraph ENTRY["Entry Point"]
+        INDEX["🔴 INDEX.md<br/>FOUNDATIONAL RULE #1 at top"]
+        LOG["📝 LOG.md<br/>session journal, append-only"]
+    end
+
+    subgraph DOMAIN["★ Domain Reference (read every session)"]
+        VOCAB[VOCAB.md]
+        PLANETS[PLANETS.md]
+        SIGNS[SIGNS.md]
+        HOUSES[HOUSES.md]
+        QUALITY[QUALITY.md]
+        CHAPTERS[CHAPTERS.md]
+    end
+
+    subgraph SCHEMA["★ Schema / Extraction"]
+        SYNTAX[SYNTAX.md]
+        TAXONOMY[TAXONOMY.md]
+        PROMPTS[PROMPTS.md]
+    end
+
+    subgraph DESIGN["★ Design"]
+        LLMC[LLM_CONTROL.md<br/>★ new]
+    end
+
+    ROOT --> ENTRY
+    ROOT --> DOMAIN
+    ROOT --> SCHEMA
+    ROOT --> DESIGN
+
+    style INDEX fill:#f8d7da,stroke:#721c24,stroke-width:3px
+    style LOG fill:#fff3cd
+    style DOMAIN fill:#e1f5ff
+    style SCHEMA fill:#d4edda
+    style DESIGN fill:#f0e6ff
+    style LLMC fill:#d1ecf1,stroke-width:2px

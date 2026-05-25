@@ -1,0 +1,17 @@
+flowchart TD
+    NATAL["📊 ดวงเดิม - natal<br/>80% weight<br/>━━━━━━━━━━━━<br/>ลัคนา + ตนุเศษ<br/>+ ตนุลัคน์<br/>+ กุมลัคนา<br/>+ special_configs"]
+
+    POSS["➤ POSSIBILITY SPACE<br/>สิ่งที่ chart นี้สามารถเกิดได้"]
+
+    TRANSIT["🌀 ดวงจร - transit<br/>20% weight<br/>━━━━━━━━━━━━<br/>activate / amplify<br/>บางส่วน ตาม timing,<br/>aspect, intensity"]
+
+    OUTCOME["ผลปรากฏ ขณะนี้<br/>subset ของ possibility space"]
+
+    NATAL -- "บอกความเป็นไปได้<br/>ทั้งหมดที่อาจเกิด" --> POSS
+    POSS --> TRANSIT
+    TRANSIT --> OUTCOME
+
+    style NATAL fill:#cce5ff,stroke:#004085,stroke-width:3px
+    style POSS fill:#fff3cd,stroke:#856404,stroke-width:2px
+    style TRANSIT fill:#f8d7da,stroke:#721c24,stroke-width:2px
+    style OUTCOME fill:#d4edda,stroke:#155724,stroke-width:2px

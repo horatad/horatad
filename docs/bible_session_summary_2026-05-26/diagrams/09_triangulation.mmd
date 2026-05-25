@@ -1,0 +1,28 @@
+flowchart TD
+    PROMPT([Same prompt])
+    GEMINI[🤖 Gemini]
+    TYPHOON[🤖 Typhoon]
+    CLAUDE[🤖 Claude]
+    A[output A]
+    B[output B]
+    C[output C]
+    AGG["Aggregate by<br/>rule_id citation overlap"]
+    HI["✓ 3 vendors cite R013<br/>→ HIGH confidence"]
+    DROP["✗ 1 vendor cites R987<br/>→ DISCARD (hallucination)"]
+    FINAL[("Consensus output<br/>+ provenance per source")]
+
+    PROMPT --> GEMINI --> A
+    PROMPT --> TYPHOON --> B
+    PROMPT --> CLAUDE --> C
+    A --> AGG
+    B --> AGG
+    C --> AGG
+    AGG --> HI
+    AGG --> DROP
+    HI --> FINAL
+    DROP -.- FINAL
+
+    style AGG fill:#fff3cd
+    style HI fill:#d4edda
+    style DROP fill:#f8d7da
+    style FINAL fill:#d1ecf1,stroke-width:3px

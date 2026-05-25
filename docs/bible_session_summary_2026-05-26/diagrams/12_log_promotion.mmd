@@ -1,0 +1,23 @@
+flowchart TD
+    START([Append LOG entry])
+    Q1{Is this domain knowledge?<br/>สูตร / ตาราง / vocab<br/>ไม่ใช่ วันที่ X ทำอะไร}
+    Q2{Reuse chance สูงไหม?}
+    Q3{Compact enough<br/>to inline?}
+
+    KEEP1([keep in LOG])
+    KEEP2([keep in LOG])
+    KEEP3([keep in LOG<br/>+ link from ref])
+    PROMOTE([✅ Promote to<br/>VOCAB / SYNTAX /<br/>QUALITY / etc.])
+
+    START --> Q1
+    Q1 -- no --> KEEP1
+    Q1 -- yes --> Q2
+    Q2 -- no --> KEEP2
+    Q2 -- yes --> Q3
+    Q3 -- no --> KEEP3
+    Q3 -- yes --> PROMOTE
+
+    style PROMOTE fill:#d4edda,stroke:#155724,stroke-width:3px
+    style KEEP1 fill:#fff3cd
+    style KEEP2 fill:#fff3cd
+    style KEEP3 fill:#fff3cd
