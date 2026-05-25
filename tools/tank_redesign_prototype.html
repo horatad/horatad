@@ -146,6 +146,20 @@
     font-size: 13px; margin-top: 8px;
   }
   .empty-hint { color: var(--muted); text-align: center; padding: 20px; font-size: 13px; }
+  .sync-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #c0c0c0; margin-right: 6px; vertical-align: middle;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .sync-dot.pulse {
+    background: var(--good); box-shadow: 0 0 0 4px rgba(107,142,35,0.25);
+    animation: syncPulse 1.4s ease-out;
+  }
+  @keyframes syncPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(107,142,35,0.45); }
+    70%  { box-shadow: 0 0 0 10px rgba(107,142,35,0); }
+    100% { box-shadow: 0 0 0 0 rgba(107,142,35,0); }
+  }
   .log {
     margin-top: 16px; padding: 10px; background: #2a2a2a; color: #d8d2c0;
     border-radius: 6px; font-family: "SF Mono", Consolas, monospace;
@@ -276,7 +290,8 @@
 
 <!-- ====== PREDICTION STATUS ====== -->
 <div class="prediction-status" id="predStatus">
-  เลือกดวงเพื่อเริ่ม
+  <span class="sync-dot" id="syncDot" title="เขียว = พยากรณ์ตรงกับ state ปัจจุบัน"></span>
+  <span id="predText">เลือกดวงเพื่อเริ่ม</span>
 </div>
 
 <!-- ====== LOG (สำหรับ user ดูว่าเกิดอะไร) ====== -->
@@ -547,12 +562,26 @@ function renderModeLabel() {
 }
 
 function renderPredStatus() {
-  const el = document.getElementById('predStatus');
-  if (!slot1) { el.textContent = 'เลือกดวงเพื่อเริ่ม'; return; }
-  if (!slot2) { el.innerHTML = `✨ พยากรณ์: <strong>ดวงเกิด</strong> ของ ${slot1.name}`; return; }
-  if (slot2.kind === 'moment')  { el.innerHTML = `✨ พยากรณ์: <strong>ดวงเกิด + ดวงจรวันที่ ${fmtDate(slot2)} กระทบ</strong>`; return; }
-  if (slot2.kind === 'event')   { el.innerHTML = `✨ พยากรณ์: <strong>ดวงเกิด + เหตุการณ์ "${slot2.name}" กระทบ</strong>`; return; }
-  if (slot2.kind === 'person')  { el.innerHTML = `✨ พยากรณ์: <strong>${slot1.name} ↔ ${slot2.name}</strong> (สมพงศ์ — reuse logic transit-style ใน V1)`; return; }
+  const txt = document.getElementById('predText');
+  let html;
+  if (!slot1) html = 'เลือกดวงเพื่อเริ่ม';
+  else if (!slot2) html = `✨ พยากรณ์: <strong>ดวงเกิด</strong> ของ ${slot1.name}`;
+  else if (slot2.kind === 'moment')  html = `✨ พยากรณ์: <strong>ดวงเกิด + ดวงจรวันที่ ${fmtDate(slot2)} กระทบ</strong>`;
+  else if (slot2.kind === 'event')   html = `✨ พยากรณ์: <strong>ดวงเกิด + เหตุการณ์ "${slot2.name}" กระทบ</strong>`;
+  else if (slot2.kind === 'person')  html = `✨ พยากรณ์: <strong>${slot1.name} ↔ ${slot2.name}</strong> (สมพงศ์ — reuse logic transit-style ใน V1)`;
+  txt.innerHTML = html;
+}
+
+// pulse sync dot — visual cue ว่าทุก surface (chart + prediction + form) อัปเดตพร้อมกัน
+let _syncPulseTimer = null;
+function pulseSync() {
+  const dot = document.getElementById('syncDot');
+  if (!dot) return;
+  dot.classList.remove('pulse');
+  void dot.offsetWidth;  // force reflow → animation restart
+  dot.classList.add('pulse');
+  clearTimeout(_syncPulseTimer);
+  _syncPulseTimer = setTimeout(() => dot.classList.remove('pulse'), 1500);
 }
 
 function renderChartNav() {
@@ -608,6 +637,7 @@ function renderAll() {
   renderPredStatus();
   renderChartNav();
   renderLabelToggle();
+  pulseSync();  // ดอท reactive — บอก user ว่า prediction sync กับ state ปัจจุบันแล้ว
 }
 
 // ============================================================
