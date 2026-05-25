@@ -155,6 +155,21 @@ LINE OA รับวันเกิดจาก user
 
 ---
 
+## External Projects (ไม่อยู่ใน ecosystem นี้)
+
+โปรเจคที่อยู่คนละ repo — BIG **ไม่ track active** · ไม่มี handoff ใน horatad · develop ผ่าน Claude Code session แยกของ repo ตัวเอง
+
+| Repo | Visibility | สถานะ | หมายเหตุ |
+|---|---|---|---|
+| `horatad/finger-scan` | private | hardware project | DigitalPersona U.are.U 4500 (PowerShell + Node.js + Python OpenCV ORB) — แยกจาก horatad PWA 2026-05-25 |
+
+**Cross-repo integration rules:**
+- import function → copy-paste ผ่าน UI + comment ระบุที่มา (ไม่ใช้ submodule)
+- shared data → Cloudflare R2/KV (ถ้าจำเป็นในอนาคต)
+- status sync → manual update ใน BIG handoff (sandbox อ่าน repo อื่นไม่ได้)
+
+---
+
 ## Priority Framework — ลำดับงานเมื่อโปรเจคแข่งกัน
 
 ```
