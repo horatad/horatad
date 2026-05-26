@@ -1014,3 +1014,63 @@ Pending user verification:
 1. ใช้ "TALS" internally + ในไฟล์ที่ developer เห็น
 2. Public app (horatad.com "เกี่ยวกับ" page) → ใส่ credit ผู้ก่อตั้ง
 3. File renaming → ให้ BIG พิจารณา cross-project impact
+
+## 2026-05-26T23:00 — TALS vs other systems: user teaches 7 distinctions
+
+User confirmed 7 specific TALS characteristics + corrected my hallucination:
+
+### 1. ฤกษ์ — TALS excludes (electional vs natal distinction)
+- โหราศาสตร์ไทยใช้ฤกษ์ "ทำกิจกรรม" (electional) ไม่ใช่ "ทายดวง" (natal)
+- TALS drop เพราะคลุมเครือ — 9 หมู่ × 3 ราศี/หมู่ = ชั่งน้ำหนักไม่ได้
+- สำนักที่ใช้ "เพื่อมีเรื่องเล่า" — ไม่ help accuracy
+
+### 2. มฤตยู (Uranus) historical addition
+- เริ่มใช้ในไทยช่วง **รัชกาลที่ 4** — empirical addition เพราะ "เริ่มเห็นผล"
+- ตอบคำถามผม: TALS ใช้ Uranus แต่ไม่ใช้ Neptune/Pluto เพราะการเห็นผล (empirical) เป็นเกณฑ์ — ไม่ใช่ astronomical existence
+
+### 3. ราชาโชค — ผมพูดผิดเรื่อง "geometric derivation"
+- **❌ HALLUCINATION:** ผมอ้างว่ามี "geometric derivation" ใน text ก่อนหน้า
+- **✅ TRUTH:** ราชาโชค เป็น **Thai tradition lookup** ต่อ planet — ไม่ derivable
+- ⚠️ **Name collision warning:** ราชาโชค ≠ Vedic Raja Yoga (different concept entirely)
+- Quality_maps.json fixed: rajayok per-planet = lookup, NOT formula
+
+### 4. มฤตยู interpretation
+- **ความเปลี่ยนแปลงโดยฉับพลัน กระทันหัน ไม่คาดคิด**
+- ตัวอย่าง: ระบบ website ล่มกลางคัน
+- Keywords: sudden/disruptive/unexpected/sudden_change
+- → ต่างจาก ราหู (กระแสจิตใจ) — มฤตยู = external event disruption
+
+### 5. ราหู interpretation
+- **ความหลงใหลมัวเมา + บอด/บังตา**
+- ทุ่มเทกับสิ่งเดียวจนไม่สนใจอื่น
+- Keywords: obsession/addiction/fixation
+- → ต่าง "ลุ่มหลง" generic — เน้น blindness/all-consuming aspect
+
+### 6. เรือนนอก/เรือนใน (ch011)
+- **ไม่ใช่ภพ — เป็นเรื่องของดาว**
+- **ดาว** = "คุณภาพ + ปฏิสัมพันธ์" ของเรื่อง
+- **ภพ** = "เรื่อง" (topic) เฉยๆ
+- ตนุลัคน์ = "เรือนใน" of ตัวตน (ดาวเกษตรเจ้าเรือนลัคนา)
+- "เรือนนอก" = ดาวที่ปรากฏใน chart (visible position)
+- → conceptual layer: ดาว stewards เรื่อง, ภพ defines เรื่อง
+
+### 7. อนุเกษตร + ประเกษตร
+- **อนุเกษตร** เกิดจาก ดาวสลับเกษตรกัน (planets in each other's own-sign)
+- Personality reading: ก้าวหน้าช้าวัยต้น · ค่อยดีขึ้นเมื่อโต
+- เหตุ: เกี่ยวข้อง 2 เรื่องราว → ตัดสินใจไม่ได้ → ช้า
+- **ประเกษตร** = "ประ" = **คุณภาพเสีย** (degraded)
+
+### Files updated this round (Phase 1 BIBLE scope)
+- ✅ PLANETS.md — เพิ่ม มฤตยู (รัชกาลที่ 4 + meaning), ราหู, เกตุ meanings
+- ✅ VOCAB.md — เพิ่ม ฤกษ์ (excluded), เรือนนอก/เรือนใน, อนุเกษตร, ประเกษตร, ราชาโชค warning
+- ✅ QUALITY.md — clarifications + warnings (ราชาโชค, อนุเกษตร, ประเกษตร)
+- ✅ quality_maps.json — fix rajayok (tradition not formula) + naming_collisions_warning section
+
+### Open questions still pending
+- 🟡 มหาจักร เป็น TALS-distinctive หรือมีในตำราอื่นด้วย?
+- 🟡 ราชาโชค per-planet values — Thai tradition source (8 values needed)
+- 🟡 เทวีโชค = ราชาโชค + 6 — geometric or tradition?
+
+### Lesson learned (process)
+- ผมต้อง verify ก่อน claim "geometric derivation" — เพราะ traditions ที่ Thai มี อาจไม่ได้ derive จาก geometry
+- เวลา fill quality_maps formulas → ระบุ "geometric" หรือ "tradition lookup" ชัดเจน

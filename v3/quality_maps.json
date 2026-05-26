@@ -145,7 +145,9 @@
     "thevichok": {
       "formula": "(planets[N].rajayok + 6) mod 12",
       "rule": "เทวีโชค = ราศีตรงข้ามราชาโชค (~40% strength, ~60% of ราชาโชค)",
-      "pending": "Per-planet rajayok values not yet user-verified"
+      "status": "engine.js implements this formula — geometric vs tradition source unverified",
+      "pending": "Per-planet rajayok values must come from Thai tradition lookup, NOT derived. Once filled, thevichok +6 assumption needs user confirm.",
+      "warning": "⚠ ราชาโชค is Thai tradition — NOT geometrically derivable. Name collides with Vedic 'Raja Yoga' which is a DIFFERENT concept (different planet positions, different meaning). Do not conflate."
     }
   },
 
@@ -173,7 +175,15 @@
   },
 
   "pending_user_verification": [
-    "rajayok per-planet (8 values)",
-    "Confirm derivation rule for thevichok = rajayok + 6 (sample chart shows ศุกร์ใน มกร(9) = เทวีโชค → if rajayok of ศุกร์ = กรกฎ(3), then +6 = มกร(9) ✓ matches; but rajayok of ศุกร์ not formally user-verified)"
-  ]
+    "rajayok per-planet (8 values) — Thai tradition lookup, NOT derivable. Must come from user / 100CH source.",
+    "Confirm geometric assumption: thevichok = rajayok + 6 (engine.js implements this; chart sample ศุกร์ใน มกร(9) = เทวีโชค matches IF rajayok of ศุกร์ = กรกฎ(3))"
+  ],
+
+  "naming_collisions_warning": {
+    "ราชาโชค (TALS) vs Raja Yoga (Vedic)": {
+      "tals_rajayok": "Per-planet sign (lookup from Thai tradition). Single quality config.",
+      "vedic_raja_yoga": "Multi-planet combination (yoga). Different planet positions, different concept.",
+      "rule": "Do NOT extract Vedic Raja Yoga as TALS ราชาโชค during KB merge. If LLM sources cite Vedic, FLAG mismatch."
+    }
+  }
 }

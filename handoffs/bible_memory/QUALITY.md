@@ -38,3 +38,29 @@
 ## คุณภาพดาว + ไม่สัมพันธ์ลัคนา
 - ดาวคุณภาพดีแต่ไม่สัมพันธ์ลัคนา → ช่วยได้แค่ส่วนน้อย (ไม่แสดงออกชัด)
 - ตัวอย่าง: จันทร์(2) อุจจาภิมุข ไม่สัมพันธ์ลัคนา → ช่วยแค่กริยามารยาท ไม่ช่วยพูดจาอ่อนหวาน
+
+---
+## Clarifications + Warnings (user 2026-05-26)
+
+### ราชาโชค — Thai tradition (NOT geometric)
+- เป็น **tradition lookup ของไทย** — per planet ตำแหน่งคงที่ตามตำรา
+- **ไม่ใช่ derivable rule** (ไม่มี formula geometric)
+- ⚠️ **Name collision:** Vedic Raja Yoga = คนละ concept (ดาวคนละตำแหน่ง คนละเรื่อง)
+- ห้าม KB extract/merge ที่อ้าง Vedic source แล้วเรียกว่า ราชาโชค
+
+### เทวีโชค — ความสัมพันธ์กับ ราชาโชค
+- engine.js code computes: เทวีโชค = (ราชาโชค + 6) mod 12
+- master_dict.qualities บอก: "เช่นราชาโชคแต่กำลัง 60%"
+- ❓ Open: ความสัมพันธ์ +6 เป็น geometric หรือ tradition? (engine assumes geometric, ตำรายัง verify ไม่ได้)
+- **Default assumption:** ใช้ +6 formula จนกว่าจะ verify เป็นอื่น
+
+### อนุเกษตร — interpretation นัยใหม่
+- เกิดจาก: ดาวสลับเกษตรกัน
+- **Personality reading:** ก้าวหน้าช้าในวัยต้น · ค่อยดีขึ้นเมื่ออายุมาก
+- **Causation:** ตัวเกี่ยวข้องกับ 2 เรื่องราว → ตัดสินใจไม่ได้ → ช้า
+- **Strength curve:** ขึ้นช้ากว่าเกษตร (delayed onset)
+
+### ประเกษตร / ประ
+- "ประ" = **คุณภาพเสีย** (degraded) ชัดเจน
+- ตำแหน่ง: ราศีตรงข้ามเกษตร = (kaset + 6) mod 12
+- Strength: -60% (per script.js STD_SCORE)
