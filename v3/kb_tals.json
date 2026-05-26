@@ -1,0 +1,5903 @@
+{
+  "_meta": {
+    "db": "kb_tals",
+    "source_level": 1,
+    "description": "TALS Primary KB — 100CH ตำราเท่านั้น (authoritative core)",
+    "schema": "2.1-multidb",
+    "rule_count": 290,
+    "created": "2026-05-28"
+  },
+  "rules": [
+    {
+      "id": "R001",
+      "ch": "ch001",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ราศีทั้ง 12 ในจักรราศี",
+      "meaning": "ราศีเมษ=0, พฤษภ=1, มิถุน=2, กรกฎ=3, สิงห์=4, กันย์=5, ตุล=6, พิจิก=7, ธนู=8, มังกร=9, กุมภ์=10, มีน=11 — นับทวนเข็มนาฬิกา ตำแหน่งคงที่ไม่เปลี่ยนแปลง",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch001"
+    },
+    {
+      "id": "R002",
+      "ch": "ch001",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ดาวเกษตรเรือนในกับนักษัตรของราศี",
+      "meaning": "ดาวเกษตรเรือนใน (ดาวเจ้าเรือน) มีความสำคัญในการพยากรณ์มากกว่านักษัตรของราศี",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch001"
+    },
+    {
+      "id": "R003",
+      "ch": "ch002",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ดาวเคราะห์ 10 ดวงและสัญลักษณ์",
+      "meaning": "อาทิตย์=1(อ), จันทร์=2(จ), อังคาร=3(ภ), พุธ=4(ว), พฤหัส=5(ช), ศุกร์=6(ศ), เสาร์=7(ส), ราหู=8(ร), เกตุ=9(ก), มฤตยู=0(ม)",
+      "polarity": "~",
+      "planet_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        0
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch002"
+    },
+    {
+      "id": "R004",
+      "ch": "ch002",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ชื่ออื่นของดาวเคราะห์ (aliases)",
+      "meaning": "อาทิตย์: ระวิ สุรีย์ | อังคาร: ภุมมะ ภุมเมศ | พฤหัส: ชีวา ชีโว ครู | เสาร์: โสรา | ราหู: อสุริน อสุรา",
+      "polarity": "~",
+      "planet_ids": [
+        1,
+        3,
+        5,
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch002"
+    },
+    {
+      "id": "R005",
+      "ch": "ch002",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) และเกตุ(9) โคจร",
+      "meaning": "โคจรย้อนทิศดาวอื่น (ตามเข็มนาฬิกา) — ไม่มีตำแหน่งเกษตรเป็นดาวเจ้าเรือน ยกเว้นราหูเป็นเกษตรในกุมภ์",
+      "polarity": "~",
+      "planet_ids": [
+        8,
+        9
+      ],
+      "contexts": [
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch002"
+    },
+    {
+      "id": "R006",
+      "ch": "ch002",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวที่ไม่ได้ตำแหน่งเกษตร (ดาวเจ้าเรือน)",
+      "meaning": "เกตุ(9) ราหู(8) มฤตยู(0) ไม่มีตำแหน่งเกษตรเป็นดาวเจ้าเรือน (ยกเว้นราหูครองกุมภ์เป็นเกษตร)",
+      "polarity": "~",
+      "planet_ids": [
+        9,
+        8,
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch002"
+    },
+    {
+      "id": "R007",
+      "ch": "ch002",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ความเร็วโคจรปกติของดาวแต่ละดวงต่อราศี",
+      "meaning": "อาทิตย์=30วัน, จันทร์=2.5วัน, อังคาร=45วัน, พุธ=30วัน, พฤหัส=1ปี, ศุกร์=30วัน, เสาร์=2.5ปี, ราหู=1.5ปี, เกตุ=2เดือน, มฤตยู=7ปี",
+      "polarity": "~",
+      "planet_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        0
+      ],
+      "contexts": [
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch002"
+    },
+    {
+      "id": "R008",
+      "ch": "ch003",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ภพทั้ง 12 และความหมาย",
+      "meaning": "ภพ1=ตนุ(ตัวตน), 2=กฎุมพะ(ทรัพย์), 3=สหัชชะ(เพื่อน/พี่น้อง), 4=พันธุ(พ่อแม่), 5=ปุตตะ(บุตร), 6=อริ(ศัตรู/โรค), 7=ปัตนิ(คู่ครอง), 8=มรณะ(สูญเสีย), 9=ศุภะ(ความสุข), 10=กัมมะ(อาชีพ), 11=ลาภะ(ลาภ), 12=วินาศ(จากไป)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch003"
+    },
+    {
+      "id": "R009",
+      "ch": "ch003",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ภพมรณะ ร้ายแรงที่สุดในบรรดาภพร้าย",
+      "meaning": "ภพมรณะ(8) ร้ายแรงสุด เพราะสูญเสียโดยไม่ได้รับสิ่งตอบแทน ต่างจากภพอริ(6)=ขัดแย้ง/โรค และภพวินาศ(12)=จากไปแต่ยังมีแลกเปลี่ยน",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสูญเสีย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch003"
+    },
+    {
+      "id": "R010",
+      "ch": "ch003",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวเจ้าเรือนมรณะ(8)มาอยู่ภพกฎุมพะ(2)",
+      "meaning": "จะได้ทรัพย์จากการสูญเสีย หรือได้มรดก — ภพร้ายกลับให้ผลดีในบริบทเฉพาะ",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch003"
+    },
+    {
+      "id": "R011",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง เจ้ายศเจ้าอย่าง มากพิธีรีตอง อีโก้สูง",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R012",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "กริยามารยาทดี นุ่มนวล มีเสน่ห์ อ่อนหวาน มีจริตของผู้หญิง",
+      "polarity": "+",
+      "planet_ids": [
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R013",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "ขยัน แข็งกร้าว ไม่ยอมคน ใจร้อน โผงผาง ทำงานว่องไว กล้าหาญ มีตรรกะ ไม่เชื่ออะไรง่าย ทักษะช่าง",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R014",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา ชอบงานหนังสือ การทูต ประชาสัมพันธ์ ข้อมูล สิ่งพิมพ์",
+      "polarity": "+",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R015",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "คุณธรรม ใจอ่อน เมตตา ขี้สงสาร ชอบช่วยเหลือ มองโลกดี มีสติ ฉลาดในทางธรรม",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R016",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "ศิลปะ จินตนาการ เพ้อฝัน ชอบรื่นเริง ชอบของสวยงาม อารมณ์สุนทรี กำหนัดความใคร่",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R017",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "คิดมาก ไตร่ตรองรอบคอบ ทำงานช้า อดทนสูง ทำงานหนักเก่ง ทำสวน เกษตร มีความหมายด้านที่ดิน บ้าน",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R018",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "ลุ่มหลง มัวเมา เล่ห์เหลี่ยม กล้าเสี่ยง ใจกว้าง สนใจหุ้น หวย สิ่งเสพติด งานการเงิน ขนส่ง",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R019",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เกตุ(9) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "ทวีคูณดาวอื่นที่ร่วมราศีหรือสัมพันธ์ — ถ้ากับดาวดีให้ดียิ่งขึ้น ถ้ากับดาวเสียให้เสียมากขึ้น และสัมพันธ์ถึงลัคนาด้วยดาวดีบ่งอายุยืน",
+      "polarity": "~",
+      "planet_ids": [
+        9
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R020",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "มฤตยู(0) กุมลัคนาหรือสัมพันธ์ถึงลัคนา",
+      "meaning": "แปรปรวน เจ้าอารมณ์ อาจมีเซ้นส์สิ่งลึกลับ ให้โทษอย่างเดียว ไม่ให้คุณ",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R021",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "มฤตยู(0) อยู่ในเรือนใด",
+      "meaning": "มักมีการเปลี่ยนแปลงในเรือนนั้น — ปัตนิ=เปลี่ยนคู่, กัมมะ=เปลี่ยนงาน, กฎุมพะ=การเงินรั่วไหล",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R022",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ราหู(8) + ศุกร์(6) กุมหรือสัมพันธ์กัน",
+      "meaning": "การแสดง นักแสดง — ลุ่มหลง+ศิลปะ เกิดความหมายใหม่",
+      "polarity": "~",
+      "planet_ids": [
+        8,
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หน้าที่การงาน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R023",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "พุธ(4) + เสาร์(7) กุมหรือสัมพันธ์กัน",
+      "meaning": "พูดจาหนักแน่น เน้นสาระ วาจาแข็งกร้าว — พูดจา+หนักแน่นช้า",
+      "polarity": "~",
+      "planet_ids": [
+        4,
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R024",
+      "ch": "ch004",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "พุธ(4) + จันทร์(2) กุมหรือสัมพันธ์กัน",
+      "meaning": "พูดจาอ่อนหวาน มีเสน่ห์ชวนฟัง — ถ้าจันทร์เป็นอุจ ยิ่งมีเสน่ห์ เป็นที่นิยมชื่นชม",
+      "polarity": "+",
+      "planet_ids": [
+        4,
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch004"
+    },
+    {
+      "id": "R025",
+      "ch": "ch005",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ดาวบาปเคราะห์และดาวศุภเคราะห์",
+      "meaning": "บาปเคราะห์(ให้โทษ/อำนาจ): อาทิตย์(1) อังคาร(3) เสาร์(7) ราหู(8) | ศุภเคราะห์(ให้คุณ/บารมี): จันทร์(2) พุธ(4) พฤหัส(5) ศุกร์(6) | อาทิตย์ถ้าสัมพันธ์ลัคนาก็เป็นศุภเคราะห์ด้วย",
+      "polarity": "~",
+      "planet_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch005"
+    },
+    {
+      "id": "R026",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'เกษตร' คืออะไร",
+      "meaning": "มั่นคง มีหลักฐาน อุดมสมบูรณ์ ให้ผลอย่างค่อยเป็นค่อยไปแต่มั่นคง — เห็นผลช้า ให้ผลเต็มบั้นปลาย (กราฟเส้นตรงเอียงขึ้น 45 องศา)",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R027",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'ประเกษตร' คืออะไร",
+      "meaning": "ขาดแคลน ไม่มั่นคง ให้ผลเสื่อมถอยช้าๆ ตกต่ำบั้นปลาย (กราฟเส้นตรงเอียงลาดลง)",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R028",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'อุจ' คืออะไร",
+      "meaning": "รุ่งโรจน์ อุดมสมบูรณ์ ได้มาด้วยความนิยม ให้คุณแรงและสม่ำเสมอ (กราฟแนวนอนระดับสูง)",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R029",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'นิจ' คืออะไร",
+      "meaning": "ด้อยต่ำ เสื่อมถอย ไม่ได้รับการยอมรับ ให้โทษไม่แรงมากแต่สม่ำเสมอ (กราฟแนวนอนระดับต่ำ/ติดลบ)",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R030",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'มหาจักร' คืออะไร",
+      "meaning": "ผาดโผน รวดเร็ว ข้ามขั้นตอน ให้คุณแรงมากแต่ไม่สม่ำเสมอ — ปกติธรรมดา แต่เมื่อให้คุณมาแบบกะทันหัน ตั้งรับไม่ทัน (กราฟแบบคลื่นชีพจรไม่สม่ำเสมอ)",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R031",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'ราชาโชค' คืออะไร",
+      "meaning": "ได้มาง่ายๆ สบาย ไม่ต้องลงทุนลงแรงมาก สม่ำเสมอ ให้คุณน้อยกว่าอุจจาวิลาสเล็กน้อย แต่สบายไม่ต้องแรง",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R032",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'อุจจาวิลาส' คืออะไร",
+      "meaning": "ดาวที่โคจรเข้าสู่ราศีก่อนจะถึงราศีอุจ ให้คุณประมาณ 60% ของอุจ — จำง่าย: อยู่ในราศีที่วินาศ กับราศีที่เป็นอุจ",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R033",
+      "ch": "ch006",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "คุณภาพ 'อุจจาภิมุข' คืออะไร",
+      "meaning": "ดาวที่โคจรออกจากราศีอุจ เข้าสู่ราศีถัดไปข้างหน้าหนึ่งราศี ให้คุณประมาณ 60% ของอุจ",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R034",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) อยู่ราศีสิงห์(4)",
+      "meaning": "เกษตร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง เห็นผลเต็มบั้นปลาย",
+      "polarity": "+",
+      "planet_ids": [
+        1
+      ],
+      "sign_id": 4,
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R035",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) อยู่ราศีกรกฎ(3)",
+      "meaning": "เกษตร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง",
+      "polarity": "+",
+      "planet_ids": [
+        2
+      ],
+      "sign_id": 3,
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R036",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) อยู่ราศีเมษ(0) หรือราศีพิจิก(7)",
+      "meaning": "เกษตร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง",
+      "polarity": "+",
+      "planet_ids": [
+        3
+      ],
+      "sign_ids": [
+        0,
+        7
+      ],
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R037",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) อยู่ราศีมิถุน(2) หรือราศีกันย์(5)",
+      "meaning": "เกษตร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง",
+      "polarity": "+",
+      "planet_ids": [
+        4
+      ],
+      "sign_ids": [
+        2,
+        5
+      ],
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R038",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) อยู่ราศีธนู(8) หรือราศีมีน(11)",
+      "meaning": "เกษตร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "sign_ids": [
+        8,
+        11
+      ],
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R039",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) อยู่ราศีพฤษภ(1) หรือราศีตุล(6)",
+      "meaning": "เกษตร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง",
+      "polarity": "+",
+      "planet_ids": [
+        6
+      ],
+      "sign_ids": [
+        1,
+        6
+      ],
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R040",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) อยู่ราศีมังกร(9) — ราศีหลัก",
+      "meaning": "เกษตร และเป็นดาวเจ้าเรือนมังกร — มั่นคง มีหลักฐาน ให้ผลช้าแต่มั่นคง",
+      "polarity": "+",
+      "planet_ids": [
+        7
+      ],
+      "sign_id": 9,
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R041",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) อยู่ราศีกุมภ์(10) — ราศีรอง",
+      "meaning": "เกษตร แต่ไม่ใช่ดาวเจ้าเรือนกุมภ์ (ราหูเป็นเจ้าเรือนกุมภ์) — โปรแกรมโหราฯ มักไม่แสดงว่าเสาร์เป็นเกษตรในกุมภ์ ต้องระวัง",
+      "polarity": "+",
+      "planet_ids": [
+        7
+      ],
+      "sign_id": 10,
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R042",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) อยู่ราศีกุมภ์(10) — เป็นดาวเจ้าเรือนกุมภ์",
+      "meaning": "เกษตร และเป็นดาวเจ้าเรือนกุมภ์ — โปรแกรมโหราฯ มักไม่แสดงว่าเสาร์เป็นเกษตรด้วย ต้องจำไว้",
+      "polarity": "+",
+      "planet_ids": [
+        8
+      ],
+      "sign_id": 10,
+      "quality": "เกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R043",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) อยู่ราศีกุมภ์(10)",
+      "meaning": "ประเกษตร — ขาดแคลน ไม่มั่นคง เสื่อมถอยช้า ตกต่ำบั้นปลาย",
+      "polarity": "-",
+      "planet_ids": [
+        1
+      ],
+      "sign_id": 10,
+      "quality": "ประเกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R044",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) อยู่ราศีมังกร(9)",
+      "meaning": "ประเกษตร — ขาดแคลน ไม่มั่นคง เสื่อมถอยช้า ตกต่ำบั้นปลาย",
+      "polarity": "-",
+      "planet_ids": [
+        2
+      ],
+      "sign_id": 9,
+      "quality": "ประเกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R045",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) อยู่ราศีสิงห์(4) — ประเกษตร",
+      "meaning": "ประเกษตร — โปรแกรมโหราฯ มักไม่แสดงว่าเสาร์เป็นประเกษตรในสิงห์ด้วย ต้องระวัง",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "sign_id": 4,
+      "quality": "ประเกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R046",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวมีคุณภาพมหาจักร กุมลัคนา",
+      "meaning": "มักประสบความสำเร็จแบบผาดโผน ลัดขั้นตอน — ถ้าดาวการเงินเป็นมหาจักร มักได้ทรัพย์เป็นก้อนใหญ่ โดยไม่คาดหมาย",
+      "polarity": "+",
+      "planet_ids": [],
+      "quality_req": "มหาจักร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R047",
+      "ch": "ch006",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เสาร์(7)+จันทร์(2) หรืออาทิตย์(1)+ราหู(8) หรือพุธ(4)+อังคาร(3) หรือพฤหัส(5)+ศุกร์(6) กุมกัน",
+      "meaning": "มหาจักร — คู่ดาวเหล่านี้เมื่ออยู่ร่วมราศีกันในเรือนเกษตรของกันและกัน ให้คุณแบบผาดโผน รวดเร็ว ไม่สม่ำเสมอ",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        2,
+        1,
+        8,
+        4,
+        3,
+        5,
+        6
+      ],
+      "quality": "มหาจักร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "notes": "ความหมายของ memory code ๗๒ ๑๘ ๔๓ ๕๖ — ต้องการตรวจสอบ sign positions จาก source",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch006"
+    },
+    {
+      "id": "R048",
+      "ch": "ch007",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ธาตุของดาวเคราะห์ (ดาวคู่ธาตุ)",
+      "meaning": "ธาตุไฟ: อาทิตย์(1) เสาร์(7) | ธาตุลม: อังคาร(3) ราหู(8) | ธาตุน้ำ: พุธ(4) ศุกร์(6) | ธาตุดิน: จันทร์(2) พฤหัส(5) | เกตุ(9)=วิญญาณธาตุ | มฤตยู(0)=อากาศธาตุ",
+      "polarity": "~",
+      "planet_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        0
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch007"
+    },
+    {
+      "id": "R049",
+      "ch": "ch007",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ธาตุของราศีทั้ง 12",
+      "meaning": "ไฟ: เมษ(0)ต้น สิงห์(4)กลาง ธนู(8)ปลาย | น้ำ: กรกฎ(3)ต้น พิจิก(7)กลาง มีน(11)ปลาย | ลม: ตุล(6)ต้น กุมภ์(10)กลาง มิถุน(2)ปลาย | ดิน: มังกร(9)ต้น พฤษภ(1)กลาง กันย์(5)ปลาย",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch007"
+    },
+    {
+      "id": "R050",
+      "ch": "ch007",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวธาตุเดียวกันสัมพันธ์กัน",
+      "meaning": "เข้ากันได้สนิท ส่งเสริมกัน — ดาวธาตุไฟ(1,7)+ธาตุไฟ เสริมกัน; ดาวต่างธาตุ เสริม หักล้าง หรือเป็นกลางต่อกัน",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch007"
+    },
+    {
+      "id": "R051",
+      "ch": "ch007",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวธาตุไฟ อยู่ในราศีธาตุน้ำ",
+      "meaning": "อ่อนกำลังลงมาก — ธาตุน้ำดับไฟ",
+      "polarity": "-",
+      "planet_ids": [
+        1,
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch007"
+    },
+    {
+      "id": "R052",
+      "ch": "ch007",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวธาตุไฟ อยู่ในราศีธาตุลม",
+      "meaning": "ทวีกำลังแรงขึ้น — ลมเสริมไฟ",
+      "polarity": "+",
+      "planet_ids": [
+        1,
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch007"
+    },
+    {
+      "id": "R053",
+      "ch": "ch008",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวคู่มิตรสัมพันธ์กัน (กุม/เล็ง/โยค/ตรีโกณ)",
+      "meaning": "ช่วยเหลือกัน ส่งเสริมกัน มีกำลังมากยิ่งขึ้นในทุกด้าน — แม้ดาวร้ายเมื่อเจอคู่มิตรก็กลับให้คุณ",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R054",
+      "ch": "ch008",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ดาวคู่มิตรทั้ง 4 คู่",
+      "meaning": "อาทิตย์(1)+พฤหัส(5), จันทร์(2)+พุธ(4), ศุกร์(6)+อังคาร(3), ราหู(8)+เสาร์(7)",
+      "polarity": "+",
+      "planet_ids": [
+        1,
+        5,
+        2,
+        4,
+        6,
+        3,
+        8,
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R055",
+      "ch": "ch008",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เสาร์(7) + ราหู(8) สัมพันธ์กัน (คู่มิตร)",
+      "meaning": "แม้เป็นดาวร้ายทั้งคู่ แต่เมื่อเจอกันกลับให้คุณ ให้โชคใหญ่ — ดาวคู่อื่นให้คุณแต่น้อยกว่า",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R056",
+      "ch": "ch008",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวคู่ศัตรูสัมพันธ์กัน",
+      "meaning": "บ่อนทำลายกัน อ่อนกำลังทั้งคู่ เกิดความขัดแย้ง",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R057",
+      "ch": "ch008",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ดาวคู่ศัตรูทั้ง 4 คู่",
+      "meaning": "อาทิตย์(1)+อังคาร(3), พุธ(4)+ราหู(8), ศุกร์(6)+เสาร์(7), จันทร์(2)+พฤหัส(5) [คู่เล็กสุด — ดีกันก็ไม่จริง ร้ายกันก็ไม่มาก]",
+      "polarity": "-",
+      "planet_ids": [
+        1,
+        3,
+        4,
+        8,
+        6,
+        7,
+        2,
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R058",
+      "ch": "ch008",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "จันทร์(2)+พฤหัส(5) ร่วมราศีกัน (คู่ศัตรูเล็ก)",
+      "meaning": "แม้เป็นคู่ศัตรูขนาดเล็ก แต่ร่วมราศีกันกลับให้คุณมากพอสมควรในเรื่องกริยามารยาท ทั้งอ่อนหวานและสงบน่านับถือ",
+      "polarity": "+",
+      "planet_ids": [
+        2,
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R059",
+      "ch": "ch008",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวคู่สมพลสัมพันธ์กัน (กุม/เล็ง/โยค/ตรีโกณ)",
+      "meaning": "ส่งเสริมกัน มีกำลังมากขึ้นทั้งคู่ (สมพล=กำลังเท่ากัน) คล้ายดาวคู่มิตร",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R060",
+      "ch": "ch008",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "ดาวคู่สมพลทั้ง 4 คู่",
+      "meaning": "อาทิตย์(1)+ศุกร์(6), จันทร์(2)+ราหู(8), อังคาร(3)+พฤหัส(5), พุธ(4)+เสาร์(7)",
+      "polarity": "~",
+      "planet_ids": [
+        1,
+        6,
+        2,
+        8,
+        3,
+        5,
+        4,
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch008"
+    },
+    {
+      "id": "R061",
+      "ch": "ch009",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "มุมสัมพันธ์และน้ำหนักกำลัง",
+      "meaning": "กุม(ร่วมราศี)=100%, เล็ง(ราศีตรงข้าม=7ช่อง)=80%, โยค(3หรือ11ราศี)=60%, ตรีโกณ(5หรือ9ราศี)=50%",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch009"
+    },
+    {
+      "id": "R062",
+      "ch": "ch009",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวไม่กุม/เล็ง/โยค/ตรีโกณกับลัคนา",
+      "meaning": "ไม่สัมพันธ์ลัคนา — ไม่ให้ผลด้านปัจจัยภายนอกกับเจ้าชาตา แต่มีผลด้านอัจฉริยภาพภายในตามภพที่อยู่",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch009"
+    },
+    {
+      "id": "R063",
+      "ch": "ch010",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เกษตร 2 ดวง เล็งกัน (อยู่ราศีตรงข้ามกัน)",
+      "meaning": "กลายเป็นประเกษตรทั้งคู่ แต่เป็นเกษตรก่อน ต่อมาภายหลังจึงกลายเป็นประเกษตร — ดีก่อน แล้วเสื่อมถอย",
+      "polarity": "-",
+      "planet_ids": [],
+      "quality_condition": "เกษตร",
+      "aspect": "เล็ง",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch010"
+    },
+    {
+      "id": "R064",
+      "ch": "ch010",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ประเกษตร 2 ดวง เล็งกัน",
+      "meaning": "กลายเป็นเกษตรทั้งคู่ แต่ไม่ดีก่อน ภายหลังจึงกลายเป็นดี — ลบ-ลบ=บวก",
+      "polarity": "+",
+      "planet_ids": [],
+      "quality_condition": "ประเกษตร",
+      "aspect": "เล็ง",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch010"
+    },
+    {
+      "id": "R065",
+      "ch": "ch010",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "อุจ 2 ดวง เล็งกัน",
+      "meaning": "กลายเป็นนิจทั้งคู่ การเปลี่ยนแปลงรวดเร็วกว่าเกษตร อาจให้ผลชนิดล้มทั้งยืน/หักโค่นครั้งใหญ่",
+      "polarity": "-",
+      "planet_ids": [],
+      "quality_condition": "อุจ",
+      "aspect": "เล็ง",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch010"
+    },
+    {
+      "id": "R066",
+      "ch": "ch010",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "นิจ 2 ดวง เล็งกัน",
+      "meaning": "กลายเป็นอุจทั้งคู่ เห็นผลเร็วกว่าประเกษตรเล็งกัน — ลบ-ลบ=บวก",
+      "polarity": "+",
+      "planet_ids": [],
+      "quality_condition": "นิจ",
+      "aspect": "เล็ง",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch010"
+    },
+    {
+      "id": "R067",
+      "ch": "ch010",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาว 2 ดวง อยู่ในเรือนเกษตรของกันและกัน (สลับเรือน)",
+      "meaning": "อนุเกษตรทั้งคู่ — ให้คุณรองจากเกษตร ให้คุณทันทีตั้งแต่เกิด แต่เห็นผลช้ากว่าเกษตรอีก",
+      "polarity": "+",
+      "planet_ids": [],
+      "aspect": "สลับเรือนเกษตร",
+      "quality": "อนุเกษตร",
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch010"
+    },
+    {
+      "id": "R068",
+      "ch": "ch010",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "กฎลบ-ลบ กลายเป็นบวก ใช้กับดาวใดบ้าง",
+      "meaning": "ใช้เฉพาะ เกษตร ประเกษตร อุจ นิจ เท่านั้น — ห้ามใช้กับ มหาจักร อุจจาวิลาส อุจจาภิมุข ราชาโชค เทวีโชค",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch010"
+    },
+    {
+      "id": "R069",
+      "ch": "ch013",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "ตนุเศษ (tanu-sert) คืออะไร",
+      "meaning": "ดาวที่แสดงนิสัย/อารมณ์หลักของเจ้าชาตา — ไม่ขึ้นกับภพหรือคุณภาพดาว พิจารณาแยกต่างหากเป็นพิเศษ ดาวราหู เกตุ มฤตยู ไม่มีเกณฑ์เป็นตนุเศษ",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R070",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) เป็นตนุเศษ",
+      "meaning": "นิสัยเป็นคนไว้ตัว รักหน้า ไม่ยอมเสียหน้า หยิ่ง — ไม่ขึ้นกับคุณภาพดาวหรือภพที่อยู่",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R071",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) เป็นตนุเศษ",
+      "meaning": "กริยามารยาทดี อ่อนโยน อ่อนหวาน — ไม่ขึ้นกับคุณภาพดาวหรือภพที่อยู่",
+      "polarity": "+",
+      "planet_ids": [
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R072",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) เป็นตนุเศษ",
+      "meaning": "ขยันขันแข็ง — ลักษณะที่ชัดเจนที่สุดของอังคารตนุเศษ ไม่ขึ้นกับคุณภาพดาวหรือภพ",
+      "polarity": "+",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R073",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) เป็นตนุเศษ",
+      "meaning": "ละเอียด ทำงานประณีตเรียบร้อย ชอบข้อมูล — ไม่ขึ้นกับคุณภาพดาวหรือภพ",
+      "polarity": "+",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R074",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) เป็นตนุเศษ",
+      "meaning": "ใจอ่อน มีเมตตา ขี้สงสาร ไม่โกง — ถึงราหู(8)จะแรง พฤหัสเป็นตนุเศษก็ช่วยต้านได้ (ไม่ทั้งหมด)",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R075",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) เป็นตนุเศษ",
+      "meaning": "มีจินตนาการ เพ้อฝัน ชอบรื่นเริงบันเทิง — ไม่ขึ้นกับคุณภาพดาวหรือภพ",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R076",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) เป็นตนุเศษ",
+      "meaning": "คิดมาก ไตร่ตรองรอบคอบมากๆ — ลักษณะที่ชัดเจนมาก ไม่ขึ้นกับคุณภาพดาวหรือภพ",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_sert",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R077",
+      "ch": "ch013",
+      "rule_use": "reference",
+      "type": "DEFINITION",
+      "tier": 1,
+      "c": "ตนุลัคน์ (tanu-lagn) คืออะไร",
+      "meaning": "ดาวเกษตรเจ้าเรือนลัคนา (ดาวเกษตรเรือนใน) = ตัวตนภายในที่แท้จริง/สันดานแท้ของเจ้าชาตา ไม่เปลี่ยนแปลงแม้ดาวอยู่ภพร้าย",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R078",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คืออาทิตย์(1) — ลัคนาอยู่ราศีสิงห์(4)",
+      "meaning": "สันดานแท้: ไว้ตัว ถือตัว รักหน้า ไม่ยอมเสียหน้า — คงเป็นแบบนี้เสมอ แม้ดาวดีหรือเสีย อยู่ภพอะไรก็ตาม",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R079",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คือจันทร์(2) — ลัคนาอยู่ราศีกรกฎ(3)",
+      "meaning": "สันดานแท้: อ่อนหวาน มีกริยามารยาท — คงเป็นแบบนี้เสมอ",
+      "polarity": "+",
+      "planet_ids": [
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R080",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คืออังคาร(3) — ลัคนาอยู่ราศีเมษ(0)หรือพิจิก(7)",
+      "meaning": "สันดานแท้: ขยัน แข็ง ไม่ยอมใคร ไม่เชื่อง่าย ดื้อ แต่ดื้อมีเหตุผล — คงเป็นแบบนี้เสมอ",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R081",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คือพุธ(4) — ลัคนาอยู่ราศีมิถุน(2)หรือกันย์(5)",
+      "meaning": "สันดานแท้: ละเอียด ประณีต ชอบงานหนังสือ ข้อมูล คิดลึก — คงเป็นแบบนี้เสมอ",
+      "polarity": "+",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R082",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คือพฤหัส(5) — ลัคนาอยู่ราศีธนู(8)หรือมีน(11)",
+      "meaning": "สันดานแท้: มีคุณธรรม เมตตา ใจอ่อน ขี้สงสาร มองโลกดี — ราหู(8)แรงแค่ไหนก็ช่วยต้านได้",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R083",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คือศุกร์(6) — ลัคนาอยู่ราศีพฤษภ(1)หรือตุล(6)",
+      "meaning": "สันดานแท้: จินตนาการ เพ้อฝัน ชอบรื่นเริง อารมณ์ศิลปิน อ่อนไหวง่าย — คงเป็นแบบนี้เสมอ",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R084",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คือเสาร์(7) — ลัคนาอยู่ราศีมังกร(9)หรือกุมภ์(10)",
+      "meaning": "สันดานแท้: คิดมาก ไตร่ตรองมาก เชื่องช้า หนักแน่น อดทน ทำงานหนักเหนื่อยยากได้ดี — คงเป็นแบบนี้เสมอ",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R085",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์คือราหู(8) — ลัคนาอยู่ราศีกุมภ์(10)",
+      "meaning": "สันดานแท้: ดื้อเงียบ ดื้อตาใส ไม่เถียง เมื่อลุ่มหลงอะไรก็หัวปักหัวปำ — คงเป็นแบบนี้เสมอ",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "condition_type": "tanu_lagn",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R086",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์ไม่สัมพันธ์ถึงลัคนา",
+      "meaning": "ตัวตนแท้มักไม่แสดงออกให้เห็นภายนอก — แต่ยังคงเป็นสันดานภายในอยู่เสมอ",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R087",
+      "ch": "ch013",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์สัมพันธ์ถึงลัคนา",
+      "meaning": "ตัวตนแท้แสดงออกชัดเจน ตรงกับที่มองเห็นจากภายนอก",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch013"
+    },
+    {
+      "id": "R088",
+      "ch": "ch014",
+      "rule_use": "reference",
+      "type": "REFERENCE",
+      "tier": 1,
+      "c": "วิธีพยากรณ์ 2 ประเภท",
+      "meaning": "ดวงชาตาเดิม (natal) = ฐานะ ชาตาชีวิต นิสัย ตายตัว ไม่เปลี่ยน | ดวงชาตาจร (transit) = โชคเคราะห์ อดีต/ปัจจุบัน/อนาคต — ดาวจรกระทำต่อดาวพื้น",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch014"
+    },
+    {
+      "id": "R089",
+      "ch": "ch014",
+      "rule_use": "reference",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "มาตรฐานความแม่นยำการพยากรณ์",
+      "meaning": "พื้นดวงชาตาถูก 80% + ดาวจรถูก 50% = ระดับสูงมาก (มาตรฐานชั้นสูง)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch014"
+    },
+    {
+      "id": "R090",
+      "ch": "ch015",
+      "rule_use": "reference",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ขั้นตอนการพยากรณ์ดวงชาตาเดิม 3 ขั้น",
+      "meaning": "1.วิเคราะห์ดาว(ดูคุณภาพ ความสัมพันธ์ทุกด้าน ธาตุ สลับเรือน) → 2.ตรวจสอบลัคนา(ถ้าไม่ตรงย้าย±1ราศี) → 3.พยากรณ์ตามลำดับ (ตนุ→ตนุเศษ→ตนุลัคน์→ภพอื่น)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R091",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) สัมพันธ์ลัคนา",
+      "meaning": "เจ้าชาตาถือตัว ไว้ตัว ไม่ยอมเสียหน้า — ใช้ตรวจสอบลัคนาได้ว่าถูกต้องหรือไม่",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R092",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) สัมพันธ์ลัคนา",
+      "meaning": "ช่างพูด พูดเก่งเป็นปกติวิสัย — ยิ่งกุมลัคนา ยิ่งช่างพูดชัดเจนที่สุด; ถ้าไม่สัมพันธ์ → พูดน้อยหรือพูดปกติ",
+      "polarity": "+",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R093",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "พุธ(4) ไม่สัมพันธ์ลัคนา + อยู่ภพมรณะ",
+      "meaning": "พูดจาสับสน จับต้นชนปลายไม่ถูก พูดไม่ถูกกาลเทศะ หรือฟังเข้าใจยาก",
+      "polarity": "-",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R094",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) สัมพันธ์ลัคนา",
+      "meaning": "ขยัน ใจร้อน ขี้โมโห โต้เถียงด้วยเหตุผล ไม่ค่อยยอมคน — ใช้ตรวจสอบลัคนาได้",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R095",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) สัมพันธ์ลัคนา",
+      "meaning": "เชื่องช้า ไตร่ตรองรอบคอบ คิดมาก — ทั้งลักษณะภายนอกและภายใน ใช้ตรวจสอบลัคนาได้",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R096",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) สัมพันธ์ลัคนา",
+      "meaning": "ผู้ใหญ่เมตตา ช่วยเหลือดี — ถ้าพฤหัสดี แปลว่าผู้ใหญ่มีกำลังมาก ถ้าเสีย ก็ช่วยเหลือแต่กำลังน้อย",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "โชคชะตา",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R097",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) ไม่สัมพันธ์ลัคนา",
+      "meaning": "ผู้ใหญ่ไม่เมตตา ไม่ช่วยเหลือ ต้องช่วยตัวเองมาโดยตลอด — แม่นยำสูง",
+      "polarity": "-",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "โชคชะตา",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R098",
+      "ch": "ch015",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ตนุเศษ — หลักการ",
+      "meaning": "ตนุเศษ = พื้นนิสัยโดยรวม ไม่ขึ้นกับคุณภาพดาว ไม่ขึ้นกับภพ (แม้ตกเรือนมรณะ อริ วินาศ ก็ยังเป็นนิสัยนั้น) ราหู(8) เกตุ(9) มฤตยู(0) ไม่มีเกณฑ์เป็นตนุเศษ",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R099",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) เป็นตนุเศษ",
+      "meaning": "ไว้ตัว รักเกียรติ รักหน้า ไม่ยอมเสียหน้า (หยิ่ง แต่มากน้อยขึ้นกับดาวสัมพันธ์ลัคนา)",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R100",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) เป็นตนุเศษ",
+      "meaning": "อ่อนโยน อ่อนหวาน กิริยานุ่มนวล มีเสน่ห์",
+      "polarity": "~",
+      "planet_ids": [
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R101",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) เป็นตนุเศษ",
+      "meaning": "ขยัน แข็ง (ขยันขนาดไหนต้องดูตนุเพิ่ม)",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R102",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) เป็นตนุเศษ",
+      "meaning": "ละเอียด ชอบข้อมูลรายละเอียด ชอบงานหนังสือ",
+      "polarity": "~",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R103",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) เป็นตนุเศษ",
+      "meaning": "ใจอ่อน เมตตา ขี้สงสาร ชอบช่วยเหลือคน ไม่โกงใคร",
+      "polarity": "~",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R104",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) เป็นตนุเศษ",
+      "meaning": "มีจินตนาการ เพ้อฝัน ชอบศิลปะด้านใดด้านหนึ่ง รื่นเริง มีอารมณ์สุนทรี",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R105",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) เป็นตนุเศษ",
+      "meaning": "คิดมาก ไตร่ตรองรอบคอบมาก (ไม่จำเป็นต้องทำช้าตามเสมอ เช่น คิดช้าแต่ทำเร็วถ้ามีอังคารแรง)",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R106",
+      "ch": "ch015",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 2,
+      "c": "กุมลัคนา vs ตนุเศษ — ความต่าง",
+      "meaning": "กุมลัคนา = ลักษณะภายนอกที่แสดงออกให้เห็น (100% ชัดเจน); ตนุเศษ = พื้นนิสัยโดยรวม ลึกกว่า อาจไม่แสดงออก บางครั้งคล้ายกัน บางครั้งต่างกัน",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R107",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "มฤตยู(0) ในภพปัตนิ",
+      "meaning": "มีการเปลี่ยนคู่ครองอย่างน้อย 1 ครั้งในชีวิต (หลายคนเปลี่ยนบ่อย) เพราะมฤตยู = ตัวเปลี่ยนแปลง",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ปัตนิ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R108",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "มฤตยู(0) ในภพกัมมะ",
+      "meaning": "มีการเปลี่ยนอาชีพหลักอย่างน้อย 1 ครั้ง (ส่วนใหญ่เปลี่ยนหลายครั้ง)",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R109",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "มฤตยู(0) กุม/เล็ง อังคาร(3)",
+      "meaning": "มีปัญหาสุขภาพหรืออุบัติเหตุ (มีเชื้อพร้อมเกิดตลอดเวลา) ยิ่งสัมพันธ์ถึงลัคนาด้วยก็ยิ่งเร็วหรือพิการแต่กำเนิด เกตุ(9)ร่วมด้วยทวีคูณ",
+      "polarity": "-",
+      "planet_ids": [
+        0,
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R110",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เสาร์(7)+ราหู(8) คู่มิตร สัมพันธ์ลัคนาทั้งคู่",
+      "meaning": "ทำงานคล่องตัว งานหนัก-เบาทำได้หมด มักร่ำรวย (ดาวคู่มิตรใหญ่ให้คุณ)",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "โชคชะตา",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R111",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "พฤหัส(5)+มฤตยู(0)+เกตุ(9) สัมพันธ์ถึงลัคนา",
+      "meaning": "จิตอ่อน สติยั้งคิดแปรปรวน ประสาทไว ลุ่มหลงสิ่งลึกลับ — กุม/เล็งลัคนา: อาจถึงขั้นผีเข้า; โยค/ตรีโกณ: เบาบาง",
+      "polarity": "-",
+      "planet_ids": [
+        5,
+        0,
+        9
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพจิต",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R112",
+      "ch": "ch015",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ดาว 3+ ดวงในภพปัตนิ",
+      "meaning": "ชอบมีหุ้นส่วน/ไปมีเอี่ยวกับคนอื่นอยู่เสมอ; อาจมีคู่ครองหลายคน (หุ้นส่วนชัดกว่า)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ปัตนิ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R113",
+      "ch": "ch015",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "การตรวจสอบลัคนา (Lagna Verification)",
+      "meaning": "ถ้าผลพยากรณ์ไม่ตรงข้อเท็จจริง → ย้ายลัคนา±1 ราศี ไม่ใช้ exception/ดวงซ้อนดวง ตรวจสอบด้วย: ตนุเศษ, ดาวกุมลัคนา, พฤหัสสัมพันธ์ลัคนา, ตนุลัคน์",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch015"
+    },
+    {
+      "id": "R114",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) กุมลัคนา คุณภาพดี",
+      "meaning": "ถือตัว รักเกียรติ รักหน้า ไม่ยอมเสียหน้า ชอบแต่งตัวโอ่อ่า ดวงเข้มแข็ง ประสบความสำเร็จโดยง่าย ตามคุณภาพ (เกษตร=ช้าแต่มั่นคง, อุจ=เป็นที่นิยม, มหาจักร=ผาดโผนข้ามขั้น)",
+      "polarity": "+",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R115",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) กุมลัคนา คุณภาพเสีย",
+      "meaning": "หยิ่งไม่มีเหตุผล ถือตัวมากเกินพอ หรือถือตัวน้อยกว่าปกติ ดวงอ่อนแอ บั้นปลายเสื่อมถอย",
+      "polarity": "-",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R116",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) กุมลัคนา",
+      "meaning": "อ่อนหวาน อ่อนโยน มีเสน่ห์ มีจริต (ผู้หญิง); เสีย: ดูอ่อนแอ แหยๆ (ผู้ชาย) หรือจริตเกินพอดี",
+      "polarity": "~",
+      "planet_ids": [
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R117",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) กุมลัคนา",
+      "meaning": "ขยัน แข็ง กล้าหาญ กล้าเสี่ยง เจ้าเหตุผล ไม่เชื่ออะไรง่าย โผงผาง มักยอมเสียเปรียบ ทักษะช่าง-นักรบ; เสีย: ขยันไม่เป็นเรื่อง หรือขี้เกียจมาก",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R118",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) กุมลัคนา",
+      "meaning": "ช่างพูด พูดไม่หยุด (ลักษณะภายนอก) ละเอียด ประณีต ชอบข้อมูล (ลักษณะภายใน) มักเรียนเก่ง; เสีย: พูดเพ้อเจ้อ ไม่ถูกกาลเทศะ ละเอียดจู้จี้เกินเหตุ",
+      "polarity": "~",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R119",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) กุมลัคนา",
+      "meaning": "คุณธรรมสูง มองโลกแง่ดี ใจอ่อน สติยั้งคิด; เสีย+สัมพันธ์ลัคนา: คุณธรรมแต่ย่อหย่อนได้; ไม่สัมพันธ์ลัคนา: ไร้คุณธรรม ทำได้ทุกอย่าง ยิ่งตกภพมรณะ/อริ/วินาศ ยิ่งแย่",
+      "polarity": "~",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R120",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) กุมลัคนา",
+      "meaning": "มีจินตนาการ ชอบรื่นเริงบันเทิง ทักษะศิลปะ อารมณ์สุนทรี กำหนัดสูง (ถ้ากุมกับอาทิตย์-คู่สมพล หรืออังคาร-คู่มิตร); เสีย: ศิลปะด้อยหรือผิดเพี้ยน",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R121",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) กุมลัคนา",
+      "meaning": "คิดมาก ไตร่ตรองรอบคอบ เชื่องช้า อดทน ชอบงานหนัก งานที่ดิน เกษตร บ้าน + ตอนแรกคลอดยาก เลี้ยงยาก (ถ้าพฤหัสดี=รอดแต่เลี้ยงยาก, พฤหัสเสีย=โอกาสรอดยาก)",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R122",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) กุมลัคนา",
+      "meaning": "ฉลาดเล่ห์เหลี่ยม ทันคน ลุ่มหลงอะไรสักอย่าง ใจนักเลง กล้าเสี่ยงไม่มีเหตุผล ถูกโฉลกหุ้น-หวย-งานเบา; เสีย: งมงาย ถูกหลอกง่าย ลุ่มหลงอบายมุข",
+      "polarity": "~",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R123",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "มฤตยู(0) กุมลัคนา",
+      "meaning": "แปรปรวน ขี้เบื่อ ลึกลับ เข้าใจยาก สุขภาพไม่ค่อยดี อาจมีเซนส์ลึกลับ ยิ่งมีเกตุ(9)ร่วม → ยิ่งแปรปรวน อาจพิกลพิการ/ออทิสติก แต่มีอัจฉริยภาพบางด้าน",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R124",
+      "ch": "ch016",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดาวกุมลัคนาหลายดวง — กฎการหาร",
+      "meaning": "ดาวกุมลัคนา 1 ดวง = ให้ผลเด่น 100%; 2 ดวง = ดวงละ 50%; N ดวง = ดวงละ 100/N% ทำให้แสดงผลไม่ชัดเจนเป็นรายดาว",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R125",
+      "ch": "ch016",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ตนุลัคน์ (ดาวเกษตรเรือนใน) — กำลัง",
+      "meaning": "ตนุลัคน์มีผล 100% เท่ากับดาวกุมลัคนาทุกดวงรวมกัน เป็นตัวตนภายในจริงๆ สันดานโดยแท้ ทำงานหลังฉากในทุกภพ",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R126",
+      "ch": "ch016",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ตนุลัคน์ไปอยู่ภพอื่น",
+      "meaning": "เจ้าชาตามักไปเกี่ยวข้องกับความหมายของภพนั้น: ตนุ=เน้นตัวเอง, กฎุมพะ=หาทรัพย์, สหัชชะ=เพื่อน, พันธุ=ญาติ, ปุตตะ=ลูกหลาน, อริ=ชอบหาความยุ่งยาก, ปัตนิ=คู่, มรณะ=เสียหายง่าย, ศุภะ=ความสงบ, กัมมะ=บ้าทำงาน, ลาภะ=เห็นแก่ได้, วินาศ=ขี้เบื่อปล่อยวาง",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R127",
+      "ch": "ch016",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดวงชาตาเข้มแข็ง vs อ่อนแอ",
+      "meaning": "ดูจากดาวเรือนนอก(กุมลัคนา) + ดาวเรือนใน(ตนุลัคน์) หลังปรับคุณภาพครบ: ดีทั้งนอกใน=เข้มแข็งมาก, เสียทั้งสอง=อ่อนแอที่สุด, ดีส่วนหนึ่ง=ชั่งน้ำหนัก",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch016"
+    },
+    {
+      "id": "R128",
+      "ch": "ch017",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ตนุลัคน์อยู่ภพปัตนิ",
+      "meaning": "เจ้าชาตาให้ความสำคัญกับคู่ครองมาก ชีวิตวนเวียนกับคู่ มักได้คู่ที่ดีหรือตามใจ",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ปัตนิ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch017"
+    },
+    {
+      "id": "R129",
+      "ch": "ch017",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวคู่ขัดแย้ง (ศัตรู) กุมภพปัตนิร่วมกัน",
+      "meaning": "คู่ครองมีปัญหาบ่อย ขัดแย้งกันมาก อาจนำไปสู่การแยกทาง (ยิ่งเป็นศัตรูกันมากยิ่งรุนแรง)",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ปัตนิ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch017"
+    },
+    {
+      "id": "R130",
+      "ch": "ch017",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "มฤตยู(0) สัมพันธ์ภพปัตนิ",
+      "meaning": "คู่ครองมีการเปลี่ยนแปลงใหญ่ (หย่าร้าง/เสียชีวิต/แยกกันอยู่) หรือคู่ครองมีนิสัยแปรปรวนมาก",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ปัตนิ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch017"
+    },
+    {
+      "id": "R131",
+      "ch": "ch018",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวดีคุณภาพดีในภพกฎุมพะ",
+      "meaning": "มีทรัพย์สิน ฐานะดี ครอบครัวอบอุ่น (ยิ่งดาวแรงยิ่งมาก) โดยเฉพาะพฤหัส/จันทร์/ศุกร์",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทรัพย์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch018"
+    },
+    {
+      "id": "R132",
+      "ch": "ch018",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "มฤตยู(0) ในภพกฎุมพะ",
+      "meaning": "ทรัพย์สินผันผวน มีได้มีเสีย ครอบครัวมีการเปลี่ยนแปลงใหญ่ (สูญเสียสมาชิก/ย้ายบ้าน/แตกแยก)",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทรัพย์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch018"
+    },
+    {
+      "id": "R133",
+      "ch": "ch019",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "อังคาร(3) ในภพมรณะ คุณภาพดี",
+      "meaning": "มีพลังฝ่าฟันอุปสรรค กล้าเผชิญความยากลำบาก แต่ระวังอุบัติเหตุรุนแรง; เสีย: อุบัติเหตุ บาดเจ็บรุนแรง",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch019"
+    },
+    {
+      "id": "R134",
+      "ch": "ch019",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ราหู(8) ในภพลาภะ + คุณภาพมหาจักร",
+      "meaning": "ลาภใหญ่ ร่ำรวยจากทางลัดหรือทางที่คนอื่นมองข้าม หุ้น/การพนัน/ธุรกิจแปลกๆ มักได้ผลดีมาก",
+      "polarity": "+",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทรัพย์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch019"
+    },
+    {
+      "id": "R135",
+      "ch": "ch020",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 2,
+      "c": "ดาวในภพมรณะ — กรอบทั่วไป",
+      "meaning": "ดาวดีในมรณะ: ให้ผลดีแต่ต้องผ่านความยากลำบากก่อน; ดาวเสียในมรณะ: ให้โทษตรงๆ ไม่มีกันชน; มฤตยู/เกตุ/ราหูในมรณะ: ระวังอุบัติเหตุหรือสิ่งที่ควบคุมไม่ได้",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch020"
+    },
+    {
+      "id": "R136",
+      "ch": "ch020",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ลำดับ 10 ขั้นพยากรณ์ไทย",
+      "meaning": "1)ตั้งดวง 2)ตรวจลัคนา 3)ดูตนุเศษ 4)ดูกุมลัคนา 5)ดูตนุลัคน์ 6)ดูพฤหัสสัมพันธ์ลัคนา 7)ดูภพที่ถามถึง 8)ดูดาวเจ้าภพ 9)ดูดาวสัมพันธ์ภพ 10)สรุปรวม",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch020"
+    },
+    {
+      "id": "R137",
+      "ch": "ch021",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดาวสัมพันธ์ลัคนา vs ไม่สัมพันธ์ลัคนา — นิยาม",
+      "meaning": "สัมพันธ์ลัคนา = กุม/เล็ง/โยค/ตรีโกณกับลัคนา → แสดงออกทั้งภายนอก+อัจฉริยภาพ ตลอดเวลา; ไม่สัมพันธ์ = อัจฉริยภาพภายในเท่านั้น แสดงเป็นบางครั้งในสถานการณ์เฉพาะ",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ตัวตน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch021"
+    },
+    {
+      "id": "R138",
+      "ch": "ch021",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 2,
+      "c": "ภพมรณะ อริ วินาศ — ผลต่อดาวในภพ",
+      "meaning": "ดาวดีในภพเหล่านี้: ให้ผลอ่อนลงมาก ต้องใช้ความพยายามมากกว่าปกติ; ดาวเสียในภพเหล่านี้: ให้โทษเต็มๆ โดยไม่มีกันชน; ดาวเจ้าภพตกภพเหล่านี้: เรื่องภพนั้นลำบาก",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch021"
+    },
+    {
+      "id": "R139",
+      "ch": "ch021",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 2,
+      "c": "ธาตุราศี — ผลต่อดาว",
+      "meaning": "ดาวอยู่ราศีธาตุเดียวกันกับดาวเกษตรของตน = เสริมกำลัง; ธาตุขัดกัน = ลดกำลัง (ไม่เท่ากับนิจ แต่อ่อนกว่าปกติ)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch021"
+    },
+    {
+      "id": "R140",
+      "ch": "ch022",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ดาวเกษตรกุมลัคนา + อายุ",
+      "meaning": "ดาวเกษตรกุมลัคนา = เจ้าชาตาเริ่มต้นชีวิตยากแต่ค่อยๆ ดีขึ้นตามวัย (ต่างจากอุจ=ดีตั้งแต่ต้นแล้วค่อยๆ ลดลง)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "โชคชะตา",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch022"
+    },
+    {
+      "id": "R141",
+      "ch": "ch023",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ลำดับคุณภาพดาว (Quality Ranking)",
+      "meaning": "อุจ > มหาจักร > อุจจาวิลาส/อุจจาภิมุข > เกษตร≈ราชาโชค > เทวีโชค > จุลจักร > (ปกติ) > ประเกษตร ≈ นิจ",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch023"
+    },
+    {
+      "id": "R142",
+      "ch": "ch023",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 2,
+      "c": "ดาวเด่น — นิยาม",
+      "meaning": "ดาวเด่น = ดาวที่มีคุณภาพสูงสุดในดวงชาตา (อุจ/มหาจักร/อุจจาวิลาส) ใช้เป็น anchor หลักในการพยากรณ์ ถ้าไม่มีดาวอุจ → ดาวเกษตรคือเด่นสุด",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch023"
+    },
+    {
+      "id": "R143",
+      "ch": "ch023",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 2,
+      "c": "การชั่งน้ำหนักดาวหลายดวง",
+      "meaning": "ดาวหลายดวงสัมพันธ์ลัคนา → ดูดาวที่มีคุณภาพสูงสุดเป็น primary; ดาวอื่นเป็น modifier; ถ้าขัดแย้งกัน → primary ชนะ แต่ modifier อาจลดทอนผล",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch023"
+    },
+    {
+      "id": "R144",
+      "ch": "ch024",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ราหู(8) ดีไม่สัมพันธ์ลัคนา",
+      "meaning": "อัจฉริยภาพด้านหยั่งรู้ เล่ห์เหลี่ยม หุ้น/โชคลาภ แต่ไม่แสดงออกภายนอกชัด → แสดงเมื่อมีโอกาสจริงๆ เท่านั้น",
+      "polarity": "+",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "โชคชะตา",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch024"
+    },
+    {
+      "id": "R145",
+      "ch": "ch025",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8) จร สัมพันธ์ดาวในดวงชาตา",
+      "meaning": "ช่วงราหูจรผ่าน: เปิดโอกาสใหม่ที่คาดไม่ถึง หุ้น/การพนัน/ธุรกิจแปลก; ถ้าราหูชาตาดี → โอกาสทอง; ถ้าราหูชาตาเสีย → ระวังถูกหลอก",
+      "polarity": "~",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "transit"
+      ],
+      "domain": "โชคชะตา",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch025"
+    },
+    {
+      "id": "R146",
+      "ch": "ch027",
+      "rule_use": "case_study",
+      "type": "REFERENCE",
+      "tier": 2,
+      "c": "case study: ดาราจอมลวงโลก",
+      "meaning": "ราหู(8)อุจ กุมลัคนา + ศุกร์(6)เสียในมรณะ: เสน่ห์ล้นเหลือ เล่ห์กลสูง มีชื่อเสียงจากทางลัด แต่มีเรื่องอื้อฉาวด้านความรัก/ศีลธรรม",
+      "polarity": "~",
+      "planet_ids": [
+        8,
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ชื่อเสียง",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch027"
+    },
+    {
+      "id": "R147",
+      "ch": "ch027",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "หลักอาชีพ — ถูกโฉลก",
+      "meaning": "อาชีพถูกโฉลก = ดาวเจ้าภพกัมมะ + ดาวสัมพันธ์กัมมะ + ตนุเศษ ต้องสอดคล้องกัน → งานสนุก ประสบความสำเร็จ; ไม่สอดคล้อง = ทำงานฝืนนิสัย เหนื่อยเปล่า",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch027"
+    },
+    {
+      "id": "R148",
+      "ch": "ch028",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพราชการ ผู้นำ นักการเมือง ตำรวจ/ทหารชั้นผู้ใหญ่ งานอำนาจและเกียรติยศ",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch028"
+    },
+    {
+      "id": "R149",
+      "ch": "ch028",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "จันทร์(2) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพดูแลผู้อื่น พยาบาล ครู นักจิตวิทยา งานบริการ งานที่ต้องใช้ความอ่อนโยน",
+      "polarity": "~",
+      "planet_ids": [
+        2
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch028"
+    },
+    {
+      "id": "R150",
+      "ch": "ch028",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพช่าง วิศวกร ทหาร ตำรวจ นักกีฬา งานใช้แรงหรือความกล้า งานที่มีการแข่งขัน",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch028"
+    },
+    {
+      "id": "R151",
+      "ch": "ch028",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พุธ(4) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพนักเขียน นักข่าว ครู นักบัญชี งานข้อมูล IT งานที่ต้องใช้ความละเอียดและการสื่อสาร",
+      "polarity": "~",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch028"
+    },
+    {
+      "id": "R152",
+      "ch": "ch029",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพกฎหมาย ศาสนา การศึกษา การเงิน ที่ปรึกษา งานที่ต้องใช้วิจารณญาณและคุณธรรม",
+      "polarity": "~",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch029"
+    },
+    {
+      "id": "R153",
+      "ch": "ch029",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพศิลปิน นักดนตรี นักแสดง ออกแบบ แฟชั่น สปา ความงาม งานที่ใช้ความสวยงามและจินตนาการ",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch029"
+    },
+    {
+      "id": "R154",
+      "ch": "ch029",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) เด่น/เจ้ากัมมะ",
+      "meaning": "อาชีพเกษตร อสังหาริมทรัพย์ ก่อสร้าง เหมือง งานหนัก งานที่ต้องอดทนและใช้เวลานาน",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch029"
+    },
+    {
+      "id": "R155",
+      "ch": "ch029",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ศุกร์(6) เสีย + เด่นด้านอาชีพ — case study ศิลปิน",
+      "meaning": "มีพรสวรรค์ศิลปะสูง (ศุกร์เด่น) แต่ชีวิตส่วนตัวมีปัญหา (ศุกร์เสีย) → ผลงานดีเด่น แต่ความสัมพันธ์/สุขภาพ/เงินมีปัญหาตามมา",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch029"
+    },
+    {
+      "id": "R156",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวดี + สัมพันธ์ถึงลัคนา",
+      "meaning": "ถูกโฉลก — แสดงออกให้เห็น คนนิยมยกย่อง ให้คุณเต็มที่ตามความหมายดาว",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R157",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวดี + ไม่สัมพันธ์ถึงลัคนา",
+      "meaning": "ไม่ถูกโฉลก — มีคุณสมบัติในฐานะ 'อัจฉริยภาพภายใน' แต่ไม่แสดงออก คนไม่เห็น ไม่นิยม",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R158",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวเสีย + สัมพันธ์ถึงลัคนา",
+      "meaning": "ไม่ถูกโฉลก — ให้โทษแสดงออกให้เห็น คนเห็นแต่ไม่นิยม (ผิดปกติ มากเกิน/น้อยเกิน)",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R159",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวเสีย + ไม่สัมพันธ์ถึงลัคนา",
+      "meaning": "ไม่ถูกโฉลก — แทบไม่มีคุณสมบัตินั้นเลย ทั้งภายนอกและภายใน (ยิ่งไม่เห็น ยิ่งไม่นิยม)",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R160",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวตนุลัคน์ ไปร่วมราศีกับดาวอื่น",
+      "meaning": "ดาวตนุลัคน์ ร่วมราศีกับดาวใด → เจ้าชาตามีนิสัยและทักษะตามความหมายของดาวนั้นๆด้วย ไม่ว่าจะมีกี่ดวง",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R161",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ภพหรือเรือนชาตาเข้มแข็ง/อ่อนแอ",
+      "meaning": "ขึ้นอยู่กับคุณภาพดาวในภพนั้นเป็นหลัก ไม่ได้ขึ้นอยู่กับดาวใหญ่หรือดาวเล็ก",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R162",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) เสีย + สัมพันธ์ถึงลัคนา",
+      "meaning": "หยิ่งเกินเหตุ หยิ่งโง่ ไม่มีเหตุผล แสดงออกให้เห็น — แต่มีข้อดีคือรักหน้า ทัดทานราหู(8) ในเรื่องโกงได้มาก (กลัวเสียหน้า)",
+      "polarity": "~",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R163",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อาทิตย์(1) เสีย + ไม่สัมพันธ์ถึงลัคนา",
+      "meaning": "ไม่ถือตัวเลย อาจทำเรื่องขายหน้าโดยไม่อาย รวมถึงอาจโกงด้วย (ขาด 'กลัวเสียหน้า' เป็นตัวห้าม)",
+      "polarity": "-",
+      "planet_ids": [
+        1
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R164",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) อุจ กุมลัคนา",
+      "meaning": "ขยันสม่ำเสมอ มีตรรกะ ขยันแบบมีเหตุผล แข็งกร้าว โผงผาง โมโหร้าย",
+      "polarity": "+",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R165",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) มหาจักร กุมลัคนา",
+      "meaning": "ปกติขยันน้อยกว่าอุจ แต่บทจะขยัน กลับขยันมากกว่า; โมโหร้ายกว่าอุจ โมโหหน้ามืด",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R166",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) เสีย (นิจ/ประ) กุมลัคนา",
+      "meaning": "ขยันแบบไม่มีเหตุผล ตรรกะผิดปกติ มักยอมคน ทำท่าแข็งแต่ไม่เอาจริง โมโหแต่ไม่เอาจริง",
+      "polarity": "-",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R167",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) ดี/ปกติ + ไม่สัมพันธ์ลัคนา + อยู่ภพกัมมะ",
+      "meaning": "ขยันเฉพาะงานที่ทำ ถ้าเป็นงานอื่นขี้เกียจ (ไม่ขยันจริง แต่ขยันในหน้าที่)",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R168",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) ดี/ปกติ + ไม่สัมพันธ์ถึงลัคนา",
+      "meaning": "ขาดสติยั้งคิด ทำเลวทำชั่วได้ง่าย โดยเฉพาะถ้าตกภพมรณะ/อริ/วินาศ; ผู้ใหญ่/ครูอาจารย์ไม่เมตตาช่วยเหลือ ต้องสู้เอง",
+      "polarity": "-",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R169",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) เสีย + สัมพันธ์ถึงลัคนา",
+      "meaning": "มีคุณธรรมแต่ขาดหรือละเว้นได้บางครั้ง ไม่มีคุณธรรมสูงส่งจนเกินไป → ดีสำหรับนักธุรกิจ (ค้าขายเอาเปรียบคนอื่นได้บ้าง)",
+      "polarity": "~",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R170",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) เสีย + ไม่สัมพันธ์ถึงลัคนา",
+      "meaning": "ไม่มีคุณธรรมเลย ขาดสติยั้งคิด ทำเลวทำชั่วได้ทุกอย่าง โดยเฉพาะถ้าดาวราหู(8)แรง",
+      "polarity": "-",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R171",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) อยู่ในราศีมิถุน + สัมพันธ์ถึงลัคนา",
+      "meaning": "อุจจาวิลาส+ประเกษตรพร้อมกัน → มีคุณธรรมสูงแต่หลงดี/หลงธรรมะ เช่น กินมังสวิรัติตลอดชีวิต อุทิศตัวสร้างวัด ปฏิบัติธรรมเคร่งครัด",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R172",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) ให้คุณเพียงอย่างเดียว",
+      "meaning": "พฤหัส(5) เป็นดาวที่ให้คุณเพียงอย่างเดียว ไม่ให้โทษเลย ไม่ว่าจะดาวดีหรือดาวเสีย เปรียบเสมือนพระหรือผู้ทรงศีล",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R173",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) ≠ ความรัก",
+      "meaning": "ศุกร์(6) มีความหมายเรื่องกำหนัดความใคร่ ไม่ใช่ความรักทั้งหมด — ความรักต้องใช้หลายปัจจัยประกอบกัน ศุกร์เป็นเพียงส่วนหนึ่งเท่านั้น",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R174",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ศุกร์(6) เสีย + สัมพันธ์ถึงลัคนา",
+      "meaning": "ศิลปะผิดเพี้ยน จินตนาการฟุ้งเฟ้อ — แต่ยังมีชื่อเสียงได้ (ศิลปินแห่งชาติหลายคนมีดาวศุกร์เสีย) เพียงแต่ต้องฝ่าฟันอุปสรรคนาน",
+      "polarity": "~",
+      "planet_ids": [
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R175",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) เสีย (นิจ/ประ) กุมลัคนา",
+      "meaning": "คิดมากแบบฟุ้งซ่าน ย้ำคิดย้ำทำ (ไม่ใช่ไตร่ตรองรอบคอบที่ดี)",
+      "polarity": "-",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R176",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) ในพื้นดวงชาตา",
+      "meaning": "ให้คุณอยู่บ้าง แทบไม่ให้โทษเลย (ต่างจากกรณีดาวจรที่ให้โทษรุนแรง)",
+      "polarity": "+",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R177",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7) เป็นดาวจร",
+      "meaning": "ให้โทษรุนแรงถึงตาย ชีวิตลำบาก เจ็บไข้ได้ป่วย — แต่ก็ให้คุณสูงมาก อาจถึงโชคใหญ่ (ต้องดูรายละเอียดเพิ่มเติม)",
+      "polarity": "~",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R178",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เสาร์(7) + ศุกร์(6) คู่ศัตรู ร่วมราศี/สัมพันธ์กัน",
+      "meaning": "หักล้างกำลังซึ่งกันและกัน ทำให้ทั้งคู่อ่อนกำลังลง",
+      "polarity": "-",
+      "planet_ids": [
+        7,
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R179",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) เป็นตนุลัคน์",
+      "meaning": "เจ้าชาตาจะเป็นคนดื้อ เงียบ (ไม่เชื่อฟังแต่ไม่เถียง) — ไม่ว่าดาวจะดีหรือเสีย",
+      "polarity": "~",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R180",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) ดี/ปกติ + สัมพันธ์ถึงลัคนา",
+      "meaning": "เจ้าเล่ห์ คนโกง หรือฉลาดทันเล่ห์เหลี่ยม ลุ่มหลงบางอย่าง (วิชาการ/ผู้หญิง/พนัน) — แต่มักไม่งมงายง่าย",
+      "polarity": "~",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R181",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) เสีย + สัมพันธ์ถึงลัคนา",
+      "meaning": "งมงาย เชื่ออะไรง่าย ถูกหลอกลวงง่าย ไม่ทันคน มัวเมาอบายมุข — ยิ่งถ้าไม่มีพฤหัส(5)สัมพันธ์ลัคนา ยิ่งหนัก",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R182",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8) เป็นดาวจร",
+      "meaning": "ให้โทษไม่ถึงตาย แต่ทำให้ยุ่งยากด้วยเรื่องไม่เป็นเรื่อง เกิดคดีความ ติดคุก หรือลุ่มหลงอะไรหนัก — ไม่ให้คุณเลย (แม้เจอเสาร์(7)คู่มิตรก็ตาม)",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R183",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ราหู(8) + พุธ(4) คู่ศัตรู ร่วมราศี/สัมพันธ์กัน",
+      "meaning": "ลดทอนกำลังกันและกัน + ราหู(8)ยังบดบังพฤหัส(5)ในเรื่องคุณธรรมได้ถ้าราหูแรงกว่าหรือกำลังเสมอกัน",
+      "polarity": "-",
+      "planet_ids": [
+        8,
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R184",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เกตุ(9) สัมพันธ์/ร่วมราศีกับดาวใดก็ตาม",
+      "meaning": "ทวีคูณผลของดาวนั้น — ร่วมดาวดี→ยิ่งดีขึ้น; ร่วมดาวเสีย→ยิ่งเสียมากขึ้น (วิญญาณธาตุ — ขยายผลเท่านั้น ไม่มีความหมายตัวเอง)",
+      "polarity": "~",
+      "planet_ids": [
+        9
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R185",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "มฤตยู(0) อยู่ภพใด",
+      "meaning": "ทำให้มีการเปลี่ยนแปลงในภพนั้น — ภพปัตนิ=เปลี่ยนคู่, ภพกัมมะ=เปลี่ยนงาน, ภพกฎุมพะ=การเงินรั่ว/ใช้เงินเก่ง; ให้โทษอย่างเดียว ไม่ให้คุณ",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R186",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "มฤตยู(0) + สัมพันธ์ถึงลัคนา",
+      "meaning": "เจ้าชาตาเจ้าอารมณ์ อารมณ์แปรปรวน ลึกลับ มีเซนส์ในสิ่งลึกลับ (คนที่ไม่มีมฤตยูสัมพันธ์ลัคนายังไม่ปรากฏว่ามีเซนส์ลึกลับเลย)",
+      "polarity": "~",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R187",
+      "ch": "ch026",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "มฤตยู(0) + สัมพันธ์ลัคนา + อังคาร(3)สัมพันธ์กัน",
+      "meaning": "ชีวิตแปรปรวนมาก มีเชื้อให้เกิดเหตุร้าย สุขภาพแปรปรวน เกิดอุบัติเหตุได้ตลอดเวลา โดยเฉพาะถ้าดาวบาปเคราะห์หลายดวงจรมาสัมพันธ์กันพร้อมกัน",
+      "polarity": "-",
+      "planet_ids": [
+        0,
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R188",
+      "ch": "ch026",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวคุณภาพเสีย (นิจ/ประเกษตร)",
+      "meaning": "ความหมายของดาวผิดปกติ — มากเกินไป หรือน้อยเกินไป (ไม่ใช่ตรงข้าม) เช่น อาทิตย์เสีย=หยิ่งโง่, ศุกร์เสีย=จินตนาการฟุ้งเฟ้อ, เสาร์เสีย=คิดมากจนฟุ้งซ่าน",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch026"
+    },
+    {
+      "id": "R189",
+      "ch": "ch030",
+      "rule_use": "reference",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "กรณีฝาแฝด — วางลัคนา",
+      "meaning": "กรณีฝาแฝดให้ดูจากข้อเท็จจริงของเจ้าชาตา: ถ้านิสัยเหมือนกัน→ลัคนาราศีเดียวกัน; ถ้าแตกต่างกันมาก→ต่างราศีกัน 1-2 ราศี (ย้ายไม่เกิน 2 ราศี)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "methodology",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch030"
+    },
+    {
+      "id": "R190",
+      "ch": "ch030",
+      "rule_use": "reference",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ย้ายลัคนาเมื่อพยากรณ์ไม่ตรง",
+      "meaning": "ถ้าพยากรณ์แล้วไม่ตรงกับชีวิตจริงของเจ้าชาตา ให้ย้ายลัคนา ±1 ราศี (เดินหน้า/ถอยหลัง) โดยไม่ยึดติดเวลาเกิดอย่างเดียว",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "methodology",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch030"
+    },
+    {
+      "id": "R191",
+      "ch": "ch036",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "โชคใหญ่ กรณีที่ 1: เสาร์(7)จร เล็ง ราหู(8)เดิม + อาทิตย์(1)จร ทับหรือเล็ง พฤหัส(5)เดิม",
+      "meaning": "มีโชคใหญ่ (คู่มิตร เสาร์+ราหู และ อาทิตย์+พฤหัส activate พร้อมกัน)",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8,
+        1,
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R192",
+      "ch": "ch036",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "โชคใหญ่ กรณีที่ 2 (3 คู่): เสาร์(7)จร ทับ ราหู(8)เดิม + อังคาร(3)จร เล็ง ศุกร์(6)เดิม + อาทิตย์(1)จร ทับ พฤหัส(5)เดิม",
+      "meaning": "มีโชคใหญ่ (3 คู่มิตรพร้อมกัน: เสาร์+ราหู, อังคาร+ศุกร์, อาทิตย์+พฤหัส)",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8,
+        3,
+        6,
+        1,
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R193",
+      "ch": "ch036",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "โชคใหญ่ กรณีที่ 3 (3 คู่): จันทร์(2)จร ทับ ลัคนา + พฤหัส(5)จร ทับ พุธ(4)เดิม + พุธ(4)จร เล็ง จันทร์(2)เดิม",
+      "meaning": "มีโชคใหญ่จากการงาน (คู่มิตร จันทร์+พุธ activate หลายทาง)",
+      "polarity": "+",
+      "planet_ids": [
+        2,
+        5,
+        4
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R194",
+      "ch": "ch036",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "โชคใหญ่ กรณีที่ 4 (3 คู่): พฤหัส(5)จร ทับ อาทิตย์(1)เดิม + อาทิตย์(1)จร เล็ง พฤหัส(5)เดิม + จันทร์(2)จร ทับ ราหู(8)เดิม",
+      "meaning": "มีโชคใหญ่ (คู่มิตร อาทิตย์+พฤหัส, และคู่สมพล จันทร์+ราหู activate พร้อมกัน)",
+      "polarity": "+",
+      "planet_ids": [
+        5,
+        1,
+        2,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R195",
+      "ch": "ch036",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "โชคใหญ่ กรณีที่ 5 (3 คู่): อังคาร(3)จร ทับ ศุกร์(6)เดิม + อาทิตย์(1)จร เล็ง จันทร์(2)เดิม + จันทร์(2)จร ทับ พุธ(4)เดิม",
+      "meaning": "มีโชคใหญ่ (คู่มิตร อังคาร+ศุกร์, และคู่สมพล อาทิตย์+จันทร์ activate พร้อมกัน)",
+      "polarity": "+",
+      "planet_ids": [
+        3,
+        6,
+        1,
+        2,
+        4
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R196",
+      "ch": "ch036",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ทุกขลาภ (ไม่ใช่โชค): เสาร์(7)จร เล็ง อังคาร(3)เดิม + อังคาร(3)จร เล็งหรือทับ เสาร์(7)เดิม",
+      "meaning": "ทุกขลาภ — ได้ลาภแต่เป็นทุกข์ ถ้ามีก็สาบสูญเสียหายไป เสียมากกว่า (เสาร์+อังคาร = คู่ศัตรู ไม่ใช่คู่มิตร)",
+      "polarity": "-",
+      "planet_ids": [
+        7,
+        3
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R197",
+      "ch": "ch036",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "โชคใหญ่ — หลักการทั่วไป",
+      "meaning": "โชคใหญ่มักเกิดจากดาวคู่มิตร N คู่ จรมาทับหรือเล็งกันพร้อมกัน (ยิ่งมากคู่ยิ่งโชคใหญ่) — ดาวคู่ศัตรู transit ไม่นับเป็นโชค",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch036"
+    },
+    {
+      "id": "R198",
+      "ch": "ch031",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "พฤหัส(5) แรงมาก + ราหู(8) อ่อนมาก",
+      "meaning": "คนดีโดยแท้ / คนซื่อโดยแท้ — คุณธรรมสูง มองโลกในแง่ดี เชื่อคนง่าย ไม่มีเล่ห์เหลี่ยม ถูกหลอกลวงได้ง่าย",
+      "polarity": "+",
+      "planet_ids": [
+        5,
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch031"
+    },
+    {
+      "id": "R199",
+      "ch": "ch031",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ราหู(8) แรงมาก + พฤหัส(5) อ่อนมาก",
+      "meaning": "คนโกงโดยแท้ — เจ้าเล่ห์ ฉลาดหลอกลวง ขาดสติยั้งคิด ไม่มีคุณธรรม ทำชั่วได้ (ยกเว้นถ้ามีอาทิตย์(1)+อังคาร(3) ช่วยลดทอน)",
+      "polarity": "-",
+      "planet_ids": [
+        8,
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch031"
+    },
+    {
+      "id": "R200",
+      "ch": "ch031",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ราหู(8) และ พฤหัส(5) แรงพอๆกัน",
+      "meaning": "ทั้งพระทั้งโจร — มีทั้งสองด้านในตัว แสดงออกสลับกันตามสถานการณ์ (ฝ่ายไหนแรงกว่าจะมาก่อน/แสดงออกมากกว่า)",
+      "polarity": "~",
+      "planet_ids": [
+        8,
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch031"
+    },
+    {
+      "id": "R201",
+      "ch": "ch031",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ราหู(8) อุจ + พฤหัส(5) ไม่แรงพอ",
+      "meaning": "ดาบสองคม — ฉลาดทันโลกทันเล่ห์เหลี่ยม แต่เพราะพฤหัสไม่ยับยั้ง → ใช้ความฉลาดเอาเปรียบ/โกงคนอื่น (แต่ปัจจัยภายนอก หุ้น/หวย/สิ่งมึนเมา ให้คุณสูง)",
+      "polarity": "~",
+      "planet_ids": [
+        8,
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch031"
+    },
+    {
+      "id": "R202",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ดาวเจ้าเรือนกฎุมพะ จรไปทับ คู่มิตร/คู่ธาตุ/คู่สมพล ในดวงชาตาเดิม (ภพใดก็ได้)",
+      "meaning": "มักได้ทรัพย์เป็นพิเศษกว่าปกติ (ทับคู่มิตรแน่นอนที่สุด, คู่อื่นรองลงไป; เล็ง/โยค/ตรีโกณก็มีผลแต่น้อยกว่า)",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R203",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ดาวเจ้าเรือนกฎุมพะ จรเป็น อุจ/มหาจักร/อุจจาวิลาส/อุจจาภิมุข (ภพใดก็ได้)",
+      "meaning": "มีโอกาสได้ทรัพย์ (คุณภาพเกษตรและอื่นๆไม่ค่อยมีกำลัง มักไม่ค่อยได้ทรัพย์)",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R204",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7) หรือ ราหู(8) จรเข้าภพกฎุมพะว่าง + คุณภาพ อุจ/มหาจักร/อุจจาวิลาส/อุจจาภิมุข",
+      "meaning": "มีโอกาสได้ทรัพย์ (เสาร์จรเข้าราศีละ 2.5 ปี อาจได้ก้อนใหญ่ครั้งเดียว); แต่ถ้าภพมีดาวลอย → กลับเสียทรัพย์แทน",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R205",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร ทับ ราหู(8) ในภพกฎุมพะ",
+      "meaning": "ได้ทรัพย์ (แต่ถ้าราหู(8)จร ทับ เสาร์(7) → เสียทรัพย์แทน — ทิศทางสำคัญ)",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R206",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "มฤตยู(0) จร สัมพันธ์ถึงภพกฎุมพะ หรือดาวเจ้าเรือนกฎุมพะ",
+      "meaning": "เตรียมให้โทษเรื่องทรัพย์ — ถ้ามีดาวให้โทษอื่นๆจรมาสัมพันธ์ด้วย หรือดวงชาตาอ่อน → เสียทรัพย์ครั้งใหญ่",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R207",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7) จรสัมพันธ์ถึงภพกฎุมพะที่มี ศุกร์(6) อยู่",
+      "meaning": "มีโอกาสเสียทรัพย์ตลอดเวลาช่วงนั้น ถ้าดวงชาตาอ่อนหรือมีดาวให้โทษอื่นๆมาด้วย → เสียทรัพย์ก้อนใหญ่ (ข้อยกเว้น: ถ้าเสาร์จรทับดาวราหูคู่มิตรในภพนั้น → ได้ทรัพย์แทน)",
+      "polarity": "-",
+      "planet_ids": [
+        7,
+        6
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R208",
+      "ch": "ch034",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8) จรสัมพันธ์ถึงภพกฎุมพะที่มี พุธ(4) หรือ ราหู(8) อยู่",
+      "meaning": "มีโอกาสเสียทรัพย์มากกว่าปกติ (ดาวอื่นๆรวมถึงเสาร์คู่มิตรก็เสียทรัพย์เหมือนกันแต่น้อยกว่า)",
+      "polarity": "-",
+      "planet_ids": [
+        8,
+        4
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch034"
+    },
+    {
+      "id": "R209",
+      "ch": "ch035",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ดาวเจ้าเรือนปัตนิ จรสัมพันธ์ถึงลัคนา หรือดาวตนุลัคน์",
+      "meaning": "มีโอกาสได้คู่ / พบกับคู่ครอง ณ เวลานั้น",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch035"
+    },
+    {
+      "id": "R210",
+      "ch": "ch033",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "ลำดับดาวจรที่ต้องดูก่อน-หลัง",
+      "meaning": "มฤตยู(0)→เสาร์(7)→อังคาร(3)→ราหู(8)→พฤหัส(5)→ดาวอื่นๆ; ดูตามลำดับนี้เสมอ หยุดตรงไหนแรงสุด",
+      "polarity": "0",
+      "planet_ids": [
+        0,
+        7,
+        3,
+        8,
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R211",
+      "ch": "ch033",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "ความแม่นยำพยากรณ์: ดาวเดิม >80%, ดาวจร >50%",
+      "meaning": "พยากรณ์ดาวเดิม (natal) ควรแม่น >80%; ดาวจร (transit) ยากกว่า แม่น >50% ถือว่าใช้ได้",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R212",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร สัมพันธ์ลัคนา → โทษหนัก ภพตนุ",
+      "meaning": "เสาร์(7)จรกุม/เล็ง/โยค/ตรีโกณลัคนา → เหนื่อยยาก เจ็บป่วยรุนแรง ธุรกิจขัดข้อง หรือตายได้ (2.5 ปี/ราศี); ถ้าดาวร้ายอื่นร่วม = รุนแรงขึ้น",
+      "polarity": "-",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R213",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร + ราหู(8)เดิมรับ → คุณ หรือทั้งคุณและโทษ",
+      "meaning": "ถ้าเสาร์(7)จรสัมพันธ์ถึงราหู(8)เดิม (คู่มิตร) → เสาร์ไม่ให้โทษ กลับให้คุณ หรือมีทั้งคุณและโทษพร้อมกัน; ราหูเดิมทำหน้าที่ดูดซับโทษ",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R214",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร ทับราหู(8)เดิม + สัมพันธ์ลัคนา → คุณสูงมาก ตั้งตัวได้",
+      "meaning": "เสาร์(7)จรทับราหู(8)เดิมที่สัมพันธ์ลัคนา → ให้คุณสูงมาก ตั้งตัวได้ในช่วงนี้ (กรณีตัวอย่าง: ราศีสิงห์ ราหูอุจจาวิลาส เสาร์อุจ ทับ → ตั้งตัวได้จริง)",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R215",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร สัมพันธ์ตนุลัคน์=ศุกร์(6) คู่ศัตรู → โทษแรงมาก",
+      "meaning": "ถ้าตนุลัคน์คือศุกร์(6) = คู่ศัตรูเสาร์(7) แล้วเสาร์(7)จรสัมพันธ์ตนุลัคน์ → ให้โทษแรงกว่าปกติเพราะศัตรูโดยตรง",
+      "polarity": "-",
+      "planet_ids": [
+        7,
+        6
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R216",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร ทับเสาร์(7)เดิม + สัมพันธ์ลัคนา → โทษ 2 เท่า (double เสาร์)",
+      "meaning": "เสาร์(7)จรทับเสาร์(7)เดิม และทั้งคู่สัมพันธ์ลัคนา → double dose โทษร้ายแรง 2 เท่า; ถ้ามีราหู(8)เดิมช่วยก็บรรเทาลง",
+      "polarity": "-",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R217",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร สัมพันธ์มฤตยู(0) เมื่อตนุลัคน์=เสาร์(7) → ร้ายแรงเท่ามฤตยูจรทับลัคนา",
+      "meaning": "ถ้าตนุลัคน์คือเสาร์(7) แล้วเสาร์(7)จรสัมพันธ์กับมฤตยู(0)เดิมหรือจร → โทษร้ายแรงเท่ากับมฤตยู(0)จรทับลัคนาโดยตรง; ในภพมรณะยิ่งร้ายสุด",
+      "polarity": "-",
+      "planet_ids": [
+        7,
+        0
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R218",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร ภพกฎุมพะ + ราหู(8)เดิมในภพ → ได้ทรัพย์มาก อาจมีโชคใหญ่",
+      "meaning": "เสาร์(7)จรเข้าภพกฎุมพะที่มีราหู(8)เดิม (คู่มิตร) → ได้ทรัพย์สินเงินทองมาก อาจมีโชคใหญ่; ถ้ามีศุกร์(6)คู่ศัตรูอยู่ด้วย → เสียทรัพย์",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R219",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "อังคาร(3)จร สัมพันธ์ลัคนา → เดือดร้อน สุขภาพ อุบัติเหตุ (1.5 เดือน/ราศี)",
+      "meaning": "อังคาร(3)จรกุม/เล็ง/โยค/ตรีโกณลัคนา → สุขภาพ อุบัติเหตุ บาดเจ็บ เดือดร้อนใจ; ถ้ามีมฤตยู(0)+เสาร์(7)ร่วม → ถึงตายได้",
+      "polarity": "-",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R220",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "อังคาร(3)จร สัมพันธ์ตนุลัคน์(คู่มิตร ศุกร์6 / คู่ธาตุ ราหู8 / คู่สมพล พฤหัส5) → ดวงเข้มแข็ง",
+      "meaning": "อังคาร(3)จรสัมพันธ์ตนุลัคน์ที่เป็นคู่มิตร(ศุกร์6) คู่ธาตุ(ราหู8) หรือคู่สมพล(พฤหัส5) → ดวงชาตาเข้มแข็ง ฮึกเหิม สุขภาพดี",
+      "polarity": "+",
+      "planet_ids": [
+        3,
+        6,
+        8,
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R221",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "อังคาร(3)จร สัมพันธ์ตนุลัคน์=อาทิตย์(1) คู่ศัตรู → ดวงอ่อนแอ เดือดร้อน",
+      "meaning": "ถ้าตนุลัคน์คืออาทิตย์(1) = คู่ศัตรูอังคาร(3) แล้วอังคาร(3)จรสัมพันธ์ → ดวงอ่อนแอ เดือดร้อนใจ ปัญหาสุขภาพ",
+      "polarity": "-",
+      "planet_ids": [
+        3,
+        1
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R222",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8)จร สัมพันธ์ลัคนา → ให้โทษเท่านั้น ไม่ให้คุณแม้แต่น้อย",
+      "meaning": "ราหู(8)จรสัมพันธ์ลัคนา → อึดอัดใจ วุ่นวายเรื่องไม่เป็นเรื่อง ถูกหลอกลวง ลุ่มหลง คดีความ หรือถูกจองจำ; ไม่ให้คุณแม้จะสัมพันธ์กับคู่มิตร",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R223",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8)จร + พุธ(4)เดิมกุมลัคนา → โทษทวีคูณ อาจพิการ จองจำ",
+      "meaning": "ราหู(8)จรสัมพันธ์ลัคนา + พุธ(4)เดิมกุมลัคนาอยู่แล้ว (คู่ศัตรูราหู) → โทษทวีคูณ อาจพิการหรือถูกจองจำได้",
+      "polarity": "-",
+      "planet_ids": [
+        8,
+        4
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R224",
+      "ch": "ch033",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "ราหู(8)จร ไม่มีกรณียกเว้น — แม้คู่มิตรก็ยังให้โทษ",
+      "meaning": "ราหู(8)จรสัมพันธ์ลัคนา ยังให้โทษเสมอ แม้จะมีเสาร์(7)คู่มิตร จันทร์(2)คู่สมพล อังคาร(3)คู่ธาตุ หรือดาวอื่นๆกุมลัคนาอยู่ — ไม่มีการยกเว้น",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R225",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "พฤหัส(5)จร สัมพันธ์ลัคนา → ให้คุณ ปกป้องจากเคราะห์ร้าย",
+      "meaning": "พฤหัส(5)จรสัมพันธ์ลัคนา → ผู้ใหญ่เมตตาช่วยเหลือ มีสิ่งศักดิ์สิทธิ์คุ้มครอง ถ้ามีเคราะห์ร้ายจากดาวจรอื่น → บรรเทาจากหนักเป็นเบา; ไม่ให้โทษเลย (1 ปี/ราศี)",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R226",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "พฤหัส(5)จร + มฤตยู(0) → ดวงอ่อน อาจเกิดเหตุร้าย (ถ้ามีดาวอื่นร่วม)",
+      "meaning": "พฤหัส(5)จรทับหรือสัมพันธ์มฤตยู(0) ทำให้ดวงชาตาอ่อนแอ ถ้ามีดาวร้ายอื่นร่วมด้วย → อาจเกิดเหตุร้ายสุขภาพ/อุบัติเหตุ",
+      "polarity": "-",
+      "planet_ids": [
+        5,
+        0
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R227",
+      "ch": "ch033",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "พฤหัส(5)จร สัมพันธ์อาทิตย์(1)คู่มิตร ได้ 2 คู่ (ทั้งเดิมและจร) → มักได้โชค อาจมีโชคใหญ่",
+      "meaning": "พฤหัส(5)จรสัมพันธ์อาทิตย์(1)คู่มิตร และได้คู่ทั้ง natal+transit (2 คู่) → มักได้โชค ชีวิตราบรื่น อาจมีโชคใหญ่",
+      "polarity": "+",
+      "planet_ids": [
+        5,
+        1
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "โชคลาภ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R228",
+      "ch": "ch033",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "เกตุ(9)จร = ดาวคู่ทวีคูณ ตามหลักการเดิม",
+      "meaning": "เกตุ(9)จร ทำหน้าที่ขยาย (amplify) ผลของดาวที่สัมพันธ์ด้วย ตามหลักการเดิม; บางโบราณถือว่าสัมพันธ์กับอายุ (ยังไม่ confirmed — เป็นข้อสังเกตเท่านั้น)",
+      "polarity": "0",
+      "planet_ids": [
+        9
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R229",
+      "ch": "ch033",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "ดาวประจำตัว (ตนุลัคน์/เรือนนอก) หรือเจ้าเรือนสำคัญ → สำคัญมาก แม้ดาวเล็ก",
+      "meaning": "ดาวเล็กที่เป็นตนุลัคน์ เจ้าเรือนการเงิน หรือเจ้าเรือนปัตนิ → สำคัญกว่าดาวใหญ่ที่ไม่มีความสัมพันธ์โดยตรง; เจ้าเรือนอื่นๆสำคัญน้อยลงตามลำดับ",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch033"
+    },
+    {
+      "id": "R230",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) เสีย + สัมพันธ์ลัคนา → งมงาย เชื่อง่าย ถูกหลอก ไม่โกง (เพราะไม่ทันคน)",
+      "meaning": "ราหู(8) คุณภาพนิจ/ประเกษตร + สัมพันธ์ลัคนา → งมงาย เชื่ออะไรง่าย ถูกหลอกลวงง่าย แต่จะไม่โกงเพราะไม่ทันคน; แม้พฤหัส(5)แรงมาก ก็กลบไม่มิด",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R231",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) คุณภาพปกติ + สัมพันธ์ลัคนา → ลุ่มหลง เกเร ฉลาดทันคน มักไม่โกง",
+      "meaning": "ราหู(8) คุณภาพปกติธรรมดา + สัมพันธ์ลัคนา → ลุ่มหลงสิ่งใดสิ่งหนึ่ง เกเรช่วงต้น ฉลาดทันคน ติดอบายมุขได้ทุกอย่าง แต่มักไม่ถึงกับโกง; พฤหัส(5)แรงก็ทานไม่อยู่",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R232",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) อุจ/มหาจักร + สัมพันธ์ลัคนา → คนโกง เจ้าเล่ห์ ดาวอื่นทานไม่อยู่",
+      "meaning": "ราหู(8) คุณภาพอุจ/อุจจาวิลาส/อุจจาภิมุข/มหาจักร + สัมพันธ์ลัคนา → เจ้าเล่ห์คนโกงชัดเจน; แม้พฤหัส(5)+อาทิตย์(1)+อังคาร(3) แรงก็ทานไม่อยู่; ลุ่มหลงวิชาการ/ศิลปะ ไม่ติดอบายมุขธรรมดาเพราะรู้ทัน",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R233",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) ดี/ปกติ ไม่สัมพันธ์ลัคนา → ฉลาดทันคน โกงเป็นแต่ไม่โกง ไม่ถูกโฉลกโกง",
+      "meaning": "ราหู(8) ดีหรือปกติ แต่ไม่สัมพันธ์ลัคนา → ฉลาดทันเล่ห์เหลี่ยม โกงเป็นแต่มักไม่โกง; ถ้าโกงก็ไม่ถูกโฉลก (อาจถูกจับ); ภพมรณะเท่านั้นที่เสียหายแบบสาบสูญ",
+      "polarity": "+",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R234",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "ดาวที่ประกอบกับราหู(8) เสมอ: พฤหัส(5)+อาทิตย์(1)+อังคาร(3) — ลดทอน/เสริมกำลัง",
+      "meaning": "การดูราหู(8) ต้องดู 3 ดาวประกอบเสมอ: พฤหัส(5)=สติยั้งคิด+คุณธรรม; อาทิตย์(1)=รักหน้าไม่ยอมเสียหน้า; อังคาร(3)=ตรรกะเหตุผล; ดาวเหล่านี้ลดทอนราหูได้บางส่วน แต่ไม่หักล้างกันสมบูรณ์",
+      "polarity": "0",
+      "planet_ids": [
+        8,
+        5,
+        1,
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R235",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "หลักการรวมดาว: ไม่หักลบกัน ไม่หักล้างกัน แต่ผลัดกันแสดงออก",
+      "meaning": "เมื่อดาวสัมพันธ์กัน ความหมายรวมกัน แต่ไม่หักล้างกันสมบูรณ์ เช่น เสาร์(ช้า)+อังคาร(เร็ว)=คิดนานแต่ลงมือเร็ว; ศุกร์(ศิลปะ)+ราหู(โกง)=โกงแนบเนียน; ดาวคู่ศัตรูลดทอนได้บางส่วนแต่ไม่หักล้างสมบูรณ์",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R236",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ราหู(8) มหาจักร/จุลจักร ไม่สัมพันธ์ลัคนา → คาดการณ์ยาก (กรณีพิเศษ)",
+      "meaning": "ราหู(8) คุณภาพมหาจักร/จุลจักร แม้ไม่สัมพันธ์ลัคนา → ยังอาจมีอิทธิพลความลุ่มหลง/โกงอย่างมาก (กรณีพิเศษเฉพาะ 2 คุณภาพนี้); ต่างจากคุณภาพอุจที่ถ้าไม่สัมพันธ์ลัคนาจะไม่แสดงออก",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R237",
+      "ch": "ch032",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ราหู(8) แรง ถ้าดาวการเงินเสียด้วย → เสียหายหนักมาก ล้มละลายได้",
+      "meaning": "ราหู(8) แรง (กุม/เล็งลัคนา) + ดาวการเงินเสียหรือตกภพมรณะ → เสียทรัพย์หนักมาก อาจล้มละลาย; ช่วงดาวราหูจรซ้ำเติมยิ่งเสียหาย",
+      "polarity": "-",
+      "planet_ids": [
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch032"
+    },
+    {
+      "id": "R238",
+      "ch": "ch037",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "ดาวจรสำคัญมาก — แม้ดวงเข้มแข็งขนาดไหนก็บาดเจ็บ/ล้มตายได้จากดาวจร",
+      "meaning": "ดาวจรมีความสำคัญสูงมาก ดวงชาตาเข้มแข็งแค่ไหน ก็บาดเจ็บล้มตายได้จากดาวจรให้โทษ; ดาวการเงินดีแค่ไหน ก็ล้มละลายได้จากเสาร์(7)จรทับลัคนา; แต่พฤหัส(5)จรช่วยให้ราบรื่นได้มาก",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch037"
+    },
+    {
+      "id": "R239",
+      "ch": "ch048",
+      "rule_use": "case_study",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร ทับเสาร์(7)เดิม + พฤหัส(5)จร ทับพฤหัส(5)เดิมในภพวินาศ → ตาย",
+      "meaning": "เสาร์(7)จรทับเสาร์(7)เดิม (double เสาร์) ตรีโกณลัคนา + พฤหัส(5)จรทับพฤหัส(5)เดิมในภพวินาศ (ดาวช่วยชีวิตไม่ช่วย) → เสียชีวิต; ยืนยันว่า double เสาร์ + ไม่มีพฤหัสช่วย = อันตรายสูง",
+      "polarity": "-",
+      "planet_ids": [
+        7,
+        5
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch048"
+    },
+    {
+      "id": "R240",
+      "ch": "ch049",
+      "rule_use": "case_study",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8)จรทับลัคนา + พุธ(4)จรคู่ศัตรู + มฤตยู(0)จรเล็งลัคนา → โทษหลายชั้น วิกฤต",
+      "meaning": "ราหู(8)จรทับลัคนา + พุธ(4)จรคู่ศัตรูราหู (ทำให้ดวงอ่อนแอ) + มฤตยู(0)จรเล็งลัคนา → โทษหลายชั้น อันตรายสูงมาก แม้ดวงเดิมเข้มแข็งและพฤหัส(5)จรช่วยก็ยังเกิดเหตุได้",
+      "polarity": "-",
+      "planet_ids": [
+        8,
+        4,
+        0
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch049"
+    },
+    {
+      "id": "R241",
+      "ch": "ch050",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดวงเข้มแข็ง = สิ่งดีที่สุด เหนือกว่าดวงการเงินดี ดวงคู่ดี",
+      "meaning": "ดวงเข้มแข็ง (ดาวดีสัมพันธ์ลัคนา มฤตยูไม่สัมพันธ์) → ประสบความสำเร็จง่าย สุขภาพดี แม้ดาวการเงินเสียก็เอาตัวรอดได้; ดวงไม่เข้มแข็ง มีเงินมากแค่ไหนก็ไม่มีประโยชน์",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch050"
+    },
+    {
+      "id": "R242",
+      "ch": "ch050",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พื้นเพของตน สำคัญยิ่ง — กำหนดอัตราการเจริญรุ่งเรือง ไม่ใช่ระดับสัมบูรณ์",
+      "meaning": "คนดวงชาตาเดียวกัน แต่ฐานะทางสังคมต่างกัน → ผลลัพธ์ต่างกัน (คนรวยรวยพันล้าน, คนจนรวยร้อยล้าน); ดวงชาตาบอกอัตราการเติบโตและทิศทาง ไม่ใช่ตัวเลขสัมบูรณ์",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch050"
+    },
+    {
+      "id": "R243",
+      "ch": "ch052",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวกุมลัคนาเป็นคู่มิตร/คู่ธาตุ/คู่สมพล → ควรมีคู่ครอง/หุ้นส่วน ผลทวีคูณ (1+1>2)",
+      "meaning": "ถ้าดาวกุมและเล็งลัคนาเป็นคู่มิตร/คู่ธาตุ/คู่สมพลกัน → ยิ่งมีคู่ครองหรือหุ้นส่วน ยิ่งได้ผลทวีคูณมากกว่า 2 เท่า; เสริมกันตามความถนัด",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch052"
+    },
+    {
+      "id": "R244",
+      "ch": "ch052",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวกุมลัคนาเป็นคู่ศัตรูกัน → ไม่ควรร่วมหุ้น/คู่ครอง มักขัดแย้ง",
+      "meaning": "ถ้าดาวกุมและเล็งลัคนาเป็นคู่ศัตรูกัน → การร่วมหุ้นหรือมีคู่ครองจะขัดแย้ง; ควรทำงานอิสระ ใช้ความสามารถเฉพาะตัว ไม่พึ่งคนอื่น; ถ้าจำเป็นต้องมีหุ้นส่วนควรใช้ชื่อคนอื่น",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch052"
+    },
+    {
+      "id": "R245",
+      "ch": "ch053",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ราหู(8)จรทับลัคนา + พุธ(4)กุมลัคนาเดิม (คู่ศัตรู) → โทษแรงมาก",
+      "meaning": "ราหู(8)จรทับลัคนา ถ้ามีพุธ(4)กุมลัคนาเดิมอยู่แล้ว (ราหู-พุธเป็นคู่ศัตรู) → โทษแรงมากกว่าปกติมาก; แม้ราหูจรทับราหูเดิมก็ให้โทษแรง",
+      "polarity": "-",
+      "planet_ids": [
+        8,
+        4
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch053"
+    },
+    {
+      "id": "R246",
+      "ch": "ch054",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "คู่ครอง: ลัคนาโยค/ตรีโกณกันดีที่สุด — ถูกโฉลก ไม่เสียหายพร้อมกัน",
+      "meaning": "ลัคนาโยค/ตรีโกณกัน → ถูกโฉลกกัน ไม่มีเคราะห์พร้อมกัน ประคองกันได้; ลัคนาราศีเดียวกัน → เคราะห์พร้อมกันทั้งคู่ ไม่มีใครช่วยใคร; ลัคนาเล็งกัน (ตรงข้าม) → ดีรองลงมา",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch054"
+    },
+    {
+      "id": "R247",
+      "ch": "ch055",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ดาวเจ้าเรือนภพปัตนิ ตกภพมรณะ → คู่ยาก อาจจากไปโดยไม่มีเค้า",
+      "meaning": "ดาวเจ้าเรือนภพปัตนิ (คู่ครอง) ตกภพมรณะ → คู่ครองจะมีปัญหา อาจตาย หาย หรือจากไปโดยไม่มีเค้า; ยังรวมถึงหุ้นส่วนการค้าด้วย — ควรหุ้นกับองค์กรที่มั่นคงถาวร",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch055"
+    },
+    {
+      "id": "R248",
+      "ch": "ch038",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวกุมลัคนา → ลักษณะแสดงออกชัดเจนตามความหมายดาว (สรุปทุกดวง)",
+      "meaning": "1=หยิ่งถือตัว; 2=อ่อนหวานมารยาทดี; 3=แข็งใจร้อนตรงไปตรงมา; 4=ช่างพูดพูดมาก; 5=ใจดีมีคุณธรรม; 6=จินตนาการเพ้อฝัน; 7=เชื่องช้ารอบคอบคิดมากขี้น้อยใจ; 8=ดื้อฉลาดทันคนเจ้าเล่ห์; 9=ไม่มีลักษณะเด่น; 0=อารมณ์แปรปรวนลึกลับเข้าใจยาก",
+      "polarity": "0",
+      "planet_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch038"
+    },
+    {
+      "id": "R249",
+      "ch": "ch038",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ดาวเกตุ(9) + มฤตยู(0) ร่วมราศีกุมลัคนา → อาจพิการแต่กำเนิดหรือออทิสติก",
+      "meaning": "ถ้าดาวเกตุ(9) ร่วมราศีกับมฤตยู(0) และสัมพันธ์ลัคนา → อาจทำให้เด็กพิการมาแต่กำเนิดหรือเป็นออทิสติกได้ (ดาวเกตุทวีคูณความแรงของมฤตยู)",
+      "polarity": "-",
+      "planet_ids": [
+        9,
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch038"
+    },
+    {
+      "id": "R250",
+      "ch": "ch038",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "พฤหัส(5) แม้คุณภาพเสีย (นิจ/ประเกษตร) ถ้าสัมพันธ์ลัคนา → ยังให้คุณไม่น้อย",
+      "meaning": "พฤหัส(5) คุณภาพนิจหรือประเกษตร (เสีย) แต่สัมพันธ์ลัคนา → ยังให้คุณได้ไม่น้อย (สติยั้งคิด ผู้ใหญ่เมตตา); แตกต่างจากดาวร้ายที่เสียแล้วยิ่งให้โทษ; ควรวางพฤหัสสัมพันธ์ลัคนาเสมอ",
+      "polarity": "+",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch038"
+    },
+    {
+      "id": "R251",
+      "ch": "ch038",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "เสาร์(7) ไม่ควรกุม/เล็งลัคนา — ดีที่สุดวางภพลาภะ",
+      "meaning": "เสาร์(7) กุม/เล็งลัคนา → เชื่องช้า คิดมากเกินไป จริงจัง เหนื่อยยาก; ถ้าสัมพันธ์ลัคนาแบบโยค/ตรีโกณ → ไตร่ตรองรอบคอบ วางแผนดี อดทน; ตำแหน่งดีที่สุด = ภพลาภะ",
+      "polarity": "0",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch038"
+    },
+    {
+      "id": "R252",
+      "ch": "ch038",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวเจ้าเรือนภพกฎุมพะ/ปัตนิ ตกภพมรณะ/อริ/วินาศ → ปัญหาทรัพย์สิน/คู่ครอง",
+      "meaning": "ดาวเจ้าเรือนภพกฎุมพะ (การเงิน) หรือภพปัตนิ (คู่ครอง) ตกภพมรณะ/อริ/วินาศ → มีปัญหาในเรื่องทรัพย์สินเงินทอง และ/หรือคู่ครอง (รวมถึงผู้ร่วมงาน) ตลอดชีวิต",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch038"
+    },
+    {
+      "id": "R253",
+      "ch": "ch039",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อัจฉริยภาพภายใน: ดาวไม่สัมพันธ์ลัคนา → ยังมีศักยภาพ แต่ไม่แสดงออกตลอดเวลาและไม่ถูกโฉลก",
+      "meaning": "ดาวทุกดวงมี 'อัจฉริยภาพภายใน' ในตัวเสมอ; ถ้าสัมพันธ์ลัคนา → แสดงออกชัดเจน ตลอดเวลา ถูกโฉลก; ถ้าไม่สัมพันธ์ลัคนา → ยังมีศักยภาพ แต่แสดงออกไม่สม่ำเสมอ ไม่ถูกโฉลก ไม่ต่อเนื่อง",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R254",
+      "ch": "ch039",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "อังคาร(3) ไม่สัมพันธ์ลัคนา → 'ขยันไม่จริง' (ขยันเมื่อมีงาน ขี้เกียจเมื่อไม่มีงาน)",
+      "meaning": "อังคาร(3) ไม่สัมพันธ์ลัคนา → เป็นคนขี้เกียจโดยธรรมชาติ ถ้ามีงานบังคับก็ขยัน แต่เรียกว่า 'ขยันไม่จริง'; ยกเว้น ราศีเมษ/พิจิก ที่มีอังคาร=ตนุลัคน์ → ขยันโดยธรรมชาติ แต่ก็ยัง 'ขยันไม่จริง' ถ้าไม่สัมพันธ์ลัคนา",
+      "polarity": "-",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R255",
+      "ch": "ch039",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "พุธ(4)+อังคาร(3) สัมพันธ์ลัคนา → ละเอียดอ่อน มีตรรกะ ตัดสินใจดี",
+      "meaning": "พุธ(4) และอังคาร(3) ทั้งคู่สัมพันธ์ลัคนา → ละเอียดอ่อน มีตรรกะในการตัดสินใจ เป็นพื้นฐานที่ดีสำหรับการเล่าเรียน; พุธ(4)+ศุกร์(6) → วาทศิลป์ ศิลปะในการพูด; พุธ(4)+เสาร์(7) → พูดหนักแน่นจริงจัง อาจแข็งกร้าว",
+      "polarity": "+",
+      "planet_ids": [
+        4,
+        3,
+        6,
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R256",
+      "ch": "ch039",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "พฤหัส(5) อุจ + ราหู(8)อ่อน → 'หลงดี' ดีเกินไป ถูกหลอกลวงง่าย",
+      "meaning": "พฤหัส(5) คุณภาพอุจ/อุจจาวิลาส + ราหู(8) อ่อนหรือไม่สัมพันธ์ลัคนา → ดีเกินไป มองโลกในแง่ดีเกินจริง ไม่มีเล่ห์เหลี่ยม เชื่อคนง่าย ถูกหลอกลวงได้; อาจปฏิบัติธรรมจนเกินตัว ทำให้เดือดร้อน (หลงดี)",
+      "polarity": "-",
+      "planet_ids": [
+        5,
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R257",
+      "ch": "ch039",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เสาร์(7)+ราหู(8) สัมพันธ์กัน + สัมพันธ์ลัคนา → ส่วนใหญ่รวย สร้างฐานะได้ด้วยตนเอง",
+      "meaning": "เสาร์(7) และราหู(8) สัมพันธ์กันและสัมพันธ์ลัคนาทั้งคู่ → ส่วนใหญ่จะรวย สร้างฐานะได้ด้วยตนเอง แม้ดาวการเงินจะปกติหรือไม่ดีนัก; ความอดทนทำงานหนัก (เสาร์) + ฉลาดทันโลก (ราหู) = สูตรรวย",
+      "polarity": "+",
+      "planet_ids": [
+        7,
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R258",
+      "ch": "ch039",
+      "rule_use": "match",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "เสาร์(7)จร เข้าภพปัตนิ → ปัญหาคู่ครอง/หุ้นส่วน 100%; เข้าภพกัมมะ → ปัญหาการงาน",
+      "meaning": "เสาร์(7)จรเข้าภพปัตนิ → มีปัญหาคู่ครองหรือหุ้นส่วน 100% + ส่งผลถึงเจ้าชาตา 80%; เสาร์(7)จรเข้าภพกัมมะ → มีปัญหาหน้าที่การงาน; ให้คุณกรณีเดียว: สัมพันธ์ราหู(8)+ลัคนาพร้อมกัน",
+      "polarity": "-",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "ดาวจร",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R259",
+      "ch": "ch039",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "มฤตยู(0) ในพื้น: 'เชื้อรอ' — รอดาวร้ายจรมาสมทบจึงทวีคูณ ไม่ให้โทษทันที",
+      "meaning": "มฤตยู(0) ในพื้นดวงชาตา → เป็น 'เชื้อรอ' ให้โทษ แต่มักไม่ให้โทษด้วยตนเองทันที; ต่อเมื่อเสาร์(7)/ราหู(8)/อังคาร(3) จรมาสมทบ → ทวีคูณให้โทษรุนแรง; หลักสำคัญ: ดูมฤตยูจรเป็นอันดับ 1 ก่อนทุกครั้ง",
+      "polarity": "-",
+      "planet_ids": [
+        0,
+        7,
+        8,
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R260",
+      "ch": "ch039",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "เกตุ(9)+พฤหัส(5)+มฤตยู(0) กุมลัคนา → จิตอ่อน เห็นวิญญาณ ทรงเจ้า",
+      "meaning": "ถ้าเกตุ(9)+พฤหัส(5)+มฤตยู(0) กุมลัคนาทั้ง 3 ดวง → จิตอ่อน สติปัญญาแปรปรวน อาจมีเซ้นส์สิ่งลึกลับ ถึงขั้นผีเข้า/เป็นร่างทรง; เกตุ(9)ทวีคูณความแปรปรวนของมฤตยู(0)+พฤหัส(5)",
+      "polarity": "-",
+      "planet_ids": [
+        9,
+        5,
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R261",
+      "ch": "ch039",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "มฤตยู(0) ในพื้น + สัมพันธ์ลัคนา → อุบัติเหตุบ่อย (สุขภาพขึ้นกับกรรมพันธุ์)",
+      "meaning": "มฤตยู(0) พื้น สัมพันธ์ลัคนา → มักมีอุบัติเหตุบ่อยทั้งเล็กและใหญ่ (กระดูกหัก รถชน ฯลฯ); สุขภาพขึ้นกับกรรมพันธุ์เป็นหลัก ถ้ากรรมพันธุ์ดีก็อาจไม่มีโรคประจำตัว",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch039"
+    },
+    {
+      "id": "R262",
+      "ch": "ch041",
+      "rule_use": "reference",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "อังคาร(3) = ดาวแห่งสุขภาพและอุบัติเหตุ",
+      "meaning": "ดาว ๓ คือดาวแห่งสุขภาพ; ถ้าสัมพันธ์ลัคนา → สุขภาพดี; ถ้ามฤตยู(0)สัมพันธ์กับดาว ๓ ด้วย → สุขภาพแปรปรวน อาจเจ็บป่วยหรืออุบัติเหตุใหญ่ได้; ถ้าดาว ๓ ไม่สัมพันธ์ลัคนาและไม่สัมพันธ์ดาว ๐ → ไม่ต้องพูดถึงสุขภาพมาก",
+      "polarity": "~",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "สุขภาพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch041"
+    },
+    {
+      "id": "R263",
+      "ch": "ch041",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ไม่มีดาวกุมลัคนา → ไม่มีลักษณะภายนอกเด่นชัด",
+      "meaning": "ถ้าไม่มีดาวกุมลัคนาเลย เจ้าชาตาไม่มีลักษณะภายนอกที่เด่นชัดให้สังเกตเห็น บุคลิกไม่โดดเด่น",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch041"
+    },
+    {
+      "id": "R264",
+      "ch": "ch042",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "พุธ(4) ไม่สัมพันธ์ลัคนา → พูดน้อย ไม่ค่อยพูดโดยธรรมชาติ",
+      "meaning": "ดาวพุธ(4) ไม่สัมพันธ์ลัคนา → ไม่ค่อยพูดตามธรรมชาติ; ถ้าดูเหมือนพูดปกติ → มักมาจากการฝึกหรืออาชีพ (ครู วิทยากร เซลล์) แต่ถ้าไม่จำเป็นจะไม่พูด",
+      "polarity": "~",
+      "planet_ids": [
+        4
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch042"
+    },
+    {
+      "id": "R265",
+      "ch": "ch041",
+      "rule_use": "principle",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "ดาวแรงกว่าชนะ — ดาวหลายดวงสัมพันธ์ลัคนา ดาวกำลังมากกว่าแสดงออกชัดกว่า",
+      "meaning": "เมื่อมีดาวหลายดวงสัมพันธ์ลัคนา ดาวที่มีคุณภาพสูงกว่าหรือกำลังมากกว่าจะแสดงออกชัดกว่า ดาวอ่อนกว่าถูกกดทับ (เช่น ดาว ๘ แรงกว่า ๕ → เจ้าเล่ห์ออกมากกว่าสติยั้งคิด)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch041"
+    },
+    {
+      "id": "R266",
+      "ch": "ch044",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "ลัคนาสองคน (คู่ชีวิต) โยคแก่กัน → ดวงชาตาสมพงศ์ ถูกโฉลกกัน",
+      "meaning": "ถ้าลัคนาของสามีและภรรยาอยู่ในราศีที่โยคแก่กัน (เช่น สหัชชะ-ลาภะ แก่กัน = ราศีที่ห่างกัน 3 และ 11 ราศี) → ถูกโฉลกกัน ดวงชาตาสมพงศ์ ช่วยเหลือเติมเต็มกันได้ดี",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch044"
+    },
+    {
+      "id": "R267",
+      "ch": "ch044",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "มฤตยู(0) อยู่ในภพกฎุมพะ(การเงิน) → ทรัพย์สินแปรปรวน ใช้จ่ายสุรุ่ยสุร่าย",
+      "meaning": "มฤตยู(0) ในภพกฎุมพะ → ทรัพย์สินไม่มั่นคง แปรปรวน ไม่เห็นคุณค่าเงิน ใช้จ่ายสุรุ่ยสุร่าย มีแต่จะสิ้นเปลืองไป",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch044"
+    },
+    {
+      "id": "R268",
+      "ch": "ch041",
+      "rule_use": "reference",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ขั้นตอนพยากรณ์พื้นดวงชาตาเต็มรูปแบบ 9 ขั้น",
+      "meaning": "1.ลัคนาราศีอะไร 2.ดาวกุมลัคนา(ลักษณะเด่น+ความสำเร็จ) 3.ตนุลัคน์(สันดานแท้+ภพที่ไปอยู่) 4.ประเมินความเข้มแข็ง(ตนุลัคน์+กุมลัคนา) 5.ตนุเศษ(นิสัยโดยรวม) 6.ดาวสัมพันธ์ลัคนา(นิสัย+ลักษณะ) 7.ดาวไม่สัมพันธ์ลัคนา(อัจฉริยภาพภายใน) 8.พยากรณ์ภพอื่นๆ(ปัตนิ กฎุมพะ กัมมะ สหัชชะ ฯ) 9.พยากรณ์อาชีพ(ดาวเด่น+ถูกโฉลก/ไม่ถูกโฉลก)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ทั่วไป",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch041"
+    },
+    {
+      "id": "R269",
+      "ch": "ch043",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ดาวเกษตรเจ้าเรือนปัตนิ เสีย(ประเกษตร/นิจ) + กุมลัคนา → คู่ครองมาเป็นภาระต้องดูแล",
+      "meaning": "ถ้าดาวเกษตรเจ้าเรือนภพปัตนิ(คู่ครอง) มีคุณภาพเสีย (ประเกษตร/นิจ/เสีย) แล้วมากุมลัคนา → คู่ครองจะมาเป็นภาระที่ต้องดูแล แม้อยู่ด้วยกันได้ก็ต้องเหน็ดเหนื่อย",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch043"
+    },
+    {
+      "id": "R270",
+      "ch": "ch056",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวเสีย+สัมพันธ์ลัคนา ยังให้คุณ แต่แบบไม่พอดี ยกเว้น เสาร์(7) และราหู(8)",
+      "meaning": "ดาวเสีย (ประเกษตร/นิจ) ถ้าสัมพันธ์ลัคนา ยังให้คุณ แต่แบบน้อยเกินไปหรือมากเกินไป ไม่ปกติ; ถ้าไม่สัมพันธ์ลัคนาเลยก็ไม่มีผลเลย; ยกเว้น เสาร์(7)เสียและราหู(8)เสีย สองดวงนี้ยิ่งสัมพันธ์ลัคนายิ่งให้โทษ",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch056"
+    },
+    {
+      "id": "R271",
+      "ch": "ch056",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "เสาร์(7) เสีย + สัมพันธ์ลัคนา (กุม/เล็ง/โยค/ตรีโกณ) คิดมาก ฟุ้งซ่าน วิตกจริต",
+      "meaning": "ดาวเสาร์(7) คุณภาพเสีย (นิจ/ประเกษตร) สัมพันธ์ลัคนาไม่ว่ารูปแบบไหน คิดมากแบบฟุ้งซ่าน ย้ำคิดย้ำทำ วิตกจริต",
+      "polarity": "-",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch056"
+    },
+    {
+      "id": "R272",
+      "ch": "ch059",
+      "rule_use": "principle",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "ดาวการเงินเสีย ไม่แปลว่าจน แต่รักษาทรัพย์ไว้ไม่ได้",
+      "meaning": "ดาวเกษตรเจ้าเรือนกฎุมพะเสีย หรือตกภพอริ/มรณะ/วินาศ หรือมีมฤตยู(0)อยู่ ไม่จนเสมอไปแต่จะรักษาทรัพย์ไว้ไม่ได้ ใช้จ่ายง่าย; คำแนะนำ: อย่าถือทรัพย์เอง ให้ใส่ชื่อคู่ครอง/บุตร หรือซื้ออสังหาริมทรัพย์",
+      "polarity": "-",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch059"
+    },
+    {
+      "id": "R273",
+      "ch": "ch063",
+      "rule_use": "reference",
+      "type": "NATAL_ATOMIC",
+      "tier": 1,
+      "c": "คุณภาพดาวการเงิน (กฎุมพะ): อุจ=ดีที่1, ราชาโชค=ง่าย, มหาจักร=ก้อนใหญ่แปลกๆ",
+      "meaning": "อุจ=ดีที่1 ตาน้ำใหญ่ ล้มแล้วลุก; ราชาโชค=ได้มาง่ายไม่ต้องลงแรง; มหาจักร=ได้เป็นก้อนแบบผาดโผน ไม่มาก็ไม่มีเลย; อุจจาวิลาส/อุจจาภิมุข ประมาณ 60% ของอุจ; ตรงข้าม(ยาจกโชค/จุลจักร) ไม่ได้แปลว่าจนแสนสาหัส (ตีความผิด)",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "การเงิน",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch063"
+    },
+    {
+      "id": "R274",
+      "ch": "ch064",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "พุธ(4)+ศุกร์(6) ร่วมราศี/สัมพันธ์กัน+สัมพันธ์ลัคนา ศิลปะพูด อาชีพนักพูด-นักเขียน",
+      "meaning": "ดาวพุธ(4) + ศุกร์(6) สัมพันธ์กันและสัมพันธ์ลัคนา มีศิลปะในการพูดและการเขียน ถูกโฉลก: นักพูด นักเขียน นักร้อง นายหน้า จิตรกร",
+      "polarity": "+",
+      "planet_ids": [
+        4,
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อาชีพ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch064"
+    },
+    {
+      "id": "R275",
+      "ch": "ch057",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "พฤหัส(5) อุจ + สัมพันธ์ลัคนา คุณธรรมสูง มองโลกในแง่ดี แต่อาจถูกหลอกได้",
+      "meaning": "พฤหัส(5) อุจ + สัมพันธ์ลัคนา คุณธรรมสูงส่ง มองโลกในแง่ดี ขี้สงสาร; จุดอ่อน: อาจถูกหลอกลวงหรือหลงเชื่อง่าย หมดตัวเพราะทำบุญหรือเชื่อคนมากเกินไปได้",
+      "polarity": "~",
+      "planet_ids": [
+        5
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch057"
+    },
+    {
+      "id": "R276",
+      "ch": "ch067",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "ดาวลอยในภพปัตนิ คุณภาพเกษตร หรือดาวเจ้าเรือนปัตนิไปกฎุมพะ ความหมายคู่ครอง",
+      "meaning": "ดาวลอยภพปัตนิเป็นเกษตร: คู่มั่นคงถาวร ยิ่งนานยิ่งมั่นคง ไม่ไปไหน; ดาวเจ้าเรือนปัตนิไปอยู่ภพกฎุมพะ: คู่หาทรัพย์ให้ หรือมีคู่มาก แต่มาด้วยความตั้งใจ",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch067"
+    },
+    {
+      "id": "R277",
+      "ch": "ch069",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "อาทิตย์(1)+อังคาร(3) สัมพันธ์ลัคนา ช่วยยับยั้งความเจ้าเล่ห์ของราหู(8) ได้ดีกว่าพฤหัส(5) เดี่ยวๆ",
+      "meaning": "ถ้าราหู(8)แรงทำให้เจ้าเล่ห์/โกง ดาวอาทิตย์(1) (รักเกียรติ ไม่กล้าโกง) + อังคาร(3) (แข็งเปิดเผยตรงไปตรงมา) สัมพันธ์ลัคนา จะบดบังความโกงได้มากกว่าพฤหัส(5) เดี่ยวๆ",
+      "polarity": "+",
+      "planet_ids": [
+        1,
+        3,
+        8
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch069"
+    },
+    {
+      "id": "R278",
+      "ch": "ch070",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดวงชาตาแก้ไขไม่ได้ แต่หนักให้เป็นเบา หรือดีให้เป็นดียิ่งขึ้นได้",
+      "meaning": "ดวงชาตาเกิดมาแล้วเปลี่ยนไม่ได้ แต่ช่วงเคราะห์: หลบเลี่ยงระมัดระวัง ทำให้หนักเป็นเบา; ช่วงดวงดี: ขยันทำงานเพิ่ม ลงทุนเพิ่ม ทำให้โชคเล็กเป็นโชคใหญ่; สะเดาะเคราะห์/ทำบุญ = ทำจิตใจสบาย ไม่มีผลโดยตรงกับดวง",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch070"
+    },
+    {
+      "id": "R279",
+      "ch": "ch072",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดาวสัมพันธ์ลัคนา > สัมพันธ์ตนุลัคน์ ในแง่ความสำคัญ",
+      "meaning": "ดาวสัมพันธ์ลัคนา (ตนุ) ส่งผลต่อเจ้าชาตาโดยรวมทั้งหมด รวมปัจจัยภายนอก (ผู้ใหญ่เมตตา อาชีพโฉลก); ดาวสัมพันธ์ตนุลัคน์ส่งผลเฉพาะตัวตนภายใน ความสำคัญน้อยกว่า",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch072"
+    },
+    {
+      "id": "R280",
+      "ch": "ch073",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "คุณภาพดาวจร ใช้บอกกำลังมากน้อย ไม่ใส่ความหมายแบบดาวพื้น",
+      "meaning": "ดาวจรเข้าราศีใด คุณภาพตามราศีนั้น (เช่น อังคารจรเข้าเมษ=เกษตร) แต่ใช้แค่บอกกำลังมากน้อย ไม่ใส่ความหมายแบบดาวพื้น เช่น อุจ=กำลังมากสุด แต่ไม่ต้องบอกว่า ต่อเนื่องยาวนาน หรือผาดโผน เพราะเป็นช่วงสั้น",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch073"
+    },
+    {
+      "id": "R281",
+      "ch": "ch078",
+      "rule_use": "reference",
+      "type": "NATAL_COMBINATION",
+      "tier": 1,
+      "c": "เงื่อนไขดวงสมพงศ์ครบ — 3 ข้อ",
+      "meaning": "1) ลัคนาสองคนสัมพันธ์กัน (กุม/เล็ง/โยค/ตรีโกณ) 2) ดาวกุมลัคนาและ/หรือตนุลัคน์ไม่เป็นคู่ศัตรูกัน (ถ้าเป็นคู่มิตร/ธาตุ/สมพล ยิ่งดี) 3) เจ้าเรือนภพปัตนิแต่ละคนไม่ตกภพอริ/มรณะ/วินาศ — ครบ 3 ข้อ = ดวงชาตาสมพงศ์สมบูรณ์",
+      "polarity": "+",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch078"
+    },
+    {
+      "id": "R282",
+      "ch": "ch083",
+      "rule_use": "match",
+      "type": "NATAL_ATOMIC",
+      "tier": 2,
+      "c": "มฤตยู(0) อยู่ในภพปัตนิ → คู่แปรปรวน อาจเปลี่ยนคู่",
+      "meaning": "มฤตยู(0) ลอยอยู่ในภพปัตนิ → คู่ครอง/หุ้นส่วนแปรปรวน ไม่คงทน อาจเปลี่ยนคู่ หรือมีปัญหา ไม่ได้แปลว่าคู่เลว",
+      "polarity": "-",
+      "planet_ids": [
+        0
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ความสัมพันธ์",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch083"
+    },
+    {
+      "id": "R283",
+      "ch": "ch088",
+      "rule_use": "match",
+      "type": "NATAL_COMBINATION",
+      "tier": 2,
+      "c": "อังคาร(3)+ศุกร์(6) ร่วมราศี+สัมพันธ์ลัคนา → กำหนัดสูง; ถ้าพฤหัส(5)ไม่สัมพันธ์ → อาจเจ้าชู้",
+      "meaning": "ดาวอังคาร(3)+ศุกร์(6) ร่วมราศีและสัมพันธ์ลัคนา → กำหนัดสูง แรงขับสูง; ถ้าพฤหัส(5)ไม่สัมพันธ์ลัคนาด้วย → ขาดสติยั้งคิด → อาจเป็นคนเจ้าชู้ได้",
+      "polarity": "-",
+      "planet_ids": [
+        3,
+        6
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "นิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch088"
+    },
+    {
+      "id": "R284",
+      "ch": "ch090",
+      "rule_use": "reference",
+      "type": "TRANSIT_NATAL",
+      "tier": 1,
+      "c": "เสาร์(7)จรทับลัคนา vs ทับตนุลัคน์ — ผลต่างกัน",
+      "meaning": "ทับลัคนา: ส่งผลถึงภพตนุ 100%, ปัตนิ 80%, สหัชชะ/ลาภะ 60%, ปุตตะ/ศุภะ 50% = รอบทิศ; ทับตนุลัคน์: ส่งผลเพียงตัวเจ้าชาตา ครึ่งเดียวของทับลัคนา",
+      "polarity": "-",
+      "planet_ids": [
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch090"
+    },
+    {
+      "id": "R285",
+      "ch": "ch094",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดาวลอยในภพ — อย่าบวกดาวเจ้าเรือนของภพนั้นเข้าไปด้วย",
+      "meaning": "เมื่อดาวลอยอยู่ในภพใด ดูความหมายดาวนั้น+คุณภาพ+ภพนั้นเท่านั้น ห้ามนำดาวเจ้าเรือนภพนั้นมาบวกรวมด้วย เดี๋ยวมั่วและซับซ้อนโดยไม่จำเป็น",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch094"
+    },
+    {
+      "id": "R286",
+      "ch": "ch096",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดาวพื้น: ดาวลอย=เจ้าเรือนสำคัญเท่ากัน; ดาวจร: ดาวเจ้าเรือนสำคัญกว่า",
+      "meaning": "ในดวงพื้นชาตา ดาวลอยกับดาวเจ้าเรือนมีความสำคัญเท่ากัน; แต่สำหรับดาวจร ต้องดูว่าจรทับดาวเจ้าเรือนภพนั้นหรือไม่ ดาวเจ้าเรือนสำคัญกว่า",
+      "polarity": "~",
+      "planet_ids": [],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch096"
+    },
+    {
+      "id": "R287",
+      "ch": "ch101",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "อังคาร(3) คุณภาพอุจ vs มหาจักร สัมพันธ์ลัคนา — ความต่าง",
+      "meaning": "อุจ: ใช้เหตุผลสม่ำเสมอระดับสูงตลอดเวลา เจ้าเหตุผลจนน่าเบื่อ คุยกับคนทั่วไปยาก; มหาจักร: ตรรกะไม่แน่นอน บางเวลาสูงสุด บางเวลาปกติ ยืดหยุ่นกว่า ไม่ overwhelming — เข้าสังคมได้ดีกว่าแบบอุจ",
+      "polarity": "0",
+      "planet_ids": [
+        3
+      ],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "ลักษณะนิสัย",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch101"
+    },
+    {
+      "id": "R288",
+      "ch": "ch101",
+      "rule_use": "principle",
+      "type": "PRINCIPLE",
+      "tier": 1,
+      "c": "ดาวกุมลัคนา → แสดงออกก่อนดาวที่แค่ตรีโกณ/โยค/เล็งลัคนา",
+      "meaning": "ดาวที่กุมลัคนา (อยู่ราศีเดียวกับลัคนา) จะแสดงลักษณะนิสัยและสีสันออกมาก่อนเสมอ แม้มีดาวอื่นตรีโกณ/โยค/เล็งลัคนาด้วย; ดาวที่แค่สัมพันธ์ห่างต้องรอเวลาหรือโอกาสเหมาะถึงจะแสดงผลชัด",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch101"
+    },
+    {
+      "id": "R289",
+      "ch": "ch101",
+      "rule_use": "principle",
+      "type": "TRANSIT_NATAL",
+      "tier": 2,
+      "c": "ดาวจรร้าย 4 ดวงสัมพันธ์ลัคนาพร้อมกัน + ดวงเข้มแข็ง → ไม่ถึงฆาต",
+      "meaning": "ตำราโบราณ: ดาวจรร้าย (0,3,7) สัมพันธ์ลัคนาพร้อมกัน 4 ดวง = วิกฤตถึงชีวิต; แต่ถ้าดวงชาตาเข้มแข็ง + ดาวเดิมในพื้นเป็นคู่มิตรรับดาวจรร้ายสำคัญ → ผ่านได้โดยไม่ถึงขั้นหนัก; คุณภาพดาวเดิมที่รับ = ตัวแปรชี้ขาด",
+      "polarity": "-",
+      "planet_ids": [
+        0,
+        3,
+        7
+      ],
+      "contexts": [
+        "natal",
+        "transit"
+      ],
+      "domain": "หลักการ",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch101"
+    },
+    {
+      "id": "R290",
+      "ch": "ch100",
+      "rule_use": "reference",
+      "type": "PRINCIPLE",
+      "tier": 3,
+      "c": "สุริยยาตร์ — ค่า default สำหรับผูกดวงชาตาไทย",
+      "meaning": "ระบบ: สุริยยาตร์เท่านั้น (ไม่ใช้ Lahiri/Western); พระอาทิตย์ขึ้น: 06:00 น. ค่าตายตัว (ไม่ขึ้นกับฤดูกาลหรือพื้นที่); เวลา: ใช้เวลาท้องถิ่น ไม่ต้องปรับ timezone; ปีพุทธศักราช: ค.ศ. + 543; ราศีจักรโหราศาสตร์ไทยเท่านั้น",
+      "polarity": "0",
+      "planet_ids": [],
+      "contexts": [
+        "natal"
+      ],
+      "domain": "อ้างอิง",
+      "db": "kb_tals",
+      "source_level": 1,
+      "source_ref": "ch100"
+    }
+  ]
+}

@@ -55,7 +55,7 @@ function _renderV24(matched) {
 
 // ── Config ────────────────────────────────────────────────
 const KB_PATH = './v3/kb.json?v=' + (window.APP_VERSION || '0');
-const KB_PATH_V24 = './v3/kb_v24-3.json?v=' + (window.APP_VERSION || '0');
+const KB_PATH_V24 = './v3/kb_tals.json?v=' + (window.APP_VERSION || '0');
 
 // ── State ─────────────────────────────────────────────────
 let _v3KbRules = null;

@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "db": "kb_user",
+    "source_level": 4,
+    "description": "ประสบการณ์ผู้ใช้",
+    "schema": "2.1-multidb",
+    "tals_link_required": true,
+    "created": "2026-05-28"
+  },
+  "rules": []
+}

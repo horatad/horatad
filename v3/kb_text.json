@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "db": "kb_text",
+    "source_level": 2,
+    "description": "ตำราโหราศาสตร์อื่น (ระบุชื่อตำรา+ผู้แต่ง)",
+    "schema": "2.1-multidb",
+    "tals_link_required": true,
+    "created": "2026-05-28"
+  },
+  "rules": []
+}

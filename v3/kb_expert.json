@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "db": "kb_expert",
+    "source_level": 3,
+    "description": "ประสบการณ์โหรมีชื่อ (ระบุชื่อโหร+แหล่งอ้างอิง)",
+    "schema": "2.1-multidb",
+    "tals_link_required": true,
+    "created": "2026-05-28"
+  },
+  "rules": []
+}

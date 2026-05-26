@@ -198,7 +198,7 @@ export function get_tanu_lagna(ascSign){
 
 export {KASET_MAP,EXALT_MAP,STD_SCORE,HOUSE_SCORE,MEAN_SPEEDS,get_j};
 
-// ── Rule Matching — kb_v24-3.json schema ──────────────────────────────────
+// ── Rule Matching — kb_tals.json schema (Multi-DB 2.1) ────────────────────
 // Compatible with structured BIBLE KB (planet_ids / type / contexts / polarity)
 // ไม่ compatible กับ kb_embedded.json (tag-based) — ใช้ _matchRules() ใน script.js แทน
 
@@ -234,7 +234,7 @@ export function buildNatalState(pos,vel=null,ascSignOverride=null){
  * matchRulesV24(natalState, rules, transitState?) → matched rules[]
  * natalState: from buildNatalState(natalPos)
  * transitState: from buildNatalState(transitPos, null, natalState.ascSign)
- * rules: array from kb_v24-3.json (BIBLE structured schema)
+ * rules: array from kb_tals.json (BIBLE structured schema, Multi-DB 2.1)
  */
 export function matchRulesV24(natalState,rules,transitState=null){
   const matched=[];
