@@ -7,7 +7,8 @@
     "rule_count": 290,
     "created": "2026-05-28",
     "score_field_added": "2026-05-29",
-    "score_note": "score 0.0-1.0: REFERENCE/DEFINITION=0 (lookup only) · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6 · NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL tier1=0.8 (engine เพิ่ม 0.2x transit multiplier ภายหลัง)"
+    "score_note": "score 0.0-1.0: REFERENCE/DEFINITION=0 (lookup only) · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6 · NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL tier1=0.8 (engine เพิ่ม 0.2x transit multiplier ภายหลัง)",
+    "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending"
   },
   "rules": [
     {
@@ -28,7 +29,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch001",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch001",
+      "source_quote": ""
     },
     {
       "id": "R002",
@@ -47,7 +51,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch001",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch001",
+      "source_quote": ""
     },
     {
       "id": "R003",
@@ -78,7 +85,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch002",
+      "source_quote": ""
     },
     {
       "id": "R004",
@@ -104,7 +114,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch002",
+      "source_quote": ""
     },
     {
       "id": "R005",
@@ -126,7 +139,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch002"
     },
     {
       "id": "R006",
@@ -149,7 +164,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch002"
     },
     {
       "id": "R007",
@@ -179,7 +196,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch002",
+      "source_quote": ""
     },
     {
       "id": "R008",
@@ -198,7 +218,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch003",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch003",
+      "source_quote": ""
     },
     {
       "id": "R009",
@@ -217,7 +240,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch003",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch003"
     },
     {
       "id": "R010",
@@ -236,7 +261,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch003",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch003"
     },
     {
       "id": "R011",
@@ -257,7 +284,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R012",
@@ -278,7 +307,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R013",
@@ -299,7 +330,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R014",
@@ -320,7 +353,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R015",
@@ -341,7 +376,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R016",
@@ -362,7 +399,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R017",
@@ -383,7 +422,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R018",
@@ -404,7 +445,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R019",
@@ -425,7 +468,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R020",
@@ -446,7 +491,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R021",
@@ -467,7 +514,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R022",
@@ -489,7 +538,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R023",
@@ -511,7 +562,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R024",
@@ -533,7 +586,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch004",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch004"
     },
     {
       "id": "R025",
@@ -562,7 +617,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch005",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch005",
+      "source_quote": ""
     },
     {
       "id": "R026",
@@ -581,7 +639,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R027",
@@ -600,7 +661,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R028",
@@ -619,7 +683,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R029",
@@ -638,7 +705,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R030",
@@ -657,7 +727,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R031",
@@ -676,7 +749,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R032",
@@ -695,7 +771,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R033",
@@ -714,7 +793,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": ""
     },
     {
       "id": "R034",
@@ -737,7 +819,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R035",
@@ -760,7 +844,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R036",
@@ -786,7 +872,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R037",
@@ -812,7 +900,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R038",
@@ -838,7 +928,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R039",
@@ -864,7 +956,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R040",
@@ -887,7 +981,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R041",
@@ -910,7 +1006,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R042",
@@ -933,7 +1031,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R043",
@@ -956,7 +1056,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R044",
@@ -979,7 +1081,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R045",
@@ -1002,7 +1106,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R046",
@@ -1022,7 +1128,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R047",
@@ -1052,7 +1160,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch006"
     },
     {
       "id": "R048",
@@ -1083,7 +1193,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch007",
+      "source_quote": ""
     },
     {
       "id": "R049",
@@ -1103,7 +1216,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch007",
+      "source_quote": ""
     },
     {
       "id": "R050",
@@ -1122,7 +1238,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch007"
     },
     {
       "id": "R051",
@@ -1144,7 +1262,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch007"
     },
     {
       "id": "R052",
@@ -1166,7 +1286,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch007"
     },
     {
       "id": "R053",
@@ -1186,7 +1308,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch008"
     },
     {
       "id": "R054",
@@ -1215,7 +1339,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": ""
     },
     {
       "id": "R055",
@@ -1238,7 +1365,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch008"
     },
     {
       "id": "R056",
@@ -1258,7 +1387,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch008"
     },
     {
       "id": "R057",
@@ -1287,7 +1418,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": ""
     },
     {
       "id": "R058",
@@ -1309,7 +1443,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch008"
     },
     {
       "id": "R059",
@@ -1329,7 +1465,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch008"
     },
     {
       "id": "R060",
@@ -1358,7 +1496,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": ""
     },
     {
       "id": "R061",
@@ -1378,7 +1519,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch009",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch009",
+      "source_quote": ""
     },
     {
       "id": "R062",
@@ -1397,7 +1541,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch009",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch009"
     },
     {
       "id": "R063",
@@ -1418,7 +1564,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch010"
     },
     {
       "id": "R064",
@@ -1439,7 +1587,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch010"
     },
     {
       "id": "R065",
@@ -1460,7 +1610,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch010"
     },
     {
       "id": "R066",
@@ -1481,7 +1633,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch010"
     },
     {
       "id": "R067",
@@ -1502,7 +1656,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch010"
     },
     {
       "id": "R068",
@@ -1521,7 +1677,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch010"
     },
     {
       "id": "R069",
@@ -1540,7 +1698,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": ""
     },
     {
       "id": "R070",
@@ -1562,7 +1723,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R071",
@@ -1584,7 +1747,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R072",
@@ -1606,7 +1771,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R073",
@@ -1628,7 +1795,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R074",
@@ -1650,7 +1819,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R075",
@@ -1672,7 +1843,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R076",
@@ -1694,7 +1867,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R077",
@@ -1713,7 +1888,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": ""
     },
     {
       "id": "R078",
@@ -1735,7 +1913,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R079",
@@ -1757,7 +1937,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R080",
@@ -1779,7 +1961,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R081",
@@ -1801,7 +1985,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R082",
@@ -1823,7 +2009,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R083",
@@ -1845,7 +2033,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R084",
@@ -1867,7 +2057,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R085",
@@ -1889,7 +2081,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R086",
@@ -1908,7 +2102,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R087",
@@ -1927,7 +2123,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch013"
     },
     {
       "id": "R088",
@@ -1947,7 +2145,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch014",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch014",
+      "source_quote": ""
     },
     {
       "id": "R089",
@@ -1967,7 +2168,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch014",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch014",
+      "source_quote": ""
     },
     {
       "id": "R090",
@@ -1986,7 +2190,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": ""
     },
     {
       "id": "R091",
@@ -2007,7 +2214,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R092",
@@ -2028,7 +2237,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R093",
@@ -2049,7 +2260,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R094",
@@ -2070,7 +2283,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R095",
@@ -2091,7 +2306,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R096",
@@ -2112,7 +2329,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R097",
@@ -2133,7 +2352,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R098",
@@ -2152,7 +2373,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": ""
     },
     {
       "id": "R099",
@@ -2173,7 +2397,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R100",
@@ -2194,7 +2420,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R101",
@@ -2215,7 +2443,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R102",
@@ -2236,7 +2466,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R103",
@@ -2257,7 +2489,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R104",
@@ -2278,7 +2512,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R105",
@@ -2299,7 +2535,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R106",
@@ -2318,7 +2556,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": ""
     },
     {
       "id": "R107",
@@ -2339,7 +2580,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R108",
@@ -2360,7 +2603,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R109",
@@ -2382,7 +2627,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R110",
@@ -2404,7 +2651,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R111",
@@ -2427,7 +2676,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R112",
@@ -2446,7 +2697,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch015"
     },
     {
       "id": "R113",
@@ -2465,7 +2718,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch015",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": ""
     },
     {
       "id": "R114",
@@ -2486,7 +2742,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R115",
@@ -2507,7 +2765,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R116",
@@ -2528,7 +2788,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R117",
@@ -2549,7 +2811,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R118",
@@ -2570,7 +2834,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R119",
@@ -2591,7 +2857,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R120",
@@ -2612,7 +2880,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R121",
@@ -2633,7 +2903,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R122",
@@ -2654,7 +2926,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R123",
@@ -2675,7 +2949,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R124",
@@ -2694,7 +2970,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": ""
     },
     {
       "id": "R125",
@@ -2713,7 +2992,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": ""
     },
     {
       "id": "R126",
@@ -2732,7 +3014,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch016"
     },
     {
       "id": "R127",
@@ -2751,7 +3035,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch016",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": ""
     },
     {
       "id": "R128",
@@ -2770,7 +3057,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch017",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch017"
     },
     {
       "id": "R129",
@@ -2789,7 +3078,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch017",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch017"
     },
     {
       "id": "R130",
@@ -2810,7 +3101,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch017",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch017"
     },
     {
       "id": "R131",
@@ -2829,7 +3122,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch018",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch018"
     },
     {
       "id": "R132",
@@ -2850,7 +3145,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch018",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch018"
     },
     {
       "id": "R133",
@@ -2871,7 +3168,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch019",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch019"
     },
     {
       "id": "R134",
@@ -2892,7 +3191,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch019",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch019"
     },
     {
       "id": "R135",
@@ -2911,7 +3212,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch020",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch020",
+      "source_quote": ""
     },
     {
       "id": "R136",
@@ -2930,7 +3234,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch020",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch020",
+      "source_quote": ""
     },
     {
       "id": "R137",
@@ -2949,7 +3256,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch021",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch021",
+      "source_quote": ""
     },
     {
       "id": "R138",
@@ -2968,7 +3278,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch021",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch021",
+      "source_quote": ""
     },
     {
       "id": "R139",
@@ -2987,7 +3300,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch021",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch021",
+      "source_quote": ""
     },
     {
       "id": "R140",
@@ -3006,7 +3322,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch022",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch022"
     },
     {
       "id": "R141",
@@ -3025,7 +3343,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch023",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch023",
+      "source_quote": ""
     },
     {
       "id": "R142",
@@ -3044,7 +3365,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch023",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch023",
+      "source_quote": ""
     },
     {
       "id": "R143",
@@ -3063,7 +3387,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch023",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch023",
+      "source_quote": ""
     },
     {
       "id": "R144",
@@ -3084,7 +3411,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch024",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch024"
     },
     {
       "id": "R145",
@@ -3105,7 +3434,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch025",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch025"
     },
     {
       "id": "R146",
@@ -3127,7 +3458,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch027",
-      "score": 0.0
+      "score": 0.0,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch027",
+      "source_quote": ""
     },
     {
       "id": "R147",
@@ -3146,7 +3480,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch027",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch027",
+      "source_quote": ""
     },
     {
       "id": "R148",
@@ -3167,7 +3504,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch028",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch028"
     },
     {
       "id": "R149",
@@ -3188,7 +3527,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch028",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch028"
     },
     {
       "id": "R150",
@@ -3209,7 +3550,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch028",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch028"
     },
     {
       "id": "R151",
@@ -3230,7 +3573,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch028",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch028"
     },
     {
       "id": "R152",
@@ -3251,7 +3596,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch029",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch029"
     },
     {
       "id": "R153",
@@ -3272,7 +3619,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch029",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch029"
     },
     {
       "id": "R154",
@@ -3293,7 +3642,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch029",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch029"
     },
     {
       "id": "R155",
@@ -3314,7 +3665,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch029",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch029"
     },
     {
       "id": "R156",
@@ -3333,7 +3686,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R157",
@@ -3352,7 +3707,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R158",
@@ -3371,7 +3728,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R159",
@@ -3390,7 +3749,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R160",
@@ -3409,7 +3770,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R161",
@@ -3428,7 +3791,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R162",
@@ -3449,7 +3814,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R163",
@@ -3470,7 +3837,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R164",
@@ -3491,7 +3860,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R165",
@@ -3512,7 +3883,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R166",
@@ -3533,7 +3906,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R167",
@@ -3554,7 +3929,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R168",
@@ -3575,7 +3952,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R169",
@@ -3596,7 +3975,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R170",
@@ -3617,7 +3998,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R171",
@@ -3638,7 +4021,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R172",
@@ -3659,7 +4044,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R173",
@@ -3680,7 +4067,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R174",
@@ -3701,7 +4090,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R175",
@@ -3722,7 +4113,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R176",
@@ -3743,7 +4136,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R177",
@@ -3765,7 +4160,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R178",
@@ -3787,7 +4184,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R179",
@@ -3808,7 +4207,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R180",
@@ -3829,7 +4230,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R181",
@@ -3850,7 +4253,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R182",
@@ -3872,7 +4277,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R183",
@@ -3894,7 +4301,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R184",
@@ -3915,7 +4324,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R185",
@@ -3936,7 +4347,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R186",
@@ -3957,7 +4370,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R187",
@@ -3979,7 +4394,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R188",
@@ -3998,7 +4415,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch026",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch026"
     },
     {
       "id": "R189",
@@ -4017,7 +4436,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch030",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch030"
     },
     {
       "id": "R190",
@@ -4036,7 +4457,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch030",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch030"
     },
     {
       "id": "R191",
@@ -4061,7 +4484,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R192",
@@ -4088,7 +4513,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R193",
@@ -4112,7 +4539,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R194",
@@ -4137,7 +4566,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R195",
@@ -4163,7 +4594,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R196",
@@ -4186,7 +4619,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R197",
@@ -4206,7 +4641,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch036",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch036"
     },
     {
       "id": "R198",
@@ -4228,7 +4665,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch031",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch031"
     },
     {
       "id": "R199",
@@ -4250,7 +4689,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch031",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch031"
     },
     {
       "id": "R200",
@@ -4272,7 +4713,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch031",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch031"
     },
     {
       "id": "R201",
@@ -4294,7 +4737,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch031",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch031"
     },
     {
       "id": "R202",
@@ -4314,7 +4759,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R203",
@@ -4334,7 +4781,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R204",
@@ -4357,7 +4806,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R205",
@@ -4380,7 +4831,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R206",
@@ -4402,7 +4855,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R207",
@@ -4425,7 +4880,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R208",
@@ -4448,7 +4905,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch034",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch034"
     },
     {
       "id": "R209",
@@ -4468,7 +4927,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch035",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch035"
     },
     {
       "id": "R210",
@@ -4494,7 +4955,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R211",
@@ -4514,7 +4977,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R212",
@@ -4536,7 +5001,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R213",
@@ -4559,7 +5026,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R214",
@@ -4582,7 +5051,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R215",
@@ -4605,7 +5076,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R216",
@@ -4627,7 +5100,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R217",
@@ -4650,7 +5125,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R218",
@@ -4673,7 +5150,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R219",
@@ -4695,7 +5174,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R220",
@@ -4720,7 +5201,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R221",
@@ -4743,7 +5226,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R222",
@@ -4765,7 +5250,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R223",
@@ -4788,7 +5275,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R224",
@@ -4810,7 +5299,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R225",
@@ -4832,7 +5323,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R226",
@@ -4855,7 +5348,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R227",
@@ -4878,7 +5373,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R228",
@@ -4900,7 +5397,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R229",
@@ -4920,7 +5419,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch033",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch033"
     },
     {
       "id": "R230",
@@ -4941,7 +5442,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R231",
@@ -4962,7 +5465,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R232",
@@ -4983,7 +5488,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R233",
@@ -5004,7 +5511,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R234",
@@ -5028,7 +5537,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R235",
@@ -5047,7 +5558,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R236",
@@ -5068,7 +5581,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R237",
@@ -5089,7 +5604,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch032"
     },
     {
       "id": "R238",
@@ -5109,7 +5626,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch037",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch037"
     },
     {
       "id": "R239",
@@ -5132,7 +5651,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch048",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch048"
     },
     {
       "id": "R240",
@@ -5156,7 +5677,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch049",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch049"
     },
     {
       "id": "R241",
@@ -5175,7 +5698,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch050",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch050"
     },
     {
       "id": "R242",
@@ -5194,7 +5719,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch050",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch050"
     },
     {
       "id": "R243",
@@ -5213,7 +5740,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch052",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch052"
     },
     {
       "id": "R244",
@@ -5232,7 +5761,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch052",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch052"
     },
     {
       "id": "R245",
@@ -5255,7 +5786,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch053",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch053"
     },
     {
       "id": "R246",
@@ -5274,7 +5807,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch054",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch054"
     },
     {
       "id": "R247",
@@ -5293,7 +5828,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch055",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch055"
     },
     {
       "id": "R248",
@@ -5323,7 +5860,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch038",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch038"
     },
     {
       "id": "R249",
@@ -5345,7 +5884,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch038",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch038"
     },
     {
       "id": "R250",
@@ -5366,7 +5907,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch038",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch038"
     },
     {
       "id": "R251",
@@ -5387,7 +5930,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch038",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch038"
     },
     {
       "id": "R252",
@@ -5406,7 +5951,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch038",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch038"
     },
     {
       "id": "R253",
@@ -5425,7 +5972,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R254",
@@ -5446,7 +5995,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R255",
@@ -5470,7 +6021,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R256",
@@ -5492,7 +6045,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R257",
@@ -5514,7 +6069,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R258",
@@ -5536,7 +6093,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R259",
@@ -5560,7 +6119,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R260",
@@ -5583,7 +6144,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R261",
@@ -5604,7 +6167,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch039"
     },
     {
       "id": "R262",
@@ -5625,7 +6190,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch041",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch041"
     },
     {
       "id": "R263",
@@ -5644,7 +6211,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch041",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch041"
     },
     {
       "id": "R264",
@@ -5665,7 +6234,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch042",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch042"
     },
     {
       "id": "R265",
@@ -5684,7 +6255,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch041",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch041"
     },
     {
       "id": "R266",
@@ -5703,7 +6276,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch044",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch044"
     },
     {
       "id": "R267",
@@ -5724,7 +6299,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch044",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch044"
     },
     {
       "id": "R268",
@@ -5743,7 +6320,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch041",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch041",
+      "source_quote": ""
     },
     {
       "id": "R269",
@@ -5762,7 +6342,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch043",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch043"
     },
     {
       "id": "R270",
@@ -5781,7 +6363,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch056",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch056"
     },
     {
       "id": "R271",
@@ -5802,7 +6386,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch056",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch056"
     },
     {
       "id": "R272",
@@ -5821,7 +6407,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch059",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch059"
     },
     {
       "id": "R273",
@@ -5840,7 +6428,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch063",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch063"
     },
     {
       "id": "R274",
@@ -5862,7 +6452,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch064",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch064"
     },
     {
       "id": "R275",
@@ -5883,7 +6475,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch057",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch057"
     },
     {
       "id": "R276",
@@ -5902,7 +6496,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch067",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch067"
     },
     {
       "id": "R277",
@@ -5925,7 +6521,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch069",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch069"
     },
     {
       "id": "R278",
@@ -5944,7 +6542,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch070",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch070",
+      "source_quote": ""
     },
     {
       "id": "R279",
@@ -5963,7 +6564,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch072",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch072",
+      "source_quote": ""
     },
     {
       "id": "R280",
@@ -5983,7 +6587,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch073",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch073"
     },
     {
       "id": "R281",
@@ -6002,7 +6608,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch078",
-      "score": 1.0
+      "score": 1.0,
+      "source_type": "INFERRED",
+      "source_chapter": "ch078"
     },
     {
       "id": "R282",
@@ -6023,7 +6631,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch083",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch083"
     },
     {
       "id": "R283",
@@ -6045,7 +6655,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch088",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch088"
     },
     {
       "id": "R284",
@@ -6067,7 +6679,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch090",
-      "score": 0.8
+      "score": 0.8,
+      "source_type": "INFERRED",
+      "source_chapter": "ch090"
     },
     {
       "id": "R285",
@@ -6086,7 +6700,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch094",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch094",
+      "source_quote": ""
     },
     {
       "id": "R286",
@@ -6106,7 +6723,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch096",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch096",
+      "source_quote": ""
     },
     {
       "id": "R287",
@@ -6127,7 +6747,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch101",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch101",
+      "source_quote": ""
     },
     {
       "id": "R288",
@@ -6146,7 +6769,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch101",
-      "score": 0.9
+      "score": 0.9,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch101",
+      "source_quote": ""
     },
     {
       "id": "R289",
@@ -6170,7 +6796,9 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch101",
-      "score": 0.6
+      "score": 0.6,
+      "source_type": "INFERRED",
+      "source_chapter": "ch101"
     },
     {
       "id": "R290",
@@ -6189,7 +6817,10 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch100",
-      "score": 0.7
+      "score": 0.7,
+      "source_type": "PRIMARY",
+      "source_chapter": "ch100",
+      "source_quote": ""
     }
   ]
 }

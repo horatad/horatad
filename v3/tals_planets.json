@@ -89,7 +89,16 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "การเปลี่ยนแปลงฉับพลัน",
+        "เหตุการณ์ไม่คาดคิด",
+        "อุบัติเหตุ",
+        "การพลิกผัน"
+      ],
+      "inner_trait_twofactor": null,
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch004+ch023"
     },
     "1": {
       "id": 1,
@@ -203,7 +212,17 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "เกียรติ",
+        "อำนาจ",
+        "ราชการ",
+        "ศักดิ์ศรี",
+        "การเมือง"
+      ],
+      "inner_trait_twofactor": "รักเกียรติ รักหน้า ถือตัว ไม่ยอมเสียหน้า",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "2": {
       "id": 2,
@@ -301,7 +320,17 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "ครอบครัว",
+        "มารดา",
+        "เสน่ห์",
+        "ความสัมพันธ์",
+        "สังคม"
+      ],
+      "inner_trait_twofactor": "อ่อนโยน อ่อนหวาน มีกริยามารยาท",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "3": {
       "id": 3,
@@ -407,7 +436,18 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "งานช่าง",
+        "ทักษะ",
+        "กีฬา",
+        "การต่อสู้",
+        "ตรรกะ",
+        "ความกล้า"
+      ],
+      "inner_trait_twofactor": "ขยัน แข็ง ไม่เชื่อง่าย มีตรรกะ",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "4": {
       "id": 4,
@@ -504,7 +544,17 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "การสื่อสาร",
+        "การค้า",
+        "ข้อมูล",
+        "การเรียน",
+        "ความละเอียด"
+      ],
+      "inner_trait_twofactor": "ละเอียด ช่างเจรจา ชอบข้อมูล",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "5": {
       "id": 5,
@@ -606,7 +656,18 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "ศาสนา",
+        "ธรรมะ",
+        "กฎหมาย",
+        "การศึกษา",
+        "ปัญญา",
+        "คุณธรรม"
+      ],
+      "inner_trait_twofactor": "ใจอ่อน มีเมตตา มองโลกในแง่ดี ใฝ่ธรรมะ",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "6": {
       "id": 6,
@@ -705,7 +766,17 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "ศิลปะ",
+        "ความงาม",
+        "ความรัก",
+        "ความสุข",
+        "สุนทรียะ"
+      ],
+      "inner_trait_twofactor": "มีจินตนาการ เพ้อฝัน มีอารมณ์ศิลปิน",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "7": {
       "id": 7,
@@ -810,7 +881,17 @@
           "pol": "-",
           "ref": "session_2026-05-29"
         }
-      ]
+      ],
+      "external_domains": [
+        "ที่ดิน",
+        "การเกษตร",
+        "งานหนัก",
+        "ความอดทน",
+        "ระยะยาว"
+      ],
+      "inner_trait_twofactor": "คิดมาก ไตร่ตรองรอบคอบมาก",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "8": {
       "id": 8,
@@ -907,7 +988,17 @@
           "pol": "-",
           "ref": "ch004"
         }
-      ]
+      ],
+      "external_domains": [
+        "หุ้น",
+        "การเงินเสี่ยง",
+        "ต่างชาติ",
+        "เทคโนโลยี",
+        "ความลึกลับ"
+      ],
+      "inner_trait_twofactor": "ลุ่มหลง เล่ห์เหลี่ยม ฉลาดทันคน",
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch023"
     },
     "9": {
       "id": 9,
@@ -947,7 +1038,11 @@
           "pol": "-",
           "ref": "ch004"
         }
-      ]
+      ],
+      "external_domains": null,
+      "inner_trait_twofactor": null,
+      "twofactor_src": "tals",
+      "twofactor_ref": "ch004"
     }
   }
 }
