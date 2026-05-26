@@ -1788,3 +1788,17 @@ ch020 เน้น "ดาวไม่สัมพันธ์" เพราะ 
 ### Code naming note
 - `getIdentity()[1]` ใน script.js = ตนุเศษแท้จริง (formula) ✓
 - `tanu_set` ใน interpretation.js = intermediate step (เจ้าเรือนของราศีที่ตนุลัคน์อยู่) ≠ ตนุเศษ
+
+## 2026-05-28T12:00 — Multi-DB Architecture implementation
+
+### สิ่งที่ทำ
+- ออกแบบ Multi-DB 4 ชั้น: kb_tals(L1) / kb_text(L2) / kb_expert(L3) / kb_user(L4)
+- สร้าง kb_tals.json — migrate 290 rules จาก kb_v24-3.json + เพิ่ม db/source_level/source_ref
+- สร้าง stub files: kb_text.json, kb_expert.json, kb_user.json
+- อัป reference: v3tab.js KB_PATH_V24 → kb_tals.json
+- Cross-DB linking schema: tals_link {tals_rule_id, relation: confirm/extend/conflict/new}
+
+### Architecture สรุป
+- source_level: 1=100CH, 2=ตำราอื่น, 3=โหรผู้เชี่ยวชาญ, 4=ประสบการณ์ผู้ใช้
+- L2/L3/L4 ต้องมี tals_link (link กลับ L1) จึงจะนับว่า valid
+- Engine load mode: strict (L1 only) / optional (L1+L2) / full (ทั้งหมด)
