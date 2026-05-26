@@ -8,7 +8,6 @@
   },
   "qualities": {
     "_note": "strength_pct คือ weight สำหรับ multi-factor model. Source: quality_maps.json + QUALITY.md (ch025 verified).",
-    "_inconsistency_pending": "มหาจักร: quality_maps=80%, QUALITY.md/ch025 says ≈ อุจ (=100%). รอ user confirm ค่าที่ถูก.",
     "เกษตร": {
       "strength_pct": 80,
       "polarity": "+",
@@ -47,12 +46,15 @@
     },
     "มหาจักร": {
       "strength_pct": 80,
-      "strength_pct_note": "⚠ PENDING: quality_maps=80%, ch025 implies ≈ อุจ (100%). รอ user confirm.",
+      "strength_pct_note": "อันดับรองอุจ — peak ใกล้เคียง อุจ แต่ไม่สม่ำเสมอ (avg ≈ 80%). user-confirmed 2026-05-29.",
+      "volatility": "high",
+      "volatility_note": "ไฟบ้านที่มีความเสี่ยงไฟตก — peak สูง แต่มีโอกาส drop โดยไม่คาดคิด",
       "polarity": "+",
-      "description": "ดาวอยู่ในราศีมหาจักรของตนเอง (per planet table below)",
-      "pattern": "ผาดโผน รวดเร็ว ไม่สม่ำเสมอ",
-      "graph": "≈ คลื่นชีพจร",
-      "time_profile": "Fast/variable — peak then drop, more socially flexible than อุจ",
+      "description": "ดาวอยู่ในราศีมหาจักรของตนเอง — กำลังสูงเร็ว แต่ไม่สม่ำเสมอ (คล้าย อุจ+มฤตยู modifier)",
+      "pattern": "ผลเร็ว กำลังสูง แต่ขึ้น-ลงไม่แน่นอน ไม่ค่อยนิ่ง",
+      "graph": "≈ คลื่นชีพจร (peak สูงเท่า อุจ แต่มีจุดตก)",
+      "time_profile": "Fast onset, high peak, but inconsistent — อุจ=ไฟบ้านนิ่ง, มหาจักร=ไฟบ้านเสี่ยงไฟตก",
+      "vs_uchcha": "อุจ=สม่ำเสมอสูง, มหาจักร=เร็วสูงแต่ผันผวน — สังคม/ความยืดหยุ่นดีกว่าอุจ",
       "lop_applicable": false
     },
     "จุลจักร": {

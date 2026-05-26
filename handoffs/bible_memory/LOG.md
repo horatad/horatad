@@ -2414,3 +2414,26 @@ CONTEXT: outcome polarity (ดีหรือร้าย) ต้องดู
 - งาน per-rule audit ยังค้างอยู่ (ต้องอ่าน ch-by-ch ยืนยัน primary quote ทีละ rule)
 
 ### commit: d169732 (bible-twofactor-rules-v1 backup)
+
+## 2026-05-29T05:00 — มหาจักร strength model — user confirmed
+
+**User input:** "มหาจักรอันดับรองอุจ แต่ไม่ระบุไว้ เพราะผลเร็ว แต่ไม่สม่ำเสมอ คล้าย อุจ+มฤตยู ถ้าอุจเหมือนไฟบ้าน มหาจักรเหมือนไฟบ้านที่มีความเสี่ยงไฟตก"
+
+### Canonical มหาจักร model (ยืนยันแล้ว)
+
+| property | ค่า |
+|---|---|
+| อันดับ | รองอุจ (2nd) |
+| strength_pct | 80% (effective average — ตำราไม่ระบุ % ชัดเจน) |
+| volatility | **สูง** — peak ใกล้อุจ แต่ drop ได้โดยไม่คาดคิด |
+| อุปมา | ไฟบ้านที่มีความเสี่ยงไฟตก (vs อุจ = ไฟบ้านนิ่ง) |
+| modifier | คล้าย อุจ + มฤตยู modifier |
+
+### Engine implication
+- `strength_pct = 80` คงไว้ (avg) แต่ต้องมี `volatility = "high"` flag
+- ≠ อุจ ที่ flat 100% สม่ำเสมอ — มหาจักร = เร็ว สูง แต่ผันผวน
+- อุจ=ไฟนิ่ง, มหาจักร=ไฟ peak สูง แต่เสี่ยงตก
+
+### Files updated
+- `v3/tals_quality_rules.json` — เพิ่ม volatility + volatility_note + vs_uchcha + ลบ PENDING note
+- `handoffs/bible_memory/QUALITY.md` — อัปเดตตาราง อุจ vs มหาจักร + model note
