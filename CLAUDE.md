@@ -1,7 +1,39 @@
 # Horatad — Project Notes for Claude
 
-โหราทาส: เครื่องผูกดวงโหราศาสตร์ไทย (สุริยยาตร์) + PWA + แท็บพยากรณ์ V3
+โหราทาส: เครื่องผูกดวง + พยากรณ์ตามแนวทาง **TALS** (Thai Astrology Logical Style) + PWA + แท็บพยากรณ์ V3
 ภาษาคุย/commit/comment: ไทย (mix Eng เฉพาะ technical term)
+
+---
+
+## 📖 TALS — Foundational Attribution (standing rule, 2026-05-26)
+
+**TALS = Thai Astrology Logical Style (โหราศาสตร์ไทยแนวตรรกะ)**
+
+| | |
+|---|---|
+| ผู้ก่อตั้ง | ยืนยง นาวาสมุทร · สมญานาม **แดง เมืองตราด** |
+| ตำราอ้างอิง | "โหราศาสตร์ไทยแนวตรรกะ" (เรียกย่อ `100CH` ในระบบเรา) |
+| ความสำคัญ | **ครั้งแรก** ที่นำตรรกศาสตร์มาใช้ในโหราศาสตร์ไทย — ตัดสินกฎเกณฑ์ที่คลุมเครือ |
+| ข้อแตกต่าง | Axiom-based · ตัดส่วนคลุมเครือ (ฤกษ์/ห้วง/นวางค์) · per-planet single-value · clear polarity+domain |
+
+**ขอบเขต TALS:**
+- ✅ ครอบ: มาตรฐานดาว · interpretation framework · prediction rules + wordings · uses สุริยยาตร์ for position calc
+- ❌ ไม่ครอบ: ฤกษ์ · ห้วง · นวางค์ · ตรียางค์ · ลูกพิษ · ดาวพักร/มณฑ์/เสริด
+
+**คำที่ห้ามสับสน:**
+- **TALS** = ระบบพยากรณ์ที่เราใช้ (interpretation framework)
+- **สุริยยาตร์** = ระบบคำนวณตำแหน่งดาว (calculation engine) — เป็น backbone ของ TALS, ไม่ใช่ระบบพยากรณ์
+
+**กฎการเขียน internal docs/code:**
+- เรียก "TALS" สำหรับ framework/rules/predictions
+- เรียก "สุริยยาตร์" เฉพาะตอนพูดถึง position calculation (06:00 ตายตัว, JD calc, etc.)
+- ในไฟล์ public-facing (manifest.json, README.md, app UI) → กำลังพิจารณา rename strategy (BIG scope)
+
+**กฎอ้างถึงผู้ก่อตั้ง:**
+- ในไฟล์ที่ share ออกไป (Google Docs, public app "เกี่ยวกับ" page) → ต้องให้ credit ผู้ก่อตั้ง
+- Internal memory/handoff → optional แต่ encouraged
+
+**File renaming strategy** (kb_*.json → tals_kb_*.json ฯลฯ) — รอ BIG พิจารณา cross-project impact
 
 ---
 

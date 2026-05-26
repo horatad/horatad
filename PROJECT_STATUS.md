@@ -50,8 +50,9 @@
 
 ---
 
-## BIBLE — Prediction Wording Engine 🟢 Active — quality_maps + corrections
-**เป้าหมาย:** rules → keywords → LLM wordings — ground-truth via triangulation (100CH + LLMs + user)
+## BIBLE — TALS Wording Engine 🟢 Active — quality_maps + TALS naming
+**System:** TALS (Thai Astrology Logical Style) · founder: ยืนยง นาวาสมุทร (แดง เมืองตราด)
+**เป้าหมาย:** TALS rules → keywords → LLM wordings — ground-truth via triangulation (100CH + LLMs + user)
 
 ### สถานะ
 - KB V2.3: 342 rules (production, ใช้งานอยู่) | Engine 3.1.0 ✅

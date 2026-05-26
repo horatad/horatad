@@ -1,8 +1,15 @@
 {
   "_meta": {
-    "version": "1.4.0-complete",
-    "updated": "2026-05-25 (v1.4.0: all 11 sections complete — signs narrative + lagna_concepts ch013 + special_configs expanded 11 entries)",
-    "description": "User-editable meanings layer for Thai astrology (Suriyayat). Claude owns master_dict.js (computation), user owns this file (meanings/labels/corrections).",
+    "version": "1.4.1-tals",
+    "updated": "2026-05-26 (v1.4.1: TALS attribution + naming corrected — 'สุริยยาตร์' refers only to position calculation, prediction framework = TALS)",
+    "system": "TALS (Thai Astrology Logical Style)",
+    "attribution": {
+      "founder": "ยืนยง นาวาสมุทร (สมญานาม: แดง เมืองตราด)",
+      "reference_text": "โหราศาสตร์ไทยแนวตรรกะ (= 100CH ในระบบเรา)",
+      "significance": "ครั้งแรกที่นำตรรกศาสตร์มาใช้ในโหราศาสตร์ไทย ตัดสินกฎเกณฑ์ที่คลุมเครือ"
+    },
+    "terminology_note": "TALS = prediction framework | สุริยยาตร์ = position calculation engine (used as TALS backbone, not prediction system)",
+    "description": "User-editable meanings layer for TALS (Thai Astrology Logical Style). Position calc via สุริยยาตร์. Claude owns master_dict.js (computation), user owns this file (meanings/labels/corrections).",
     "owner": "user",
     "sync_protocol": "Claude proposes rows in LOG.md → user validates → user edits this file → Claude reads next session",
     "completion_status": {

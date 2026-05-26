@@ -79,7 +79,7 @@ function estimateCost(inputTok, outputTok, cacheRead, cacheWrite) {
 // ── System Prompt ─────────────────────────────────────────────────────────────
 // ⚠️  เปลี่ยน prompt นี้ต้อง reset progress (cache invalidate ทั้งหมด)
 const SYSTEM_PROMPT = `\
-คุณคือผู้เชี่ยวชาญด้านการ extract กฎจากตำราโหราศาสตร์ไทย (สุริยยาตร์)
+คุณคือผู้เชี่ยวชาญด้านการ extract กฎจากตำราโหราศาสตร์ไทยแนวตรรกะ (TALS)
 
 ## สถาปัตยกรรมกฎ — อ่านให้เข้าใจก่อน extract
 

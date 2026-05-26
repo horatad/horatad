@@ -1,9 +1,11 @@
-# BIBLE Memory — VOCABULARY
+# BIBLE Memory — VOCABULARY (TALS)
 # Type: Reference (editable — เพิ่มเมื่อพบคำใหม่)
 # Last updated: 2026-05-26
+# System: TALS (Thai Astrology Logical Style — โหราศาสตร์ไทยแนวตรรกะ)
+# Founder: ยืนยง นาวาสมุทร (แดง เมืองตราด)
 
 ═══════════════════════════════════════════════════════════════════════
-🔴 FOUNDATIONAL RULE — natal = 80%, ดาวจร = stimulator only
+🔴 TALS FOUNDATIONAL RULE — natal = 80%, ดาวจร = stimulator only
 ═══════════════════════════════════════════════════════════════════════
 พื้นดวง บอกอะไรไว้ → ดาวจร แค่ activate ขึ้นมา
 พื้นดวงไม่บอก → ดาวจร ทำให้เกิดไม่ได้
@@ -133,7 +135,7 @@ Corollary: ดวงคล้ายกัน → outcome TYPE เดียวก
 
 ---
 ## Naming variants (appended 2026-05-25)
-หลายคำในตำราสุริยยาตร์มีชื่อหลายแบบ — ห้ามรวมเป็นคำเดียว ห้ามตัด:
+หลายคำในตำรา TALS (โหราศาสตร์ไทยแนวตรรกะ) มีชื่อหลายแบบ — ห้ามรวมเป็นคำเดียว ห้ามตัด:
 
 | Canonical | Aliases |
 |---|---|
@@ -141,6 +143,6 @@ Corollary: ดวงคล้ายกัน → outcome TYPE เดียวก
 | มกร | มังกร |
 | มหาจักร | (memory code: ๗๒ ๑๘ ๔๓ ๕๖) |
 | อนุเกษตร | ประเกษตร (บางตำรา) |
-| ราหู | (ไม่ใช่ "เกตุเหนือ" หรือ "ราหูเหนือ" ในสุริยยาตร์) |
+| ราหู | (ไม่ใช่ "เกตุเหนือ" หรือ "ราหูเหนือ" ใน TALS) |
 
 **Schema convention:** ในไฟล์ master_dict ใช้ `alias` field (array) บันทึก variants — search hits all forms

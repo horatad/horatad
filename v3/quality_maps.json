@@ -1,8 +1,15 @@
 {
   "_meta": {
-    "schema_version": "1.0",
-    "purpose": "Single source of truth for Thai astrology (สุริยยาตร์) quality config detection. Used by v3/engine.js (replacing hardcoded MAPs), v3/master_dict.js (LLM extraction prompts), v3/master_dict_meanings.json (BIBLE master dict).",
-    "id_scheme": "canonical 0-11 for signs, 1-8 for main planets (0=มฤตยู, 9=เกตุ — no quality concepts in สุริยยาตร์)",
+    "schema_version": "1.1",
+    "system": "TALS (Thai Astrology Logical Style)",
+    "attribution": {
+      "founder": "ยืนยง นาวาสมุทร (สมญานาม: แดง เมืองตราด)",
+      "reference_text": "โหราศาสตร์ไทยแนวตรรกะ (= 100CH ในระบบเรา)",
+      "significance": "ครั้งแรกที่นำตรรกศาสตร์มาใช้ในโหราศาสตร์ไทย — ตัดสินกฎเกณฑ์ที่คลุมเครือ ให้เป็นระบบที่ตรวจสอบได้"
+    },
+    "terminology_note": "TALS = prediction framework | สุริยยาตร์ = position calculation engine (used as TALS backbone)",
+    "purpose": "Single source of truth for TALS quality config detection. Used by v3/engine.js (replacing hardcoded MAPs), v3/master_dict.js (LLM extraction prompts), v3/master_dict_meanings.json (BIBLE master dict).",
+    "id_scheme": "canonical 0-11 for signs, 1-8 for main planets (0=มฤตยู, 9=เกตุ — no quality concepts in TALS)",
     "created": "2026-05-26",
     "supersedes_previous": [
       "v3/engine.js KASET_MAP / EXALT_MAP / MAHACHAK_MAP / RACHA_MAP (hardcoded — drift risk)",

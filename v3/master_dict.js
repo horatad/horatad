@@ -133,7 +133,7 @@ export function house_idx_to_name(idx){
 // ════════════════════════════════════════════════════════════════════════════
 
 // ── Planet Aliases ───────────────────────────────────────────────────────────
-// ทุก alias ที่ปรากฏในตำราสุริยยาตร์ → map กลับไปที่ planet_id
+// ทุก alias ที่ปรากฏในตำรา TALS → map กลับไปที่ planet_id
 export const PLANET_ALIASES = {
   1:  ['อาทิตย์','พระอาทิตย์','สุริยะ','สุริยน','รวิ','ทิวากร','สุริยา'],
   2:  ['จันทร์','พระจันทร์','จันทรา','จันทรมา','ศศิ','ศศิธร','นิศากร','โสม','โสมะ'],
@@ -274,7 +274,7 @@ export const RULE_TYPE_GRAMMAR = {
 };
 
 // ── Planet Standard Positions (ดวงมาตรฐาน) ───────────────────────────────────
-// ที่มา: ch006 — ตำแหน่งที่ดาวได้คุณภาพพิเศษตามหลักสุริยยาตร์ไทย
+// ที่มา: ch006 — ตำแหน่งที่ดาวได้คุณภาพพิเศษตามหลัก TALS (Thai Astrology Logical Style)
 // sign IDs: เมษ=0 พฤษภ=1 มิถุน=2 กรกฎ=3 สิงห์=4 กันย์=5 ตุล=6 พิจิก=7 ธนู=8 มังกร=9 กุมภ์=10 มีน=11
 
 export const UCH_POSITIONS = {
@@ -456,7 +456,7 @@ Output ผิด: N match rules copy กรณีทีละอัน
 // ── Extraction System Prompt ──────────────────────────────────────────────────
 // Full system prompt สำหรับ extraction — ใช้ buildExtractionContext() + schema
 export function buildExtractionSystemPrompt() {
-  return `คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทย (สุริยยาตร์) ให้เป็น JSON
+  return `คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทยแนวตรรกะ (TALS) ให้เป็น JSON
 
 ${buildExtractionContext()}
 

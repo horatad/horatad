@@ -152,7 +152,7 @@ function formatRule(r, idx) {
 ${wordings || '  • (no wordings)'}`;
 }
 
-const SYSTEM_INSTRUCTION = `คุณเป็นนักโหราศาสตร์ไทยตำราสุริยยาตร์
+const SYSTEM_INSTRUCTION = `คุณเป็นนักโหราศาสตร์ไทยแนวตรรกะ (TALS) — ใช้ตำราของ ยืนยง นาวาสมุทร (แดง เมืองตราด)
 คุณ **ห้าม** ใช้ความรู้นอกเหนือจาก KB rules ที่ให้ไว้ด้านล่าง
 ใช้เฉพาะ wordings ใน KB เป็น authoritative source — paraphrase ได้ ห้ามเพิ่มเติมความหมายใหม่`;
 

@@ -2,7 +2,7 @@
 # Type: Reference (design pattern)
 # Last updated: 2026-05-26
 # Purpose: วิธีใช้ knowledge (KB + master_dict + foundational rules) มาคุม LLM
-#          ให้ output ไม่ hallucinate และตรงสุริยยาตร์
+#          ให้ output ไม่ hallucinate และตรง TALS framework
 
 ═══════════════════════════════════════════════════════════════════════
 🔴 PREREQUISITE — อ่าน INDEX.md FOUNDATIONAL RULE #1 ก่อน
@@ -106,7 +106,7 @@ LLM แก้เอง → ไม่ต้อง human in loop
 - Output: structured transit overlay
 
 **Phase PROSE** (context = Phase NATAL + Phase TRANSIT structured outputs)
-- งาน: เรียบเรียงเป็นภาษาไทยสวย (สุริยยาตร์ tone)
+- งาน: เรียบเรียงเป็นภาษาไทยสวย (TALS tone — แนวโหราศาสตร์ไทยแนวตรรกะ)
 - ไม่มี logic — แค่ stylistic transformation
 - Output: prose
 
@@ -186,7 +186,7 @@ Aggregator → match rule_id citations across A/B/C:
 ❌ 1 big prompt ทำทุกอย่าง (Phase NATAL + Phase TRANSIT + PROSE รวมกัน)
 ❌ Let LLM recall planet positions/sign rulers จาก training (อาจผิด — Western contaminate)
 ❌ Predict outcome ที่ natal ไม่ support เพราะ "LLM บอกว่ามี" (Rule #1 violation)
-❌ ใช้ Western terms (Cardinal/Fixed/Mutable, "House of Career") — สุริยยาตร์เท่านั้น
+❌ ใช้ Western terms (Cardinal/Fixed/Mutable, "House of Career") — TALS เท่านั้น
 
 ---
 

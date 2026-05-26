@@ -947,3 +947,70 @@ Authoritative for:
 
 Pending user verification:
 - rajayok per-planet (8 values) — only ศุกร์ inferable from chart screenshot
+
+## 2026-05-26T22:00 — 📖 TALS terminology established (supersedes "สุริยยาตร์" generic usage)
+
+**User-verified attribution + naming standardization:**
+
+### TALS = ระบบที่เราใช้
+
+- **Full name:** Thai Astrology Logical Style (โหราศาสตร์ไทยแนวตรรกะ)
+- **Founder:** ยืนยง นาวาสมุทร · สมญานาม **แดง เมืองตราด**
+- **Reference text:** "โหราศาสตร์ไทยแนวตรรกะ" (= 100CH ในระบบเรา)
+- **Significance:** ครั้งแรกที่นำตรรกศาสตร์มาใช้กับโหราศาสตร์ไทย — ตัดสินกฎเกณฑ์ที่ไม่ชัดเจน/คลุมเครือ
+
+### Terminology cleanup — supersedes prior usage
+
+**Previous (incorrect):** ใช้ "สุริยยาตร์" เรียกระบบทั้งหมด (prediction + calculation)
+**Current (correct):**
+- **TALS** = ระบบพยากรณ์ (interpretation framework)
+- **สุริยยาตร์** = ระบบคำนวณตำแหน่งดาว (calculation engine only) — backbone ของ TALS
+
+### LOG entries above ที่ใช้คำ "สุริยยาตร์" — ตีความใหม่
+
+| Past usage context | New interpretation |
+|---|---|
+| "ตำราสุริยยาตร์" (e.g., L26 sunrise=06:00) | คงไว้ — context = calculation ✓ |
+| "ธรรมเนียมสุริยยาตร์" (e.g., L158, L235) | อ่านเป็น "ธรรมเนียม TALS" |
+| "หลักสุริยยาตร์" (e.g., L49) | อ่านเป็น "หลัก TALS" |
+| "ใช้สุริยยาตร์ logic" (e.g., L683) | อ่านเป็น "ใช้ TALS logic" |
+| "สุริยยาตร์ไม่ใช้ position concepts สำหรับเกตุ/มฤตยู" (L486) | อ่านเป็น "TALS ไม่ใช้..." |
+
+**ห้ามแก้ entries เก่า** — append-only rule ใช้บังคับ. การตีความข้างบนคือ rule สำหรับการอ่าน LOG ในอนาคต
+
+### Scope ของ TALS
+
+ครอบ : มาตรฐานดาว · interpretation framework · prediction rules + wordings
+ไม่ครอบ: ฤกษ์ · ห้วง · นวางค์ · ตรียางค์ · ลูกพิษ · ดาวพักร/มณฑ์/เสริด
+
+### Files updated (Phase 1 — BIBLE scope)
+
+- ✅ `CLAUDE.md` — เพิ่ม "📖 TALS Foundational Attribution" section
+- ✅ `handoffs/bible_memory/INDEX.md` — TALS attribution box at top
+- ✅ `handoffs/bible_memory/VOCAB.md` — header + callout TALS
+- ✅ `handoffs/bible_memory/PROMPTS.md` — extraction prompt template
+- ✅ `handoffs/bible_memory/LLM_CONTROL.md` — purpose + tone + anti-patterns
+- ✅ `v3/master_dict_meanings.json` — _meta.system + attribution + version 1.4.1-tals
+- ✅ `v3/quality_maps.json` — _meta.system + attribution + version 1.1
+
+### Files pending (Phase 2 — cross-project notes)
+
+- ⏸ `manifest.json` — HORATAD scope
+- ⏸ `README.md` — public-facing, BIG/HORATAD decision
+- ⏸ `v3/typhoon.js`, `v3/v3tab.js` — HORATAD scope
+- ⏸ `docs/HORATAD.md` — HORATAD scope
+- ⏸ `ECOSYSTEM.md` — BIG scope
+- ⏸ `source/README.md`, `handoffs/BIG_*` — BIG scope
+- ⏸ horatad.com "เกี่ยวกับ" page credit — HORATAD UI update
+- ⏸ File renaming strategy (kb_*.json → tals_kb_*.json?) — BIG decision
+
+### Why NOT touch archive + KB rule content
+
+- `handoffs/archive/*` — historical immutable record
+- `workers/chapter_texts.json` — raw source from book (preserve)
+- KB rule content (kb_v24-3.json wordings/conditions) — extracted text, just add system tag in _meta
+
+### Public-facing strategy (per user)
+1. ใช้ "TALS" internally + ในไฟล์ที่ developer เห็น
+2. Public app (horatad.com "เกี่ยวกับ" page) → ใส่ credit ผู้ก่อตั้ง
+3. File renaming → ให้ BIG พิจารณา cross-project impact

@@ -1,6 +1,26 @@
-# BIBLE Memory — INDEX
-# อ่านไฟล์นี้ก่อนทุก BIBLE session (แทน BIBLE_memory.md เดิม)
+# BIBLE Memory — INDEX (TALS reference)
+# อ่านไฟล์นี้ก่อนทุก BIBLE session
 # Last updated: 2026-05-26
+
+═══════════════════════════════════════════════════════════════════════
+📖 TALS — Foundational Attribution
+═══════════════════════════════════════════════════════════════════════
+
+  System    : TALS = Thai Astrology Logical Style (โหราศาสตร์ไทยแนวตรรกะ)
+  Founder   : ยืนยง นาวาสมุทร · สมญานาม แดง เมืองตราด
+  Reference : "โหราศาสตร์ไทยแนวตรรกะ" (= 100CH ในระบบเรา)
+  Innovation: ครั้งแรกที่นำตรรกศาสตร์มาใช้กับโหราศาสตร์ไทย
+              ตัดสินกฎเกณฑ์ที่ไม่ชัดเจน/คลุมเครือ ให้เป็นระบบที่ตรวจสอบได้
+
+  TALS vs สุริยยาตร์:
+    TALS       = ระบบพยากรณ์ (interpretation framework) ที่เราใช้
+    สุริยยาตร์ = ระบบคำนวณตำแหน่งดาว (calculation only) — ใช้เป็น backbone
+                 ของ TALS ไม่ใช่ระบบพยากรณ์
+
+  ขอบเขต TALS (excluded):
+    ฤกษ์ · ห้วง · นวางค์ · ตรียางค์ · ลูกพิษ · ดาวพักร/มณฑ์/เสริด
+
+═══════════════════════════════════════════════════════════════════════
 
 ═══════════════════════════════════════════════════════════════════════
 🔴🔴🔴 FOUNDATIONAL RULE #1 — อ่านก่อนทุกอย่าง 🔴🔴🔴
@@ -57,7 +77,7 @@ Step 3: NEVER predict outcome ที่ไม่อยู่ใน natal possibi
 
 ## 📌 MUST READ FIRST — BIBLE Architecture (2026-05-25, current = v2 TRIANGULATION)
 
-**Mission:** BIBLE = preserve essence ของธรรมเนียมสุริยยาตร์ + ให้ traceable provenance + ทำให้ user verify ง่าย
+**Mission:** BIBLE = preserve essence ของธรรมเนียม TALS + ให้ traceable provenance + ทำให้ user verify ง่าย
 
 **Latest architecture decision:** **TRIANGULATION** (LOG entry "2026-05-25 — 📌 PINNED v2")
 - Ground truth = ธรรมเนียม (ไม่ใช่ 100CH verbatim เท่านั้น)
@@ -113,7 +133,7 @@ Step 3: NEVER predict outcome ที่ไม่อยู่ใน natal possibi
 
 ## Q&A Intelligent Unit — โหราศาสตร์ไทย
 
-Claude ใน BIBLE session ทำหน้าที่เป็น **intelligent unit** ตอบคำถามโหราศาสตร์ไทย (สุริยยาตร์)  
+Claude ใน BIBLE session ทำหน้าที่เป็น **intelligent unit** ตอบคำถามโหราศาสตร์ไทยแนวตรรกะ (TALS)  
 วัตถุประสงค์: ปรับปรุง KB + Master Dictionary ผ่าน Q&A
 
 ### ขีดความสามารถ
@@ -155,7 +175,7 @@ Confidence: สูง / กลาง / ต่ำ
 
 ### สิ่งที่ต้องระวัง
 - ไม่มีดวงชาตาจริง → ตอบได้แค่ general principle
-- ตำราสุริยยาตร์เท่านั้น — ห้ามปนกับ Western/Vedic
+- TALS เท่านั้น — ห้ามปนกับ Western/Vedic หรือโหราศาสตร์ไทยสำนักอื่น
 - ถ้าไม่แน่ใจ → บอก confidence ต่ำ + ขอดูดวงชาตาจริง
 
 ---

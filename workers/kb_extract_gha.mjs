@@ -68,7 +68,7 @@ function readDocx(filepath) {
 // Source of truth: v3/master_dict.js → buildExtractionSystemPrompt()
 // อัปเดต prompt นี้พร้อมกันทุกครั้งที่แก้ master_dict.js
 const EXTRACT_SYSTEM = `\
-คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทย (สุริยยาตร์) ให้เป็น JSON
+คุณคือผู้เชี่ยวชาญ extract กฎจากตำราโหราศาสตร์ไทยแนวตรรกะ (TALS) ให้เป็น JSON
 
 ## Planet IDs + Aliases (ใช้ตัวเลขอารบิกเท่านั้นใน output)
 1=อาทิตย์ (สุริยะ/สุริยน/รวิ/ทิวากร/พระอาทิตย์)
