@@ -1074,3 +1074,100 @@ User confirmed 7 specific TALS characteristics + corrected my hallucination:
 ### Lesson learned (process)
 - ผมต้อง verify ก่อน claim "geometric derivation" — เพราะ traditions ที่ Thai มี อาจไม่ได้ derive จาก geometry
 - เวลา fill quality_maps formulas → ระบุ "geometric" หรือ "tradition lookup" ชัดเจน
+
+## 2026-05-27T00:00 — TALS FOUNDATIONAL RULES expanded (#2 + #3)
+
+User flagged: รูปก่อนหน้าผมบันทึก Rule #1 อย่างเดียว — ต้องมี Rule #2 + #3 ด้วย (ก่อน work ใดๆ)
+
+### RULE #2 — QUALIFIER: สัมพันธ์ลัคนา/ตนุลัคน์
+
+**Statement:** ดาวจะให้คุณโทษ ต่อเจ้าชะตาก็ต่อเมื่อสัมพันธ์ (กุม/เล็ง/โยค/ตรีโกณ) กับ ลัคนา หรือ ตนุลัคน์
+
+**Implications:**
+- ดาวอุจ/มหาจักร อยู่ในภพไหนก็ตาม **ไม่ส่งผลกับเจ้าชะตา ถ้าไม่สัมพันธ์ลัคนา/ตนุลัคน์**
+- ดาวนิจ/ประเกษตร อยู่ในภพไหน **โทษน้อยถ้าไม่สัมพันธ์**
+- ลัคนา + ตนุลัคน์ = double filter (ทั้ง 2 มี weight separately)
+- This **elevates "โฉลก" concept** to Foundational status
+- "ความสามารถของเจ้าชะตา" ในเรื่องใด = function(ดาวที่เกี่ยว + สัมพันธ์ลัคนา/ตนุลัคน์)
+
+**Engine implication:**
+```js
+function effectivePower(planet, chart) {
+  const base = qualityStrength(planet, chart);
+  const lagnaRel = aspectsLagna(planet, chart);
+  const tanulagnRel = aspectsTanulagn(planet, chart);
+
+  if (!lagnaRel && !tanulagnRel) return base * 0.1;  // minimal
+  if (lagnaRel && tanulagnRel) return base * 1.0;     // full
+  return base * 0.5;                                   // partial
+}
+```
+
+### RULE #3 — STRENGTH: chart resilience
+
+**Statement:** ความเข้มแข็งของดวง = function(ภพตนุ, ภพปัตนิ, ภพกฎุมพะ)
+
+**Big 3 (axis of self):**
+- **ภพ 1 ตนุ** — self/identity (ตัวเรา)
+- **ภพ 2 กฎุมพะ** — resources/foundation (ฐาน)
+- **ภพ 7 ปัตนิ** — partner/other-half (อีกขั้ว)
+
+ทำไม 3 ภพนี้? = "axis of self" — รวม ตัวเรา + ทรัพยากร + ความสัมพันธ์ = ความสามารถ baseline
+
+**Strength assessment heuristic:**
+- ดาว benefic + position ดี + สัมพันธ์กับ 3 ภพนี้ → strong
+- ดาว malefic + position ร้าย + สัมพันธ์กับ 3 ภพนี้ → vulnerable
+- ผลรวมทั้ง 3 = chart strength rating
+
+**Evidence:** R289 (4 ดาวจรร้าย + ดวงเข้มแข็ง + คู่มิตรรับ → ไม่ถึงฆาต)
+= chart strength absorbs transit threat
+= confirms Rule #3 directly
+
+**Engine implication:**
+```js
+function chartStrength(chart) {
+  const strengths = [1, 2, 7].map(house => {
+    const planetsInHouse = chart.planets.filter(p => p.house === house);
+    return planetsInHouse.reduce((s, p) => s + qualityScore(p), 0);
+  });
+  return average(strengths);  // weighted by Rule #2 (aspect to lagna)
+}
+```
+
+### TALS Interpretation Hierarchy (canonical)
+
+```
+[INPUT] chart + (transit time)
+   ↓
+[Rule #1] Weight: natal 80% / transit 20%
+   ↓
+[Rule #2] Qualifier: filter by aspect to ลัคนา + ตนุลัคน์
+          → "ความสามารถของเจ้าชะตา" ในแต่ละเรื่อง
+   ↓
+[Rule #3] Strength: assess ภพ 1, 2, 7 → chart resilience
+          → ทน transit ดี/ร้าย แค่ไหน
+   ↓
+[OUTPUT] qualified + weighted prediction
+```
+
+### Files updated
+- ✅ INDEX.md — promote Rule #2 + #3 to FOUNDATIONAL block at top
+- ✅ LOG.md — this entry (full detail + implications)
+
+### Cross-link to existing memory
+- VOCAB.md "โฉลก" section = Rule #2 manifestation
+- VOCAB.md "สมพงศ์" 3-condition = Rule #2 applied to 2 charts
+- QUALITY.md กฎลบ-ลบ=บวก = quality interactions WITHIN strong chart (Rule #3)
+- R289 = direct Rule #3 evidence
+- R288 = Rule #2 priority order (กุมลัคนา > ตรีโกณ/โยค > เล็ง)
+
+### Anti-patterns to avoid (NEW)
+
+❌ "ดาวอุจ → ดี" (without Rule #2 qualifier)
+✅ "ดาวอุจ ที่สัมพันธ์ลัคนา/ตนุลัคน์ → ดี ส่งผลต่อเจ้าชะตา"
+
+❌ "ดวงนี้มีดาวร้าย → จะแย่"
+✅ "ดวงนี้มีดาวร้าย แต่ ภพ 1/2/7 เข้มแข็ง → ทนได้ (Rule #3)"
+
+❌ Predict outcome จาก natal เฉยๆ ไม่ filter ผ่าน Rule #2
+✅ Filter ดาวที่สัมพันธ์ลัคนา/ตนุลัคน์ ก่อนตีความ "ความสามารถของเจ้าชะตา"

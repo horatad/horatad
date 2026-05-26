@@ -23,27 +23,47 @@
 ═══════════════════════════════════════════════════════════════════════
 
 ═══════════════════════════════════════════════════════════════════════
-🔴🔴🔴 FOUNDATIONAL RULE #1 — อ่านก่อนทุกอย่าง 🔴🔴🔴
+🔴🔴🔴 TALS FOUNDATIONAL RULES — อ่านก่อนทุกอย่าง 🔴🔴🔴
 ═══════════════════════════════════════════════════════════════════════
 
-  พื้นดวง (natal) = 80% ของคำพยากรณ์ทั้งหมด
-  ดวงจร (transit) = stimulator เท่านั้น — activate สิ่งที่ natal บอกไว้แล้ว
+  ─────  RULE #1  ─────  WEIGHT: natal vs transit  ─────
+  พื้นดวง (natal) = 80% ของคำพยากรณ์
+  ดวงจร (transit) = stimulator (~20%) — activate สิ่งที่ natal บอกไว้แล้ว
   ดวงจรไม่สร้างผลที่ natal ไม่มี
 
-  ⇒ ก่อนเขียน wording / extract rule / score POC / implement engine
-     ใดๆ ก็ตาม — RESOLVE NATAL BASE ก่อนเสมอ
-  ⇒ TRANSIT_NATAL rule ที่ไม่มี natal precondition = invalid
+  Corollary: ดวงคล้าย → outcome TYPE เดียวกัน, ต่างที่ "ดาวจร"
+  ดาวจรกำหนด: ผลชัด/ไม่ชัด · ผลมาก/น้อย · timing · frequency
 
-  Corollary (ดวงคล้ายกัน):
-  • 2 คนที่ natal คล้ายกัน → outcome TYPE เดียวกัน (เพราะ natal เหมือน)
-  • สิ่งที่ทำให้ต่างกันคือ "ดาวจร (transit)" — ไม่ใช่ปัจจัยอื่น
-  • ดาวจร กำหนด: clarity (ผลชัด/ไม่ชัด) · magnitude (ผลมาก/น้อย) · timing · frequency
-  • ผล TYPE ไม่เปลี่ยน — เปลี่ยนแค่ขนาด/ความชัด/เวลา
+  ─────  RULE #2  ─────  QUALIFIER: สัมพันธ์ลัคนา/ตนุลัคน์  ─────
+  ดาวจะ "ให้คุณโทษ" ต่อเจ้าชะตาก็ต่อเมื่อ
+  สัมพันธ์ (aspect: กุม/เล็ง/โยค/ตรีโกณ) กับ ลัคนา หรือ ตนุลัคน์
+
+  • สัมพันธ์ทั้ง 2 → full effect
+  • สัมพันธ์ตัวเดียว → partial effect
+  • ไม่สัมพันธ์ → minimal effect (แม้ดาวอยู่อุจ/มหาจักร ก็ไม่ส่งผลกับเจ้าชะตา)
+
+  → กำหนด "ความสามารถของเจ้าชะตา" ในแต่ละเรื่อง
+  → explains ถูกโฉลก (relation present) vs ไม่ถูกโฉลก (no relation)
+
+  ─────  RULE #3  ─────  STRENGTH: chart resilience  ─────
+  ความเข้มแข็งของดวง = function(ภพตนุ, ภพปัตนิ, ภพกฎุมพะ)
+
+  • ภพ 1 ตนุ      = ตัวตน · self
+  • ภพ 2 กฎุมพะ   = ทรัพยากร · resources/foundation
+  • ภพ 7 ปัตนิ    = อีกขั้ว · partner/other-half
+
+  → 3 ภพแข็ง = ดวงเข้มแข็ง → ทน transit ร้าย (R289 evidence)
+  → 3 ภพอ่อน = ดวงอ่อน → transit เล็กน้อยก็กระทบ
 
 ═══════════════════════════════════════════════════════════════════════
 
-(Detail + engine flow + validation rules + evidence — ใน PINNED v3 ด้านล่าง
- หรือ LOG.md section "2026-05-26T00:00")
+Interpretation flow (combining 3 rules):
+  Input chart → [Rule #1] weight 80/20
+              → [Rule #2] filter ดาวสัมพันธ์ลัคนา/ตนุลัคน์
+              → [Rule #3] assess strength of ภพ 1/2/7
+              → output: qualified, weighted prediction
+
+(Detail + engine flow + validation + evidence — ใน LOG.md PINNED entries)
 
 ---
 
