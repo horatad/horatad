@@ -73,7 +73,7 @@
       "time_profile": "Moderate and steady",
       "lop_applicable": false,
       "tradition_note": "⚠ Thai tradition lookup ONLY — ไม่มี geometric formula. ห้าม conflate กับ Vedic 'Raja Yoga' (คนละ concept คนละตำแหน่งดาว คนละความหมาย)",
-      "per_planet_values": "null ทั้งหมด — รอ user verify จาก 100CH"
+      "per_planet_values": "see tals_planets.json · rajayok field per planet (1-8 verified)"
     },
     "เทวีโชค": {
       "strength_pct": 40,
