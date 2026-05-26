@@ -1384,3 +1384,92 @@ To update:
 - handoffs/bible_memory/QUALITY.md — add ch025 cross-class comparison + time phase
 - v3/master_dict_meanings.json — fix aspect_strengths to match ch025 (100/80/60/50)
 - v3/quality_maps.json — note ch025 aspect canonical
+
+---
+
+## 2026-05-27T10:00 — master_dict v1.5.0: PINNED v4 corrections applied
+
+สิ่งที่แก้ใน `v3/master_dict_meanings.json` (v1.4.0 → v1.5.0):
+
+1. **aspect_strengths** — แก้ค่าผิด (100/75/50/25) → ถูก (100/80/60/50) per ch025
+   - เพิ่ม `_corrected: true`, `_source: "ch025 user-verified"`, `_cross_check: "engine.js matches"`
+   - เพิ่ม YOK_FRONT / YOK_BACK แยก (ทั้งคู่ = 60%) แทน YOK รวม
+   - NONE_ASPECT = อัจฉริยภาพภายใน (hidden reserve, ch020 step 7)
+
+2. **qualities** — เพิ่ม field ใหม่ทุก quality:
+   - `lop_lop_applicable: true/false` — กฎลบ-ลบ=บวก ใช้ได้กับ: เกษตร/ประเกษตร/อุจ/นิจ เท่านั้น
+   - `has_quality_positions: true/false` — เกตุ/มฤตยู = false (ไม่มี อุจ/นิจ/มหาจักร)
+
+3. **planets** — เพิ่ม `speed_per_sign` ทุกดาว (วัน/ราศี reference)
+   - แก้ มฤตยู keywords: ฉับพลัน/ไม่คาดคิด (Uranus) — ห้ามใช้ "ความตาย" (ของ เสาร์ ไม่ใช่ มฤตยู)
+
+4. **houses** — เพิ่ม `primary_houses` per domain mapping
+
+5. **special_configs** — เพิ่ม foundational_rule_1 ถึง foundational_rule_5 (ครบทุก rule)
+
+6. **lagna_concepts** — เพิ่ม:
+   - สมพงศ์ (3 conditions ครบ)
+   - เรือนนอก / เรือนใน (planet concept ไม่ใช่ house)
+
+---
+
+## 2026-05-27T10:30 — Files from PINNED v4 "Files affected" — DONE
+
+ทุก file ที่ PINNED v4 ระบุว่าต้องแก้ → แก้ครบแล้ว:
+
+| ไฟล์ | สิ่งที่แก้ |
+|---|---|
+| `handoffs/bible_memory/INDEX.md` | Interpretation flow: "ภพ 1/2/7" → "chart_strength(ตนุลัคน์,กุมลัคนา)" · เพิ่ม Rule #4/#5 ใน flow · master_dict version → v1.5.0 |
+| `handoffs/bible_memory/VOCAB.md` | อัจฉริยภาพภายใน: corrected definition (ดาวที่ไม่สัมพันธ์ลัคนา = hidden reserve, ch020 step 7) · TALS canonical 10 steps เพิ่ม |
+| `handoffs/bible_memory/QUALITY.md` | aspect weights FIXED ✅ v1.5.0 · ดาวเด่น cross-class table · Quality TIME PROFILE · anti-pattern section |
+| `docs/decisions/bible/DR-003` | Rule #3 corrected (4 patterns formula) · เพิ่ม Rule #4 + Rule #5 · anti-patterns อัปเดตครบ |
+
+---
+
+## 2026-05-27T11:00 — Memory improvement: 5 techniques — effectiveness audit
+
+**ผลการวิเคราะห์จริง (ไม่ใช่แค่ plan):**
+
+| # | เทคนิค | ได้ผลจริง? | เหตุผล |
+|---|---|---|---|
+| 1 | Slash commands (bible-recall/qa/status) | ⚠️ ต่ำ | Claude trigger ไม่ได้ — ต้อง user พิมพ์ ไม่มีใคร run ตลอด session |
+| 2 | Nested `bible_memory/CLAUDE.md` | ✅ สูง | load ผ่าน system-reminder อัตโนมัติ ทุก session |
+| 3 | `_index.json` (machine-readable) | ⚠️ ต่ำ | ไฟล์มีแต่ไม่ถูก query — Claude อ่าน .md โดยตรงแทน |
+| 4 | Decision Records (DR-001/002/003) | ❌ ต่ำมาก | DR-003 ผิดทั้ง session — Claude ไม่ได้ consult เชิงรุก |
+| 5 | Anti-pattern hook (pre-edit-memory.sh) | ✅ สูง | structural guardrail — บล็อกจริง ไม่ต้องพึ่ง memory |
+
+**Root insight:** เทคนิคที่ทำงาน passive/structural (2, 5) = effective
+เทคนิคที่ต้อง Claude กระทำ (1, 3, 4) = ไม่ทน compaction
+
+**Fix ที่เพิ่ม:**
+- `session-start.sh` → BIBLE MEMORY GATE (⛔ แสดงทุก session start + last LOG snippet)
+- `.claude/commands/bible-start.md` → `/bible-start` command: bootstrap ทั้งหมดในทีเดียว
+
+**Process lesson:** ระบบที่ต้องการ Claude "จำ" ว่าต้องทำอะไร = ล้มเหลวหลัง compaction
+ระบบที่ทำงานได้แม้ Claude "ลืม" = structural hook / auto-load file → เท่านั้นที่เชื่อถือได้
+
+---
+
+## 2026-05-27T12:00 — Q&A: วาสนา (fate/destiny in TALS)
+
+**Source:** ch011, ch016, ch036, ch038, ch051 (verbatim search)
+
+**คำนิยามจากตำรา:**
+
+| บท | quote สำคัญ |
+|---|---|
+| ch011 | "ดวงชาตาคือแผนที่ชีวิต ว่าจะมีบุญวาสนา จะรุ่งโรจน์หรือตกต่ำ เพียงใด" |
+| ch016 | "วาสนาสูงต่ำเพียงใด" — อ่านจากภพตนุ |
+| ch038 | "คนที่มาเจอผมและเชื่อผม ก็เป็นวาสนาประการที่หนึ่ง" (author personal) |
+
+**การเชื่อมกับ 5 Foundational Rules:**
+- Rule #1 (natal 80%) = วาสนา (พื้นดวง) ครองชีวิต — ดาวจรแค่ activate timing
+- Rule #3 (chart_strength) = วัดระดับ วาสนาสูงต่ำ ผ่าน ตนุลัคน์ + กุมลัคนา
+- ดวงจรไม่สร้างผลที่วาสนาไม่มี = core logic ของ Rule #1
+
+**TALS vs ระบบอื่น:**
+- TALS อ่านวาสนา — ไม่ pretend เปลี่ยนวาสนาได้
+- ฤกษ์ = พยายามหลีกวาสนา → TALS ตัดทิ้ง (excluded by design)
+
+**KB gap:** ไม่มี rule ใน kb_v24-3.json define วาสนา explicitly
+→ Candidate rule: "ดวงชาตา = แผนที่วาสนา — natal ครอง 80%, ดาวจร = timing ภายในวาสนา" (PRIMARY, ch011+ch016)
