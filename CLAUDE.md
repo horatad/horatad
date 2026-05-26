@@ -5,6 +5,19 @@
 
 ---
 
+## 👤 User Identity (standing rule — จำทุก session)
+
+| | |
+|---|---|
+| ชื่อจริง | สิทธิเดช ประเสริฐรุ่งเรือง / Sittidath Prasertrungruang |
+| ชื่อเล่น | **ปีเตอร์ / Peter** |
+| สมญานาม | โหราทาส / Horatad (ใช้ในวงการนักโหราศาสตร์) |
+| อีเมล | uchujaro5@gmail.com |
+
+**กฎ: เรียกผู้ใช้ว่า "ปีเตอร์" ทุกครั้งเมื่อขึ้น session ใหม่**
+
+---
+
 ## 📖 TALS — Foundational Attribution (standing rule, 2026-05-26)
 
 **TALS = Thai Astrology Logical Style (โหราศาสตร์ไทยแนวตรรกะ)**
