@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TALS Master Dictionary</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Sarabun', sans-serif; background: #f5f5f5; color: #222; }
+header { background: #1a237e; color: #fff; padding: 16px 24px; }
+header h1 { font-size: 1.2rem; }
+header p { font-size: 0.8rem; opacity: .7; margin-top: 4px; }
+.tabs { display: flex; gap: 4px; background: #283593; padding: 8px 24px 0; }
+.tab { padding: 8px 18px; cursor: pointer; border-radius: 6px 6px 0 0;
+       background: #3949ab; color: #fff; font-size: 0.85rem; border: none; }
+.tab.active { background: #fff; color: #1a237e; font-weight: bold; }
+.tab-content { display: none; padding: 20px 24px; }
+.tab-content.active { display: block; }
+.toolbar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; }
+.toolbar button { padding: 6px 14px; border: none; border-radius: 4px;
+  background: #3949ab; color: #fff; cursor: pointer; font-size: 0.8rem; }
+.toolbar button:hover { background: #1a237e; }
+.toolbar span { font-size: 0.75rem; color: #666; }
+table { width: 100%; border-collapse: collapse; background: #fff;
+        font-size: 0.78rem; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+th { background: #e8eaf6; color: #1a237e; padding: 8px 10px;
+     text-align: left; border: 1px solid #c5cae9; white-space: nowrap; }
+td { padding: 6px 10px; border: 1px solid #e0e0e0; vertical-align: top; }
+tr:nth-child(even) td { background: #fafafa; }
+tr:hover td { background: #e8eaf6; }
+.pill { display: inline-block; background: #e8eaf6; color: #283593;
+        border-radius: 10px; padding: 1px 7px; font-size: 0.7rem; margin: 1px; }
+.pos { color: #2e7d32; font-weight: bold; }
+.neg { color: #c62828; font-weight: bold; }
+.na { color: #999; font-style: italic; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 3px;
+         font-size: 0.7rem; font-weight: bold; }
+.badge-plus { background: #c8e6c9; color: #2e7d32; }
+.badge-minus { background: #ffcdd2; color: #c62828; }
+.badge-neutral { background: #f0f0f0; color: #666; }
+</style>
+</head>
+<body>
+<header>
+  <h1>TALS Master Dictionary — โหราทาส</h1>
+  <p id="meta-info">กำลังโหลด...</p>
+</header>
+<div class="tabs">
+  <button class="tab active" onclick="showTab('planets')">🪐 ดาว (Planets)</button>
+  <button class="tab" onclick="showTab('signs')">♈ ราศี (Signs)</button>
+  <button class="tab" onclick="showTab('houses')">🏠 ภพ (Houses)</button>
+  <button class="tab" onclick="showTab('qualities')">⭐ มาตรฐาน (Qualities)</button>
+</div>
+
+<div id="tab-planets" class="tab-content active">
+  <div class="toolbar">
+    <button onclick="copyTSV('planets-table')">📋 Copy TSV → Paste to Google Sheets</button>
+    <span>คัดลอกแล้ว paste ใน Google Sheets (Tab 1: ดาว)</span>
+  </div>
+  <div id="planets-table"></div>
+</div>
+
+<div id="tab-signs" class="tab-content">
+  <div class="toolbar">
+    <button onclick="copyTSV('signs-table')">📋 Copy TSV → Paste to Google Sheets</button>
+  </div>
+  <div id="signs-table"></div>
+</div>
+
+<div id="tab-houses" class="tab-content">
+  <div class="toolbar">
+    <button onclick="copyTSV('houses-table')">📋 Copy TSV → Paste to Google Sheets</button>
+  </div>
+  <div id="houses-table"></div>
+</div>
+
+<div id="tab-qualities" class="tab-content">
+  <div class="toolbar">
+    <button onclick="copyTSV('qualities-table')">📋 Copy TSV → Paste to Google Sheets</button>
+  </div>
+  <div id="qualities-table"></div>
+</div>
+
+<script>
+const BASE = '../v3/';
+let data = {};
+
+async function loadAll() {
+  const files = ['tals_planets','tals_signs','tals_houses','tals_quality_rules'];
+  await Promise.all(files.map(async f => {
+    const r = await fetch(BASE + f + '.json');
+    data[f] = await r.json();
+  }));
+  document.getElementById('meta-info').textContent =
+    'schema v' + data.tals_planets._meta.schema_version +
+    ' · verified: ' + (data.tals_planets._meta.verified || '') +
+    ' · TALS (ยืนยง นาวาสมุทร / แดง เมืองตราด)';
+  renderAll();
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function pills(arr) {
+  if (!arr || !arr.length) return '<span class="na">—</span>';
+  return arr.map(x => `<span class="pill">${x}</span>`).join('');
+}
+function signName(id) {
+  const names = ['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
+  return id !== null && id !== undefined ? names[id] ?? id : '—';
+}
+
+function renderPlanets() {
+  const planets = data.tals_planets.planets;
+  const cols = ['id','ชื่อ','en','ธาตุ','สภาพ','อุจ','เกษตร','มหาจักร','ราชาโชค','ตนุเศษ','ตนุลัคน์','แทน','คำบวก','คำลบ'];
+  let h = `<table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>`;
+  for (const [id, p] of Object.entries(planets)) {
+    const qp = p.has_quality_positions;
+    h += `<tr>
+      <td>${p.id}</td>
+      <td><b>${p.name}</b><br><small>${p.abbrev}</small></td>
+      <td>${p.name_en||'—'}</td>
+      <td>${p.element||'—'}</td>
+      <td>${p.nature||'—'}</td>
+      <td>${qp ? `<b>${signName(p.uchcha)}</b>` : '<span class="na">ไม่มี</span>'}</td>
+      <td>${qp ? pills(p.kaset?.map(signName)) : '<span class="na">ไม่มี</span>'}</td>
+      <td>${qp ? `<b>${signName(p.mahachak)}</b>` : '<span class="na">ไม่มี</span>'}</td>
+      <td>${qp ? `<b>${p.rajayok||'—'}</b>` : '<span class="na">ไม่มี</span>'}</td>
+      <td>${p.tanusesh_trait ? p.tanusesh_trait.split(' ').slice(0,4).join(' ')+'…' : '<span class="na">—</span>'}</td>
+      <td>${p.tanulagn_inner ? p.tanulagn_inner.split(' ').slice(0,4).join(' ')+'…' : '<span class="na">—</span>'}</td>
+      <td>${pills(p.represents?.slice(0,3))}</td>
+      <td>${pills(p.positive_keywords?.slice(0,3))}</td>
+      <td>${pills(p.negative_keywords?.slice(0,3))}</td>
+    </tr>`;
+  }
+  h += '</tbody></table>';
+  document.getElementById('planets-table').innerHTML = h;
+}
+
+function renderSigns() {
+  const signs = data.tals_signs.signs;
+  let h = `<table><thead><tr><th>id</th><th>ราศี</th><th>EN</th><th>เจ้าเรือน</th><th>ธาตุ</th><th>phase</th><th>สภาพ</th><th>แทน</th><th>keywords</th></tr></thead><tbody>`;
+  for (const [id, s] of Object.entries(signs)) {
+    const pname = data.tals_planets?.planets?.[s.ruler]?.name || s.ruler;
+    h += `<tr>
+      <td>${s.id}</td><td><b>${s.name}</b></td><td>${s.name_en||'—'}</td>
+      <td>${pname}</td><td>${s.element||'—'}</td><td>${s.element_phase||'—'}</td>
+      <td>${s.nature||'—'}</td>
+      <td>${pills(s.represents?.slice(0,3))}</td>
+      <td>${pills(s.keywords?.slice(0,4))}</td>
+    </tr>`;
+  }
+  h += '</tbody></table>';
+  document.getElementById('signs-table').innerHTML = h;
+}
+
+function renderHouses() {
+  const houses = data.tals_houses.houses;
+  let h = `<table><thead><tr><th>ภพ</th><th>ชื่อ</th><th>domain</th><th>keywords</th></tr></thead><tbody>`;
+  for (const [id, ho] of Object.entries(houses)) {
+    h += `<tr><td>${ho.id}</td><td><b>${ho.name}</b></td><td>${ho.domain||'—'}</td><td>${pills(ho.keywords)}</td></tr>`;
+  }
+  h += '</tbody></table>';
+  document.getElementById('houses-table').innerHTML = h;
+}
+
+function renderQualities() {
+  const q = data.tals_quality_rules;
+  let h = `<table><thead><tr><th>มาตรฐาน</th><th>polarity</th><th>strength%</th><th>lop</th><th>คำอธิบาย</th><th>pattern</th><th>time profile</th></tr></thead><tbody>`;
+  for (const [k,v] of Object.entries(q.qualities)) {
+    if (k.startsWith('_')) continue;
+    const badge = v.polarity==='+' ? 'badge-plus' : v.polarity==='-' ? 'badge-minus' : 'badge-neutral';
+    h += `<tr>
+      <td><b>${k}</b></td>
+      <td><span class="badge ${badge}">${v.polarity||'~'}</span></td>
+      <td>${v.strength_pct !== undefined ? v.strength_pct+'%' : '—'}</td>
+      <td>${v.lop_applicable ? '✓' : '—'}</td>
+      <td>${v.description||'—'}</td>
+      <td>${v.pattern||'—'}</td>
+      <td>${v.time_profile||'—'}</td>
+    </tr>`;
+  }
+  h += '</tbody></table>';
+  // Derivation rules
+  h += '<br><b>กฎ Derive (ตรงข้าม = +6%12)</b><br>';
+  h += `<table><thead><tr><th>Primary</th><th>Derived</th><th>หมายเหตุ</th></tr></thead><tbody>`;
+  for (const dr of q.derivation_rules.pairs) {
+    h += `<tr><td>${dr.primary}</td><td>${dr.derived}</td><td>${dr.note}</td></tr>`;
+  }
+  h += '</tbody></table>';
+  // ch010
+  h += '<br><b>ch010 — กฎเล็งกัน (ลบ-ลบ=บวก)</b><br>';
+  h += `<table><thead><tr><th>Quality A เล็งกัน</th><th>กลายเป็น</th><th>Pattern</th></tr></thead><tbody>`;
+  for (const r of q.ch010_rules.opposition_flip) {
+    h += `<tr><td>${r.quality_a}</td><td>${r.flips_to}</td><td>${r.pattern}</td></tr>`;
+  }
+  h += `</tbody></table><br><small>ใช้กับ: ${q.ch010_rules.applicable_to.join(', ')} · ห้ามใช้กับ: ${q.ch010_rules.not_applicable.join(', ')}</small>`;
+  document.getElementById('qualities-table').innerHTML = h;
+}
+
+function renderAll() { renderPlanets(); renderSigns(); renderHouses(); renderQualities(); }
+
+function copyTSV(containerId) {
+  const table = document.getElementById(containerId).querySelector('table');
+  if (!table) return;
+  const rows = [...table.querySelectorAll('tr')].map(tr =>
+    [...tr.querySelectorAll('th,td')].map(td => td.innerText.replace(/\n/g,' ')).join('\t')
+  );
+  navigator.clipboard.writeText(rows.join('\n')).then(() => {
+    const btn = event.target; btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy TSV → Paste to Google Sheets', 2000);
+  });
+}
+
+loadAll();
+</script>
+</body>
+</html>

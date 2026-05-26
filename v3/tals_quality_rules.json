@@ -1,0 +1,232 @@
+{
+  "_meta": {
+    "schema_version": "2.0",
+    "file": "tals_quality_rules.json",
+    "description": "กฎมาตรฐานดาว — คำนิยาม น้ำหนัก การ derive และกฎ ch010",
+    "created": "2026-05-28",
+    "supersedes": "tals_elements.json (qualities + aspects sections)"
+  },
+  "qualities": {
+    "_note": "strength_pct คือ weight สำหรับ multi-factor model. Source: quality_maps.json + QUALITY.md (ch025 verified).",
+    "_inconsistency_pending": "มหาจักร: quality_maps=80%, QUALITY.md/ch025 says ≈ อุจ (=100%). รอ user confirm ค่าที่ถูก.",
+    "เกษตร": {
+      "strength_pct": 80,
+      "polarity": "+",
+      "description": "ดาวอยู่ในราศีที่ตนเป็นเจ้า — บ้านของตัวเอง",
+      "pattern": "มั่นคง ให้ผลช้า-เต็มบั้นปลาย",
+      "graph": "↗ เส้นตรงเอียงขึ้น",
+      "time_profile": "Slow onset, lasting (บั้นปลายชนะ)",
+      "lop_applicable": true
+    },
+    "ประเกษตร": {
+      "strength_pct": -60,
+      "polarity": "-",
+      "description": "ดาวอยู่ในราศีตรงข้ามเกษตร",
+      "pattern": "ขาดแคลน เสื่อมถอย-ตกต่ำบั้นปลาย",
+      "graph": "↘ เส้นตรงเอียงลง",
+      "time_profile": "Slow decline, worsens บั้นปลาย",
+      "lop_applicable": true
+    },
+    "อุจ": {
+      "strength_pct": 100,
+      "polarity": "+",
+      "description": "ดาวอยู่ในจุดสูงสุด exaltation",
+      "pattern": "รุ่งโรจน์ นิยม แรงสม่ำเสมอ",
+      "graph": "— สูง (เส้นนอนระดับสูง)",
+      "time_profile": "Strong and steady, but less flexible (คุยกับคนทั่วไปยาก)",
+      "lop_applicable": true
+    },
+    "นิจ": {
+      "strength_pct": -100,
+      "polarity": "-",
+      "description": "ดาวอยู่ในจุดต่ำสุด debilitation",
+      "pattern": "ด้อย ไม่ยอมรับ สม่ำเสมอ",
+      "graph": "— ต่ำ (เส้นนอนระดับต่ำ)",
+      "time_profile": "Immediate weakness, permanent low",
+      "lop_applicable": true
+    },
+    "มหาจักร": {
+      "strength_pct": 80,
+      "strength_pct_note": "⚠ PENDING: quality_maps=80%, ch025 implies ≈ อุจ (100%). รอ user confirm.",
+      "polarity": "+",
+      "description": "ดาวอยู่ในราศีมหาจักรของตนเอง (per planet table below)",
+      "pattern": "ผาดโผน รวดเร็ว ไม่สม่ำเสมอ",
+      "graph": "≈ คลื่นชีพจร",
+      "time_profile": "Fast/variable — peak then drop, more socially flexible than อุจ",
+      "lop_applicable": false
+    },
+    "จุลจักร": {
+      "strength_pct": 40,
+      "polarity": "+",
+      "description": "ดาวอยู่ในราศีตรงข้ามมหาจักร (~40% strength)",
+      "pattern": "เช่นมหาจักรแต่ ~40-60% กำลัง",
+      "time_profile": "Like มหาจักร but ~40%",
+      "lop_applicable": false
+    },
+    "ราชาโชค": {
+      "strength_pct": 60,
+      "polarity": "+",
+      "description": "ตำแหน่งพิเศษจากตำราไทย — ได้รับโดยง่าย ไม่ต้องลงแรงมาก สม่ำเสมอ",
+      "pattern": "กลาง-ดี สม่ำเสมอ ไม่ลงแรง",
+      "time_profile": "Moderate and steady",
+      "lop_applicable": false,
+      "tradition_note": "⚠ Thai tradition lookup ONLY — ไม่มี geometric formula. ห้าม conflate กับ Vedic 'Raja Yoga' (คนละ concept คนละตำแหน่งดาว คนละความหมาย)",
+      "per_planet_values": "null ทั้งหมด — รอ user verify จาก 100CH"
+    },
+    "เทวีโชค": {
+      "strength_pct": 40,
+      "polarity": "+",
+      "description": "เช่นราชาโชคแต่กำลัง ~40% (ยกเว้นกุมลัคนา ≈ ราชาโชค)",
+      "pattern": "เบากว่าราชาโชค สม่ำเสมอ",
+      "time_profile": "Moderate and steady, lighter than ราชาโชค",
+      "lop_applicable": false,
+      "derivation_pending": "engine.js implements เทวีโชค = ราชาโชค + 6 (mod 12) — geometric vs tradition ยังไม่ confirmed. ต้อง verify เมื่อได้ค่า ราชาโชค"
+    },
+    "อุจจาวิลาส": {
+      "strength_pct": 60,
+      "polarity": "+",
+      "description": "ราศีก่อนอุจ ≈ 60% — กำลังกำลังเข้าสู่จุดสูง",
+      "pattern": "สูง ลดหลั่น กำลังยังไม่เต็ม",
+      "time_profile": "Building (pre-อุจ), rising ~60%",
+      "lop_applicable": false,
+      "engine_warning": "⚠ v3/engine.js + script.js มี LABEL SWAP กับ อุจจาภิมุข — HORATAD ต้องแก้"
+    },
+    "อุจจาภิมุข": {
+      "strength_pct": 60,
+      "polarity": "+",
+      "description": "ราศีหลังอุจ ≈ 60% — ผ่านจุดสูงสุดมาแล้ว กำลังลดลง",
+      "pattern": "สูง แต่ลดลง",
+      "time_profile": "Declining (post-อุจ), falling ~60%",
+      "lop_applicable": false,
+      "engine_warning": "⚠ v3/engine.js + script.js มี LABEL SWAP กับ อุจจาวิลาส — HORATAD ต้องแก้"
+    },
+    "อนุเกษตร": {
+      "strength_pct": 50,
+      "polarity": "+",
+      "description": "ดาวอยู่ในเกษตรของคู่มิตร — ให้คุณตั้งแต่เกิดแต่ช้ากว่าเกษตร",
+      "pattern": "คล้ายเกษตรแต่ช้ากว่า ตัดสินใจไม่ได้ → ช้า",
+      "time_profile": "Delayed onset, growing slowly",
+      "lop_applicable": false,
+      "causation": "ดาวเกี่ยวข้องกับ 2 เรื่องราว (2 kasets) → ลังเล → ช้า"
+    }
+  },
+  "aspects": {
+    "_source": "ch025 (canonical) + ch009 (counting method)",
+    "_counting": "นับ inclusive จากราศีเริ่ม=1",
+    "_corrected": "2026-05-27: เดิม 100/75/50/25 → ถูก 100/80/60/60/50 per ch025",
+    "KUM": {
+      "name": "กุม",
+      "name_en": "Conjunction",
+      "count": 1,
+      "weight_pct": 100,
+      "note": "ดาวสถิตราศีเดียวกัน — กุมลัคนา = แรงที่สุด"
+    },
+    "LENG": {
+      "name": "เล็ง",
+      "name_en": "Opposition",
+      "count": 7,
+      "weight_pct": 80,
+      "note": "นับ 7 ราศี (ตรงข้าม) — ภพปัตนิ"
+    },
+    "YOK_FRONT": {
+      "name": "โยคหน้า",
+      "name_en": "Sextile (forward)",
+      "count": 3,
+      "weight_pct": 60,
+      "note": "นับ 3 ราศี — ภพสหัชชะ"
+    },
+    "YOK_BACK": {
+      "name": "โยคหลัง",
+      "name_en": "Sextile (backward)",
+      "count": 11,
+      "weight_pct": 60,
+      "note": "นับ 11 ราศี — ภพลาภะ"
+    },
+    "TRI": {
+      "name": "ตรีโกณ",
+      "name_en": "Trine",
+      "count_options": [
+        5,
+        9
+      ],
+      "weight_pct": 50,
+      "note": "นับ 5 หรือ 9 ราศี — ภพปุตตะ/ศุภะ"
+    },
+    "NONE": {
+      "name": "ไม่สัมพันธ์",
+      "name_en": "No aspect",
+      "weight_pct": 0,
+      "note": "→ อัจฉริยภาพภายใน (hidden reserve, per ch020 step 7) — NOT zero effect"
+    }
+  },
+  "derivation_rules": {
+    "opposite_formula": "(position + 6) % 12",
+    "pairs": [
+      {
+        "primary": "uchcha",
+        "derived": "nicha",
+        "note": "นิจ = อุจตรงข้าม"
+      },
+      {
+        "primary": "kaset",
+        "derived": "pra_kaset",
+        "note": "ประเกษตร = เกษตรตรงข้าม"
+      },
+      {
+        "primary": "mahachak",
+        "derived": "julachak",
+        "note": "จุลจักร = มหาจักรตรงข้าม"
+      },
+      {
+        "primary": "rajayok",
+        "derived": "thewichok",
+        "note": "เทวีโชค = ราชาโชคตรงข้าม — confirmed geometric 2026-05-28"
+      }
+    ]
+  },
+  "ch010_rules": {
+    "source": "ch010 — กฎลบ-ลบ กลายเป็นบวก / ดาวสลับเรือน",
+    "opposition_flip": [
+      {
+        "quality_a": "เกษตร",
+        "flips_to": "ประเกษตร",
+        "pattern": "ดีก่อน เสื่อมทีหลัง"
+      },
+      {
+        "quality_a": "ประเกษตร",
+        "flips_to": "เกษตร",
+        "pattern": "ไม่ดีก่อน ดีทีหลัง"
+      },
+      {
+        "quality_a": "อุจ",
+        "flips_to": "นิจ",
+        "pattern": "เร็ว อาจล้มทั้งยืน"
+      },
+      {
+        "quality_a": "นิจ",
+        "flips_to": "อุจ",
+        "pattern": "เร็วกว่าประเกษตรเล็งกัน"
+      }
+    ],
+    "applicable_to": [
+      "เกษตร",
+      "ประเกษตร",
+      "อุจ",
+      "นิจ"
+    ],
+    "not_applicable": [
+      "มหาจักร",
+      "อุจจาวิลาส",
+      "อุจจาภิมุข",
+      "ราชาโชค",
+      "เทวีโชค"
+    ],
+    "house_exchange": {
+      "name": "อนุเกษตร (สลับเรือนเกษตร)",
+      "condition": "ดาว A อยู่ในราศีเกษตรของ B และ ดาว B อยู่ในราศีเกษตรของ A",
+      "result": "ทั้งคู่ได้อนุเกษตร — เกษตรชั้น 2 ให้คุณทันทีตั้งแต่เกิด",
+      "engine_note": "checkAnokaset(pos[], p_i, p_j) ใน standards.js",
+      "three_planet_case": "ไม่ให้ความสำคัญ — ข้อมูลไม่เพียงพอ (ch010)"
+    }
+  }
+}
