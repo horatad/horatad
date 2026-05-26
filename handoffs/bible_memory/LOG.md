@@ -1931,3 +1931,153 @@ uchcha, kaset, mahachak, rajayok, notes
 ### SE Adapter (อนาคต)
 - Adapter layer บาง ไม่แก้ engine
 - degrees×60 → arc-min, reorder planets, inject lagna, KE=RA+180°
+
+## 2026-05-28T20:00 — 📌 PINNED: Keyword Taxonomy + AI-Only Ingestion Policy
+
+### 3-Source Keyword Taxonomy (user-confirmed)
+
+Master Dictionary keywords แบ่งเป็น 3 ประเภทชัดเจน:
+
+| Source tag | ชื่อ | ที่มา | ใช้ทำอะไร |
+|---|---|---|---|
+| `tals` | TALS keywords | สกัดจากตำรา 100CH โดย AI | engine rule matching · ground truth |
+| `llm` | LLM bridge keywords (คำไข) | AI-generated เพื่อเชื่อม TALS → natural language | ป้อน LLM ให้รู้จักนิยาม ผลิต wording |
+| `ntals` | Non-TALS keywords | AI-extracted จากตำราอื่น (ไม่ใช่ 100CH) | ขยายขอบเขตเรื่องราว เพราะ TALS ครอบ subset เท่านั้น |
+
+**คำอธิบายเพิ่มเติม:**
+- `tals` = verbatim/direct จากตำรา 100CH — highest authority
+- `llm` = คำที่ช่วยให้ LLM "คุย" กับ TALS concept ได้ — bridge vocabulary สำหรับ generation pipeline
+- `ntals` = ขยาย narrative scope (เช่น เพิ่มอาชีพ/สถานการณ์ที่ 100CH ไม่ได้ระบุ) — lower authority แต่มี provenance
+
+### Schema patch — keywords field (per planet / sign / house)
+
+```json
+"keywords": [
+  {"k": "บารมี",          "src": "tals",  "ref": "100CH/ch013"},
+  {"k": "ไว้ตัว",          "src": "tals",  "ref": "100CH/ch013"},
+  {"k": "ผู้นำที่มีบารมี",  "src": "llm",   "ref": "session_2026-05-28"},
+  {"k": "solar authority", "src": "ntals", "ref": "western_liz_greene", "tradition": "western"}
+]
+```
+
+- Engine ใช้ `k` เท่านั้น (flat) — filter `src` ที่ต้องการได้
+- LLM prompt ใช้ทั้ง tals + llm keywords ร่วมกัน (richer seed)
+- ntals ต้องมี `ref` ชี้แหล่งตำราเสมอ
+
+### AI-Only Ingestion Policy (ถาวร — standing rule จาก user)
+
+> "การนำเข้าข้อมูลทุกอย่างให้ทำโดย AI — กัน distortion from human error
+> large number of human experts should be less superior to a few good AI"
+
+**ความหมายใน practice:**
+
+| Layer | Ingestion method | ห้าม |
+|---|---|---|
+| `tals` keywords | Claude/AI อ่าน chapter_texts.json → สกัด verbatim | มนุษย์พิมพ์เองโดยไม่มี source quote |
+| `llm` keywords | Claude สร้างใน BIBLE session (AI-generated ระบุ ref session) | มนุษย์คิดเองแล้วพิมพ์ใส่ |
+| `ntals` keywords | AI สกัดจากตำราอื่น (ต้องระบุ ref textbook) | มนุษย์เลือกคำเองโดยไม่อิง source |
+
+**ถ้า user ต้องการเพิ่ม ntals:** trigger ให้ AI อ่านตำราปลายทาง → สกัด → propose → user approve เท่านั้น (ไม่ type เอง)
+
+**Rationale:** ป้องกัน 2 ประเภท distortion:
+1. Human selection bias — เลือกคำที่คุ้นชิน ไม่ใช่คำที่ตำราบอก
+2. Human inconsistency — คำที่คนหนึ่งใส่อาจขัดกับที่คนอื่นใส่ → AI ใช้ policy สม่ำเสมอ
+
+### ไฟล์ที่ต้องอัปเดต (pending — schema migration)
+
+- [ ] `v3/tals_planets.json` — เปลี่ยน `positive_keywords`/`negative_keywords` string array → `keywords` object array พร้อม src tag
+- [ ] `v3/tals_signs.json` — เปลี่ยน `keywords` string array → object array
+- [ ] `v3/tals_houses.json` — เปลี่ยน `keywords` string array → object array
+- [ ] `tools/tals_dict_export.html` — update render logic + embedded data
+
+### Audit ของ keywords ที่มีอยู่แล้ว (ต้อง tag ย้อนหลัง)
+
+Keywords ใน tals_planets.json ปัจจุบัน = ส่วนใหญ่เป็น mix tals+llm ยังไม่ tagged
+→ ต้อง AI audit pass: Claude อ่าน chapter_texts.json เทียบ keyword ทีละตัว → tag tals/llm
+→ สิ่งที่หาไม่เจอใน 100CH = tag llm (bridge term)
+→ สิ่งที่มาจากตำราอื่น = tag ntals + ระบุ ref
+
+### Keyword Audit — Multi-LLM Triangulation (user-confirmed)
+
+> "Claude จะ audit ได้เองว่าอันไหนมาจาก 100CH ถ้าให้ claude, gemini, typhoon, groq
+> and other coming LLM ช่วยกัน repeat reading ก็จะดีกว่า one human"
+
+**ความหมาย:** ใช้ Multi-LLM triangulation ที่ออกแบบไว้แล้วสำหรับ KB rules → apply เดิมกับ keyword audit
+
+```
+Triangulation architecture (keyword level):
+  chapter_texts.json (100CH)
+    ↓ Claude reads
+    ↓ Gemini reads (browser)
+    ↓ Typhoon reads (browser)
+    ↓ Groq reads (browser)
+  → keyword ที่หลาย LLM "เห็นว่ามาจาก textbook" = tag tals (HIGH confidence)
+  → keyword ที่ไม่มี LLM ใดเจอใน chapter = tag llm (bridge term)
+  → keyword จาก source อื่น = tag ntals + ref textbook
+```
+
+**ผลลัพธ์:** N LLMs อ่าน text เดิม → confidence level สะสม → automatic tagging ไม่ต้องพึ่ง human judgment ใดๆ
+
+**Implementation path:**
+1. Claude (this session) — initial audit pass จาก chapter_texts.json (เร็ว, ไม่สมบูรณ์)
+2. Browser-based LLMs (Groq/Typhoon modes ใน tools) — extend audit ด้วย models อื่น
+3. Auto-merge ด้วย fingerprint concept เดิม (keyword fingerprint = คำ + context ใน chapter)
+4. Output: keyword → src tag + confidence score + citation
+
+**สรุป policy:** ไม่ว่าจะเป็น `tals`, `llm`, `ntals` — ทุก keyword ต้องมี AI trail ไม่มี manual entry
+
+### Cross-link
+- เชื่อมกับ Multi-DB architecture (LOG 2026-05-28T17:xx): tals=L1, llm=bridge, ntals=L2+
+- เชื่อมกับ Ground-truth extraction architecture (LOG 2026-05-25): source_type IN_BOOK = tals
+- เชื่อมกับ Triangulation architecture (LOG 2026-05-25): FROM_LLM source = llm keywords
+- **Triangulation ใช้ได้ 2 ระดับ:** (1) KB rules (ทำแล้ว) + (2) keyword audit (ใหม่ — นี้คือ policy)
+
+## 2026-05-28T20:30 — 📌 PINNED: Zero-Human-Input Policy (final, absolute)
+
+**User statement (verbatim):**
+> "ในที่สุด anything in master dict should not be input by human"
+
+### Policy (standing rule — ถาวร)
+
+**Master Dictionary = AI-extraction-only zone. ไม่มี human input แม้แต่ field เดียว.**
+
+| ประเภท data | ต้องมาจาก | ห้าม |
+|---|---|---|
+| Planet names, positions, meanings | AI อ่าน chapter_texts.json | พิมพ์มือ |
+| Sign rulers, elements, keywords | AI อ่าน chapter_texts.json | พิมพ์มือ |
+| House domains, keywords | AI อ่าน chapter_texts.json | พิมพ์มือ |
+| Quality rules (อุจ/นิจ/เกษตร/...) | AI อ่าน chapter_texts.json | พิมพ์มือ |
+| ntals keywords | AI อ่าน source textbook ปลายทาง | พิมพ์มือ |
+| llm bridge keywords | AI generate + cite session | พิมพ์มือ |
+
+**ถ้าต้องการเพิ่มอะไร:** user บอก source → AI อ่าน source → AI propose → user approve (approve ≠ type)
+
+### Implication ต่อ existing data
+
+ข้อมูลที่มีอยู่ใน master dict ที่อาจมี human-typed content (ก่อน policy นี้):
+- → ต้องทำ AI audit ย้อนหลัง: verify ทุก field กับ chapter_texts.json
+- → field ที่ verify ได้ → เพิ่ม `"verified_by": "ai-audit-YYYY-MM-DD"` tag
+- → field ที่ verify ไม่ได้ (ไม่มีใน source text) → tag `"status": "needs_source"` รอ AI extraction ใหม่
+
+### ทำไมต้อง strict ขนาดนี้
+
+```
+Human input path:
+  human คิดคำ → พิมพ์ → master dict
+  ❌ ไม่มี source trail
+  ❌ selection bias (คำที่คุ้น ไม่ใช่คำที่ตำราบอก)
+  ❌ inconsistency ข้าม session (คนละคนพิมพ์คนละคำ)
+  ❌ ไม่ scale เมื่อ dict โต
+
+AI extraction path:
+  chapter_texts.json → AI reads → extract → cite ref → propose → user approve
+  ✅ full source trail (สืบย้อนได้ทุก field)
+  ✅ consistent (same policy ทุก field)
+  ✅ multi-LLM triangulation → confidence level
+  ✅ scales: เพิ่มตำราใหม่ = trigger AI อ่านเพิ่ม
+```
+
+### Cross-link
+- ขยายจาก "AI-Only Ingestion Policy" (LOG 2026-05-28T20:00) — version นี้ absolute (ไม่มีข้อยกเว้น)
+- ตรงกับ Triangulation Architecture (LOG 2026-05-25): human ทำ approve/reject ไม่ใช่ input
+- Foundation: "few good AI > large number of human experts" — Peter 2026-05-28
