@@ -1854,3 +1854,80 @@ ch020 เน้น "ดาวไม่สัมพันธ์" เพราะ 
 - has_quality_positions: false ทั้งสองดาว ✓ (ถูกแล้วในระบบ)
 - เกตุ ≠ ดาวปกติ → ประเมินต้องดูบริบท (อยู่กับใคร)
 - มฤตยู = simple rule → bad always when related to lagna
+
+## 2026-05-28T18:00 — CRITICAL: อนุเกษตร ≠ ประเกษตร (correction)
+
+### ผิดที่เดิม (ต้องแก้ใน tals_elements.json)
+- `anukaset` field ปัจจุบันคำนวณเป็น `(kaset+6)%12` = **ประเกษตร** ไม่ใช่อนุเกษตร
+- ต้องลบ `anukaset` ออกจาก per-planet field ทั้งหมด
+
+### อนุเกษตร (ch010) — คืออะไรจริงๆ
+- **Chart-level quality** ไม่ใช่ per-planet — ต้องดู 2 ดาวคู่กัน
+- เกิดเมื่อ: ดาว A อยู่ในราศีเกษตรของ B **และ** ดาว B อยู่ในราศีเกษตรของ A
+- เรียก "สลับเรือนเกษตร" — ทั้งคู่ได้อนุเกษตร (เกษตรชั้น 2)
+- ให้คุณทันทีตั้งแต่เกิด (เกษตรให้ผลช้า อนุเกษตรอาจช้ากว่า)
+- Engine ต้องมี `checkAnokaset(pos[], p_i, p_j)` แยกต่างหาก
+
+### กฎเล็งกัน ch010 — ลบ-ลบ = บวก
+- เกษตรเล็งกัน → ประเกษตรทั้งคู่ (ดีก่อน เสื่อมทีหลัง)
+- ประเกษตรเล็งกัน → เกษตรทั้งคู่ (ไม่ดีก่อน ดีทีหลัง)
+- อุจเล็งกัน → นิจ (เร็ว อาจล้มทั้งยืน)
+- นิจเล็งกัน → อุจ
+- **ใช้กับ:** เกษตร/ประเกษตร/อุจ/นิจ เท่านั้น
+- **ห้ามใช้กับ:** มหาจักร/อุจจาวิลาส/อุจจาภิมุข/ราชาโชค/เทวีโชค
+
+## 2026-05-28T18:01 — Derivation pattern: ตรงข้าม = +6%12 (confirmed)
+
+### กฎสากล: position_opposite = (position + 6) % 12
+- นิจ = (อุจ + 6) % 12
+- ประเกษตร = (เกษตร + 6) % 12
+- จุลจักร = (มหาจักร + 6) % 12
+- เทวีโชค = (rajayok_sign_idx + 6) % 12  ← **CONFIRMED geometric** (Peter 2026-05-28)
+
+### เทวีโชค pending → RESOLVED
+- pending_user_verification เรื่องเทวีโชค = ราชาโชค+6 → ยืนยันแล้ว geometric ถูกต้อง
+
+### Implication ต่อ schema
+- Store เฉพาะ primary: uchcha, kaset, mahachak, rajayok
+- ไม่เก็บ derived: nicha, pra_kaset, julachak, thewichok, anukaset
+
+## 2026-05-28T18:02 — Master Dictionary restructure plan (priority)
+
+### Architecture ที่ตกลงแล้ว
+- แยก 4 ไฟล์: tals_planets.json / tals_signs.json / tals_houses.json / tals_quality_rules.json
+- 4 ไฟล์ = 4 Google Sheets tabs (Peter view/verify)
+- JSON = source of truth (git) → tool export → Google Sheets
+- tools/tals_dict_export.html: view 4 tables + Copy TSV per tab
+
+### ลำดับงานถัดไป (priority order)
+1. backup branch: `backup/tals_elements_schema_v1.0`
+2. สร้าง 4 JSON ไฟล์ใหม่ (schema v2.0, flat, clean)
+3. สร้าง tools/tals_dict_export.html (4 tabs + export)
+4. session HORATAD: engine → standards.js แยกออก + import จาก 4 ไฟล์ใหม่
+5. session HORATAD: ch010 logic → checkOpposition() + checkAnokaset()
+
+### Schema v2.0 per planet (flat)
+```
+id, name, name_en, abbrev, aliases, element, nature, speed_per_sign,
+has_quality_positions, represents, positive_keywords, negative_keywords,
+body_parts, career_areas, tanusesh_trait, tanulagn_inner,
+uchcha, kaset, mahachak, rajayok, notes
+```
+- ลบ: positions{} nested, anukaset, rajayok_pending, nicha (derive ได้)
+- เกตุ/มฤตยู: has_quality_positions=false → ไม่มี uchcha/kaset/mahachak/rajayok
+
+## 2026-05-28T18:03 — Engine separation (confirmed needed NOW)
+
+### ทำไมต้องแยกก่อน (Peter's reasoning)
+- Engine มาจาก C/Palm — data type mismatch เคยแก้นานมาก
+- รอให้ซับซ้อนก่อน = แก้ยาก เสี่ยง regression สูง
+- ทำตอนนี้ = scope ชัด ทดสอบได้ง่าย
+
+### แผน: 3 ไฟล์ (HORATAD session)
+- v3/calculator.js — สุริยยาตร์ → pos[] (swap SE ได้ในอนาคต)
+- v3/standards.js — KASET_MAP, RACHA_MAP + assessStandards() + ch010 logic
+- v3/matcher.js — matchRulesV24() (BIBLE domain)
+
+### SE Adapter (อนาคต)
+- Adapter layer บาง ไม่แก้ engine
+- degrees×60 → arc-min, reorder planets, inject lagna, KE=RA+180°
