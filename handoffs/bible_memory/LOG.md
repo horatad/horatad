@@ -2081,3 +2081,61 @@ AI extraction path:
 - ขยายจาก "AI-Only Ingestion Policy" (LOG 2026-05-28T20:00) — version นี้ absolute (ไม่มีข้อยกเว้น)
 - ตรงกับ Triangulation Architecture (LOG 2026-05-25): human ทำ approve/reject ไม่ใช่ input
 - Foundation: "few good AI > large number of human experts" — Peter 2026-05-28
+
+---
+
+## 2026-05-28T22:00 — Architecture: Rules vs Dictionary, Synonym, Bilingual
+
+### ถาม: rules อยู่ใน tals_*.json หรือไม่?
+
+**ตอบ: ไม่ — แยก layer ชัดเจน**
+
+```
+tals_*.json   = Dictionary layer  (คำนิยาม + properties + keywords)
+kb_*.json     = Rules layer       (prediction rules: conditions + wording text)
+```
+
+tals_*.json ไม่มี prediction rules — เก็บแค่ข้อมูล planet/sign/house properties
+
+### ถาม: prediction ใน rules เป็น keyword หรือ text?
+
+```
+kb_*.json rules:
+  conditions  → match criteria (planet_id, quality, house, ...)
+  wording     → TEXT เต็ม (prediction sentence/paragraph)
+
+tals_*.json keywords:
+  engine kw   → สั้น/แม่นยำ (matching)
+  llm kw      → รวย/หลากหลาย (LLM generation seeding)
+```
+
+pipeline: `tals_*.json (keywords) + kb_*.json (text templates) → LLM → wording output`
+
+### ถาม: synonym/alias สำหรับ AI extraction และ Q&A?
+
+| รูปแบบ | สถานะ | ตัวอย่าง |
+|---|---|---|
+| ชื่ออื่น (วรรณคดี) | ✅ aliases field มีแล้ว | ระวิ, สุรีย์ |
+| ตัวเลขอารบิก | ❌ ยังไม่มี | 1 → อาทิตย์ |
+| ตัวเลขไทย | ❌ ยังไม่มี | ๑ → อาทิตย์ |
+| Compound/role ref | ❌ ยังไม่มี | "เจ้าเกษตร์ราศีสิงห์" → อาทิตย์ |
+| Role-based ref | ❌ ยังไม่มี | "ตนุลัคน์" → planet_id ที่คุมลัคนาราศี |
+
+**Decision:** สร้าง `alias_index` แยก (lookup: synonym → canonical_id) เมื่อจะสร้าง Q&A interactive  
+ไม่ยัด compound ref ลง tals_planets.json โดยตรง (หลักการ ไม่ใช่ list)
+
+### ถาม: Thai-English bilingual ready?
+
+| ส่วน | สถานะ |
+|---|---|
+| name_en ดาว/ราศี/ภพ | ✅ มีแล้ว |
+| English abbreviation, keywords, wording templates | ❌ ยังไม่มี |
+
+**Decision:** รอก่อน — LLM รู้จัก Sun/อาทิตย์ ได้เอง  
+เพิ่ม English layer เมื่อ use case ชัดเจน (user base ภาษาอังกฤษ)
+
+### Priority ที่เหลือ
+1. Schema migration keywords (string array → tagged objects) ← ทำต่อ
+2. alias_index ← รอ Q&A system
+3. English keywords ← รอ user base
+
