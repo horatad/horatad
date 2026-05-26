@@ -50,37 +50,50 @@
 
 ---
 
-## BIBLE — Prediction Wording Engine 🟢 Active — Triangulation infra COMPLETE
+## BIBLE — Prediction Wording Engine 🟢 Active — quality_maps + corrections
 **เป้าหมาย:** rules → keywords → LLM wordings — ground-truth via triangulation (100CH + LLMs + user)
 
 ### สถานะ
 - KB V2.3: 342 rules (production, ใช้งานอยู่) | Engine 3.1.0 ✅
 - kb_v24-3: ✅ COMPLETE — 102 บท → 290 rules (2026-05-23)
-- **🆕 Triangulation architecture (PINNED v2, 2026-05-25)** — pipeline end-to-end COMPLETE:
-  - Schema v2.0-fingerprint shipped — kb_v24-3_fp.json (239 unique fp, 207 perfectly-unique, 198/290 deep-parsed)
-  - **Pipeline พร้อม end-to-end**: extract → merge → review → **apply** (Step 5 shipped 2026-05-25 v2)
-  - รอ user รัน Groq/Typhoon extractions เพื่อปลดล็อก real triangulation
-- **Master dict v1.4.0-complete** (2026-05-25 session v4): 10 ✅ · 1 🟡 (by design)
-  - ✅ Complete: planets, houses, qualities, domains, aspect_strengths, signs (structural+narrative), planet_positions, planet_pairs, lagna_concepts, house_rulers_by_lagna
-  - 🟡 special_configs (11 entries, grows organically)
+- **🆕 Triangulation architecture (PINNED v2, 2026-05-25)** — pipeline end-to-end COMPLETE
+- **Master dict v1.4.0-complete** (2026-05-25): 10 ✅ · 1 🟡
+- **🔴 PINNED v3 (2026-05-26)** — FOUNDATIONAL RULE #1: natal=80%, ดาวจร=stimulator only + Corollary
+- **🆕 v3/quality_maps.json v1.0** (2026-05-26) — single source of truth for quality config detection
+  - Verified: เกษตร · อุจ (8/8, ราหู corrected) · นิจ · มหาจักร (8/8 user-verified) · จุลจักร (derived)
+  - Pending: ราชาโชค per-planet · เทวีโชค (derived from ราชาโชค)
 
-### Files map (triangulation infra)
-- Scripts: `workers/kb_add_fingerprint.mjs` · `kb_merge_by_fingerprint.mjs` · `kb_deep_parse.mjs` · **`kb_apply_review_decisions.mjs` (NEW)** · **`kb_wording_prompt_poc.mjs` (NEW)**
-- Data: `v3/kb_v24-3_fp.json` · `v3/kb_merged.json` · (target: `v3/kb_v24-final.json`)
-- Tools: `tools/kb_extract.html` (v2 + deep-parse embed) · `tools/kb_review.html` (review)
-- Memory: `handoffs/bible_memory/LOG.md` PINNED v2 + 2026-05-25T15:00 (pipeline completion)
+### Files map (triangulation infra + quality_maps)
+- Scripts: `workers/kb_*.mjs` (add_fingerprint · merge · deep_parse · apply_review · wording_poc)
+- Data: `v3/kb_v24-3_fp.json` · `v3/kb_merged.json` · **`v3/quality_maps.json` (new)** · (target: `v3/kb_v24-final.json`)
+- Tools: `tools/kb_extract.html` · `tools/kb_review.html`
+- Memory: `handoffs/bible_memory/LOG.md` PINNED v2 + v3 (natal=80%)
 
-### Next (Claude ทำได้)
-- [ ] Fill master_dict 5 remaining skeleton sections: planet_positions / planet_pairs / lagna_concepts / house_rulers_by_lagna / special_configs
-- [ ] Fill signs[].represents[] + signs[].keywords[] (narrative content)
-- [ ] Iterate `kb_wording_prompt_poc.mjs` scoring — penalize REFERENCE-type rules to surface specific-position rules
-- [ ] Schema migration plan: master_dict signs keys 1-12 → 0-11 (match KB canonical)
+### 🔴 REQUEST LIST — Memory Enhancement + JULIAN integration (cross-checked in handoff)
+> เรื่องสำคัญต้องทำต่อเนื่อง — บันทึก 2 ที่กันหลุด
+
+| # | Task | Scope | Status |
+|---|---|---|---|
+| 1 | Slash commands `.claude/commands/bible-*.md` | grey | pending — scope confirm |
+| 2 | Nested CLAUDE.md `handoffs/bible_memory/CLAUDE.md` | BIBLE ✅ | ready |
+| 3 | Generated index `workers/build_bible_index.mjs` | BIBLE ✅ | ready |
+| 4 | Decision Records `docs/decisions/bible/` (pilot) | BIBLE | ready |
+| 5 | Anti-pattern hook `.claude/hooks/pre-edit-memory.sh` | BIG ❌ | spec only |
+| 6 | **JULIAN ↔ BIBLE integration** (JD-master-index for KB validation) | cross | high value |
+
+### Next (Claude ทำได้, ลำดับ priority)
+- [ ] **Sync master_dict_meanings.json planet_positions** with quality_maps.json (single-value mahachak, remove pair-list)
+- [ ] **KB audit script** — ~19 rules อุจจาวิลาส/อุจจาภิมุข impact + ~11 ราหู+quality
+- [ ] **Request list 1-4 + 6** above (Phase A) → implement when scope confirmed
+- [ ] Layer 3 LLM validator + Layer 2 schema enforcement
+- [ ] Layer 4 decomposition (3-phase prompts) + Layer 5 tool-use
 
 ### Blocked (รอ user)
+- [ ] [ทดลองใช้] ⭐ ราชาโชค per-planet verification (8 values) — completes quality_maps.json
 - [ ] [ทดลองใช้] ⭐ รัน Groq mode → kb_v24-1_fp.json | URL: tools/kb_extract.html
 - [ ] [ทดลองใช้] ⭐ รัน Typhoon mode → kb_v24-2_fp.json
 - [ ] [ทดลองใช้] เปิด `kb_review.html` → review 32 INTERNAL_DUPE → export decisions
-- [ ] [ทดลองใช้] KB equalizer test — รัน `node workers/kb_wording_prompt_poc.mjs --out prompt.txt` → paste Gemini/Typhoon/Claude.web → เปรียบเทียบ
+- [ ] [ทดลองใช้] KB equalizer test — POC prompt → Gemini/Typhoon/Claude.web compare
 
 ### Deferred (รอ decision)
 - [ ] **Wording selection policy** — IN_BOOK first / rotate / chart-context
@@ -91,7 +104,7 @@
 - update `v3/engine.js` to load kb_v24-final.json (wordings[] array — เลือก per policy)
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260525_v4.md`
+`handoffs/BIBLE_20260526_v1.md`
 
 ---
 
