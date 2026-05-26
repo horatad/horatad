@@ -2375,3 +2375,42 @@ CONTEXT: outcome polarity (ดีหรือร้าย) ต้องดู
 - [ทดลองใช้] รัน Groq + Typhoon mode + review 32 INTERNAL_DUPE
 - [BLOCKED] มหาจักร strength_pct 80% vs 100% — รอ user confirm
 - source_type audit (PRIMARY/DERIVED/INFERRED) ทั้ง 290 rules — งานใหญ่ รอ batch
+
+## 2026-05-29T04:00 — Tab Rules + source_type migration + two-factor fields
+
+**Session trigger:** Peter "ทำหมด ไม่ต้องยืนยันแล้ว" — execute all pending BIBLE tasks autonomously
+
+### งานที่ทำเสร็จ (3 tasks)
+
+1. **เพิ่ม tab 📋 Rules** ใน tools/tals_dict_export.html:
+   - embed `rules_summary` (84KB compact summary 290 rules, meaning truncated 120 chars)
+   - renderRules() / filterRules() / _renderRulesTable(): search + filter by type + source_type
+   - columns: id | type | tier | score | domain | pol | source_type | ch | title | meaning preview
+   - tab 7th in viewer (ดาว/ราศี/ภพ/มาตรฐาน/คู่ดาว/ลัคนา/Rules)
+
+2. **source_type bulk migration** ใน v3/kb_tals.json (290 rules):
+   - heuristic: REFERENCE/DEFINITION/PRINCIPLE → PRIMARY (50 rules)
+   - NATAL_ATOMIC/NATAL_COMBINATION/TRANSIT_NATAL → INFERRED (240 rules, pending per-rule audit)
+   - เพิ่ม fields: source_type, source_chapter (from `ch`), source_quote="" (empty until audit)
+   - Updated _meta: migration note + pending audit flag
+
+3. **two-factor model fields** ใน v3/tals_planets.json (10 ดาว):
+   - เพิ่ม `external_domains[]`: ด้านภายนอก ที่ดาวควบคุม (ch023)
+   - เพิ่่ม `inner_trait_twofactor`: อัจฉริยภาพภายใน ที่ซ่อนอยู่ถ้าดาวไม่สัมพันธ์ลัคนา (ch023)
+   - เพิ่ม `twofactor_src` + `twofactor_ref`
+   - ราหู(8): external_domains แต่ inner_trait = null (ดิบ/ไม่มี refined inner)
+   - เกตุ(9): ทั้งสอง null — ทวีคูณดาวอื่น ไม่มี domain ตัวเอง
+
+### Pattern ที่ค้นพบ (two-factor model)
+
+**Two-factor logic (ch023):**
+- ดาวสัมพันธ์ลัคนา → ทั้ง inner + external แสดงออก (เจ้าชาตาแสดงทั้งภายในและภายนอก)
+- ดาวไม่สัมพันธ์ลัคนา → inner อยู่ข้างใน (อัจฉริยภาพซ่อน), external ไม่แสดง
+- ความแตกต่างจาก ตนุลัคน์/ตนุเศษ: two-factor เป็น per-planet property ไม่ใช่ per-lagna
+
+**Source type taxonomy (ยืนยัน):**
+- PRIMARY = textual declaration ชัดเจนจาก 100CH
+- INFERRED = default สำหรับ natal/transit rules ที่ยังไม่ verified per-rule
+- งาน per-rule audit ยังค้างอยู่ (ต้องอ่าน ch-by-ch ยืนยัน primary quote ทีละ rule)
+
+### commit: d169732 (bible-twofactor-rules-v1 backup)
