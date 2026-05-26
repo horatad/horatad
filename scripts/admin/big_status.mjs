@@ -178,6 +178,32 @@ if (lastUpdate) {
   else ok(`PROJECT_STATUS.md updated ${days} วันที่แล้ว`);
 }
 
+// ─── 6. DEPLOYMENT HEALTH ────────────────────────────
+section('Deployment Health');
+
+const nojekyll = existsSync(join(ROOT, '.nojekyll'));
+const cname = existsSync(join(ROOT, 'CNAME'));
+const cnameVal = cname ? readFileSync(join(ROOT, 'CNAME'), 'utf8').trim() : '';
+
+if (nojekyll) {
+  ok('.nojekyll ✓ — GitHub Pages จะไม่รัน Jekyll (build ผ่าน)');
+} else {
+  err('.nojekyll หายไป — GitHub Pages จะรัน Jekyll → build fail ทุก commit!');
+  console.log(`     ${C.yellow}แก้: touch .nojekyll && git add .nojekyll && git commit -m "fix: เพิ่ม .nojekyll"${C.reset}`);
+}
+
+if (cname) {
+  ok(`CNAME → ${cnameVal} (custom domain active)`);
+} else {
+  warn('ไม่มี CNAME — site จะ serve บน horatad.github.io เท่านั้น');
+}
+
+// ─── Production checklist reminder ───────────────────
+console.log(`\n  ${C.dim}Production checklist (ตรวจก่อน/หลัง protocol change):${C.reset}`);
+console.log(`  ${C.dim}· ก่อน amplify commit frequency → ตรวจ workflow ทุกตัวที่ trigger push main${C.reset}`);
+console.log(`  ${C.dim}· หลัง security/infra work → verify feature active จริงบน production${C.reset}`);
+console.log(`  ${C.dim}· ก่อนปิด session ที่แตะ deployment → ตรวจ horatad.com ตรงกับ main ไหม${C.reset}`);
+
 // ─── SUMMARY ─────────────────────────────────────────
 section('Summary');
 
@@ -185,6 +211,8 @@ const issues = [];
 if (pending) issues.push('commits ค้างยังไม่ ff main');
 if (uncommitted) issues.push('uncommitted files');
 if (mergedCount > 5) issues.push(`${mergedCount} feature branches พร้อมลบ`);
+
+if (!nojekyll) issues.push('.nojekyll หายไป → Pages build fail ทุก commit');
 
 if (issues.length === 0) {
   ok(`${C.bold}${C.green}ระบบสุขภาพดี — ไม่มีงานค้างเด่น${C.reset}`);

@@ -373,6 +373,24 @@ Option B: [upgrade $X/เดือน — ได้อะไรเพิ่ม]
 2. สร้าง output ตาม format ด้านล่าง
 3. **ไม่ implement** — แนะนำ session ถัดไปให้ user เปิดเอง
 
+### 🏥 Production Health Checklist — ตรวจเมื่อ BIG แตะ protocol/workflow
+
+**ก่อน amplify commit frequency** (เช่น เพิ่ม ff_main.sh, เพิ่ม CI trigger, เพิ่ม auto-push):
+> "workflow อะไรบ้าง trigger ทุก push to main — ทำงานได้ปกติไหม?"
+> → รัน `node scripts/admin/big_status.mjs` ดู Deployment Health section
+
+**หลัง security/infra work เสร็จ** (เช่น เพิ่ม headers, เปลี่ยน auth, เพิ่ม CSP):
+> "feature ที่ทำ — active จริงบน production ไหม หรือแค่ในโค้ด?"
+> → verify ด้วย browser DevTools / curl ไม่ใช่แค่ดู git diff
+
+**ก่อนปิด session ที่แตะ deployment config:**
+> "user ที่ horatad.com ตอนนี้เห็นอะไร — ตรงกับ main ล่าสุดไหม?"
+> → ดู GitHub Pages build status (Actions tab → pages-build-deployment)
+
+**ตัวอย่าง gap ที่เคยเกิด (2026-05-16 → 2026-05-29):**
+- `_headers` เขียนครบ แต่ GitHub Pages ไม่อ่าน (Cloudflare Pages format) → headers ไม่ active จริง
+- ff_main.sh เพิ่ม commit frequency 10x โดยไม่ตรวจ Pages → build fail ถี่ขึ้นโดยไม่รู้
+
 ### Output format มาตรฐาน
 
 ```
