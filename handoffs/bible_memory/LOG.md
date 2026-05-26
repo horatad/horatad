@@ -2211,3 +2211,54 @@ v3/
 5. score ใน rules — กำหนด scale + formula + ปรับ kb_*.json schema
 ```
 
+
+---
+
+## 2026-05-29T00:30 — 📌 PINNED: Element Table vs Rule Table (coding architecture)
+
+### ความแตกต่างหลัก
+
+**Element Table** = ข้อมูลนิ่ง (static facts — เป็นจริงตลอดไปไม่ว่าพยากรณ์ให้ใคร)
+
+```
+tals_planets.json          → ดาว: ชื่อ, ธาตุ, เกษตร, อุจ, keywords, อาชีพ
+tals_signs.json            → ราศี: ธาตุ, เจ้าเรือน, keywords
+tals_houses.json           → ภพ: domain, keywords
+tals_quality_rules.json    → มาตรฐาน: weights, aspects, derive rules
+tals_planet_relations.json → คู่มิตร/ศัตรู/สมพล/ธาตุ  (ใหม่)
+tals_lagna.json            → ลัคนา+ฤกษ์+ตนุเศษ+ตนุลัคน์ (ใหม่)
+```
+
+Engine ใช้: load ครั้งเดียว → cache → O(1) lookup
+
+**Rule Table** = logic พยากรณ์ (if–then ขึ้นกับ chart ของแต่ละคน)
+
+```
+kb_tals.json → rules: conditions + wording + score
+  conditions:  {planet_id, quality, house, aspect_to_lagna, ...}
+  wording:     "อาทิตย์อุจในเมษ สัมพันธ์ลัคนา → ..."
+  score:       relevance weight (rank top-N)
+```
+
+Engine ใช้: match กับ chart → rank ด้วย score → ส่ง LLM สร้าง wording
+
+### กฎแยกประเภท (ใช้ถามตัวเอง)
+
+```
+"เป็นจริงตลอดไป ไม่ขึ้นกับ chart ใคร?"  → Element table
+"เป็น if-then ขึ้นกับ chart?"             → Rule table
+```
+
+### Coding problems ถ้าสับสน
+
+| ผิดพลาด | ผลเสีย |
+|---|---|
+| rule ไปอยู่ใน element table | logic ปะปน data, โหลดช้า |
+| element ไปอยู่ใน rule table | duplicate → inconsistency เมื่ออัปเดต |
+| score ไม่มีใน rule | prediction ไม่ rank → LLM ได้ rules ไม่ relevant |
+| aspect weight ใน rule แทน element | เปลี่ยน weight = แก้ทุก rule |
+
+### Peter's concern (verbatim)
+> "ผมยังไม่ชัดระหว่าง element table กับ rule table นะ เข้าใจผิด ก็ต้องช่วยแก้ coding problem"
+→ Claude รับผิดชอบแยกให้ถูกต้องเสมอ — ถ้าพบ data ผิด table ให้แจ้งและย้าย
+
