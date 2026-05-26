@@ -228,12 +228,13 @@
       "positions": {
         "uchcha": 6,
         "kaset": [9, 10],
-        "kaset_note": "มกร(9)=primary, กุมภ์(10)=secondary",
+        "kaset_note": "มกร(9)+กุมภ์(10) ยืนยัน 2026-05-28 — ราหู/เกตุไม่ปกครองราศี เสาร์จึงได้กุมภ์คืน",
         "mahachak": 1,
-        "anukaset": [10],
+        "anukaset": [3, 4],
+        "anukaset_note": "ประเกษตร = opposite ของ kaset: (9+6)%12=3(กรกฎ), (10+6)%12=4(สิงห์)",
         "rajayok": null,
         "rajayok_pending": "ต้องการค่าจาก 100CH",
-        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+        "verified_by": "user 2026-05-28 (kaset dual confirmed; anukaset corrected)"
       }
     },
     "8": {
@@ -258,12 +259,13 @@
       ],
       "positions": {
         "uchcha": 7,
-        "kaset": [10],
+        "kaset": [],
+        "kaset_note": "ราหู/เกตุไม่ปกครองราศี — ไม่มีตำแหน่งเกษตร ยืนยัน 2026-05-28",
         "mahachak": 9,
-        "anukaset": [9, 10],
+        "anukaset": [],
         "rajayok": null,
         "rajayok_pending": "ต้องการค่าจาก 100CH",
-        "verified_by": "user 2026-05-26 (uchcha + mahachak corrected); engine.js (kaset)"
+        "verified_by": "user 2026-05-28 (kaset ลบออก — ราหูไม่ปกครองราศี)"
       }
     },
     "9": {
@@ -721,7 +723,7 @@
     "rajayok per-planet (8 values) — ต้องการค่าจาก 100CH Thai tradition. ห้าม derive geometric.",
     "เทวีโชค = ราชาโชค + 6 — engine.js implements geometric formula แต่ตำรายังไม่ confirm",
     "มหาจักร strength_pct — quality_maps=80% vs ch025 implies ≈ อุจ (100%). รอ user confirm.",
-    "เสาร์ dual-rulership: kaset=[9,10] (มกร+กุมภ์) ใน tals_elements.json แต่ engine.js KASET_MAP[10]=ราหู(8) — TALS ถือว่าเสาร์ co-rule กุมภ์ด้วยไหม? ถ้าใช่ → แก้ engine; ถ้าไม่ → แก้ tals_elements เป็น kaset=[9]"
+    "⚠ RESOLVED 2026-05-28: เสาร์ kaset=[9,10] ยืนยันแล้ว — ราหู/เกตุไม่ปกครองราศี engine.js KASET_MAP[10] แก้เป็น 7(เสาร์) แล้ว"
   ],
 
   "naming_collision_warnings": {
