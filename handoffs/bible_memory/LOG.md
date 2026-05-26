@@ -2322,3 +2322,56 @@ CONTEXT: outcome polarity (ดีหรือร้าย) ต้องดู
 ### Peter confirmation
 > "หมดข้อสงสัยแล้วครับ" — two-factor interpretation + element vs rule table ชัดเจนแล้ว
 
+
+---
+
+## 2026-05-29T02:00 — tals_lagna.json + score field + เรือนนอก/ใน rule
+
+**Session trigger:** Peter "เสร็จแล้วทำต่อสิ่งที่ตัดสินใจได้เอง เข้านอนก่อน"
+
+### งานที่ทำเสร็จ
+
+1. **สร้าง `v3/tals_lagna.json`** (schema v2.1) จาก ch013+ch023:
+   - tanusesh_per_planet (1-7): trait ตนุเศษ ตามดาว
+   - tanulagn_per_planet (1-8): inner ตนุลัคน์ ตามดาว (รวม ราหู(8) — confirmed ch013)
+   - kum_lagna_kashet_per_planet (1-8): ดาวเกษตรกุมลัคนา ความหมายดาว + general rule
+   - rules: 6 กฎหลัก (house-invariant, visible/hidden, age-amplify, aspect_to_tanulagn, tanusesh_planets_only, kashet_age_amplify)
+   - Key pattern: เกษตรกุมลัคนา → "ยิ่งอายุมากยิ่งชัด" สำหรับทุกดาว แต่คุณสมบัติต่างกัน
+
+2. **เพิ่ม tab 🪷 ลัคนา** ใน tools/tals_dict_export.html:
+   - embed tals_lagna JSON
+   - renderLagna(): 4 ตาราง — ตนุเศษ / ตนุลัคน์ / กุมลัคนา(เกษตร) / กฎ
+
+3. **เพิ่ม score field** ทุก rule ใน v3/kb_tals.json (290 rules):
+   - matrix: REFERENCE/DEFINITION=0.0 · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6
+   - NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL=0.8/0.6
+   - engine ต้องเพิ่ม 0.2x transit multiplier แยก (Rule #1 natal 80%/transit 20%)
+
+4. **เพิ่ม ruen_nok_nai_rule** ใน v3/tals_quality_rules.json:
+   - เรือนนอก = ดาวลอย quality ตามจริง
+   - เรือนใน = เจ้าเรือน เสมอ quality=เกษตร strength=80
+   - engine ต้องพิจารณาทั้งคู่ทุกภพ
+
+### Pattern ที่ค้นพบ (ตนุลัคน์ รายดาว)
+
+| ดาว | ตนุลัคน์ (inner) |
+|---|---|
+| อาทิตย์ | ไว้ตัว ถือตัว รักหน้า ไม่ยอมเสียหน้า |
+| จันทร์ | อ่อนหวาน มีกริยามารยาท |
+| อังคาร | ขยัน แข็ง ดื้อ (แบบมีเหตุผล) |
+| พุธ | ละเอียด ประณีต ชอบงานหนังสือ/ข้อมูล |
+| พฤหัส | มีคุณธรรม เมตตา ใจอ่อน มองโลกในแง่ดี |
+| ศุกร์ | เพ้อฝัน ชอบรื่นเริง มีอารมณ์ศิลปิน |
+| เสาร์ | คิดมาก ไตร่ตรอง รอบคอบ อดทน |
+| ราหู | ดื้อเงียบ ดื้อตาใส ลุ่มหลงจนหัวปักหัวปำ |
+
+### กฎสำคัญ (ch013/ch023)
+- ตนุลัคน์ตกภพใดก็ยังเป็นตัวตน ไม่เปลี่ยน
+- ราหู(8) เป็นตนุลัคน์ได้ (กุมภ์ลัคนา) — verified ch013
+- เกษตรกุมลัคนา: ยิ่งอายุมากยิ่งชัด ทุกดาว (ch023)
+- ราหูกุมลัคนาแรงมาก แม้คุณภาพปกติ — วัยรุ่นเกเร กลับตัวยากมาก
+
+### งาน PENDING ที่ยังค้าง
+- [ทดลองใช้] รัน Groq + Typhoon mode + review 32 INTERNAL_DUPE
+- [BLOCKED] มหาจักร strength_pct 80% vs 100% — รอ user confirm
+- source_type audit (PRIMARY/DERIVED/INFERRED) ทั้ง 290 rules — งานใหญ่ รอ batch

@@ -105,7 +105,16 @@
 - update `v3/engine.js` to load kb_v24-final.json (wordings[] array — เลือก per policy)
 
 ### Handoff ล่าสุด
-`handoffs/BIBLE_20260526_v1.md`
+`handoffs/BIBLE_20260529_v1.md`
+
+### Master Dictionary — สถานะ 2026-05-29
+- tals_planets.json ✅ keywords v2.1 (tals/llm tagged)
+- tals_signs.json ✅ keywords v2.1
+- tals_houses.json ✅ keywords v2.1
+- tals_planet_relations.json ✅ 4 types + 13 pairs (ch008)
+- tals_lagna.json ✅ ตนุเศษ/ตนุลัคน์/กุมลัคนา (ch013+ch023) **NEW**
+- tals_quality_rules.json ✅ + เรือนนอก/ใน rule **NEW**
+- kb_tals.json ✅ 290 rules + score field 0.0-1.0 **NEW**
 
 ---
 
