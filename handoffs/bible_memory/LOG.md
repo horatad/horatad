@@ -1473,3 +1473,89 @@ To update:
 
 **KB gap:** ไม่มี rule ใน kb_v24-3.json define วาสนา explicitly
 → Candidate rule: "ดวงชาตา = แผนที่วาสนา — natal ครอง 80%, ดาวจร = timing ภายในวาสนา" (PRIMARY, ch011+ch016)
+
+---
+
+## 2026-05-27T14:00 — Empirical pruning + aspect definitions + memory methodology
+
+### 1. Aspect definitions resolved (ch009 verbatim)
+
+**Before:** โยคหน้า/โยคหลัง definition ไม่ชัด (pending)
+**After:** ch009 verbatim ยืนยัน:
+
+| มุม | นิยาม | ภพจากลัคนา | % |
+|---|---|---|---|
+| กุม | ดาวสถิตราศีเดียวกัน | ภพ 1 | 100% |
+| เล็ง | นับ 7 ราศี (ตรงข้าม) | ภพ 7 (ปัตนิ) | 80% |
+| โยคหน้า | นับ 3 ราศี | ภพ 3 (สหัชชะ) | 60% |
+| โยคหลัง | นับ 11 ราศี | ภพ 11 (ลาภะ) | 60% |
+| ตรีโกณ | นับ 5 หรือ 9 ราศี | ภพ 5, 9 | 50% |
+
+Verbatim quote: "นับจากดาวดวงหนึ่งไปหาอีกดวงหนึ่งได้ 3, 11 ราศี เรียกว่าดาวโยคแก่กัน"
+นับ **inclusive** จากราศีเริ่ม (= 1)
+
+HOUSES.md + CLAUDE.md bible_memory section อัปเดตแล้ว
+
+### 2. Empirical pruning methodology (new process)
+
+**Principle (user-taught):** "อ่าน text มากๆเข้า combination ไหนไม่พบ คุณก็จะลบทิ้งเอง"
+
+Process:
+1. อ่าน chapter_texts.json ทั้ง 102 บท
+2. ค้นหา combination (เช่น "เกตุ อุจ", "เกตุ กุมลัคนา") ด้วย grep
+3. Zero occurrences = ไม่ใช้ใน TALS = **prune from pool**
+4. Found occurrences = valid combination → เก็บไว้
+
+**ทำไมดีกว่า assumption:** TALS = empirical system — ไม่ assume อะไรไม่มีในตำรา
+
+### 3. เกตุ (9) — empirical verification complete
+
+Search ทุก combination กับ chapter_texts.json:
+- "เกตุ อุจ" / "เกตุ นิจ" / "เกตุ มหาจักร" / "เกตุ เกษตร" → **0 ครั้ง**
+- "เกตุ กุมลัคนา" / "เกตุ เล็งลัคนา" / "เกตุ โยค" / "เกตุ ตรีโกณ" → **0 ครั้ง**
+
+**Conclusion (ยืนยันจาก text):**
+- เกตุ ไม่มีตำแหน่งคุณภาพ (อุจ/นิจ/มหาจักร/เกษตร)
+- เกตุ ไม่ทำ aspect ลัคนาโดยตรงเลย
+- บทบาทเดียว = **ทวีคูณ** ดาวที่อยู่ร่วมราศี (amplifier)
+
+PLANETS.md อัปเดต section บทบาทพิเศษ
+
+### 4. มฤตยู (0) — empirical verification
+
+- "มฤตยู อุจ" / "มฤตยู นิจ" / "มฤตยู มหาจักร" → **0 ครั้ง**
+
+**Conclusion:** มฤตยู ไม่มีตำแหน่งคุณภาพใน TALS
+
+### 5. ราหู (8) — partial verification
+
+- "ราหู อุจ" → found, พิจิก (user-verified 2026-05-26) ✅
+- "ราหู มหาจักร" → found 2x in chapter_texts.json ✅
+- "ราหู นิจ" → **0 ครั้ง** — ราหู ไม่มีนิจ
+
+### 6. Planet letter codes (เพิ่มใน PLANETS.md)
+
+อักษรย่อจาก chapter_texts.json verbatim:
+อ=อาทิตย์, จ=จันทร์, ภ=อังคาร, ว=พุธ, ช=พฤหัสบดี, ศ=ศุกร์, ส=เสาร์, ร=ราหู, ก=เกตุ, ม=มฤตยู
+
+หมายเหตุ: "พระ" prefix ใช้เฉพาะ พระอาทิตย์ เท่านั้น — ไม่ใช้กับดาวอื่น
+
+### 7. Memory methodology — Pool → Combination → Self-Q&A
+
+**User-taught principle:**
+- มี **pool** ของ vocabulary → เกิด **combination** ได้
+- มี combination → สร้าง **คำถามเองได้** (self-Q&A) ไม่ต้องรอ user
+- เวลาอ่าน text มากขึ้น → prune combination ที่ไม่มีในตำรา เอง
+
+**Element rules vs Prediction rules:**
+- Element rule = atom: นิยาม element แต่ละชนิด (ดาว/ราศี/ภพ/คุณภาพ/สัมพันธ์)
+- Prediction rule = molecule: element combinations → outcome
+- ต้อง element rule ก่อนถึงสร้าง prediction rule ได้
+
+**Memory format upgrade (user-requested):**
+Format ที่ใช้ได้จริง: fact + **เมื่อไหร่ใช้** + **อย่าสับสนกับ**
+(ไม่ใช่แค่ fact เฉยๆ)
+
+### Files committed this session
+- `handoffs/bible_memory/PLANETS.md` — บทบาทพิเศษ เกตุ/มฤตยู/ราหู + อักษรย่อ + ความหมาย
+- `handoffs/bible_memory/HOUSES.md` — aspect definitions table (ch009 verbatim) + ภพจากลัคนา
