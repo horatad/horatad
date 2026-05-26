@@ -57,6 +57,7 @@
 ### สถานะ
 - KB V2.3: 342 rules (production, ใช้งานอยู่) | Engine 3.1.0 ✅
 - kb_v24-3: ✅ COMPLETE — 102 บท → 290 rules (2026-05-23)
+- **🆕 source_type audit COMPLETE (2026-05-29)** — PRIMARY=264/290, INFERRED=26 (legitimate combinations)
 - **🆕 Triangulation architecture (PINNED v2, 2026-05-25)** — pipeline end-to-end COMPLETE
 - **Master dict v1.4.0-complete** (2026-05-25): 10 ✅ · 1 🟡
 - **🔴 PINNED v3 (2026-05-26)** — FOUNDATIONAL RULE #1: natal=80%, ดาวจร=stimulator only + Corollary

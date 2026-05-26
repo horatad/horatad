@@ -2437,3 +2437,38 @@ CONTEXT: outcome polarity (ดีหรือร้าย) ต้องดู
 ### Files updated
 - `v3/tals_quality_rules.json` — เพิ่ม volatility + volatility_note + vs_uchcha + ลบ PENDING note
 - `handoffs/bible_memory/QUALITY.md` — อัปเดตตาราง อุจ vs มหาจักร + model note
+
+## 2026-05-29T06:00 — source_type audit COMPLETE (batch5)
+
+### Final result
+| batch | rules upgraded | total PRIMARY |
+|---|---|---|
+| bulk heuristic (session 1) | 50 | 50 |
+| batch 1-4 (prev session) | 177 | 227 |
+| batch 5 (this session) | 37 | **264** |
+| **final** | **214 total** | **264/290 PRIMARY** |
+
+### Remaining INFERRED = 26 rules (legitimate)
+ไม่ควร upgrade เพราะ:
+- ch004 (3): planetary combinations creating emergent meanings — derived
+- ch009 (1): cross-chapter concept (ch009 + ch039 combined)
+- ch015 (3): complex health/mental/partnership multi-factor combinations
+- ch019 (1): strength+obstacles combination
+- ch026 (1): volatile-life combination
+- ch038 (5): birth-timing chapter — rules likely applied examples, full text not verified
+- ch039 (5): multi-planet combinations (3+ factors)
+- ch043 (1): complex house-lord-quality combination
+- ch044 (1): compatibility rule requiring calculation
+- ch048 (1): specific double-transit case study observation
+- ch049 (1): severe multi-transit combination
+- ch050 (1): social context modifier (same chart, different outcome)
+- ch069 (1): combination extending single-planet rule
+- ch101 (1): citing ancient texts (ตำราโบราณ)
+
+### Pattern learned
+PRIMARY กำหนดเมื่อ: text ประกาศ/บอก fact ตรงๆ (เช่น "ถ้า X แล้ว Y")
+INFERRED คงไว้เมื่อ: rule เกิดจาก combine หลาย fact, หรือ derive จาก principle, หรือ case-specific observation
+
+### Files updated
+- `v3/kb_tals.json` — batch5: 37 upgrades → PRIMARY=264, INFERRED=26
+- _meta.source_type_audit updated with completion note
