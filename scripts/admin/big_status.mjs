@@ -148,6 +148,35 @@ for (const p of PROJECTS) {
   console.log(`     ${C.green}done ${done}${C.reset}  ${C.yellow}pending ${pending}${C.reset}  ${C.magenta}[ทดลองใช้] ${testing}${C.reset}  ${C.red}[BLOCKED] ${blocked}${C.reset}`);
 }
 
+// ─── 3b. USER TASKS AGGREGATE ────────────────────────────
+section('⭐ User Tasks — ปีเตอร์ต้องทำ');
+
+let totalUserTasks = 0;
+for (const p of PROJECTS) {
+  const files = existsSync(handoffDir)
+    ? readdirSync(handoffDir)
+        .filter(f => f.match(new RegExp(`^${p}_\\d{8}_v\\d+\\.md$`)))
+        .sort().reverse()
+    : [];
+  if (!files.length) continue;
+  const content = readFileSync(join(handoffDir, files[0]), 'utf8');
+  const tasks = content
+    .split('\n')
+    .filter(l => l.includes('[ทดลองใช้]') && l.startsWith('[ ]'));
+  if (!tasks.length) continue;
+  console.log(`  ${C.bold}${C.magenta}${p}${C.reset}`);
+  tasks.forEach(t => {
+    totalUserTasks++;
+    const clean = t.replace(/^\[ \]\s*\[ทดลองใช้\]\s*/, '').replace(/⭐\s*/, '').trim();
+    console.log(`     ${C.magenta}→${C.reset} ${clean}`);
+  });
+}
+if (totalUserTasks === 0) {
+  ok(`ไม่มี user task ค้าง — ทุก [ทดลองใช้] เคลียร์แล้ว`);
+} else {
+  console.log(`\n  ${C.bold}${C.yellow}รวม ${totalUserTasks} tasks ที่ปีเตอร์ต้องทำ${C.reset}`);
+}
+
 // ─── 4.  GUARD RISK SNAPSHOT ────────────────────────────
 section('GUARD Risk snapshot');
 

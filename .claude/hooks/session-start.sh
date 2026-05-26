@@ -116,13 +116,23 @@ if [ -d handoffs ]; then
   for P in $PROJECTS; do
     LATEST=$(ls -1 handoffs/${P}_[0-9]*_v[0-9]*.md 2>/dev/null | sort -r | head -1)
     if [ -n "$LATEST" ]; then
-      P_COUNT=$(grep -c '^\[ \]' "$LATEST" 2>/dev/null | head -1)
-      B_COUNT=$(grep -c '\[BLOCKED\]' "$LATEST" 2>/dev/null | head -1)
-      P_COUNT=${P_COUNT:-0}
-      B_COUNT=${B_COUNT:-0}
-      printf "  %-9s %s  (pending=%s blocked=%s)\n" "$P" "${LATEST#handoffs/}" "$P_COUNT" "$B_COUNT"
+      P_COUNT=$(grep -c '^\[ \]' "$LATEST" 2>/dev/null || echo 0)
+      U_COUNT=$(grep -c '\[ทดลองใช้\]' "$LATEST" 2>/dev/null || echo 0)
+      B_COUNT=$(grep -c '\[BLOCKED\]' "$LATEST" 2>/dev/null || echo 0)
+      P_COUNT=${P_COUNT:-0}; U_COUNT=${U_COUNT:-0}; B_COUNT=${B_COUNT:-0}
+      if [ "$U_COUNT" -gt 0 ] 2>/dev/null; then
+        printf "  %-9s %s  (claude=%s \033[35muser=%s\033[0m blocked=%s)\n" "$P" "${LATEST#handoffs/}" "$P_COUNT" "$U_COUNT" "$B_COUNT"
+      else
+        printf "  %-9s %s  (claude=%s blocked=%s)\n" "$P" "${LATEST#handoffs/}" "$P_COUNT" "$B_COUNT"
+      fi
     fi
   done
+  # แจ้งรวม user tasks
+  TOTAL_USER=$(grep -h '\[ทดลองใช้\]' handoffs/[A-Z]*_[0-9]*_v[0-9]*.md 2>/dev/null | grep -c '^\[ \]' || echo 0)
+  if [ "${TOTAL_USER:-0}" -gt 0 ] 2>/dev/null; then
+    echo ""
+    echo "  ⭐ User tasks รวม: ${TOTAL_USER} รายการ — รัน \`node scripts/admin/big_status.mjs\` เพื่อดูรายการ"
+  fi
 fi
 
 echo ""
