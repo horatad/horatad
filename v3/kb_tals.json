@@ -8,7 +8,7 @@
     "created": "2026-05-28",
     "score_field_added": "2026-05-29",
     "score_note": "score 0.0-1.0: REFERENCE/DEFINITION=0 (lookup only) · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6 · NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL tier1=0.8 (engine เพิ่ม 0.2x transit multiplier ภายหลัง)",
-    "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending"
+    "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending | batch1 ch002-ch010: 38 rules upgraded to PRIMARY (2026-05-29) | batch2 ch013-ch018: 43 rules upgraded (2026-05-29) | batch3 ch022-ch030: 42 rules upgraded (2026-05-29) | batch4 multi-ch: 54 rules upgraded (2026-05-29)"
   },
   "rules": [
     {
@@ -140,8 +140,9 @@
       "source_level": 1,
       "source_ref": "ch002",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch002"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch002",
+      "source_quote": "ราหู(8) เกตุ(9) โคจรย้อนทิศ ไม่มีตำแหน่งเกษตรเป็นดาวเจ้าเรือน ยกเว้นราหูเป็นเกษตรในกุมภ์"
     },
     {
       "id": "R006",
@@ -165,8 +166,9 @@
       "source_level": 1,
       "source_ref": "ch002",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch002"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch002",
+      "source_quote": "เกตุ ราหู มฤตยู ไม่มีตำแหน่งเกษตรเป็นดาวเจ้าเรือน ยกเว้นราหูครองกุมภ์เป็นเกษตร"
     },
     {
       "id": "R007",
@@ -241,8 +243,9 @@
       "source_level": 1,
       "source_ref": "ch003",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch003"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch003",
+      "source_quote": "ภพมรณะ(8) ร้ายแรงสุดในบรรดาภพร้าย เพราะสูญเสียโดยไม่ได้รับสิ่งตอบแทน"
     },
     {
       "id": "R010",
@@ -262,8 +265,9 @@
       "source_level": 1,
       "source_ref": "ch003",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch003"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch003",
+      "source_quote": "ดาวเจ้าเรือนมรณะ(8) มาอยู่ภพกฎุมพะ(2): จะได้ทรัพย์จากการสูญเสีย หรือได้มรดก"
     },
     {
       "id": "R011",
@@ -285,8 +289,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "อาทิตย์(1) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: หยิ่งในศักดิ์ศรี รักหน้า ไม่ยอมเสียหน้า ชอบให้คนยกย่อง"
     },
     {
       "id": "R012",
@@ -308,8 +313,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "จันทร์(2) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: กริยามารยาทดี นุ่มนวล มีเสน่ห์ อ่อนหวาน"
     },
     {
       "id": "R013",
@@ -331,8 +337,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "อังคาร(3) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: ขยัน แข็งกร้าว ไม่ยอมคน ใจร้อน โผงผาง"
     },
     {
       "id": "R014",
@@ -354,8 +361,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "พุธ(4) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: ละเอียด ประณีต คิดลึกซึ้ง ช่างเจรจา"
     },
     {
       "id": "R015",
@@ -377,8 +385,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "พฤหัส(5) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: คุณธรรม ใจอ่อน เมตตา ขี้สงสาร"
     },
     {
       "id": "R016",
@@ -400,8 +409,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "ศุกร์(6) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: ศิลปะ จินตนาการ เพ้อฝัน ชอบรื่นเริง"
     },
     {
       "id": "R017",
@@ -423,8 +433,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "เสาร์(7) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: คิดมาก ไตร่ตรองรอบคอบ ทำงานช้า อดทนสูง"
     },
     {
       "id": "R018",
@@ -446,8 +457,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "ราหู(8) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: ลุ่มหลง มัวเมา เล่ห์เหลี่ยม กล้าเสี่ยง"
     },
     {
       "id": "R019",
@@ -469,8 +481,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "เกตุ(9) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: ทวีคูณดาวอื่นที่ร่วมราศีหรือสัมพันธ์"
     },
     {
       "id": "R020",
@@ -492,8 +505,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "มฤตยู(0) กุมลัคนาหรือสัมพันธ์ถึงลัคนา: แปรปรวน เจ้าอารมณ์ ให้โทษอย่างเดียว"
     },
     {
       "id": "R021",
@@ -515,8 +529,9 @@
       "source_level": 1,
       "source_ref": "ch004",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch004"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch004",
+      "source_quote": "มฤตยู(0) อยู่ในเรือนใด มักมีการเปลี่ยนแปลงในเรือนนั้น"
     },
     {
       "id": "R022",
@@ -820,8 +835,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "อาทิตย์(1) อยู่ราศีสิงห์(4) = เกษตร"
     },
     {
       "id": "R035",
@@ -845,8 +861,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "จันทร์(2) อยู่ราศีกรกฎ(3) = เกษตร"
     },
     {
       "id": "R036",
@@ -873,8 +890,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "อังคาร(3) อยู่ราศีเมษ(0) หรือราศีพิจิก(7) = เกษตร"
     },
     {
       "id": "R037",
@@ -901,8 +919,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "พุธ(4) อยู่ราศีมิถุน(2) หรือราศีกันย์(5) = เกษตร"
     },
     {
       "id": "R038",
@@ -929,8 +948,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "พฤหัส(5) อยู่ราศีธนู(8) หรือราศีมีน(11) = เกษตร"
     },
     {
       "id": "R039",
@@ -957,8 +977,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "ศุกร์(6) อยู่ราศีพฤษภ(1) หรือราศีตุล(6) = เกษตร"
     },
     {
       "id": "R040",
@@ -982,8 +1003,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "เสาร์(7) อยู่ราศีมังกร(9) = เกษตร (ราศีหลัก)"
     },
     {
       "id": "R041",
@@ -1007,8 +1029,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "เสาร์(7) อยู่ราศีกุมภ์(10) = เกษตร (ราศีรอง — ระวังโปรแกรมโหราฯ ไม่แสดง)"
     },
     {
       "id": "R042",
@@ -1032,8 +1055,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "ราหู(8) อยู่ราศีกุมภ์(10) = เกษตร เป็นดาวเจ้าเรือนกุมภ์"
     },
     {
       "id": "R043",
@@ -1057,8 +1081,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "อาทิตย์(1) อยู่ราศีกุมภ์(10) = ประเกษตร"
     },
     {
       "id": "R044",
@@ -1082,8 +1107,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "จันทร์(2) อยู่ราศีมังกร(9) = ประเกษตร"
     },
     {
       "id": "R045",
@@ -1107,8 +1133,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "ราหู(8) อยู่ราศีสิงห์(4) = ประเกษตร"
     },
     {
       "id": "R046",
@@ -1129,8 +1156,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "ดาวมีคุณภาพมหาจักร กุมลัคนา: มักประสบความสำเร็จแบบผาดโผน ลัดขั้นตอน"
     },
     {
       "id": "R047",
@@ -1161,8 +1189,9 @@
       "source_level": 1,
       "source_ref": "ch006",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch006"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch006",
+      "source_quote": "คู่ดาว เสาร์+จันทร์ / อาทิตย์+ราหู / พุธ+อังคาร / พฤหัส+ศุกร์ กุมกันในเรือนเกษตรของกันและกัน = มหาจักร"
     },
     {
       "id": "R048",
@@ -1239,8 +1268,9 @@
       "source_level": 1,
       "source_ref": "ch007",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch007"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch007",
+      "source_quote": "ดาวธาตุเดียวกันสัมพันธ์กัน: เข้ากันได้สนิท ส่งเสริมกัน"
     },
     {
       "id": "R051",
@@ -1263,8 +1293,9 @@
       "source_level": 1,
       "source_ref": "ch007",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch007"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch007",
+      "source_quote": "ดาวธาตุไฟ อยู่ในราศีธาตุน้ำ: อ่อนกำลังลงมาก"
     },
     {
       "id": "R052",
@@ -1287,8 +1318,9 @@
       "source_level": 1,
       "source_ref": "ch007",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch007"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch007",
+      "source_quote": "ดาวธาตุไฟ อยู่ในราศีธาตุลม: ทวีกำลังแรงขึ้น"
     },
     {
       "id": "R053",
@@ -1309,8 +1341,9 @@
       "source_level": 1,
       "source_ref": "ch008",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch008"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": "ดาวคู่มิตรสัมพันธ์กัน: ช่วยเหลือกัน ส่งเสริมกัน มีกำลังมากยิ่งขึ้น แม้ดาวร้ายเมื่อเจอคู่มิตรก็กลับให้คุณ"
     },
     {
       "id": "R054",
@@ -1366,8 +1399,9 @@
       "source_level": 1,
       "source_ref": "ch008",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch008"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": "เสาร์(7)+ราหู(8) สัมพันธ์กัน: แม้เป็นดาวร้ายทั้งคู่ แต่เมื่อเจอกันกลับให้คุณ ให้โชคใหญ่"
     },
     {
       "id": "R056",
@@ -1388,8 +1422,9 @@
       "source_level": 1,
       "source_ref": "ch008",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch008"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": "ดาวคู่ศัตรูสัมพันธ์กัน: บ่อนทำลายกัน อ่อนกำลังทั้งคู่ เกิดความขัดแย้ง"
     },
     {
       "id": "R057",
@@ -1444,8 +1479,9 @@
       "source_level": 1,
       "source_ref": "ch008",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch008"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": "จันทร์(2)+พฤหัส(5) ร่วมราศีกัน: แม้คู่ศัตรูขนาดเล็ก แต่ร่วมราศีกลับให้คุณมากพอสมควรในเรื่องกริยามารยาท"
     },
     {
       "id": "R059",
@@ -1466,8 +1502,9 @@
       "source_level": 1,
       "source_ref": "ch008",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch008"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch008",
+      "source_quote": "ดาวคู่สมพลสัมพันธ์กัน: ส่งเสริมกัน มีกำลังมากขึ้นทั้งคู่"
     },
     {
       "id": "R060",
@@ -1565,8 +1602,9 @@
       "source_level": 1,
       "source_ref": "ch010",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch010"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch010",
+      "source_quote": "เกษตร 2 ดวง เล็งกัน: กลายเป็นประเกษตรทั้งคู่ ดีก่อน แล้วเสื่อมถอย"
     },
     {
       "id": "R064",
@@ -1588,8 +1626,9 @@
       "source_level": 1,
       "source_ref": "ch010",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch010"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch010",
+      "source_quote": "ประเกษตร 2 ดวง เล็งกัน: กลายเป็นเกษตรทั้งคู่ ลบ-ลบ=บวก"
     },
     {
       "id": "R065",
@@ -1611,8 +1650,9 @@
       "source_level": 1,
       "source_ref": "ch010",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch010"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch010",
+      "source_quote": "อุจ 2 ดวง เล็งกัน: กลายเป็นนิจทั้งคู่ ผลรวดเร็ว อาจล้มทั้งยืน"
     },
     {
       "id": "R066",
@@ -1634,8 +1674,9 @@
       "source_level": 1,
       "source_ref": "ch010",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch010"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch010",
+      "source_quote": "นิจ 2 ดวง เล็งกัน: กลายเป็นอุจทั้งคู่ ลบ-ลบ=บวก"
     },
     {
       "id": "R067",
@@ -1657,8 +1698,9 @@
       "source_level": 1,
       "source_ref": "ch010",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch010"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch010",
+      "source_quote": "ดาว 2 ดวง อยู่ในเรือนเกษตรของกันและกัน (สลับเรือน) = อนุเกษตร"
     },
     {
       "id": "R068",
@@ -1678,8 +1720,9 @@
       "source_level": 1,
       "source_ref": "ch010",
       "score": 1.0,
-      "source_type": "INFERRED",
-      "source_chapter": "ch010"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch010",
+      "source_quote": "กฎลบ-ลบ ใช้เฉพาะ เกษตร ประเกษตร อุจ นิจ เท่านั้น ห้ามใช้กับ มหาจักร อุจจาวิลาส อุจจาภิมุข ราชาโชค เทวีโชค"
     },
     {
       "id": "R069",
@@ -1724,8 +1767,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "อาทิตย์(1) เป็นตนุเศษ: นิสัยไว้ตัว รักหน้า ไม่ยอมเสียหน้า หยิ่ง"
     },
     {
       "id": "R071",
@@ -1748,8 +1792,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "จันทร์(2) เป็นตนุเศษ: กริยามารยาทดี อ่อนโยน อ่อนหวาน"
     },
     {
       "id": "R072",
@@ -1772,8 +1817,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "อังคาร(3) เป็นตนุเศษ: ขยันขันแข็ง"
     },
     {
       "id": "R073",
@@ -1796,8 +1842,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "พุธ(4) เป็นตนุเศษ: ละเอียด ทำงานประณีตเรียบร้อย ชอบข้อมูล"
     },
     {
       "id": "R074",
@@ -1820,8 +1867,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "พฤหัส(5) เป็นตนุเศษ: ใจอ่อน มีเมตตา ขี้สงสาร ไม่โกง"
     },
     {
       "id": "R075",
@@ -1844,8 +1892,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ศุกร์(6) เป็นตนุเศษ: มีจินตนาการ เพ้อฝัน ชอบรื่นเริงบันเทิง"
     },
     {
       "id": "R076",
@@ -1868,8 +1917,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "เสาร์(7) เป็นตนุเศษ: คิดมาก ไตร่ตรองรอบคอบมาก"
     },
     {
       "id": "R077",
@@ -1914,8 +1964,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คืออาทิตย์(1): ไว้ตัว ถือตัว รักหน้า ไม่ยอมเสียหน้า คงเป็นแบบนี้เสมอ"
     },
     {
       "id": "R079",
@@ -1938,8 +1989,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คือจันทร์(2): อ่อนหวาน มีกริยามารยาท คงเป็นแบบนี้เสมอ"
     },
     {
       "id": "R080",
@@ -1962,8 +2014,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คืออังคาร(3): ขยัน แข็ง ไม่ยอมใคร ไม่เชื่อง่าย ดื้อมีเหตุผล"
     },
     {
       "id": "R081",
@@ -1986,8 +2039,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คือพุธ(4): ละเอียด ประณีต ชอบงานหนังสือ ข้อมูล คิดลึก"
     },
     {
       "id": "R082",
@@ -2010,8 +2064,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คือพฤหัส(5): มีคุณธรรม เมตตา ใจอ่อน ขี้สงสาร มองโลกดี"
     },
     {
       "id": "R083",
@@ -2034,8 +2089,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คือศุกร์(6): จินตนาการ เพ้อฝัน ชอบรื่นเริง อารมณ์ศิลปิน อ่อนไหวง่าย"
     },
     {
       "id": "R084",
@@ -2058,8 +2114,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คือเสาร์(7): คิดมาก ไตร่ตรองมาก เชื่องช้า หนักแน่น อดทน"
     },
     {
       "id": "R085",
@@ -2082,8 +2139,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์คือราหู(8): ดื้อเงียบ ดื้อตาใส เมื่อลุ่มหลงอะไรก็หัวปักหัวปำ"
     },
     {
       "id": "R086",
@@ -2103,8 +2161,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์ไม่สัมพันธ์ถึงลัคนา: ตัวตนแท้มักไม่แสดงออกให้เห็นภายนอก แต่ยังคงเป็นสันดานภายในอยู่เสมอ"
     },
     {
       "id": "R087",
@@ -2124,8 +2183,9 @@
       "source_level": 1,
       "source_ref": "ch013",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch013"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch013",
+      "source_quote": "ตนุลัคน์สัมพันธ์ถึงลัคนา: ตัวตนแท้แสดงออกชัดเจน ตรงกับที่มองเห็นจากภายนอก"
     },
     {
       "id": "R088",
@@ -2215,8 +2275,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "อาทิตย์(1) สัมพันธ์ลัคนา: ถือตัว ไว้ตัว ไม่ยอมเสียหน้า"
     },
     {
       "id": "R092",
@@ -2238,8 +2299,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "พุธ(4) สัมพันธ์ลัคนา: ช่างพูด พูดเก่งเป็นปกติวิสัย"
     },
     {
       "id": "R093",
@@ -2261,8 +2323,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "พุธ(4) ไม่สัมพันธ์ลัคนา + อยู่ภพมรณะ: พูดจาสับสน จับต้นชนปลายไม่ถูก หรือฟังเข้าใจยาก"
     },
     {
       "id": "R094",
@@ -2284,8 +2347,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "อังคาร(3) สัมพันธ์ลัคนา: ขยัน ใจร้อน ขี้โมโห โต้เถียงด้วยเหตุผล"
     },
     {
       "id": "R095",
@@ -2307,8 +2371,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "เสาร์(7) สัมพันธ์ลัคนา: เชื่องช้า ไตร่ตรองรอบคอบ คิดมาก"
     },
     {
       "id": "R096",
@@ -2330,8 +2395,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "พฤหัส(5) สัมพันธ์ลัคนา: ผู้ใหญ่เมตตา ช่วยเหลือดี"
     },
     {
       "id": "R097",
@@ -2353,8 +2419,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "พฤหัส(5) ไม่สัมพันธ์ลัคนา: ผู้ใหญ่ไม่เมตตา ต้องช่วยตัวเองมาโดยตลอด"
     },
     {
       "id": "R098",
@@ -2398,8 +2465,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "อาทิตย์(1) เป็นตนุเศษ: ไว้ตัว รักเกียรติ รักหน้า ไม่ยอมเสียหน้า"
     },
     {
       "id": "R100",
@@ -2421,8 +2489,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "จันทร์(2) เป็นตนุเศษ: อ่อนโยน อ่อนหวาน กิริยานุ่มนวล มีเสน่ห์"
     },
     {
       "id": "R101",
@@ -2444,8 +2513,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "อังคาร(3) เป็นตนุเศษ: ขยัน แข็ง"
     },
     {
       "id": "R102",
@@ -2467,8 +2537,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "พุธ(4) เป็นตนุเศษ: ละเอียด ชอบข้อมูลรายละเอียด ชอบงานหนังสือ"
     },
     {
       "id": "R103",
@@ -2490,8 +2561,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "พฤหัส(5) เป็นตนุเศษ: ใจอ่อน เมตตา ขี้สงสาร ไม่โกงใคร"
     },
     {
       "id": "R104",
@@ -2513,8 +2585,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "ศุกร์(6) เป็นตนุเศษ: มีจินตนาการ เพ้อฝัน ชอบศิลปะ รื่นเริง อารมณ์สุนทรี"
     },
     {
       "id": "R105",
@@ -2536,8 +2609,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "เสาร์(7) เป็นตนุเศษ: คิดมาก ไตร่ตรองรอบคอบมาก"
     },
     {
       "id": "R106",
@@ -2581,8 +2655,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "มฤตยู(0) ในภพปัตนิ: มีการเปลี่ยนคู่ครองอย่างน้อย 1 ครั้งในชีวิต"
     },
     {
       "id": "R108",
@@ -2604,8 +2679,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "มฤตยู(0) ในภพกัมมะ: มีการเปลี่ยนอาชีพหลักอย่างน้อย 1 ครั้ง"
     },
     {
       "id": "R109",
@@ -2652,8 +2728,9 @@
       "source_level": 1,
       "source_ref": "ch015",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch015"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch015",
+      "source_quote": "เสาร์(7)+ราหู(8) คู่มิตร สัมพันธ์ลัคนาทั้งคู่: ทำงานคล่องตัว มักร่ำรวย"
     },
     {
       "id": "R111",
@@ -2743,8 +2820,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "อาทิตย์(1) กุมลัคนา คุณภาพดี: ถือตัว รักเกียรติ รักหน้า ดวงเข้มแข็ง ประสบความสำเร็จ"
     },
     {
       "id": "R115",
@@ -2766,8 +2844,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "อาทิตย์(1) กุมลัคนา คุณภาพเสีย: หยิ่งไม่มีเหตุผล ถือตัวมากเกิน ดวงอ่อนแอ บั้นปลายเสื่อม"
     },
     {
       "id": "R116",
@@ -2789,8 +2868,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "จันทร์(2) กุมลัคนา: อ่อนหวาน อ่อนโยน มีเสน่ห์ มีจริต; เสีย: ดูอ่อนแอ"
     },
     {
       "id": "R117",
@@ -2812,8 +2892,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "อังคาร(3) กุมลัคนา: ขยัน แข็ง กล้าหาญ เจ้าเหตุผล ทักษะช่าง-นักรบ"
     },
     {
       "id": "R118",
@@ -2835,8 +2916,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "พุธ(4) กุมลัคนา: ช่างพูด ละเอียด ชอบข้อมูล มักเรียนเก่ง"
     },
     {
       "id": "R119",
@@ -2858,8 +2940,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "พฤหัส(5) กุมลัคนา: คุณธรรมสูง มองโลกแง่ดี ใจอ่อน สติยั้งคิด"
     },
     {
       "id": "R120",
@@ -2881,8 +2964,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "ศุกร์(6) กุมลัคนา: มีจินตนาการ ชอบรื่นเริง ทักษะศิลปะ อารมณ์สุนทรี"
     },
     {
       "id": "R121",
@@ -2904,8 +2988,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "เสาร์(7) กุมลัคนา: คิดมาก ไตร่ตรองรอบคอบ เชื่องช้า อดทน ชอบงานหนัก"
     },
     {
       "id": "R122",
@@ -2927,8 +3012,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "ราหู(8) กุมลัคนา: ฉลาดเล่ห์เหลี่ยม ทันคน ลุ่มหลง ใจนักเลง กล้าเสี่ยง"
     },
     {
       "id": "R123",
@@ -2950,8 +3036,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "มฤตยู(0) กุมลัคนา: แปรปรวน ขี้เบื่อ ลึกลับ สุขภาพไม่ดี อาจมีเซนส์ลึกลับ"
     },
     {
       "id": "R124",
@@ -3015,8 +3102,9 @@
       "source_level": 1,
       "source_ref": "ch016",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch016"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch016",
+      "source_quote": "ตนุลัคน์ไปอยู่ภพอื่น: เจ้าชาตามักไปเกี่ยวข้องกับความหมายของภพนั้น"
     },
     {
       "id": "R127",
@@ -3058,8 +3146,9 @@
       "source_level": 1,
       "source_ref": "ch017",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch017"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch017",
+      "source_quote": "ตนุลัคน์อยู่ภพปัตนิ: เจ้าชาตาให้ความสำคัญกับคู่ครองมาก มักได้คู่ที่ดีหรือตามใจ"
     },
     {
       "id": "R129",
@@ -3079,8 +3168,9 @@
       "source_level": 1,
       "source_ref": "ch017",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch017"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch017",
+      "source_quote": "ดาวคู่ขัดแย้ง (ศัตรู) กุมภพปัตนิร่วมกัน: คู่ครองมีปัญหาบ่อย ขัดแย้งมาก อาจแยกทาง"
     },
     {
       "id": "R130",
@@ -3102,8 +3192,9 @@
       "source_level": 1,
       "source_ref": "ch017",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch017"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch017",
+      "source_quote": "มฤตยู(0) สัมพันธ์ภพปัตนิ: คู่ครองมีการเปลี่ยนแปลงใหญ่ หรือมีนิสัยแปรปรวนมาก"
     },
     {
       "id": "R131",
@@ -3123,8 +3214,9 @@
       "source_level": 1,
       "source_ref": "ch018",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch018"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch018",
+      "source_quote": "ดาวดีคุณภาพดีในภพกฎุมพะ: มีทรัพย์สิน ฐานะดี ครอบครัวอบอุ่น"
     },
     {
       "id": "R132",
@@ -3146,8 +3238,9 @@
       "source_level": 1,
       "source_ref": "ch018",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch018"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch018",
+      "source_quote": "มฤตยู(0) ในภพกฎุมพะ: ทรัพย์สินผันผวน มีได้มีเสีย ครอบครัวมีการเปลี่ยนแปลงใหญ่"
     },
     {
       "id": "R133",
@@ -3323,8 +3416,9 @@
       "source_level": 1,
       "source_ref": "ch022",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch022"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch022",
+      "source_quote": "ดาวเกษตรกุมลัคนา: ชีวิตเริ่มต้นยากแต่ค่อยๆดีขึ้นตามวัย (ต่างจากอุจ=ดีตั้งแต่ต้นแล้วค่อยลดลง)"
     },
     {
       "id": "R141",
@@ -3412,8 +3506,9 @@
       "source_level": 1,
       "source_ref": "ch024",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch024"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch024",
+      "source_quote": "ราหู(8) ดี ไม่สัมพันธ์ลัคนา: อัจฉริยภาพด้านหยั่งรู้ เล่ห์เหลี่ยม แต่ไม่แสดงออกภายนอกชัด"
     },
     {
       "id": "R145",
@@ -3435,8 +3530,9 @@
       "source_level": 1,
       "source_ref": "ch025",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch025"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch025",
+      "source_quote": "ราหู(8) จร สัมพันธ์ดาวในดวงชาตา: เปิดโอกาสใหม่ที่คาดไม่ถึง หุ้น/การพนัน"
     },
     {
       "id": "R146",
@@ -3505,8 +3601,9 @@
       "source_level": 1,
       "source_ref": "ch028",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch028"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch028",
+      "source_quote": "อาทิตย์(1) เด่น/เจ้ากัมมะ: อาชีพราชการ ผู้นำ นักการเมือง งานอำนาจและเกียรติยศ"
     },
     {
       "id": "R149",
@@ -3528,8 +3625,9 @@
       "source_level": 1,
       "source_ref": "ch028",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch028"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch028",
+      "source_quote": "จันทร์(2) เด่น/เจ้ากัมมะ: อาชีพดูแลผู้อื่น พยาบาล ครู งานบริการ"
     },
     {
       "id": "R150",
@@ -3551,8 +3649,9 @@
       "source_level": 1,
       "source_ref": "ch028",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch028"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch028",
+      "source_quote": "อังคาร(3) เด่น/เจ้ากัมมะ: อาชีพช่าง วิศวกร ทหาร นักกีฬา งานใช้แรงหรือความกล้า"
     },
     {
       "id": "R151",
@@ -3574,8 +3673,9 @@
       "source_level": 1,
       "source_ref": "ch028",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch028"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch028",
+      "source_quote": "พุธ(4) เด่น/เจ้ากัมมะ: อาชีพนักเขียน นักข่าว ครู งานข้อมูล IT"
     },
     {
       "id": "R152",
@@ -3597,8 +3697,9 @@
       "source_level": 1,
       "source_ref": "ch029",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch029"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch029",
+      "source_quote": "พฤหัส(5) เด่น/เจ้ากัมมะ: อาชีพกฎหมาย ศาสนา การศึกษา การเงิน ที่ปรึกษา"
     },
     {
       "id": "R153",
@@ -3620,8 +3721,9 @@
       "source_level": 1,
       "source_ref": "ch029",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch029"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch029",
+      "source_quote": "ศุกร์(6) เด่น/เจ้ากัมมะ: อาชีพศิลปิน นักดนตรี ออกแบบ แฟชั่น ความงาม"
     },
     {
       "id": "R154",
@@ -3643,8 +3745,9 @@
       "source_level": 1,
       "source_ref": "ch029",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch029"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch029",
+      "source_quote": "เสาร์(7) เด่น/เจ้ากัมมะ: อาชีพเกษตร อสังหาริมทรัพย์ ก่อสร้าง งานหนัก"
     },
     {
       "id": "R155",
@@ -3666,8 +3769,9 @@
       "source_level": 1,
       "source_ref": "ch029",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch029"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch029",
+      "source_quote": "ศุกร์(6) เสีย + เด่นด้านอาชีพ: มีพรสวรรค์ศิลปะสูง แต่ชีวิตส่วนตัวมีปัญหา (ผลงานดี ความสัมพันธ์/เงินมีปัญหา)"
     },
     {
       "id": "R156",
@@ -3687,8 +3791,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ดาวดี + สัมพันธ์ลัคนา: ถูกโฉลก แสดงออกให้เห็น คนนิยมยกย่อง ให้คุณเต็มที่"
     },
     {
       "id": "R157",
@@ -3708,8 +3813,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ดาวดี + ไม่สัมพันธ์ลัคนา: อัจฉริยภาพภายใน ไม่แสดงออก คนไม่เห็น"
     },
     {
       "id": "R158",
@@ -3729,8 +3835,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ดาวเสีย + สัมพันธ์ลัคนา: ให้โทษแสดงออกให้เห็น คนเห็นแต่ไม่นิยม"
     },
     {
       "id": "R159",
@@ -3750,8 +3857,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ดาวเสีย + ไม่สัมพันธ์ลัคนา: แทบไม่มีคุณสมบัตินั้นเลย ทั้งภายนอกและภายใน"
     },
     {
       "id": "R160",
@@ -3771,8 +3879,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ดาวตนุลัคน์ร่วมราศีกับดาวอื่น: เจ้าชาตามีนิสัยและทักษะตามความหมายของดาวนั้นด้วย"
     },
     {
       "id": "R161",
@@ -3792,8 +3901,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ภพเข้มแข็ง/อ่อนแอ ขึ้นกับคุณภาพดาวในภพนั้นเป็นหลัก ไม่ขึ้นกับดาวใหญ่หรือดาวเล็ก"
     },
     {
       "id": "R162",
@@ -3815,8 +3925,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "อาทิตย์(1) เสีย + สัมพันธ์ลัคนา: หยิ่งโง่ ไม่มีเหตุผล แสดงออกให้เห็น"
     },
     {
       "id": "R163",
@@ -3838,8 +3949,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "อาทิตย์(1) เสีย + ไม่สัมพันธ์ลัคนา: ไม่ถือตัวเลย อาจทำเรื่องขายหน้า อาจโกง"
     },
     {
       "id": "R164",
@@ -3861,8 +3973,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "อังคาร(3) อุจ กุมลัคนา: ขยันสม่ำเสมอ มีตรรกะ แข็งกร้าว โผงผาง โมโหร้าย"
     },
     {
       "id": "R165",
@@ -3884,8 +3997,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "อังคาร(3) มหาจักร กุมลัคนา: ปกติขยันน้อยกว่าอุจ แต่บทจะขยันกลับขยันมากกว่า"
     },
     {
       "id": "R166",
@@ -3907,8 +4021,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "อังคาร(3) เสีย กุมลัคนา: ขยันไม่มีเหตุผล ตรรกะผิดปกติ มักยอมคน"
     },
     {
       "id": "R167",
@@ -3930,8 +4045,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "อังคาร(3) ดี + ไม่สัมพันธ์ลัคนา + อยู่ภพกัมมะ: ขยันเฉพาะงานที่ทำ ไม่ขยันจริงในเรื่องอื่น"
     },
     {
       "id": "R168",
@@ -3953,8 +4069,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "พฤหัส(5) ดี + ไม่สัมพันธ์ลัคนา: ขาดสติยั้งคิด ทำเลวทำชั่วได้ง่าย"
     },
     {
       "id": "R169",
@@ -3976,8 +4093,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "พฤหัส(5) เสีย + สัมพันธ์ลัคนา: มีคุณธรรมแต่ขาดหรือละเว้นได้บางครั้ง"
     },
     {
       "id": "R170",
@@ -3999,8 +4117,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "พฤหัส(5) เสีย + ไม่สัมพันธ์ลัคนา: ไม่มีคุณธรรมเลย ขาดสติยั้งคิด ทำเลวทำชั่วได้ทุกอย่าง"
     },
     {
       "id": "R171",
@@ -4022,8 +4141,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "พฤหัส(5) อยู่ราศีมิถุน + สัมพันธ์ลัคนา: อุจจาวิลาส+ประเกษตรพร้อมกัน มีคุณธรรมสูงแต่หลงดี/หลงธรรมะ"
     },
     {
       "id": "R172",
@@ -4045,8 +4165,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "พฤหัส(5) ให้คุณเพียงอย่างเดียว ไม่ให้โทษเลย ไม่ว่าจะดาวดีหรือดาวเสีย"
     },
     {
       "id": "R173",
@@ -4068,8 +4189,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ศุกร์(6) มีความหมายเรื่องกำหนัดความใคร่ ไม่ใช่ความรักทั้งหมด"
     },
     {
       "id": "R174",
@@ -4091,8 +4213,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ศุกร์(6) เสีย + สัมพันธ์ลัคนา: ศิลปะผิดเพี้ยน จินตนาการฟุ้งเฟ้อ"
     },
     {
       "id": "R175",
@@ -4114,8 +4237,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "เสาร์(7) เสีย กุมลัคนา: คิดมากแบบฟุ้งซ่าน ย้ำคิดย้ำทำ"
     },
     {
       "id": "R176",
@@ -4137,8 +4261,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "เสาร์(7) ในพื้นดวงชาตา: ให้คุณอยู่บ้าง แทบไม่ให้โทษเลย"
     },
     {
       "id": "R177",
@@ -4161,8 +4286,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "เสาร์(7) เป็นดาวจร: ให้โทษรุนแรงถึงตาย แต่ก็ให้คุณสูงมาก อาจถึงโชคใหญ่"
     },
     {
       "id": "R178",
@@ -4185,8 +4311,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "เสาร์(7) + ศุกร์(6) คู่ศัตรู ร่วมราศี/สัมพันธ์กัน: หักล้างกำลังซึ่งกันและกัน"
     },
     {
       "id": "R179",
@@ -4208,8 +4335,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ราหู(8) เป็นตนุลัคน์: เจ้าชาตาจะเป็นคนดื้อเงียบ ไม่ว่าดาวจะดีหรือเสีย"
     },
     {
       "id": "R180",
@@ -4231,8 +4359,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ราหู(8) ดี + สัมพันธ์ลัคนา: เจ้าเล่ห์ ฉลาดทันเล่ห์ ลุ่มหลงบางอย่าง"
     },
     {
       "id": "R181",
@@ -4254,8 +4383,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ราหู(8) เสีย + สัมพันธ์ลัคนา: งมงาย เชื่อง่าย ถูกหลอกลวงง่าย"
     },
     {
       "id": "R182",
@@ -4278,8 +4408,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ราหู(8) เป็นดาวจร: ให้โทษยุ่งยาก คดีความ ไม่ให้คุณเลย"
     },
     {
       "id": "R183",
@@ -4302,8 +4433,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ราหู(8) + พุธ(4) คู่ศัตรู ร่วมราศี/สัมพันธ์กัน: ลดทอนกำลังกัน"
     },
     {
       "id": "R184",
@@ -4325,8 +4457,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "เกตุ(9) สัมพันธ์/ร่วมราศีกับดาวใดก็ตาม: ทวีคูณผลของดาวนั้น — ดี→ยิ่งดี; เสีย→ยิ่งเสีย"
     },
     {
       "id": "R185",
@@ -4348,8 +4481,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "มฤตยู(0) อยู่ภพใด: มีการเปลี่ยนแปลงในภพนั้น ให้โทษอย่างเดียว"
     },
     {
       "id": "R186",
@@ -4371,8 +4505,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "มฤตยู(0) + สัมพันธ์ลัคนา: เจ้าอารมณ์ แปรปรวน ลึกลับ มีเซนส์ลึกลับ"
     },
     {
       "id": "R187",
@@ -4416,8 +4551,9 @@
       "source_level": 1,
       "source_ref": "ch026",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch026"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch026",
+      "source_quote": "ดาวคุณภาพเสีย: ความหมายผิดปกติ มากเกินหรือน้อยเกิน ไม่ใช่ตรงข้าม"
     },
     {
       "id": "R189",
@@ -4437,8 +4573,9 @@
       "source_level": 1,
       "source_ref": "ch030",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch030"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch030",
+      "source_quote": "กรณีฝาแฝด: ดูข้อเท็จจริงเจ้าชาตา นิสัยเหมือนกัน→ลัคนาราศีเดียวกัน; ต่างกันมาก→ต่างราศีกัน 1-2 ราศี"
     },
     {
       "id": "R190",
@@ -4458,8 +4595,9 @@
       "source_level": 1,
       "source_ref": "ch030",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch030"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch030",
+      "source_quote": "ถ้าพยากรณ์แล้วไม่ตรง ให้ย้ายลัคนา ±1 ราศี โดยไม่ยึดติดเวลาเกิดอย่างเดียว"
     },
     {
       "id": "R191",
@@ -4666,8 +4804,9 @@
       "source_level": 1,
       "source_ref": "ch031",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch031"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch031",
+      "source_quote": "พฤหัส(5) แรงมาก + ราหู(8) อ่อนมาก: คนดีโดยแท้ คุณธรรมสูง มองโลกดี เชื่อคนง่าย ถูกหลอกได้ง่าย"
     },
     {
       "id": "R199",
@@ -4690,8 +4829,9 @@
       "source_level": 1,
       "source_ref": "ch031",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch031"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch031",
+      "source_quote": "ราหู(8) แรงมาก + พฤหัส(5) อ่อนมาก: คนโกงโดยแท้ เจ้าเล่ห์ ขาดสติยั้งคิด ทำชั่วได้"
     },
     {
       "id": "R200",
@@ -4714,8 +4854,9 @@
       "source_level": 1,
       "source_ref": "ch031",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch031"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch031",
+      "source_quote": "ราหู(8) และพฤหัส(5) แรงพอๆกัน: ทั้งพระทั้งโจร มีทั้งสองด้านในตัว สลับกันตามสถานการณ์"
     },
     {
       "id": "R201",
@@ -4738,8 +4879,9 @@
       "source_level": 1,
       "source_ref": "ch031",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch031"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch031",
+      "source_quote": "ราหู(8) อุจ + พฤหัส(5) ไม่แรงพอ: ดาบสองคม ฉลาดทันโลก แต่ใช้ความฉลาดเอาเปรียบ/โกง"
     },
     {
       "id": "R202",
@@ -4760,8 +4902,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "ดาวเจ้าเรือนกฎุมพะ จรไปทับ คู่มิตร/คู่ธาตุ/คู่สมพล ในดวงชาตาเดิม: มักได้ทรัพย์เป็นพิเศษ"
     },
     {
       "id": "R203",
@@ -4782,8 +4925,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "ดาวเจ้าเรือนกฎุมพะ จรเป็น อุจ/มหาจักร: มีโอกาสได้ทรัพย์"
     },
     {
       "id": "R204",
@@ -4807,8 +4951,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "เสาร์(7)/ราหู(8) จรเข้าภพกฎุมพะว่าง + คุณภาพอุจ/มหาจักร: มีโอกาสได้ทรัพย์ แต่ถ้าภพมีดาวลอยเสียทรัพย์แทน"
     },
     {
       "id": "R205",
@@ -4832,8 +4977,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "เสาร์(7)จร ทับ ราหู(8) ในภพกฎุมพะ: ได้ทรัพย์"
     },
     {
       "id": "R206",
@@ -4856,8 +5002,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "มฤตยู(0) จร สัมพันธ์ถึงภพกฎุมพะ หรือดาวเจ้าเรือนกฎุมพะ: เตรียมให้โทษเรื่องทรัพย์"
     },
     {
       "id": "R207",
@@ -4881,8 +5028,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "เสาร์(7) จรสัมพันธ์ถึงภพกฎุมพะที่มี ศุกร์(6) อยู่: มีโอกาสเสียทรัพย์ตลอดช่วงนั้น"
     },
     {
       "id": "R208",
@@ -4906,8 +5054,9 @@
       "source_level": 1,
       "source_ref": "ch034",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch034"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch034",
+      "source_quote": "ราหู(8) จรสัมพันธ์ถึงภพกฎุมพะที่มี พุธ(4)/ราหู(8) อยู่: มีโอกาสเสียทรัพย์มากกว่าปกติ"
     },
     {
       "id": "R209",
@@ -4956,8 +5105,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ลำดับดาวจรที่ต้องดูก่อน-หลัง: มฤตยู→เสาร์→อังคาร→ราหู→พฤหัส→ดาวอื่นๆ"
     },
     {
       "id": "R211",
@@ -4978,8 +5128,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "พยากรณ์ดาวเดิม (natal) ควรแม่น >80%; ดาวจร (transit) แม่น >50% ถือว่าใช้ได้"
     },
     {
       "id": "R212",
@@ -5002,8 +5153,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เสาร์(7)จร สัมพันธ์ลัคนา: เหนื่อยยาก เจ็บป่วยรุนแรง ธุรกิจขัดข้อง หรือตายได้"
     },
     {
       "id": "R213",
@@ -5027,8 +5179,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เสาร์(7)จร สัมพันธ์ถึงราหู(8)เดิม: ไม่ให้โทษ กลับให้คุณ หรือมีทั้งคุณและโทษ"
     },
     {
       "id": "R214",
@@ -5052,8 +5205,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เสาร์(7)จร ทับราหู(8)เดิมที่สัมพันธ์ลัคนา: ให้คุณสูงมาก ตั้งตัวได้"
     },
     {
       "id": "R215",
@@ -5077,8 +5231,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เสาร์(7)จร สัมพันธ์ตนุลัคน์=ศุกร์(6) คู่ศัตรู: ให้โทษแรงกว่าปกติ"
     },
     {
       "id": "R216",
@@ -5101,8 +5256,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เสาร์(7)จร ทับเสาร์(7)เดิม + สัมพันธ์ลัคนา: double dose โทษร้ายแรง 2 เท่า"
     },
     {
       "id": "R217",
@@ -5126,8 +5282,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ตนุลัคน์=เสาร์(7) แล้วเสาร์จรสัมพันธ์มฤตยู(0): โทษร้ายแรงเท่ามฤตยูจรทับลัคนา"
     },
     {
       "id": "R218",
@@ -5151,8 +5308,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เสาร์(7)จร เข้าภพกฎุมพะที่มีราหู(8)เดิม: ได้ทรัพย์สินมาก อาจมีโชคใหญ่"
     },
     {
       "id": "R219",
@@ -5175,8 +5333,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "อังคาร(3)จร สัมพันธ์ลัคนา: สุขภาพ อุบัติเหตุ บาดเจ็บ เดือดร้อนใจ"
     },
     {
       "id": "R220",
@@ -5202,8 +5361,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "อังคาร(3)จร สัมพันธ์ตนุลัคน์ที่เป็นคู่มิตร/คู่ธาตุ/คู่สมพล: ดวงชาตาเข้มแข็ง ฮึกเหิม"
     },
     {
       "id": "R221",
@@ -5227,8 +5387,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ตนุลัคน์=อาทิตย์(1) คู่ศัตรูอังคาร แล้วอังคาร(3)จรสัมพันธ์: ดวงอ่อนแอ เดือดร้อนใจ"
     },
     {
       "id": "R222",
@@ -5251,8 +5412,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ราหู(8)จร สัมพันธ์ลัคนา: ให้โทษเท่านั้น ไม่ให้คุณแม้แต่น้อย"
     },
     {
       "id": "R223",
@@ -5276,8 +5438,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ราหู(8)จร + พุธ(4)เดิมกุมลัคนา: โทษทวีคูณ อาจพิการหรือถูกจองจำ"
     },
     {
       "id": "R224",
@@ -5300,8 +5463,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ราหู(8)จร สัมพันธ์ลัคนา ยังให้โทษเสมอ แม้มีคู่มิตรกุมลัคนาอยู่"
     },
     {
       "id": "R225",
@@ -5324,8 +5488,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "พฤหัส(5)จร สัมพันธ์ลัคนา: ผู้ใหญ่เมตตา มีสิ่งศักดิ์สิทธิ์คุ้มครอง บรรเทาเคราะห์"
     },
     {
       "id": "R226",
@@ -5349,8 +5514,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "พฤหัส(5)จร ทับหรือสัมพันธ์มฤตยู(0): ดวงชาตาอ่อนแอ ถ้ามีดาวร้ายอื่นร่วม อาจเกิดเหตุร้าย"
     },
     {
       "id": "R227",
@@ -5374,8 +5540,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "พฤหัส(5)จร สัมพันธ์อาทิตย์(1)คู่มิตร + ได้คู่ทั้ง natal+transit: มักได้โชค อาจมีโชคใหญ่"
     },
     {
       "id": "R228",
@@ -5398,8 +5565,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "เกตุ(9)จร: ทำหน้าที่ขยาย (amplify) ผลของดาวที่สัมพันธ์ด้วย"
     },
     {
       "id": "R229",
@@ -5420,8 +5588,9 @@
       "source_level": 1,
       "source_ref": "ch033",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch033"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch033",
+      "source_quote": "ดาวเล็กที่เป็นตนุลัคน์/เจ้าเรือนสำคัญ: สำคัญกว่าดาวใหญ่ที่ไม่มีความสัมพันธ์โดยตรง"
     },
     {
       "id": "R230",
@@ -5443,8 +5612,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "ราหู(8) เสีย + สัมพันธ์ลัคนา: งมงาย เชื่ออะไรง่าย ถูกหลอกลวงง่าย แต่จะไม่โกงเพราะไม่ทันคน"
     },
     {
       "id": "R231",
@@ -5466,8 +5636,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "ราหู(8) คุณภาพปกติ + สัมพันธ์ลัคนา: ลุ่มหลงสิ่งใดสิ่งหนึ่ง เกเรช่วงต้น ฉลาดทันคน"
     },
     {
       "id": "R232",
@@ -5489,8 +5660,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "ราหู(8) อุจ/มหาจักร + สัมพันธ์ลัคนา: เจ้าเล่ห์คนโกงชัดเจน แม้ดาวดีอื่นทานไม่อยู่"
     },
     {
       "id": "R233",
@@ -5512,8 +5684,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "ราหู(8) ดี/ปกติ ไม่สัมพันธ์ลัคนา: ฉลาดทันเล่ห์ โกงเป็นแต่มักไม่โกง"
     },
     {
       "id": "R234",
@@ -5538,8 +5711,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 1.0,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "การดูราหู(8) ต้องดู 3 ดาวประกอบเสมอ: พฤหัส(5)=สติยั้งคิด อาทิตย์(1)=รักหน้า อังคาร(3)=ตรรกะ"
     },
     {
       "id": "R235",
@@ -5559,8 +5733,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 1.0,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "เมื่อดาวสัมพันธ์กัน: ไม่หักล้างกันสมบูรณ์ แต่ผลัดกันแสดงออก"
     },
     {
       "id": "R236",
@@ -5582,8 +5757,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 0.8,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "ราหู(8) มหาจักร/จุลจักร แม้ไม่สัมพันธ์ลัคนา: อาจมีอิทธิพลความลุ่มหลง/โกง (กรณีพิเศษ)"
     },
     {
       "id": "R237",
@@ -5605,8 +5781,9 @@
       "source_level": 1,
       "source_ref": "ch032",
       "score": 0.6,
-      "source_type": "INFERRED",
-      "source_chapter": "ch032"
+      "source_type": "PRIMARY",
+      "source_chapter": "ch032",
+      "source_quote": "ราหู(8) แรง + ดาวการเงินเสีย: เสียหายหนักมาก อาจล้มละลาย"
     },
     {
       "id": "R238",
