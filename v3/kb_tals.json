@@ -8,7 +8,8 @@
     "created": "2026-05-28",
     "score_field_added": "2026-05-29",
     "score_note": "score 0.0-1.0: REFERENCE/DEFINITION=0 (lookup only) · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6 · NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL tier1=0.8 (engine เพิ่ม 0.2x transit multiplier ภายหลัง)",
-    "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending | batch1 ch002-ch010: 38 rules upgraded to PRIMARY (2026-05-29) | batch2 ch013-ch018: 43 rules upgraded (2026-05-29) | batch3 ch022-ch030: 42 rules upgraded (2026-05-29) | batch4 multi-ch: 54 rules upgraded (2026-05-29)"
+    "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending | batch1 ch002-ch010: 38 rules upgraded to PRIMARY (2026-05-29) | batch2 ch013-ch018: 43 rules upgraded (2026-05-29) | batch3 ch022-ch030: 42 rules upgraded (2026-05-29) | batch4 multi-ch: 54 rules upgraded (2026-05-29)",
+    "source_type_audit": "batch5-complete 2026-05-29: upgraded 37 → PRIMARY. Final: PRIMARY=264, INFERRED=26. Remaining INFERRED are legitimately derived (combinations/context-specific/ancient refs)."
   },
   "rules": [
     {
@@ -3285,7 +3286,7 @@
       "source_level": 1,
       "source_ref": "ch019",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch019"
     },
     {
@@ -4623,7 +4624,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -4652,7 +4653,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -4678,7 +4679,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -4705,7 +4706,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -4733,7 +4734,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -4758,7 +4759,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -4780,7 +4781,7 @@
       "source_level": 1,
       "source_ref": "ch036",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch036"
     },
     {
@@ -5077,7 +5078,7 @@
       "source_level": 1,
       "source_ref": "ch035",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch035"
     },
     {
@@ -5804,7 +5805,7 @@
       "source_level": 1,
       "source_ref": "ch037",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch037"
     },
     {
@@ -5876,7 +5877,7 @@
       "source_level": 1,
       "source_ref": "ch050",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch050"
     },
     {
@@ -5918,7 +5919,7 @@
       "source_level": 1,
       "source_ref": "ch052",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch052"
     },
     {
@@ -5939,7 +5940,7 @@
       "source_level": 1,
       "source_ref": "ch052",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch052"
     },
     {
@@ -5964,7 +5965,7 @@
       "source_level": 1,
       "source_ref": "ch053",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch053"
     },
     {
@@ -5985,7 +5986,7 @@
       "source_level": 1,
       "source_ref": "ch054",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch054"
     },
     {
@@ -6006,7 +6007,7 @@
       "source_level": 1,
       "source_ref": "ch055",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch055"
     },
     {
@@ -6150,7 +6151,7 @@
       "source_level": 1,
       "source_ref": "ch039",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch039"
     },
     {
@@ -6173,7 +6174,7 @@
       "source_level": 1,
       "source_ref": "ch039",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch039"
     },
     {
@@ -6297,7 +6298,7 @@
       "source_level": 1,
       "source_ref": "ch039",
       "score": 1.0,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch039"
     },
     {
@@ -6345,7 +6346,7 @@
       "source_level": 1,
       "source_ref": "ch039",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch039"
     },
     {
@@ -6368,7 +6369,7 @@
       "source_level": 1,
       "source_ref": "ch041",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch041"
     },
     {
@@ -6389,7 +6390,7 @@
       "source_level": 1,
       "source_ref": "ch041",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch041"
     },
     {
@@ -6412,7 +6413,7 @@
       "source_level": 1,
       "source_ref": "ch042",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch042"
     },
     {
@@ -6433,7 +6434,7 @@
       "source_level": 1,
       "source_ref": "ch041",
       "score": 1.0,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch041"
     },
     {
@@ -6477,7 +6478,7 @@
       "source_level": 1,
       "source_ref": "ch044",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch044"
     },
     {
@@ -6541,7 +6542,7 @@
       "source_level": 1,
       "source_ref": "ch056",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch056"
     },
     {
@@ -6564,7 +6565,7 @@
       "source_level": 1,
       "source_ref": "ch056",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch056"
     },
     {
@@ -6585,7 +6586,7 @@
       "source_level": 1,
       "source_ref": "ch059",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch059"
     },
     {
@@ -6606,7 +6607,7 @@
       "source_level": 1,
       "source_ref": "ch063",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch063"
     },
     {
@@ -6630,7 +6631,7 @@
       "source_level": 1,
       "source_ref": "ch064",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch064"
     },
     {
@@ -6653,7 +6654,7 @@
       "source_level": 1,
       "source_ref": "ch057",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch057"
     },
     {
@@ -6674,7 +6675,7 @@
       "source_level": 1,
       "source_ref": "ch067",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch067"
     },
     {
@@ -6765,7 +6766,7 @@
       "source_level": 1,
       "source_ref": "ch073",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch073"
     },
     {
@@ -6786,7 +6787,7 @@
       "source_level": 1,
       "source_ref": "ch078",
       "score": 1.0,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch078"
     },
     {
@@ -6809,7 +6810,7 @@
       "source_level": 1,
       "source_ref": "ch083",
       "score": 0.6,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch083"
     },
     {
@@ -6833,7 +6834,7 @@
       "source_level": 1,
       "source_ref": "ch088",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch088"
     },
     {
@@ -6857,7 +6858,7 @@
       "source_level": 1,
       "source_ref": "ch090",
       "score": 0.8,
-      "source_type": "INFERRED",
+      "source_type": "PRIMARY",
       "source_chapter": "ch090"
     },
     {
