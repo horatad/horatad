@@ -19,7 +19,7 @@
       "lop_applicable": true
     },
     "ประเกษตร": {
-      "strength_pct": -60,
+      "strength_pct": -80,
       "polarity": "-",
       "description": "ดาวอยู่ในราศีตรงข้ามเกษตร",
       "pattern": "ขาดแคลน เสื่อมถอย-ตกต่ำบั้นปลาย",
