@@ -227,14 +227,14 @@
       "tanulagn_inner": "คิดมาก ไตร่ตรอง รอบคอบ",
       "positions": {
         "uchcha": 6,
-        "kaset": [9, 10],
-        "kaset_note": "มกร(9)+กุมภ์(10) ยืนยัน 2026-05-28 — ราหู/เกตุไม่ปกครองราศี เสาร์จึงได้กุมภ์คืน",
+        "kaset": [9],
+        "kaset_note": "มกร(9) เท่านั้น ยืนยัน 2026-05-28 — กุมภ์=ราหู (เจ้าเกษตร≠ตนุเศษ คนละเรื่อง ch013)",
         "mahachak": 1,
-        "anukaset": [3, 4],
-        "anukaset_note": "ประเกษตร = opposite ของ kaset: (9+6)%12=3(กรกฎ), (10+6)%12=4(สิงห์)",
+        "anukaset": [3],
+        "anukaset_note": "ประเกษตร = opposite ของ kaset: (9+6)%12=3(กรกฎ)",
         "rajayok": null,
         "rajayok_pending": "ต้องการค่าจาก 100CH",
-        "verified_by": "user 2026-05-28 (kaset dual confirmed; anukaset corrected)"
+        "verified_by": "user 2026-05-28 (kaset=[9] final; ch013 confirmed)"
       }
     },
     "8": {
@@ -259,13 +259,14 @@
       ],
       "positions": {
         "uchcha": 7,
-        "kaset": [],
-        "kaset_note": "ราหู/เกตุไม่ปกครองราศี — ไม่มีตำแหน่งเกษตร ยืนยัน 2026-05-28",
+        "kaset": [10],
+        "kaset_note": "กุมภ์(10) ยืนยัน 2026-05-28 — ราหูเป็นเจ้าเรือนกุมภ์ได้ (เจ้าเกษตร≠ตนุเศษ ch013); ราหูไม่มีเกณฑ์เป็น 'ผลตนุเศษ' แต่เป็นเจ้าเรือนได้",
         "mahachak": 9,
-        "anukaset": [],
+        "anukaset": [4],
+        "anukaset_note": "ประเกษตร = opposite ของ kaset: (10+6)%12=4(สิงห์)",
         "rajayok": null,
         "rajayok_pending": "ต้องการค่าจาก 100CH",
-        "verified_by": "user 2026-05-28 (kaset ลบออก — ราหูไม่ปกครองราศี)"
+        "verified_by": "user 2026-05-28 (kaset=[10] restored; ch013 confirmed)"
       }
     },
     "9": {
@@ -723,7 +724,7 @@
     "rajayok per-planet (8 values) — ต้องการค่าจาก 100CH Thai tradition. ห้าม derive geometric.",
     "เทวีโชค = ราชาโชค + 6 — engine.js implements geometric formula แต่ตำรายังไม่ confirm",
     "มหาจักร strength_pct — quality_maps=80% vs ch025 implies ≈ อุจ (100%). รอ user confirm.",
-    "⚠ RESOLVED 2026-05-28: เสาร์ kaset=[9,10] ยืนยันแล้ว — ราหู/เกตุไม่ปกครองราศี engine.js KASET_MAP[10] แก้เป็น 7(เสาร์) แล้ว"
+    "⚠ RESOLVED 2026-05-28 (ch013): เจ้าเกษตรกับตนุเศษเป็นคนละเรื่อง — KASET_MAP[10]=ราหู(8) ถูกต้อง; เสาร์ kaset=[9] เท่านั้น; ราหูเป็นเจ้าเรือนได้แต่ไม่ใช่ผลตนุเศษ((A×B)%7→1-7)"
   ],
 
   "naming_collision_warnings": {
