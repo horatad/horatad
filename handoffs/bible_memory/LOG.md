@@ -2139,3 +2139,75 @@ pipeline: `tals_*.json (keywords) + kb_*.json (text templates) → LLM → wordi
 2. alias_index ← รอ Q&A system
 3. English keywords ← รอ user base
 
+
+---
+
+## 2026-05-29T00:00 — Schema Gap Analysis: สิ่งที่ขาดใน Master Dictionary
+
+Peter ชี้ gap ที่ยังขาดอยู่ใน tals_*.json + viewer + rule schema
+
+### Gap Table
+
+| หมวด | สถานะปัจจุบัน | ขาด / ต้องทำ | ไฟล์ที่เหมาะ |
+|---|---|---|---|
+| **มุมสัมพันธ์** กุม/เล็ง/โยค/ตรีโกณ | ✅ ข้อมูลมีใน tals_quality_rules.json → aspects (KUM/LENG/YOK/TRI) | ❌ viewer ยังไม่แสดง aspect weights ใน มาตรฐาน tab | tals_quality_rules.json ✓ + viewer |
+| **คู่ดาว** มิตร/สมพล/ธาตุ/ศัตรู | ✅ skeleton มีใน master_dict_meanings.json (mitr/mahamitr/satru/neutral) | ❌ ยังไม่ migrate ไป tals_*.json v3 | ใหม่: `tals_planet_relations.json` |
+| **อาชีพ** ตามดาว | ✅ career_areas[] มีใน tals_planets.json | ❌ viewer ไม่มีคอลัมน์อาชีพ | tals_planets.json ✓ + viewer column |
+| **ลัคนาในฤกษ์** | ❌ ไม่มีในไฟล์ไหน | ❌ ต้องสร้างใหม่ (TALS มีแม้ไม่ใช้คำนวณ) | ใหม่: `tals_lagna.json` |
+| **ความหมายดาวกุมลัคนา** | ✅ skeleton (kum_lakkana) มีใน master_dict lagna_concepts | ❌ ยังไม่ AI-extracted | tals_lagna.json |
+| **ความหมายตนุเศษตามดาว** | ✅ tanusesh_trait มีใน tals_planets.json per planet | ❌ viewer tab ยังไม่แสดง | viewer tab ใหม่ "ลัคนา" |
+| **ความหมายตนุลัคน์ตามดาว** | ✅ tanulagn_inner มีใน tals_planets.json per planet | ❌ viewer tab ยังไม่แสดง | viewer tab ใหม่ "ลัคนา" |
+| **พระเคราะห์เรือนนอก/ใน** | ❌ ไม่มีในไฟล์ไหน | ❌ ต้องนิยาม + scoring rule | tals_quality_rules.json section ใหม่ |
+| **score ใน rules** | ❌ ไม่มีใน kb_*.json | ❌ ต้องเพิ่ม field | kb_*.json rule schema |
+
+### คำอธิบายเพิ่มเติม
+
+**คู่ดาว 4 ประเภท** (ต้องแยกให้ชัด):
+- คู่มิตร = ดาวที่เกื้อกูลกัน (pair-level)
+- คู่สมพล = ดาวกำลังเท่ากัน (neutral)
+- คู่ธาตุ = ดาวธาตุเดียวกัน
+- คู่ศัตรู = ดาวที่ขัดแย้งกัน
+
+**พระเคราะห์เรือนนอก/ใน** (chart-level concept):
+- เรือนใน = ภพ 1-6 ของดวงชาตา (ขึ้นกับลัคนา)
+- เรือนนอก = ภพ 7-12 ของดวงชาตา (ขึ้นกับลัคนา)
+- Multiplier rule: ดาวดี + มาตรฐานดี + สัมพันธ์ลัคนา + เป็นทั้งเจ้าเรือนในและเรือนนอก → เพิ่มความดีเป็นพิเศษ
+- ข้อสังเกต: เป็น chart-level (ไม่ static per planet) → ต้องคำนวณจาก lagna + kaset[]
+
+**score ใน rules** (สำคัญสำหรับ prediction engine):
+- แต่ละ rule ใน kb_*.json ควรมี relevance score
+- Dependent rule (ต้องอาศัย rule อื่น) → score ต่ำกว่า independent rule
+- Combination rule (หลาย rule รวมกัน) → score = f(component scores)
+- ใช้ rank rules เพื่อ select top-N ที่ relevant ที่สุดสำหรับ prediction
+
+### ไฟล์ใหม่ที่ต้องสร้าง
+
+```
+v3/
+  tals_planet_relations.json   ← คู่ดาว 4 ประเภท (migrate จาก master_dict)
+  tals_lagna.json              ← ลัคนาในฤกษ์ + ดาวกุมลัคนา + ตนุเศษ/ตนุลัคน์ table
+```
+
+### ผลต่อ viewer (tals_dict_export.html)
+
+ต้องเพิ่ม:
+1. มาตรฐาน tab: แสดง aspect weights table (KUM/LENG/YOK/TRI)
+2. ดาว tab: คอลัมน์ อาชีพ + ตนุเศษ + ตนุลัคน์ (ซ่อนได้ expand)
+3. tab ใหม่ "ลัคนา": ดาวกุมลัคนา + ตนุเศษ/ตนุลัคน์ per planet + ลัคนาในฤกษ์
+4. tab ใหม่ "คู่ดาว": มิตร/สมพล/ธาตุ/ศัตรู lookup table
+
+### Priority
+
+```
+ทำได้ทันที (data มีอยู่แล้ว):
+1. viewer: อาชีพ column + aspect weights table + ตนุเศษ/ตนุลัคน์ expand
+2. tals_planet_relations.json — migrate จาก master_dict skeleton
+
+ต้อง AI extraction ก่อน:
+3. tals_lagna.json — ดาวกุมลัคนา + ลัคนาในฤกษ์ (ต้องอ่าน chapter_texts.json)
+
+ต้องออกแบบ schema + verify:
+4. พระเคราะห์เรือนนอก/ใน — นิยาม scoring rule ก่อน implement
+5. score ใน rules — กำหนด scale + formula + ปรับ kb_*.json schema
+```
+
