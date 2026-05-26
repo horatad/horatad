@@ -101,7 +101,7 @@
       "engine_warning": "⚠ v3/engine.js + script.js มี LABEL SWAP กับ อุจจาวิลาส — HORATAD ต้องแก้"
     },
     "อนุเกษตร": {
-      "strength_pct": 50,
+      "strength_pct": 40,
       "polarity": "+",
       "description": "ดาวอยู่ในเกษตรของคู่มิตร — ให้คุณตั้งแต่เกิดแต่ช้ากว่าเกษตร",
       "pattern": "คล้ายเกษตรแต่ช้ากว่า ตัดสินใจไม่ได้ → ช้า",
