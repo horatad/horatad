@@ -181,6 +181,80 @@
 - ดาวกุมลัคนาแสดงผลก่อนดาวตรีโกณ/โยค/เล็งเสมอ (R288)
 - ถ้าหลายดาวสัมพันธ์ลัคนา → กุมลัคนาออกก่อน
 
+## Multi-DB Architecture (2026-05-28)
+
+### Source Hierarchy — 4 ฐานข้อมูล แยกกันเด็ดขาด
+
+| DB file | Level | แหล่งที่มา | Load mode |
+|---|---|---|---|
+| `kb_tals.json` | 1 — PRIMARY | 100CH ตำรา TALS เท่านั้น | เสมอ |
+| `kb_text.json` | 2 — SECONDARY | ตำราโหราศาสตร์อื่น (ระบุชื่อตำรา+ผู้แต่ง) | optional |
+| `kb_expert.json` | 3 — TERTIARY | ประสบการณ์โหรมีชื่อ (ระบุชื่อ+แหล่งอ้างอิง) | optional |
+| `kb_user.json` | 4 — QUATERNARY | ประสบการณ์ผู้ใช้ | optional |
+
+**กฎเหล็ก:** ห้ามผสม level ต่างกันในไฟล์เดียวกัน — source contamination ทำให้ KB ไม่น่าเชื่อถือ
+
+### Cross-DB Linking Schema
+
+Rule ใน kb_text / kb_expert / kb_user ต้องมี `tals_link` field:
+
+```json
+{
+  "rule_id": "TX-001",
+  "db": "kb_text",
+  "source_ref": "ตำราโหราศาสตร์ไทย — อ.เทพย์ สาริกบุตร / หน้า 45",
+  "tals_link": {
+    "tals_rule_id": "R055",
+    "relation": "confirm"
+  },
+  "tals_compatible": true,
+  ...rule fields ปกติ (c, meaning, polarity, planet_ids, contexts, domain)...
+}
+```
+
+ถ้าไม่มี rule คู่ใน TALS:
+```json
+"tals_link": {
+  "tals_rule_id": null,
+  "relation": "new"
+}
+```
+
+### Relation Types
+
+| type | ความหมาย | action |
+|---|---|---|
+| `confirm` | บอกเหมือน TALS ต่างแค่ wording — เพิ่ม confidence | เพิ่ม weight ให้ TALS rule |
+| `extend` | ครอบกรณีที่ TALS ไม่พูดถึง — compatible | ใช้ร่วมกับ TALS ได้ |
+| `conflict` | polarity/ผลต่างจาก TALS rule เดียวกัน | user ต้อง decide ก่อนใช้ |
+| `new` | topic ใหม่ทั้งหมด ไม่มีคู่ใน TALS | standalone — ระวัง hallucination |
+
+### Engine Loading Modes
+
+```js
+// strict TALS — production default
+load('kb_tals.json')
+
+// TALS + ตำราเสริม
+load('kb_tals.json', 'kb_text.json')
+
+// full — research mode
+load('kb_tals.json', 'kb_text.json', 'kb_expert.json', 'kb_user.json')
+```
+
+**กฎ:** conflict rules ใน kb_text/expert/user ต้อง filter ออกโดยอัตโนมัติเมื่อโหลดพร้อม kb_tals  
+จนกว่า user จะ decide → mark เป็น `PENDING_REVIEW`
+
+### Source Fields (เพิ่มใน rule ทุก level)
+
+| field | required | description |
+|---|---|---|
+| `db` | ✅ | ชื่อ DB ที่ rule นี้อยู่ |
+| `source_level` | ✅ | 1-4 |
+| `source_ref` | ✅ | ch### (level 1) / "ชื่อตำรา/หน้า" (level 2) / "ชื่อโหร/URL" (level 3) / "user/YYYY-MM-DD" (level 4) |
+| `tals_link` | ✅ level 2-4 | `{tals_rule_id, relation}` |
+| `tals_compatible` | ✅ level 2-4 | true / false / null (pending) |
+
 ## Validation Checklist (ก่อน commit rule ลง KB)
 
 - [ ] `c` field อ่านแล้วเข้าใจเงื่อนไขทันที ไม่คลุมเครือ
@@ -191,3 +265,6 @@
 - [ ] ไม่ duplicate กับ rule ที่มีอยู่แล้วใน KB
 - [ ] ถ้าเป็น case_study → ไม่ควร rule_use: "match"
 - [ ] ถ้า text มีกรณี 2+ → ตรวจว่า abstract เป็น principle แล้วหรือยัง
+- [ ] `db` field ระบุถูก KB ที่ rule นี้ควรอยู่ (kb_tals / kb_text / kb_expert / kb_user)
+- [ ] level 2-4: มี `tals_link.relation` ชัดเจน (confirm/extend/conflict/new)
+- [ ] conflict rules: อย่า commit ลง kb_tals.json เด็ดขาด
