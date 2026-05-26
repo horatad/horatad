@@ -1,0 +1,733 @@
+{
+  "_meta": {
+    "schema_version": "1.0",
+    "file": "tals_elements.json",
+    "purpose": "Single source of truth for ALL TALS foundational elements. All other files/code MUST reference this file — do not duplicate or diverge.",
+    "system": "TALS (Thai Astrology Logical Style)",
+    "attribution": {
+      "founder": "ยืนยง นาวาสมุทร (สมญานาม: แดง เมืองตราด)",
+      "reference_text": "โหราศาสตร์ไทยแนวตรรกะ (= 100CH ในระบบเรา)",
+      "significance": "ครั้งแรกที่นำตรรกศาสตร์มาใช้ในโหราศาสตร์ไทย — ตัดสินกฎเกณฑ์ที่คลุมเครือ ให้เป็นระบบที่ตรวจสอบได้"
+    },
+    "terminology": {
+      "TALS": "prediction framework (interpretation + rules)",
+      "suriyayat": "สุริยยาตร์ = position calculation engine used as TALS backbone (NOT prediction system)"
+    },
+    "id_scheme": {
+      "planets": "0-9 | 0=มฤตยู, 1=อาทิตย์, 2=จันทร์, 3=อังคาร, 4=พุธ, 5=พฤหัสบดี, 6=ศุกร์, 7=เสาร์, 8=ราหู, 9=เกตุ",
+      "signs": "0-11 | 0=เมษ, 1=พฤษภ, 2=มิถุน, 3=กรกฎ, 4=สิงห์, 5=กันย์, 6=ตุล, 7=พิจิก, 8=ธนู, 9=มกร, 10=กุมภ์, 11=มีน",
+      "houses": "1-12 (inherently 1-indexed — house 1 = ตนุ)"
+    },
+    "id_migration_note": "quality_maps.json uses planets 1-8 (same). master_dict_meanings.json uses planets 1-10 (เกตุ=9, มฤตยู=10) and signs 1-12 (1=เมษ). This file standardises to canonical 0-based signs.",
+    "naming_fix": "master_dict_meanings.json planet_positions[N].prakaset was mislabeled — it stores ANUKASET (mitr partner's kaset signs), NOT PRAKASET (ประเกษตร = opposite of kaset). Corrected in this file.",
+    "consumers": [
+      "v3/engine.js (replaces KASET_MAP / EXALT_MAP / MAHACHAK_MAP hardcoded)",
+      "tools/master_dict_editor.html (replaces master_dict_meanings.json)",
+      "v3/master_dict.js (LLM extraction prompt context)"
+    ],
+    "supersedes": [
+      "v3/quality_maps.json",
+      "v3/master_dict_meanings.json"
+    ],
+    "created": "2026-05-28",
+    "verification_protocol": "rajayok fields = null pending user verify from 100CH. All other positions user-verified 2026-05-26."
+  },
+
+  "planets": {
+    "0": {
+      "name": "มฤตยู",
+      "name_en": "Mrittyu (Uranus)",
+      "abbrev": "ม",
+      "element": "ไม่มีในตำรา",
+      "nature": "บาป (หนัก)",
+      "has_quality_positions": false,
+      "speed_per_sign": "~7 ปี/ราศี",
+      "represents": ["ความเปลี่ยนแปลงฉับพลัน", "เหตุการณ์ไม่คาดคิด", "การพลิกผัน", "ความวุ่นวาย"],
+      "positive_keywords": ["ปรับตัวเก่ง", "พลิกสถานการณ์", "นวัตกรรม", "ตื่นตัว"],
+      "negative_keywords": ["ชีวิตพลิกผัน", "อุบัติเหตุฉับพลัน", "ความวุ่นวายไม่คาดฝัน", "ขาดเสถียรภาพ"],
+      "body_parts": ["ร่างกายทั้งหมด (อันตราย)"],
+      "career_areas": ["งานเกี่ยวกับความฉับพลัน (แพทย์ฉุกเฉิน, นิติเวช)"],
+      "notes": [
+        "เริ่มใช้ในไทยช่วงรัชกาลที่ 4 (empirical addition — เริ่มเห็นผล)",
+        "ไม่มีตำแหน่ง อุจ/นิจ/เกษตร — ใช้ aspect-based interpretation เท่านั้น",
+        "มฤตยูสัมพันธ์ลัคนา → มีเซนส์ลึกลับ มีปริศนาในชีวิต (R186)"
+      ]
+    },
+    "1": {
+      "name": "อาทิตย์",
+      "name_en": "Sun",
+      "abbrev": "อ",
+      "aliases": ["ระวิ", "สุรีย์", "สุริยะ", "สุริยน", "รวิ", "ทิวากร"],
+      "element": "ไฟ",
+      "nature": "บาป (ศุภเมื่อสัมพันธ์ลัคนา)",
+      "has_quality_positions": true,
+      "speed_per_sign": "~1 เดือน/ราศี",
+      "represents": ["ตัวตน", "อัตตา", "บิดา", "อำนาจ", "ราชการ", "ศักดิ์ศรี"],
+      "positive_keywords": ["บารมี", "ผู้นำ", "กล้าหาญ", "มีอำนาจ", "สง่า", "น่านับถือ"],
+      "negative_keywords": ["หยิ่ง", "เผด็จการ", "รักหน้า", "ดื้อรั้น", "ไม่ยอมแพ้"],
+      "body_parts": ["หัวใจ", "กระดูกสันหลัง", "ตา (ขวา)"],
+      "career_areas": ["ราชการ", "การเมือง", "ผู้บริหาร", "ทหาร", "ตำรวจ"],
+      "tanusesh_trait": "ไว้ตัว รักหน้า ไม่ยอมเสียหน้า หยิ่ง",
+      "tanulagn_inner": "ไว้ตัว ถือตัว รักหน้า ไม่ยอมเสียหน้า",
+      "positions": {
+        "uchcha": 0,
+        "kaset": [4],
+        "mahachak": 3,
+        "anukaset": [8, 11],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH (Thai tradition lookup, ไม่ derivable)",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "2": {
+      "name": "จันทร์",
+      "name_en": "Moon",
+      "abbrev": "จ",
+      "aliases": ["จันทรา", "จันทร"],
+      "element": "ดิน",
+      "nature": "สุภ",
+      "has_quality_positions": true,
+      "speed_per_sign": "~2.5 วัน/ราศี",
+      "represents": ["จิตใจ", "ความรู้สึก", "มารดา", "ประชาชน", "ที่อยู่อาศัย"],
+      "positive_keywords": ["อ่อนโยน", "เมตตา", "มีเสน่ห์", "จิตใจดี", "พูดเก่ง"],
+      "negative_keywords": ["อารมณ์แปรปรวน", "เจ้าอารมณ์", "ขี้กังวล", "ไม่มั่นคง"],
+      "body_parts": ["ท้อง", "ระบบย่อยอาหาร", "ตา (ซ้าย)", "น้ำในร่างกาย"],
+      "career_areas": ["พยาบาล", "งานบริการ", "ครู", "ศิลปิน", "งานกับสาธารณชน"],
+      "tanusesh_trait": "กริยามารยาทดี นิสัยอ่อนโยน อ่อนหวาน",
+      "tanulagn_inner": "อ่อนหวาน มีกริยามารยาท",
+      "positions": {
+        "uchcha": 1,
+        "kaset": [3],
+        "mahachak": 0,
+        "anukaset": [2, 5],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "3": {
+      "name": "อังคาร",
+      "name_en": "Mars",
+      "abbrev": "ภ",
+      "aliases": ["ภุมมะ", "ภุมเมศ", "ภูมิ"],
+      "element": "ลม",
+      "nature": "บาป",
+      "has_quality_positions": true,
+      "speed_per_sign": "~1.5 เดือน/ราศี",
+      "represents": ["พลังงาน", "ความกล้า", "ความขัดแย้ง", "พี่น้อง", "ไฟ"],
+      "positive_keywords": ["กล้าหาญ", "มีพลังงาน", "กระตือรือร้น", "ริเริ่ม", "ฮึกเหิม"],
+      "negative_keywords": ["ก้าวร้าว", "ใจร้อน", "ทะเลาะ", "อุบัติเหตุ", "ไฟไหม้"],
+      "body_parts": ["กล้ามเนื้อ", "เลือด", "หัว", "อวัยวะเพศ"],
+      "career_areas": ["ทหาร", "ตำรวจ", "กีฬา", "ช่าง", "ศัลยแพทย์"],
+      "tanusesh_trait": "ขยันขันแข็ง (ที่ชัดเจนที่สุด)",
+      "tanulagn_inner": "ขยัน แข็ง ไม่ค่อยยอมใคร ไม่เชื่ออะไรง่ายๆ ดื้อ ดื้อแล้วเถียงโต้ตอบ (แบบมีเหตุผล)",
+      "positions": {
+        "uchcha": 9,
+        "kaset": [0, 7],
+        "mahachak": 5,
+        "anukaset": [1, 6],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "4": {
+      "name": "พุธ",
+      "name_en": "Mercury",
+      "abbrev": "ว",
+      "aliases": [],
+      "element": "น้ำ",
+      "nature": "สุภ (ขึ้นอยู่กับดาวที่อยู่ด้วย)",
+      "has_quality_positions": true,
+      "speed_per_sign": "~1 เดือน/ราศี",
+      "represents": ["สติปัญญา", "การสื่อสาร", "พาณิชย์", "การเดินทาง", "เด็ก"],
+      "positive_keywords": ["ฉลาด", "พูดเก่ง", "ปรับตัวได้ดี", "เจ้าเล่ห์ (ดี)", "คล่องแคล่ว"],
+      "negative_keywords": ["โกหก", "เจ้าเล่ห์ (ร้าย)", "ไม่มั่นคง", "ฉวยโอกาส"],
+      "body_parts": ["สมอง", "ประสาท", "มือ", "ปอด", "ลำไส้เล็ก"],
+      "career_areas": ["นักบัญชี", "นักเขียน", "นักข่าว", "นักธุรกิจ", "นักพูด"],
+      "tanusesh_trait": "ละเอียด ทำงานประณีตเรียบร้อย ชอบข้อมูล",
+      "tanulagn_inner": "ละเอียด ประณีต ชอบงานหนังสือ ข้อมูล ความคิดลึกซึ้ง",
+      "positions": {
+        "uchcha": 5,
+        "kaset": [2, 5],
+        "mahachak": 4,
+        "anukaset": [3],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "5": {
+      "name": "พฤหัสบดี",
+      "name_en": "Jupiter",
+      "abbrev": "ช",
+      "aliases": ["ชีวา", "ชีโว", "ครู", "คุรุ"],
+      "element": "ดิน",
+      "nature": "สุภ",
+      "has_quality_positions": true,
+      "speed_per_sign": "~1 ปี/ราศี",
+      "represents": ["ปัญญา", "ศาสนา", "ครู", "กฎหมาย", "ความเจริญ", "ความเป็นสุข"],
+      "positive_keywords": ["โชคดี", "ปัญญาดี", "มีคุณธรรม", "เจริญรุ่งเรือง", "เมตตา"],
+      "negative_keywords": ["ฟุ่มเฟือย", "โอ้อวด", "ขยายเกินจริง", "ประมาท"],
+      "body_parts": ["ตับ", "ต่อมไขมัน", "สะโพก", "ต้นขา"],
+      "career_areas": ["นักกฎหมาย", "นักบวช", "ครู/อาจารย์", "ผู้พิพากษา", "แพทย์"],
+      "tanusesh_trait": "ใจอ่อน มีเมตตา ขี้สงสาร ไม่โกง (ชัดเจนมาก)",
+      "tanulagn_inner": "ใจอ่อน เมตตา ขี้สงสาร ไม่โกง",
+      "positions": {
+        "uchcha": 3,
+        "kaset": [8, 11],
+        "mahachak": 7,
+        "anukaset": [4],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "6": {
+      "name": "ศุกร์",
+      "name_en": "Venus",
+      "abbrev": "ศ",
+      "aliases": ["ศุกรา"],
+      "element": "น้ำ",
+      "nature": "สุภ",
+      "has_quality_positions": true,
+      "speed_per_sign": "~1 เดือน/ราศี",
+      "represents": ["ความงาม", "ศิลปะ", "ความรัก", "ความสุข", "สตรี", "ความฟุ่มเฟือย"],
+      "positive_keywords": ["งดงาม", "มีเสน่ห์", "ศิลปินเก่ง", "มีรสนิยม", "สุขสบาย"],
+      "negative_keywords": ["ฟุ่มเฟือย", "เจ้าชู้", "ขี้เกียจ", "หลงใหลความสุข"],
+      "body_parts": ["ไต", "ผิวหนัง", "คอ", "ต่อมน้ำเหลือง"],
+      "career_areas": ["ศิลปิน", "นักออกแบบ", "นักดนตรี", "ช่างแต่งหน้า", "งานบันเทิง"],
+      "tanusesh_trait": "มีจินตนาการ เพ้อฝัน ชอบเรื่องรื่นเริงบันเทิง",
+      "tanulagn_inner": "เพ้อฝัน จินตนาการ ชอบความรื่นเริง",
+      "positions": {
+        "uchcha": 11,
+        "kaset": [1, 6],
+        "mahachak": 8,
+        "anukaset": [0, 7],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "7": {
+      "name": "เสาร์",
+      "name_en": "Saturn",
+      "abbrev": "ส",
+      "aliases": ["โสรา", "ศนี"],
+      "element": "ไฟ",
+      "nature": "บาป",
+      "has_quality_positions": true,
+      "speed_per_sign": "~2.5 ปี/ราศี",
+      "represents": ["วินัย", "ขีดจำกัด", "ความล่าช้า", "ผู้เฒ่า", "กรรม", "ที่ดิน"],
+      "positive_keywords": ["ทน", "อดทน", "รับผิดชอบ", "มีระเบียบ", "ยาวนาน"],
+      "negative_keywords": ["ล่าช้า", "อุปสรรค", "โดดเดี่ยว", "เย็นชา", "เข้มงวด"],
+      "body_parts": ["กระดูก", "ข้อต่อ", "ฟัน", "ผิวหนัง (ชั้นนอก)", "หู"],
+      "career_areas": ["เกษตรกร", "นักธุรกิจ (ระยะยาว)", "นักวิทยาศาสตร์", "วิศวกร"],
+      "tanusesh_trait": "คิดมาก ไตร่ตรองรอบคอบมากๆ",
+      "tanulagn_inner": "คิดมาก ไตร่ตรอง รอบคอบ",
+      "positions": {
+        "uchcha": 6,
+        "kaset": [9, 10],
+        "kaset_note": "มกร(9)=primary, กุมภ์(10)=secondary",
+        "mahachak": 1,
+        "anukaset": [10],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (mahachak); engine.js + BIBLE (kaset, uchcha)"
+      }
+    },
+    "8": {
+      "name": "ราหู",
+      "name_en": "Rahu",
+      "abbrev": "ร",
+      "aliases": ["อสุริน", "อสุรา"],
+      "element": "ลม",
+      "nature": "บาป (น้อยกว่าเสาร์)",
+      "has_quality_positions": true,
+      "speed_per_sign": "~1.5 ปี/ราศี (ถอยหลัง)",
+      "represents": ["ความลึกลับ", "ความหลงใหลมัวเมา", "เทคโนโลยี", "ต่างชาติ", "ความคาดไม่ถึง"],
+      "positive_keywords": ["ฉลาดเฉียบแหลม", "ทันสมัย", "โชคเกี่ยวกับต่างชาติ"],
+      "negative_keywords": ["หลอกลวง", "คาดเดาไม่ได้", "ผิดปกติ", "ชีวิตผันผวน", "ลุ่มหลง"],
+      "body_parts": ["ประสาท", "ผิวหนัง (โรคแปลก)", "ระบบภูมิคุ้มกัน"],
+      "career_areas": ["IT", "หุ้น", "เก็งกำไร", "งานต่างประเทศ", "งานลึกลับ"],
+      "notes": [
+        "ความหมายหลัก = ความหลงใหลมัวเมากับสิ่งใดสิ่งหนึ่ง จนไม่สนใจสิ่งอื่น (obsession/fixation)",
+        "ไม่มีนิจ — ไม่พบในตำราเลย",
+        "ราหู มหาจักร + ไม่สัมพันธ์ลัคนา → ยังแสดงผล ลุ่มหลง/โกง (กรณีพิเศษ)",
+        "⚠ uchcha corrected 2026-05-26: เดิมจำผิดเป็นพฤษภ → ถูกต้องคือพิจิก(7)"
+      ],
+      "positions": {
+        "uchcha": 7,
+        "kaset": [10],
+        "mahachak": 9,
+        "anukaset": [9, 10],
+        "rajayok": null,
+        "rajayok_pending": "ต้องการค่าจาก 100CH",
+        "verified_by": "user 2026-05-26 (uchcha + mahachak corrected); engine.js (kaset)"
+      }
+    },
+    "9": {
+      "name": "เกตุ",
+      "name_en": "Ketu",
+      "abbrev": "ก",
+      "aliases": [],
+      "element": "วิญญาณ",
+      "nature": "— (ทวีคูณดาวอื่น)",
+      "has_quality_positions": false,
+      "speed_per_sign": "~1.5 ปี/ราศี (ถอยหลัง)",
+      "represents": ["ทวีคูณดาวที่อยู่ร่วมราศี", "multiplier/amplifier"],
+      "positive_keywords": ["ขยายผลดี"],
+      "negative_keywords": ["ขยายผลร้าย"],
+      "career_areas": ["ไม่มีลักษณะเฉพาะตนเอง — ขึ้นกับดาวที่อยู่ด้วย"],
+      "notes": [
+        "ไม่มีตำแหน่ง อุจ/นิจ/เกษตร/มหาจักร/ราชาโชค — verified: ไม่พบในตำรา 102 บท",
+        "ไม่ทำ aspect ลัคนาโดยตรง (กุม/เล็ง/โยค/ตรีโกณ กับลัคนา = 0 ครั้งในตำรา)",
+        "บทบาท = ทวีคูณดาวที่อยู่ร่วมราศี — ส่งเสริมหรือขยายผลดาวนั้น"
+      ]
+    }
+  },
+
+  "signs": {
+    "0": {
+      "name": "เมษ", "name_en": "Aries",
+      "ruler": 3, "element": "ไฟ", "element_phase": "ต้น", "nature": "จร",
+      "represents": ["การเริ่มต้น", "ความกล้า", "พลังบุกเบิก", "การต่อสู้"],
+      "keywords": ["ริเริ่ม", "กล้าหาญ", "ใจร้อน", "บุกเบิก", "ห้าวหาญ"]
+    },
+    "1": {
+      "name": "พฤษภ", "name_en": "Taurus",
+      "ruler": 6, "element": "ดิน", "element_phase": "กลาง", "nature": "คงที่",
+      "represents": ["ทรัพย์สิน", "ความสะดวกสบาย", "ความมั่นคง", "ความอดทน"],
+      "keywords": ["มั่นคง", "อดทน", "รักความสบาย", "ดื้อรั้น", "เสพสุข"]
+    },
+    "2": {
+      "name": "มิถุน", "name_en": "Gemini",
+      "ruler": 4, "element": "ลม", "element_phase": "ปลาย", "nature": "สามัญ",
+      "represents": ["การสื่อสาร", "ความรู้", "พี่น้อง", "การเรียน", "การเดินทางใกล้"],
+      "keywords": ["ฉลาด", "ช่างพูด", "เปลี่ยนแปลง", "อยากรู้", "ปรับตัวเก่ง"]
+    },
+    "3": {
+      "name": "กรกฎ", "name_en": "Cancer",
+      "ruler": 2, "element": "น้ำ", "element_phase": "ต้น", "nature": "จร",
+      "represents": ["ครอบครัว", "บ้าน", "มารดา", "ความผูกพัน", "ความรู้สึก"],
+      "keywords": ["อ่อนโยน", "ผูกพัน", "ห่วงใย", "อ่อนไหว", "อารมณ์เปลี่ยนง่าย"]
+    },
+    "4": {
+      "name": "สิงห์", "name_en": "Leo",
+      "ruler": 1, "element": "ไฟ", "element_phase": "กลาง", "nature": "คงที่",
+      "represents": ["ศักดิ์ศรี", "อำนาจ", "ความสง่างาม", "ผู้นำ", "ความภาคภูมิใจ"],
+      "keywords": ["สง่างาม", "มีอำนาจ", "ภาคภูมิใจ", "หยิ่ง", "มั่นใจ"]
+    },
+    "5": {
+      "name": "กันย์", "name_en": "Virgo",
+      "ruler": 4, "element": "ดิน", "element_phase": "ปลาย", "nature": "สามัญ",
+      "represents": ["การวิเคราะห์", "ความละเอียด", "การทำงาน", "บริการ", "สุขภาพ"],
+      "keywords": ["ละเอียด", "มีระเบียบ", "วิเคราะห์", "จู้จี้", "ปฏิบัติ"]
+    },
+    "6": {
+      "name": "ตุล", "name_en": "Libra",
+      "ruler": 6, "element": "ลม", "element_phase": "ต้น", "nature": "จร",
+      "represents": ["ความสัมพันธ์", "คู่ครอง", "ความสมดุล", "ความยุติธรรม", "ความงาม"],
+      "keywords": ["สมดุล", "ยุติธรรม", "รักสวยรักงาม", "ลังเล", "ประนีประนอม"]
+    },
+    "7": {
+      "name": "พิจิก", "name_en": "Scorpio",
+      "ruler": 3, "element": "น้ำ", "element_phase": "กลาง", "nature": "คงที่",
+      "represents": ["ความลับ", "ความลึกซึ้ง", "การเปลี่ยนแปลง", "อารมณ์รุนแรง", "อำนาจซ่อนเร้น"],
+      "keywords": ["ลึกซึ้ง", "ลึกลับ", "รุนแรง", "อาฆาต", "ทุ่มเท"]
+    },
+    "8": {
+      "name": "ธนู", "name_en": "Sagittarius",
+      "ruler": 5, "element": "ไฟ", "element_phase": "ปลาย", "nature": "สามัญ",
+      "represents": ["ปรัชญา", "การเดินทางไกล", "ครูบาอาจารย์", "ศาสนา", "อิสรภาพ"],
+      "keywords": ["ใจกว้าง", "มองโลกบวก", "อิสระ", "ตรงไปตรงมา", "ใฝ่รู้"]
+    },
+    "9": {
+      "name": "มกร", "name_en": "Capricorn",
+      "alias": "มังกร",
+      "ruler": 7, "element": "ดิน", "element_phase": "ต้น", "nature": "จร",
+      "represents": ["ความรับผิดชอบ", "การงาน", "อาวุโส", "ความสำเร็จระยะยาว", "ความอดทน"],
+      "keywords": ["รับผิดชอบ", "อดทน", "ทะเยอทะยาน", "จริงจัง", "ระมัดระวัง"]
+    },
+    "10": {
+      "name": "กุมภ์", "name_en": "Aquarius",
+      "ruler": 8, "ruler_secondary": 7,
+      "ruler_note": "ราหู(8)=primary, เสาร์(7)=secondary",
+      "element": "ลม", "element_phase": "กลาง", "nature": "คงที่",
+      "represents": ["ความคิดแปลกใหม่", "มิตรสหาย", "สังคม", "อิสรภาพทางความคิด", "ความไม่ปกติ"],
+      "keywords": ["คิดต่าง", "เป็นตัวของตัวเอง", "มีมิตร", "ดื้อรั้น", "แปลก"]
+    },
+    "11": {
+      "name": "มีน", "name_en": "Pisces",
+      "ruler": 5, "element": "น้ำ", "element_phase": "ปลาย", "nature": "สามัญ",
+      "represents": ["ความเมตตา", "จินตนาการ", "ศาสนา", "การอุทิศตน", "ความฝัน"],
+      "keywords": ["เพ้อฝัน", "เห็นอกเห็นใจ", "อ่อนไหว", "ลึกลับ", "ยอมรับ"]
+    }
+  },
+
+  "houses": {
+    "1": { "name": "ตนุ", "domain": "ตัวตน ร่างกาย บุคลิกภาพ สุขภาพโดยรวม", "keywords": ["ตัวตน", "บุคลิก", "รูปร่าง"] },
+    "2": { "name": "กฎุมพะ", "domain": "การเงิน ทรัพย์สิน ครอบครัว การพูด", "keywords": ["เงิน", "ทรัพย์สิน", "ครอบครัว"] },
+    "3": { "name": "สหัชชะ", "domain": "พี่น้อง การสื่อสาร การเดินทางสั้น ความกล้า", "keywords": ["พี่น้อง", "การสื่อสาร"] },
+    "4": { "name": "พันธุ", "domain": "บ้าน มารดา ที่ดิน ความสุขภายใน", "keywords": ["บ้าน", "มารดา", "ที่ดิน"] },
+    "5": { "name": "ปุตตะ", "domain": "บุตร ความสร้างสรรค์ การพนัน ความรักใคร่", "keywords": ["บุตร", "ลูก", "ความสร้างสรรค์"] },
+    "6": { "name": "อริ", "domain": "ศัตรู โรคภัย หนี้สิน ข้าราชการ/ลูกน้อง", "keywords": ["ศัตรู", "โรค", "หนี้"] },
+    "7": { "name": "ปัตนิ", "domain": "คู่ครอง หุ้นส่วน สัญญา สาธารณะ", "keywords": ["คู่ครอง", "หุ้นส่วน", "สัญญา"] },
+    "8": { "name": "มรณะ", "domain": "ความตาย มรดก ของลับ การเปลี่ยนแปลงขั้นสุด — ร้ายสุด ไม่มีอะไรตอบแทน", "keywords": ["ความตาย", "มรดก", "ของลับ"] },
+    "9": { "name": "ศุภะ", "domain": "โชคดี ศาสนา การเดินทางไกล บิดา ปัญญาสูง", "keywords": ["โชค", "ศาสนา", "ต่างประเทศ"] },
+    "10": { "name": "กัมมะ", "domain": "อาชีพ ชื่อเสียง อำนาจ ความสำเร็จ", "keywords": ["อาชีพ", "ชื่อเสียง", "อำนาจ"] },
+    "11": { "name": "ลาภะ", "domain": "ลาภ รายได้ เพื่อน ความหวัง ผลกำไร", "keywords": ["ลาภ", "รายได้", "เพื่อน"] },
+    "12": { "name": "วินาศ", "domain": "ความสูญเสีย การเสียสละ โรงพยาบาล ต่างแดน กรรม — รองลงมา ยังมีแลกเปลี่ยน", "keywords": ["สูญเสีย", "เสียสละ", "ต่างแดน"] }
+  },
+
+  "aspects": {
+    "_source": "ch025 (canonical) + ch009 (counting method)",
+    "_counting": "นับ inclusive จากราศีเริ่ม=1",
+    "_corrected": "2026-05-27: เดิม 100/75/50/25 → ถูก 100/80/60/60/50 per ch025",
+    "KUM": {
+      "name": "กุม", "name_en": "Conjunction",
+      "count": 1, "weight_pct": 100,
+      "note": "ดาวสถิตราศีเดียวกัน — กุมลัคนา = แรงที่สุด"
+    },
+    "LENG": {
+      "name": "เล็ง", "name_en": "Opposition",
+      "count": 7, "weight_pct": 80,
+      "note": "นับ 7 ราศี (ตรงข้าม) — ภพปัตนิ"
+    },
+    "YOK_FRONT": {
+      "name": "โยคหน้า", "name_en": "Sextile (forward)",
+      "count": 3, "weight_pct": 60,
+      "note": "นับ 3 ราศี — ภพสหัชชะ"
+    },
+    "YOK_BACK": {
+      "name": "โยคหลัง", "name_en": "Sextile (backward)",
+      "count": 11, "weight_pct": 60,
+      "note": "นับ 11 ราศี — ภพลาภะ"
+    },
+    "TRI": {
+      "name": "ตรีโกณ", "name_en": "Trine",
+      "count_options": [5, 9], "weight_pct": 50,
+      "note": "นับ 5 หรือ 9 ราศี — ภพปุตตะ/ศุภะ"
+    },
+    "NONE": {
+      "name": "ไม่สัมพันธ์", "name_en": "No aspect",
+      "weight_pct": 0,
+      "note": "→ อัจฉริยภาพภายใน (hidden reserve, per ch020 step 7) — NOT zero effect"
+    }
+  },
+
+  "qualities": {
+    "_note": "strength_pct คือ weight สำหรับ multi-factor model. Source: quality_maps.json + QUALITY.md (ch025 verified).",
+    "_inconsistency_pending": "มหาจักร: quality_maps=80%, QUALITY.md/ch025 says ≈ อุจ (=100%). รอ user confirm ค่าที่ถูก.",
+    "เกษตร": {
+      "strength_pct": 80, "polarity": "+",
+      "description": "ดาวอยู่ในราศีที่ตนเป็นเจ้า — บ้านของตัวเอง",
+      "pattern": "มั่นคง ให้ผลช้า-เต็มบั้นปลาย", "graph": "↗ เส้นตรงเอียงขึ้น",
+      "time_profile": "Slow onset, lasting (บั้นปลายชนะ)",
+      "lop_applicable": true
+    },
+    "ประเกษตร": {
+      "strength_pct": -60, "polarity": "-",
+      "description": "ดาวอยู่ในราศีตรงข้ามเกษตร",
+      "pattern": "ขาดแคลน เสื่อมถอย-ตกต่ำบั้นปลาย", "graph": "↘ เส้นตรงเอียงลง",
+      "time_profile": "Slow decline, worsens บั้นปลาย",
+      "lop_applicable": true
+    },
+    "อุจ": {
+      "strength_pct": 100, "polarity": "+",
+      "description": "ดาวอยู่ในจุดสูงสุด exaltation",
+      "pattern": "รุ่งโรจน์ นิยม แรงสม่ำเสมอ", "graph": "— สูง (เส้นนอนระดับสูง)",
+      "time_profile": "Strong and steady, but less flexible (คุยกับคนทั่วไปยาก)",
+      "lop_applicable": true
+    },
+    "นิจ": {
+      "strength_pct": -100, "polarity": "-",
+      "description": "ดาวอยู่ในจุดต่ำสุด debilitation",
+      "pattern": "ด้อย ไม่ยอมรับ สม่ำเสมอ", "graph": "— ต่ำ (เส้นนอนระดับต่ำ)",
+      "time_profile": "Immediate weakness, permanent low",
+      "lop_applicable": true
+    },
+    "มหาจักร": {
+      "strength_pct": 80,
+      "strength_pct_note": "⚠ PENDING: quality_maps=80%, ch025 implies ≈ อุจ (100%). รอ user confirm.",
+      "polarity": "+",
+      "description": "ดาวอยู่ในราศีมหาจักรของตนเอง (per planet table below)",
+      "pattern": "ผาดโผน รวดเร็ว ไม่สม่ำเสมอ", "graph": "≈ คลื่นชีพจร",
+      "time_profile": "Fast/variable — peak then drop, more socially flexible than อุจ",
+      "lop_applicable": false
+    },
+    "จุลจักร": {
+      "strength_pct": 40, "polarity": "+",
+      "description": "ดาวอยู่ในราศีตรงข้ามมหาจักร (~40% strength)",
+      "pattern": "เช่นมหาจักรแต่ ~40-60% กำลัง",
+      "time_profile": "Like มหาจักร but ~40%",
+      "lop_applicable": false
+    },
+    "ราชาโชค": {
+      "strength_pct": 60, "polarity": "+",
+      "description": "ตำแหน่งพิเศษจากตำราไทย — ได้รับโดยง่าย ไม่ต้องลงแรงมาก สม่ำเสมอ",
+      "pattern": "กลาง-ดี สม่ำเสมอ ไม่ลงแรง",
+      "time_profile": "Moderate and steady",
+      "lop_applicable": false,
+      "tradition_note": "⚠ Thai tradition lookup ONLY — ไม่มี geometric formula. ห้าม conflate กับ Vedic 'Raja Yoga' (คนละ concept คนละตำแหน่งดาว คนละความหมาย)",
+      "per_planet_values": "null ทั้งหมด — รอ user verify จาก 100CH"
+    },
+    "เทวีโชค": {
+      "strength_pct": 40, "polarity": "+",
+      "description": "เช่นราชาโชคแต่กำลัง ~40% (ยกเว้นกุมลัคนา ≈ ราชาโชค)",
+      "pattern": "เบากว่าราชาโชค สม่ำเสมอ",
+      "time_profile": "Moderate and steady, lighter than ราชาโชค",
+      "lop_applicable": false,
+      "derivation_pending": "engine.js implements เทวีโชค = ราชาโชค + 6 (mod 12) — geometric vs tradition ยังไม่ confirmed. ต้อง verify เมื่อได้ค่า ราชาโชค"
+    },
+    "อุจจาวิลาส": {
+      "strength_pct": 60, "polarity": "+",
+      "description": "ราศีก่อนอุจ ≈ 60% — กำลังกำลังเข้าสู่จุดสูง",
+      "pattern": "สูง ลดหลั่น กำลังยังไม่เต็ม",
+      "time_profile": "Building (pre-อุจ), rising ~60%",
+      "lop_applicable": false,
+      "engine_warning": "⚠ v3/engine.js + script.js มี LABEL SWAP กับ อุจจาภิมุข — HORATAD ต้องแก้"
+    },
+    "อุจจาภิมุข": {
+      "strength_pct": 60, "polarity": "+",
+      "description": "ราศีหลังอุจ ≈ 60% — ผ่านจุดสูงสุดมาแล้ว กำลังลดลง",
+      "pattern": "สูง แต่ลดลง",
+      "time_profile": "Declining (post-อุจ), falling ~60%",
+      "lop_applicable": false,
+      "engine_warning": "⚠ v3/engine.js + script.js มี LABEL SWAP กับ อุจจาวิลาส — HORATAD ต้องแก้"
+    },
+    "อนุเกษตร": {
+      "strength_pct": 50, "polarity": "+",
+      "description": "ดาวอยู่ในเกษตรของคู่มิตร — ให้คุณตั้งแต่เกิดแต่ช้ากว่าเกษตร",
+      "pattern": "คล้ายเกษตรแต่ช้ากว่า ตัดสินใจไม่ได้ → ช้า",
+      "time_profile": "Delayed onset, growing slowly",
+      "lop_applicable": false,
+      "causation": "ดาวเกี่ยวข้องกับ 2 เรื่องราว (2 kasets) → ลังเล → ช้า"
+    }
+  },
+
+  "derivation_rules": {
+    "_purpose": "ตำแหน่ง derived — ห้าม store per planet (คำนวณตอน runtime จาก stored values)",
+    "nicha": {
+      "formula": "(planets[N].positions.uchcha + 6) mod 12",
+      "rule": "นิจ ↔ อุจ ตรงข้ามเสมอ (universal)",
+      "verified_by": "user 2026-05-26"
+    },
+    "prakaset": {
+      "formula": "for each k in planets[N].positions.kaset: (k + 6) mod 12",
+      "rule": "ประเกษตร = ราศีตรงข้ามเกษตร"
+    },
+    "uchajavilas": {
+      "formula": "(planets[N].positions.uchcha - 1 + 12) mod 12",
+      "rule": "อุจจาวิลาส = ราศีก่อนอุจ",
+      "warning": "⚠ engine.js LABEL SWAP กับ uchajaphimukh — ต้องแก้ใน HORATAD scope"
+    },
+    "uchajaphimukh": {
+      "formula": "(planets[N].positions.uchcha + 1) mod 12",
+      "rule": "อุจจาภิมุข = ราศีหลังอุจ",
+      "warning": "⚠ engine.js LABEL SWAP กับ uchajavilas — ต้องแก้ใน HORATAD scope"
+    },
+    "chunlachak": {
+      "formula": "(planets[N].positions.mahachak + 6) mod 12",
+      "rule": "จุลจักร = ราศีตรงข้ามมหาจักร",
+      "verified_by": "user 2026-05-26"
+    },
+    "thevichok": {
+      "formula": "(planets[N].positions.rajayok + 6) mod 12",
+      "rule": "เทวีโชค = ราชาโชค + 6 (ถ้าเป็น geometric formula — pending verify)",
+      "status": "⚠ engine.js implements geometric formula — แต่ tradition source ยังไม่ confirmed"
+    }
+  },
+
+  "planet_pairs": {
+    "_source": "R054 (มิตร) + R057 (ศัตรู) + ch008",
+    "_coverage": "8 ดาวหลัก (1-8) เท่านั้น — เกตุ(9)/มฤตยู(0) ไม่เข้าระบบคู่",
+    "mitr": {
+      "description": "คู่มิตร — ส่งเสริมกัน เมื่ออยู่ร่วมกันให้ผลดี",
+      "pairs": [[1, 5], [2, 4], [3, 6], [7, 8]],
+      "pair_names": ["อาทิตย์-พฤหัสบดี", "จันทร์-พุธ", "อังคาร-ศุกร์", "เสาร์-ราหู"],
+      "rule_ref": "R054"
+    },
+    "mahamitr": {
+      "description": "คู่มิตรใหญ่ — ช่วยเหลือกันมากที่สุด (subset ของ mitr)",
+      "pairs": [[7, 8]],
+      "pair_names": ["เสาร์-ราหู"],
+      "note": "เสาร์-ราหู เป็นคู่มิตรพิเศษ ช่วยกันมากกว่าคู่มิตรอื่น"
+    },
+    "satru": {
+      "description": "คู่ศัตรู — ขัดแย้งกัน เมื่ออยู่ร่วมกันให้ผลร้าย",
+      "pairs": [[1, 3], [4, 8], [6, 7], [2, 5]],
+      "pair_names": ["อาทิตย์-อังคาร", "พุธ-ราหู", "ศุกร์-เสาร์", "จันทร์-พฤหัสบดี"],
+      "notes": { "2-5": "คู่เล็กสุด — ดีกันก็ไม่จริง ร้ายกันก็ไม่มาก (per R057)" },
+      "rule_ref": "R057"
+    },
+    "neutral": {
+      "description": "เป็นกลาง — ทุก pair ที่ไม่อยู่ใน mitr/satru (18 จาก 28 possible pairs)",
+      "computation": "derive จาก mitr+satru (ไม่ list เพราะ derivable)"
+    }
+  },
+
+  "lagna_concepts": {
+    "_source": "ch013 (ลัคนา/ตนุเศษ/ตนุลัคน์) + ch027-ch030 (สมพงศ์) + ch011 (เรือนนอก/ใน)",
+    "lakkana": {
+      "name_th": "ลัคนา", "name_en": "Lagna / Ascendant",
+      "definition": "จุดกำเนิดของการนับเรือน — ราศีที่ลัคนาสถิต = ภพตนุ (เรือน 1)",
+      "calculation": "สุริยยาตร์: อาทิตย์ขึ้น 06:00 น. (ตายตัว), ใช้เวลาท้องถิ่น",
+      "priority": "highest — base ของทั้งดวง",
+      "notation": "เขียน 'ล' ในราศีของลัคนา",
+      "source_chapter": "ch013"
+    },
+    "tanusesh": {
+      "name_th": "ตนุเศษ", "name_en": "Tanusesh",
+      "definition": "คุณสมบัติเทียบเท่าลัคนา เน้นนิสัย/อารมณ์โดยรวม — ดูก่อนเสมอ",
+      "formula": "a = นับจากภพตนุถึงภพที่ ruler ของ ภพตนุ อยู่ | b = นับจากที่นั้นถึงภพที่ ruler ของที่นั้น อยู่ | เศษของ (a×b) ÷ 7 = planet_id (1-7). หารลงตัว → เศษ 7",
+      "applicable_planets": [1, 2, 3, 4, 5, 6, 7],
+      "not_applicable": [8, 9, 0],
+      "priority": "second — เทียบเท่าลัคนาในเรื่องนิสัยพื้นฐาน",
+      "source_chapter": "ch013"
+    },
+    "tanulagn": {
+      "name_th": "ตนุลัคน์", "name_en": "Tanulagn / Inner Self",
+      "aliases": ["ตนุลัคนา", "เกษตรเรือนใน", "เรือนใน"],
+      "definition": "ruler ของราศีลัคนา = ตัวตนภายในแท้จริง (สันดาน) — ไม่เปลี่ยน",
+      "calculation": "lookup signs[lagna_sign].ruler → นั่นคือ ตนุลัคน์",
+      "priority": "third — สันดานแท้ที่ไม่ขึ้นกับภพหรือคุณภาพ",
+      "source_chapter": "ch013"
+    },
+    "kum_lakkana": {
+      "name_th": "กุมลัคนา",
+      "definition": "ดาวที่อยู่ในภพตนุ (ภพ 1) — กุมราศีลัคนา",
+      "priority": "primary descriptor — แสดงออกก่อนดาวที่สัมพันธ์ผ่าน aspect อื่น",
+      "rule_ref": "R248, R288",
+      "source_chapter": "ch013, ch038"
+    },
+    "three_layer_identity": {
+      "layers": [
+        { "layer": 1, "concept": "lakkana", "describes": "ตำแหน่ง/จุดเริ่ม" },
+        { "layer": 2, "concept": "tanusesh", "describes": "นิสัย/อารมณ์โดยรวม — ดูก่อนเสมอ" },
+        { "layer": 3, "concept": "tanulagn", "describes": "ตัวตนภายในแท้/สันดาน — ไม่เปลี่ยน" }
+      ],
+      "flow": "ตนุเศษ (overview) → ตนุลัคน์ (deep inner) → กุมลัคนา (outer expression) → aspects (situational)"
+    },
+    "sompong": {
+      "name_th": "สมพงศ์ (ดวงคู่)", "name_en": "Chart Compatibility",
+      "three_conditions": [
+        "ลัคนาสองคนสัมพันธ์กัน (กุม/เล็ง/โยค/ตรีโกณ)",
+        "ดาวกุมลัคนา/ตนุลัคน์ไม่เป็นคู่ศัตรูกัน",
+        "เจ้าเรือนปัตนิ (ภพ 7) ไม่ตกอริ/มรณะ/วินาศ"
+      ],
+      "passing_criteria": "ครบ 3 ข้อ = ผ่านสมพงศ์",
+      "source_chapter": "ch027-ch030"
+    },
+    "ruen_nok_ruen_nai": {
+      "name_th": "เรือนนอก / เรือนใน",
+      "key_distinction": "ดาว = คุณภาพ + ปฏิสัมพันธ์ | ภพ = เรื่อง (topic) เท่านั้น",
+      "ruen_nai": "ตนุลัคน์ = เรือนใน = ตัวตนภายใน",
+      "ruen_nok": "ดาวที่ปรากฏตำแหน่งใน chart = เรือนนอก",
+      "source_chapter": "ch011"
+    }
+  },
+
+  "house_rulers_by_lagna": {
+    "_note": "Derived from signs[].ruler (mechanical — lagna sign L, house i occupies sign (L+i-1) mod 12, ruler = that sign's ruler). Included for validation convenience.",
+    "_scheme": "Keys = lagna sign_id (0-11 canonical). rulers_house_1_to_12 = planet_id array (index 0 = house 1).",
+    "0": { "lagna": "เมษ", "rulers": [3, 6, 4, 2, 1, 4, 6, 3, 5, 7, 8, 5] },
+    "1": { "lagna": "พฤษภ", "rulers": [6, 4, 2, 1, 4, 6, 3, 5, 7, 8, 5, 3] },
+    "2": { "lagna": "มิถุน", "rulers": [4, 2, 1, 4, 6, 3, 5, 7, 8, 5, 3, 6] },
+    "3": { "lagna": "กรกฎ", "rulers": [2, 1, 4, 6, 3, 5, 7, 8, 5, 3, 6, 4] },
+    "4": { "lagna": "สิงห์", "rulers": [1, 4, 6, 3, 5, 7, 8, 5, 3, 6, 4, 2] },
+    "5": { "lagna": "กันย์", "rulers": [4, 6, 3, 5, 7, 8, 5, 3, 6, 4, 2, 1] },
+    "6": { "lagna": "ตุล", "rulers": [6, 3, 5, 7, 8, 5, 3, 6, 4, 2, 1, 4] },
+    "7": { "lagna": "พิจิก", "rulers": [3, 5, 7, 8, 5, 3, 6, 4, 2, 1, 4, 6] },
+    "8": { "lagna": "ธนู", "rulers": [5, 7, 8, 5, 3, 6, 4, 2, 1, 4, 6, 3] },
+    "9": { "lagna": "มกร", "rulers": [7, 8, 5, 3, 6, 4, 2, 1, 4, 6, 3, 5] },
+    "10": { "lagna": "กุมภ์", "rulers": [8, 5, 3, 6, 4, 2, 1, 4, 6, 3, 5, 7] },
+    "11": { "lagna": "มีน", "rulers": [5, 3, 6, 4, 2, 1, 4, 6, 3, 5, 7, 8] }
+  },
+
+  "special_configs": {
+    "foundational_rules": {
+      "_source": "ch020, ch025",
+      "1_natal_vs_transit": {
+        "name": "กฎ #1 — น้ำหนัก natal vs transit",
+        "statement": "พื้นดวง (natal) = 80% | ดวงจร (transit) = 20% (stimulator เท่านั้น)",
+        "implication": "ดาวจร activate สิ่งที่ natal บอกไว้แล้ว — ไม่สร้างผลที่ natal ไม่มี"
+      },
+      "2_lagna_qualifier": {
+        "name": "กฎ #2 — ต้องสัมพันธ์ลัคนา/ตนุลัคน์",
+        "statement": "ดาวจะให้คุณโทษ visible ก็ต่อเมื่อสัมพันธ์ลัคนาหรือตนุลัคน์",
+        "visible": "สัมพันธ์ → แสดงออก โฉลก",
+        "hidden": "ไม่สัมพันธ์ → อัจฉริยภาพภายใน (hidden reserve per ch020 step 7)"
+      },
+      "3_chart_strength": {
+        "name": "กฎ #3 — chart strength",
+        "statement": "chart_strength = function(ตนุลัคน์, ดาวกุมลัคนา) — per ch020 step 4",
+        "correction": "❌ OLD: ภพ 1+2+7 → ✅ CORRECT: ตนุลัคน์ + กุมลัคนา",
+        "four_patterns": {
+          "ในแข็ง+นอกแข็ง": "ดวงแข็งมาก",
+          "ในแข็ง+นอกอ่อน": "ดวงดีพื้น แต่แสดงออกน้อย",
+          "ในอ่อน+นอกแข็ง": "แสดงออกดี แต่พื้นฐานอ่อน",
+          "ในอ่อน+นอกอ่อน": "ดวงอ่อน"
+        }
+      },
+      "4_mission": {
+        "name": "กฎ #4 — TALS คือ event prediction",
+        "statement": "TALS = ถูก/ผิด เป็น/ตาย สำเร็จ/ล้มเหลว — NOT personality",
+        "anti_pattern": "ห้าม predict บุคลิก/นิสัยเป็น primary output"
+      },
+      "5_career_by_daoden": {
+        "name": "กฎ #5 — อาชีพดูจากดาวเด่น",
+        "statement": "อาชีพ = ดาวเด่น (ranking: quality × aspect_weight × time_phase) — NOT ภพ 10 กัมมะ",
+        "formula": "daoden_score = quality_strength_pct × aspect_weight_pct × time_phase_factor",
+        "anti_pattern": "❌ Vedic pattern: 10th house = career ไม่ถูกใน TALS"
+      }
+    },
+    "lop_lop_rule": {
+      "name": "กฎลบ-ลบ = บวก",
+      "definition": "เกษตร/ประเกษตร/อุจ/นิจ กลับขั้วเมื่อเล็งกัน",
+      "examples": [
+        "เกษตร + เกษตร + เล็งกัน → ประเกษตร",
+        "นิจ + นิจ + เล็งกัน → อุจ",
+        "ประเกษตร + นิจ + เล็งกัน → เกษตร"
+      ],
+      "applicable_to": ["เกษตร", "ประเกษตร", "อุจ", "นิจ"],
+      "NOT_applicable_to": ["มหาจักร", "อุจจาวิลาส", "อุจจาภิมุข", "ราชาโชค", "เทวีโชค", "จุลจักร"],
+      "rule_ref": "R068"
+    },
+    "ketu_amplifier": {
+      "name": "เกตุ — ทวีคูณ",
+      "rule": "เกตุกุมกับดาว N → ขยายผลดาว N (ดีเพิ่ม/ร้ายเพิ่ม)",
+      "no_quality_config": "เกตุ(0=มฤตยู/9=เกตุ) ไม่มี อุจ/นิจ/เกษตร/มหาจักร/ราชาโชค"
+    },
+    "saturn_rahu_mahamitr": {
+      "name": "เสาร์-ราหู คู่มิตรใหญ่",
+      "effect": "เมื่อทั้งคู่อยู่ตำแหน่งดี → ส่งเสริมกันมาก. ตำแหน่งร้าย → ผ่อนหนักเป็นเบา",
+      "rule_ref": "(memory only)", "source_chapter": "ch008+"
+    },
+    "mrittyu_lagna_aspect": {
+      "name": "มฤตยูสัมพันธ์ลัคนา",
+      "effect": "มี aspect กับลัคนา → มีเซนส์ลึกลับ มีปริศนาในชีวิต",
+      "no_aspect_effect": "ไม่สัมพันธ์ = ไม่มีลักษณะนี้เลย",
+      "rule_ref": "R186", "source_chapter": "ch101"
+    },
+    "four_evil_transit": {
+      "name": "4 ดาวจรร้าย + ดวงเข้มแข็ง + คู่มิตรรับ",
+      "rule": "4 ดาวจรบาป (อาทิตย์/อังคาร/เสาร์/ราหู) ร้ายพร้อมกัน + แต่ดวงเดิมแข็ง + มีคู่มิตรรับ → ดวงรอด",
+      "rule_ref": "R289", "source_chapter": "ch101"
+    }
+  },
+
+  "pending_user_verification": [
+    "rajayok per-planet (8 values) — ต้องการค่าจาก 100CH Thai tradition. ห้าม derive geometric.",
+    "เทวีโชค = ราชาโชค + 6 — engine.js implements geometric formula แต่ตำรายังไม่ confirm",
+    "มหาจักร strength_pct — quality_maps=80% vs ch025 implies ≈ อุจ (100%). รอ user confirm."
+  ],
+
+  "naming_collision_warnings": {
+    "ราชาโชค vs Raja Yoga": {
+      "tals_rajayok": "Per-planet sign (Thai tradition lookup). Single quality config.",
+      "vedic_raja_yoga": "Multi-planet combination yoga. คนละ concept คนละตำแหน่ง.",
+      "rule": "ห้าม extract Vedic Raja Yoga มาเป็น TALS ราชาโชค ระหว่าง KB merge"
+    }
+  }
+}
