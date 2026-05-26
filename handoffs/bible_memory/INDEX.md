@@ -76,10 +76,12 @@
 
 ═══════════════════════════════════════════════════════════════════════
 
-Interpretation flow (combining 3 rules):
+Interpretation flow (combining 5 rules):
   Input chart → [Rule #1] weight 80/20
               → [Rule #2] filter ดาวสัมพันธ์ลัคนา/ตนุลัคน์
-              → [Rule #3] assess strength of ภพ 1/2/7
+              → [Rule #3] assess chart_strength(ตนุลัคน์, กุมลัคนา) → 4 patterns
+              → [Rule #4] output = event prediction ONLY (not personality)
+              → [Rule #5] อาชีพ = ดาวเด่น (rank all planets) — NOT ภพกัมมะ
               → output: qualified, weighted prediction
 
 (Detail + engine flow + validation + evidence — ใน LOG.md PINNED entries)
@@ -242,7 +244,7 @@ Confidence: สูง / กลาง / ต่ำ
 - `v3/kb_v24-final.json` (after apply, schema 2.0-final — created when user reviews)
 
 **Master dict:**
-- `v3/master_dict_meanings.json` v1.4.0-complete — domain vocabulary + relationships
+- `v3/master_dict_meanings.json` v1.5.0 — domain vocabulary + relationships (updated 2026-05-27: aspect weights corrected, Rules #3/#4/#5 added)
 - 11 sections: planets/houses/qualities/domains/aspect_strengths/signs/planet_positions/planet_pairs/lagna_concepts/house_rulers_by_lagna/special_configs
 
 **Tools (browser):**

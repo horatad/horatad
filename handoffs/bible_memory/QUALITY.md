@@ -80,7 +80,7 @@
 | ไม่สัมพันธ์ | NULL — counts as อัจฉริยภาพภายใน | ch020 step 7 |
 
 **Engine.js MATCHES** (KUM:1.0, LENG:0.8, YOK:0.6, TRI:0.5) ✅
-**master_dict_meanings.json WRONG** (100/75/50/25) ❌ — needs fix
+**master_dict_meanings.json FIXED** v1.5.0 (100/80/60/50) ✅ — corrected 2026-05-27
 
 ### ดาวเด่น cross-class comparison (ch025)
 

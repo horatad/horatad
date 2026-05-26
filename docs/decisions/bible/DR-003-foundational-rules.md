@@ -1,6 +1,6 @@
-# DR-003 — TALS Foundational Rules #1 / #2 / #3
+# DR-003 — TALS Foundational Rules #1 / #2 / #3 / #4 / #5
 
-**Date:** 2026-05-26 (Rule #1) · 2026-05-27 (Rules #2 + #3)  
+**Date:** 2026-05-26 (Rules #1 #4) · 2026-05-27 (Rules #2 #3 #5)  
 **Status:** Accepted — canonical  
 **Scope:** BIBLE · HORATAD engine · ทุก prediction output
 
@@ -8,7 +8,7 @@
 
 ## Decision
 
-กำหนด 3 rules นี้เป็น **foundational** — ต้องใช้ก่อนการพยากรณ์ทุกครั้ง ก่อน rule อื่นๆ ทั้งหมด
+กำหนด 5 rules นี้เป็น **foundational** — ต้องใช้ก่อนการพยากรณ์ทุกครั้ง ก่อน rule อื่นๆ ทั้งหมด
 
 ---
 
@@ -49,14 +49,44 @@ function effectivePower(planet, chart) {
 
 ## Rule #3 — STRENGTH: chart resilience
 
-**Statement:** ความเข้มแข็งของดวง = f(ภพตนุ 1, ภพกฎุมพะ 2, ภพปัตนิ 7)
+⚠️ **CORRECTED 2026-05-27** (per ch020 step 4) — supersedes original "ภพ 1/2/7" statement
 
-- ภพ 1 ตนุ = self/identity
-- ภพ 2 กฎุมพะ = resources/foundation
-- ภพ 7 ปัตนิ = partner/other-half
+**Statement:** chart_strength = function(ตนุลัคน์ quality, ดาวกุมลัคนา quality)
 
-3 ภพแข็ง = ดวงทนได้แม้ transit ร้าย  
+- ภายใน = ตนุลัคน์ quality + ภพที่อยู่
+- ภายนอก = Σ ดาวกุมลัคนา quality
+- ❌ ห้ามใช้ ภพ 1+2+7 เป็นตัวชี้วัด
+
+**4 patterns:**
+```
+[strong inner + strong outer] = ดวงเข้มแข็งครบ
+[strong inner + weak outer]   = ในเข้ม นอกอ่อน
+[weak inner + strong outer]   = นอกเด่น ในกลวง
+[weak inner + weak outer]     = ดวงอ่อน
+```
+
 **Evidence: R289** — 4 ดาวจรร้าย + ดวงเข้มแข็ง + คู่มิตรรับ → ไม่ถึงฆาต
+
+**ภพ 2 อยู่ใน:** ch020 step 8 priority list (ปัตนิ→กฎุมพะ→กัมมะ→สหัชชะ) — ไม่ใช่ chart strength definer
+
+---
+
+## Rule #4 — MISSION: event prediction only
+
+**Statement:** TALS = event prediction (ถูก/ผิด, เป็น/ตาย, รวย/จน) — ไม่ใช่ personality/psychology
+
+- Output ที่ measure ไม่ได้ → useless (ห้าม KB extract)
+- ห้าม wording ที่เป็น character description อย่างเดียว
+
+---
+
+## Rule #5 — DOMAIN PRIORITY: อาชีพ
+
+**Statement:** อาชีพดู "ดาวเด่น" (planet ranking) — NOT ภพกัมมะ (10) เพียงอย่างเดียว (per ch025)
+
+- ดาวเด่น_score = quality_strength × aspect_to_lagna_weight × time_phase_factor
+- Rank ดาวทั้งหมด → อันดับ 1 = career direction
+- ภพอื่น priority (ch020 step 8): ปัตนิ → กฎุมพะ → กัมมะ → สหัชชะ
 
 ---
 
@@ -66,7 +96,9 @@ function effectivePower(planet, chart) {
 [INPUT] chart + (transit time)
    ↓ Rule #1: weight natal 80% / transit 20%
    ↓ Rule #2: filter ดาวที่สัมพันธ์ลัคนา/ตนุลัคน์
-   ↓ Rule #3: assess ภพ 1/2/7 → resilience
+   ↓ Rule #3: assess chart_strength(ตนุลัคน์, กุมลัคนา) → 4 patterns
+   ↓ Rule #4: output = event prediction only
+   ↓ Rule #5: อาชีพ = ดาวเด่น rank — not house #10 alone
    ↓ [OUTPUT] qualified + weighted prediction
 ```
 
@@ -76,9 +108,12 @@ function effectivePower(planet, chart) {
 ❌ "ดาวอุจ → ดี"
 ✅ "ดาวอุจ สัมพันธ์ลัคนา/ตนุลัคน์ → ดี ส่งผลต่อเจ้าชะตา"
 
-❌ "ดวงนี้มีดาวร้าย → จะแย่"
-✅ "ดวงนี้มีดาวร้าย แต่ ภพ 1/2/7 แข็ง → ทนได้"
+❌ "ดวงนี้มีดาวร้าย + ภพ 1/2/7 อ่อน → จะแย่"
+✅ "ดวงนี้มีดาวร้าย → ดู ตนุลัคน์ + กุมลัคนา quality → ถ้าแข็ง = ทนได้"
 
 ❌ "ดาวจรดีมาก → เกิดผลดี" (ไม่มี natal anchor)
 ✅ "ดาวจรดี + natal มีศักยภาพแล้ว → activate ผลดีนั้น"
+
+❌ "ภพ 10 = อาชีพ"
+✅ "อาชีพ = ดาวที่ได้ rank สูงสุดจาก ดาวเด่น_score"
 ```
