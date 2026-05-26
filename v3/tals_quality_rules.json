@@ -228,5 +228,690 @@
       "engine_note": "checkAnokaset(pos[], p_i, p_j) ใน standards.js",
       "three_planet_case": "ไม่ให้ความสำคัญ — ข้อมูลไม่เพียงพอ (ch010)"
     }
+  },
+  "anukaset_pairs": {
+    "_note": "62 valid อนุเกษตร combinations — auto-generated จาก kaset data. Engine: check if chart pair (a,b) appears here.",
+    "_generated": "2026-05-28 by AI from tals_planets.json kaset values",
+    "_engine_use": "O(1) lookup: hash by 'planet_a:a_at_sign:planet_b:b_at_sign'",
+    "count": 62,
+    "pairs": [
+      {
+        "planet_a": 1,
+        "planet_b": 2,
+        "a_name": "อาทิตย์",
+        "b_name": "จันทร์",
+        "a_at_sign": 3,
+        "b_at_sign": 4,
+        "a_at_name": "กรกฎ",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 3,
+        "a_name": "อาทิตย์",
+        "b_name": "อังคาร",
+        "a_at_sign": 0,
+        "b_at_sign": 4,
+        "a_at_name": "เมษ",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 3,
+        "a_name": "อาทิตย์",
+        "b_name": "อังคาร",
+        "a_at_sign": 7,
+        "b_at_sign": 4,
+        "a_at_name": "พิจิก",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 4,
+        "a_name": "อาทิตย์",
+        "b_name": "พุธ",
+        "a_at_sign": 2,
+        "b_at_sign": 4,
+        "a_at_name": "มิถุน",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 4,
+        "a_name": "อาทิตย์",
+        "b_name": "พุธ",
+        "a_at_sign": 5,
+        "b_at_sign": 4,
+        "a_at_name": "กันย์",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 5,
+        "a_name": "อาทิตย์",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 8,
+        "b_at_sign": 4,
+        "a_at_name": "ธนู",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 5,
+        "a_name": "อาทิตย์",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 11,
+        "b_at_sign": 4,
+        "a_at_name": "มีน",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 6,
+        "a_name": "อาทิตย์",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 4,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 6,
+        "a_name": "อาทิตย์",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 4,
+        "a_at_name": "ตุล",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 7,
+        "a_name": "อาทิตย์",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 4,
+        "a_at_name": "มกร",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 1,
+        "planet_b": 8,
+        "a_name": "อาทิตย์",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 4,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "สิงห์"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 3,
+        "a_name": "จันทร์",
+        "b_name": "อังคาร",
+        "a_at_sign": 0,
+        "b_at_sign": 3,
+        "a_at_name": "เมษ",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 3,
+        "a_name": "จันทร์",
+        "b_name": "อังคาร",
+        "a_at_sign": 7,
+        "b_at_sign": 3,
+        "a_at_name": "พิจิก",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 4,
+        "a_name": "จันทร์",
+        "b_name": "พุธ",
+        "a_at_sign": 2,
+        "b_at_sign": 3,
+        "a_at_name": "มิถุน",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 4,
+        "a_name": "จันทร์",
+        "b_name": "พุธ",
+        "a_at_sign": 5,
+        "b_at_sign": 3,
+        "a_at_name": "กันย์",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 5,
+        "a_name": "จันทร์",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 8,
+        "b_at_sign": 3,
+        "a_at_name": "ธนู",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 5,
+        "a_name": "จันทร์",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 11,
+        "b_at_sign": 3,
+        "a_at_name": "มีน",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 6,
+        "a_name": "จันทร์",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 3,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 6,
+        "a_name": "จันทร์",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 3,
+        "a_at_name": "ตุล",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 7,
+        "a_name": "จันทร์",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 3,
+        "a_at_name": "มกร",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 2,
+        "planet_b": 8,
+        "a_name": "จันทร์",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 3,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "กรกฎ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 4,
+        "a_name": "อังคาร",
+        "b_name": "พุธ",
+        "a_at_sign": 2,
+        "b_at_sign": 0,
+        "a_at_name": "มิถุน",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 4,
+        "a_name": "อังคาร",
+        "b_name": "พุธ",
+        "a_at_sign": 2,
+        "b_at_sign": 7,
+        "a_at_name": "มิถุน",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 4,
+        "a_name": "อังคาร",
+        "b_name": "พุธ",
+        "a_at_sign": 5,
+        "b_at_sign": 0,
+        "a_at_name": "กันย์",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 4,
+        "a_name": "อังคาร",
+        "b_name": "พุธ",
+        "a_at_sign": 5,
+        "b_at_sign": 7,
+        "a_at_name": "กันย์",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 5,
+        "a_name": "อังคาร",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 8,
+        "b_at_sign": 0,
+        "a_at_name": "ธนู",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 5,
+        "a_name": "อังคาร",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 8,
+        "b_at_sign": 7,
+        "a_at_name": "ธนู",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 5,
+        "a_name": "อังคาร",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 11,
+        "b_at_sign": 0,
+        "a_at_name": "มีน",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 5,
+        "a_name": "อังคาร",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 11,
+        "b_at_sign": 7,
+        "a_at_name": "มีน",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 6,
+        "a_name": "อังคาร",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 0,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 6,
+        "a_name": "อังคาร",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 7,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 6,
+        "a_name": "อังคาร",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 0,
+        "a_at_name": "ตุล",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 6,
+        "a_name": "อังคาร",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 7,
+        "a_at_name": "ตุล",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 7,
+        "a_name": "อังคาร",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 0,
+        "a_at_name": "มกร",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 7,
+        "a_name": "อังคาร",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 7,
+        "a_at_name": "มกร",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 8,
+        "a_name": "อังคาร",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 0,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "เมษ"
+      },
+      {
+        "planet_a": 3,
+        "planet_b": 8,
+        "a_name": "อังคาร",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 7,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "พิจิก"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 5,
+        "a_name": "พุธ",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 8,
+        "b_at_sign": 2,
+        "a_at_name": "ธนู",
+        "b_at_name": "มิถุน"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 5,
+        "a_name": "พุธ",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 8,
+        "b_at_sign": 5,
+        "a_at_name": "ธนู",
+        "b_at_name": "กันย์"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 5,
+        "a_name": "พุธ",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 11,
+        "b_at_sign": 2,
+        "a_at_name": "มีน",
+        "b_at_name": "มิถุน"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 5,
+        "a_name": "พุธ",
+        "b_name": "พฤหัสบดี",
+        "a_at_sign": 11,
+        "b_at_sign": 5,
+        "a_at_name": "มีน",
+        "b_at_name": "กันย์"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 6,
+        "a_name": "พุธ",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 2,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "มิถุน"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 6,
+        "a_name": "พุธ",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 5,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "กันย์"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 6,
+        "a_name": "พุธ",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 2,
+        "a_at_name": "ตุล",
+        "b_at_name": "มิถุน"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 6,
+        "a_name": "พุธ",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 5,
+        "a_at_name": "ตุล",
+        "b_at_name": "กันย์"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 7,
+        "a_name": "พุธ",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 2,
+        "a_at_name": "มกร",
+        "b_at_name": "มิถุน"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 7,
+        "a_name": "พุธ",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 5,
+        "a_at_name": "มกร",
+        "b_at_name": "กันย์"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 8,
+        "a_name": "พุธ",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 2,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "มิถุน"
+      },
+      {
+        "planet_a": 4,
+        "planet_b": 8,
+        "a_name": "พุธ",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 5,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "กันย์"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 6,
+        "a_name": "พฤหัสบดี",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 8,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "ธนู"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 6,
+        "a_name": "พฤหัสบดี",
+        "b_name": "ศุกร์",
+        "a_at_sign": 1,
+        "b_at_sign": 11,
+        "a_at_name": "พฤษภ",
+        "b_at_name": "มีน"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 6,
+        "a_name": "พฤหัสบดี",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 8,
+        "a_at_name": "ตุล",
+        "b_at_name": "ธนู"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 6,
+        "a_name": "พฤหัสบดี",
+        "b_name": "ศุกร์",
+        "a_at_sign": 6,
+        "b_at_sign": 11,
+        "a_at_name": "ตุล",
+        "b_at_name": "มีน"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 7,
+        "a_name": "พฤหัสบดี",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 8,
+        "a_at_name": "มกร",
+        "b_at_name": "ธนู"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 7,
+        "a_name": "พฤหัสบดี",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 11,
+        "a_at_name": "มกร",
+        "b_at_name": "มีน"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 8,
+        "a_name": "พฤหัสบดี",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 8,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "ธนู"
+      },
+      {
+        "planet_a": 5,
+        "planet_b": 8,
+        "a_name": "พฤหัสบดี",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 11,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "มีน"
+      },
+      {
+        "planet_a": 6,
+        "planet_b": 7,
+        "a_name": "ศุกร์",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 1,
+        "a_at_name": "มกร",
+        "b_at_name": "พฤษภ"
+      },
+      {
+        "planet_a": 6,
+        "planet_b": 7,
+        "a_name": "ศุกร์",
+        "b_name": "เสาร์",
+        "a_at_sign": 9,
+        "b_at_sign": 6,
+        "a_at_name": "มกร",
+        "b_at_name": "ตุล"
+      },
+      {
+        "planet_a": 6,
+        "planet_b": 8,
+        "a_name": "ศุกร์",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 1,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "พฤษภ"
+      },
+      {
+        "planet_a": 6,
+        "planet_b": 8,
+        "a_name": "ศุกร์",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 6,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "ตุล"
+      },
+      {
+        "planet_a": 7,
+        "planet_b": 8,
+        "a_name": "เสาร์",
+        "b_name": "ราหู",
+        "a_at_sign": 10,
+        "b_at_sign": 9,
+        "a_at_name": "กุมภ์",
+        "b_at_name": "มกร"
+      }
+    ]
+  },
+  "lagna_rules": {
+    "_source": "ch013 — ลัคนา ตนุเศษ ตนุลัคน์",
+    "lakkana": {
+      "name": "ลัคนา",
+      "description": "จุดเริ่มต้นการนับเรือน — คำนวณจากระบบสุริยยาตร์ (06:00 ตายตัว เวลาท้องถิ่น)",
+      "engine_note": "planet_id=0 ไม่ใช่ดาว — คือจุดลัคนา"
+    },
+    "tanusesh": {
+      "name": "ตนุเศษ",
+      "description": "นิสัย/อารมณ์พื้นฐาน — คำนวณจากวันเกิดและรอบเวลาเกิด",
+      "formula": "(birth_day × birth_period) % 7",
+      "formula_note": "birth_day=วันที่ 1-31, birth_period=เลขรอบเวลา (1-8 แล้วแต่ระบบ), เศษ 0 นับเป็น 7",
+      "result_range": "1–7 → planet_id 1=อาทิตย์ ... 7=เสาร์",
+      "not_applicable_planet_ids": [
+        0,
+        8,
+        9
+      ],
+      "not_applicable_note": "มฤตยู(0)/ราหู(8)/เกตุ(9) ไม่เป็นตนุเศษได้ (สูตร %7 ให้ผล 1-7 เท่านั้น)",
+      "notation": "× = เป็นหลัก (dominant), + = มีส่วน (contributing)",
+      "per_planet_trait": "ดู tals_planets.json → field tanusesh_trait"
+    },
+    "tanulagn": {
+      "name": "ตนุลัคน์",
+      "description": "ตัวตนภายในแท้ สันดาน — เจ้าเรือนลัคนา",
+      "rule": "ruler_of_sign(lagna_sign)",
+      "lookup": "ดู tals_signs.json → ruler field ของ sign ที่เป็นลัคนา",
+      "expression_modifier": "สัมพันธ์ลัคนา (กุม/เล็ง/โยค/ตรีโกณ) → แสดงออกชัด | ไม่สัมพันธ์ → ซ่อนอยู่ภายใน (อัจฉริยภาพภายใน)",
+      "not_applicable_planet_ids": [],
+      "not_applicable_note": "ราหู(8) เป็นตนุลัคน์ได้ (กุมภ์ลัคนา) — verified ch013",
+      "per_planet_inner": "ดู tals_planets.json → field tanulagn_inner"
+    },
+    "three_layer_identity": {
+      "name": "3 ชั้นตัวตน",
+      "layers": [
+        {
+          "layer": 1,
+          "name": "ตนุเศษ",
+          "aspect": "นิสัย/อารมณ์",
+          "method": "คำนวณ formula"
+        },
+        {
+          "layer": 2,
+          "name": "ตนุลัคน์",
+          "aspect": "ตัวตนภายใน/สันดาน",
+          "method": "ruler ของ lagna sign"
+        },
+        {
+          "layer": 3,
+          "name": "ดาวสัมพันธ์ลัคนา",
+          "aspect": "การแสดงออกภายนอก",
+          "method": "aspect to lagna"
+        }
+      ],
+      "note": "ทั้ง 3 ชั้น อาจขัดกันได้ — ตีความรวมกัน ไม่ใช้ชั้นเดียว"
+    }
   }
 }
