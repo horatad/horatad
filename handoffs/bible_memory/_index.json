@@ -1,0 +1,1548 @@
+{
+  "_meta": {
+    "generated": "2026-05-26T03:22",
+    "purpose": "Machine-readable index of BIBLE memory files — helps Claude find relevant content without reading all files",
+    "usage": "Check this index first, then read only the specific files needed",
+    "regenerate": "node workers/build_bible_index.mjs"
+  },
+  "read_order": {
+    "any_session": [
+      "CLAUDE.md",
+      "INDEX.md",
+      "LOG.md"
+    ],
+    "extraction": [
+      "SYNTAX.md",
+      "TAXONOMY.md",
+      "VOCAB.md",
+      "PROMPTS.md"
+    ],
+    "qa": [
+      "PLANETS.md",
+      "SIGNS.md",
+      "HOUSES.md",
+      "QUALITY.md",
+      "VOCAB.md"
+    ],
+    "review": [
+      "CHAPTERS.md"
+    ]
+  },
+  "topic_map": {
+    "ดาว / planet keywords / aliases": "PLANETS.md",
+    "ราศี / sign positions / อุจ นิจ มหาจักร": "SIGNS.md",
+    "ภพ / houses / aspect / กุม เล็ง โยค ตรีโกณ": "HOUSES.md",
+    "คุณภาพดาว / quality / กฎลบ-ลบ=บวก": "QUALITY.md",
+    "คำศัพท์ / ลัคนา / ตนุลัคน์ / โฉลก / สมพงศ์": "VOCAB.md",
+    "session log / corrections / pinned / hallucinations": "LOG.md",
+    "foundational rules / tals scope / attribution": "INDEX.md",
+    "extraction grammar / rule types / polarity": "SYNTAX.md",
+    "rule JSON schema / field spec": "TAXONOMY.md",
+    "extraction prompts / templates": "PROMPTS.md",
+    "chapter progress / batchwork": "CHAPTERS.md",
+    "LLM control / 6-layer architecture": "LLM_CONTROL.md",
+    "session instructions / hallucinations list": "CLAUDE.md"
+  },
+  "files": {
+    "CLAUDE.md": {
+      "last_updated": "2026-05-27",
+      "lines": 73,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — Nested CLAUDE.md"
+        },
+        {
+          "level": 1,
+          "text": "คำแนะนำเฉพาะสำหรับ BIBLE session (อ่านหลัง root CLAUDE.md)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-27"
+        },
+        {
+          "level": 2,
+          "text": "Session Start — อ่านไฟล์นี้เป็นลำดับแรกใน bible_memory/"
+        },
+        {
+          "level": 2,
+          "text": "TALS Attribution (canonical — ห้ามเปลี่ยน)"
+        },
+        {
+          "level": 2,
+          "text": "3 Foundational Rules — ใช้ก่อนทุกการพยากรณ์"
+        },
+        {
+          "level": 2,
+          "text": "Hallucination ที่เคยเกิด — ห้ามซ้ำ"
+        },
+        {
+          "level": 2,
+          "text": "Memory File Rules"
+        },
+        {
+          "level": 2,
+          "text": "Pending User Verification"
+        },
+        {
+          "level": 2,
+          "text": "Decision Records"
+        }
+      ],
+      "keywords": [
+        "⚠️ has-corrections",
+        "📌 has-pinned",
+        "🟡 has-pending"
+      ],
+      "pinned": [
+        "อ่าน: INDEX.md → LOG.md (ดู PINNED entries + entries ล่าสุด)"
+      ],
+      "corrections": [
+        "ถ้าข้อมูลเดิมผิด → เพิ่ม `⚠️ แก้ไข (YYYY-MM-DD): ...` ต่อท้าย ไม่ลบเดิม"
+      ]
+    },
+    "INDEX.md": {
+      "last_updated": "2026-05-26",
+      "lines": 240,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — INDEX (TALS reference)"
+        },
+        {
+          "level": 1,
+          "text": "อ่านไฟล์นี้ก่อนทุก BIBLE session"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-26"
+        },
+        {
+          "level": 2,
+          "text": "🔴 PINNED v3 (2026-05-26) — INTERPRETATION PRINCIPLE (apply BEFORE any prediction logic)"
+        },
+        {
+          "level": 2,
+          "text": "📌 MUST READ FIRST — BIBLE Architecture (2026-05-25, current = v2 TRIANGULATION)"
+        },
+        {
+          "level": 2,
+          "text": "ไฟล์ย่อย"
+        },
+        {
+          "level": 2,
+          "text": "Session Start Protocol"
+        },
+        {
+          "level": 3,
+          "text": "BIBLE extraction session"
+        },
+        {
+          "level": 3,
+          "text": "BIBLE Q&A session (ตอบคำถามโหราศาสตร์)"
+        },
+        {
+          "level": 3,
+          "text": "BIBLE review session"
+        },
+        {
+          "level": 2,
+          "text": "Q&A Intelligent Unit — โหราศาสตร์ไทย"
+        },
+        {
+          "level": 3,
+          "text": "ขีดความสามารถ"
+        },
+        {
+          "level": 3,
+          "text": "Q&A Response Format"
+        },
+        {
+          "level": 3,
+          "text": "KB Feedback Loop"
+        },
+        {
+          "level": 3,
+          "text": "Master Dictionary Feedback"
+        },
+        {
+          "level": 3,
+          "text": "สิ่งที่ตอบได้"
+        },
+        {
+          "level": 3,
+          "text": "สิ่งที่ต้องระวัง"
+        },
+        {
+          "level": 2,
+          "text": "LOG.md — Append Rules"
+        },
+        {
+          "level": 2,
+          "text": "Repo resources (appended 2026-05-25 — Claude must check before asking user)"
+        }
+      ],
+      "keywords": [
+        "tals",
+        "foundational",
+        "rule #1",
+        "rule #2",
+        "rule #3",
+        "triangulation",
+        "⚠️ has-corrections",
+        "📌 has-pinned"
+      ],
+      "pinned": [
+        "(Detail + engine flow + validation + evidence — ใน LOG.md PINNED entries)",
+        "🔴 PINNED v3 (2026-05-26) — INTERPRETATION PRINCIPLE (apply BEFORE any prediction logic)",
+        "**Latest architecture decision:** **TRIANGULATION** (LOG entry \"2026-05-25 — 📌 PINNED v2\")",
+        "1. อ่าน `LOG.md` **section PINNED v2 (2026-05-25)** เป็นอันดับแรก — มี framing + schema + procedure ครบ",
+        "3. ถ้าทำงาน merge/schema → focus ที่ PINNED v2 + kb_*.json ปัจจุบัน"
+      ],
+      "corrections": []
+    },
+    "LOG.md": {
+      "last_updated": null,
+      "lines": 1174,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — SESSION LOG"
+        },
+        {
+          "level": 1,
+          "text": "Type: APPEND-ONLY — ห้ามแก้ entry เก่า, เพิ่มอัตโนมัติทุก session"
+        },
+        {
+          "level": 1,
+          "text": "Format: ## YYYY-MM-DDTHH:MM — [Session/Topic]"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-22 — Session 1: ch001-ch015 (90 rules)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-22 — Session 2: ch016-ch029 (+65 rules = 155)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-23 — Session 3: ch026+ch030-ch101 (+135 rules = 290) — COMPLETE"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-23 — Process lessons"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-23 — Memory architecture migration"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-23 — Quality review R200-R290 findings"
+        },
+        {
+          "level": 3,
+          "text": "Schema issues พบและแก้แล้ว"
+        },
+        {
+          "level": 3,
+          "text": "Meaning/semantic: ผ่านทั้งหมด"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-23 — Extraction infrastructure + Master Dict architecture"
+        },
+        {
+          "level": 3,
+          "text": "ไฟล์ใหม่ที่สร้าง"
+        },
+        {
+          "level": 3,
+          "text": "Master Dict architecture (confirmed)"
+        },
+        {
+          "level": 3,
+          "text": "UI decision: HTML tool แทน Google Sheets"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25 — 📌 PINNED: Ground-truth extraction architecture (user-defined)"
+        },
+        {
+          "level": 3,
+          "text": "Source of truth location (verified 2026-05-25)"
+        },
+        {
+          "level": 3,
+          "text": "4-Level Content Separation Framework (user-defined)"
+        },
+        {
+          "level": 3,
+          "text": "Schema patch (mandatory ทุก rule ใหม่ตั้งแต่นี้)"
+        },
+        {
+          "level": 3,
+          "text": "Atomic Learning Model (leveraged audit)"
+        },
+        {
+          "level": 3,
+          "text": "Master Dictionary status (2026-05-25)"
+        },
+        {
+          "level": 3,
+          "text": "Procedures for NEXT BIBLE session (📌 enforced)"
+        },
+        {
+          "level": 3,
+          "text": "Why this matters to user (not Claude)"
+        },
+        {
+          "level": 3,
+          "text": "Reference back-links"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25 — 📌 PINNED v2: TRIANGULATION ARCHITECTURE (supersedes v1 above)"
+        },
+        {
+          "level": 3,
+          "text": "NEW Mental Model"
+        },
+        {
+          "level": 3,
+          "text": "Triangulation Architecture — KB main rules = สามแหล่งบรรจบ"
+        },
+        {
+          "level": 3,
+          "text": "Element Fingerprint — กุญแจของระบบ"
+        },
+        {
+          "level": 3,
+          "text": "NEW Rule Schema (extends current — backward compatible)"
+        },
+        {
+          "level": 3,
+          "text": "Source Types (REPLACES v1 4-level)"
+        },
+        {
+          "level": 3,
+          "text": "KB Equalizer Principle"
+        },
+        {
+          "level": 3,
+          "text": "Implementation Procedure (4 steps, ordered)"
+        },
+        {
+          "level": 3,
+          "text": "Open Decisions (pending user)"
+        },
+        {
+          "level": 3,
+          "text": "Memory Protocol for Future Sessions"
+        },
+        {
+          "level": 3,
+          "text": "Why this matters to user (not Claude)"
+        },
+        {
+          "level": 3,
+          "text": "Validation Test ที่ user ทำได้"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25 — Implementation log (Triangulation infra complete)"
+        },
+        {
+          "level": 3,
+          "text": "Files shipped (all on main, see commit history fbb68f5..df7b552)"
+        },
+        {
+          "level": 3,
+          "text": "Discrimination gain measured"
+        },
+        {
+          "level": 3,
+          "text": "What blocks Step 4 (real triangulation)"
+        },
+        {
+          "level": 3,
+          "text": "Still pending (next session)"
+        },
+        {
+          "level": 3,
+          "text": "Sync warning for future sessions"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25T15:00 — Pipeline completion + master_dict signs"
+        },
+        {
+          "level": 3,
+          "text": "Apply tool shipped (`workers/kb_apply_review_decisions.mjs`)"
+        },
+        {
+          "level": 3,
+          "text": "Wording prompt POC (`workers/kb_wording_prompt_poc.mjs`)"
+        },
+        {
+          "level": 3,
+          "text": "Master dict — signs section: structural fields filled"
+        },
+        {
+          "level": 3,
+          "text": "⚠ ID scheme mismatch discovered (action required)"
+        },
+        {
+          "level": 3,
+          "text": "Schema additions"
+        },
+        {
+          "level": 3,
+          "text": "Pipeline now complete end-to-end"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25T16:00 — POC scoring v2 + planet_positions complete + ID schema plan"
+        },
+        {
+          "level": 3,
+          "text": "POC scoring v2 — penalize REFERENCE rules"
+        },
+        {
+          "level": 3,
+          "text": "Master dict planet_positions — complete for 8 main planets"
+        },
+        {
+          "level": 3,
+          "text": "⚠ ID schema mismatch — TWO incompatible schemes documented"
+        },
+        {
+          "level": 3,
+          "text": "Schema migration plan (deferred until major bump)"
+        },
+        {
+          "level": 3,
+          "text": "Session decisions taken (not requiring user input)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25T17:00 — Master dict v1.2.0: planet_pairs + house_rulers_by_lagna complete"
+        },
+        {
+          "level": 3,
+          "text": "Files written"
+        },
+        {
+          "level": 3,
+          "text": "planet_pairs"
+        },
+        {
+          "level": 3,
+          "text": "house_rulers_by_lagna — fully derived (12×12 = 144 entries)"
+        },
+        {
+          "level": 3,
+          "text": "Completion status snapshot (master_dict v1.2.0)"
+        },
+        {
+          "level": 3,
+          "text": "Why derived data is shipped instead of computed at runtime"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25T18:30 — Master dict v1.4.0-complete: all sections filled"
+        },
+        {
+          "level": 3,
+          "text": "Final 3 sections filled this session"
+        },
+        {
+          "level": 3,
+          "text": "Master dict completion status (v1.4.0)"
+        },
+        {
+          "level": 3,
+          "text": "chapter_texts.json discovery"
+        },
+        {
+          "level": 3,
+          "text": "WHY: ทำไม signs narrative ไม่ฮัลลูซิเนชั่น"
+        },
+        {
+          "level": 3,
+          "text": "Trigger for further refinement"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-25T19:00 — Memory consolidation pass"
+        },
+        {
+          "level": 3,
+          "text": "Why this matters"
+        },
+        {
+          "level": 3,
+          "text": "Pattern: when to promote LOG content → reference"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-26T00:00 — 📌 PINNED v3: INTERPRETATION PRINCIPLE — natal = 80%, transit = stimulator only"
+        },
+        {
+          "level": 3,
+          "text": "หลัก"
+        },
+        {
+          "level": 3,
+          "text": "Implications (logic ที่ใช้ได้)"
+        },
+        {
+          "level": 3,
+          "text": "Engine logic flow (corrected)"
+        },
+        {
+          "level": 3,
+          "text": "POC scoring revision (apply next session)"
+        },
+        {
+          "level": 3,
+          "text": "Validation rule for KB"
+        },
+        {
+          "level": 3,
+          "text": "Cross-ref to existing memory"
+        },
+        {
+          "level": 3,
+          "text": "Memory enforcement"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-26T00:30 — Corollary to PINNED v3: similar-natal differentiation = ดาวจร"
+        },
+        {
+          "level": 3,
+          "text": "ตรรกะตามมาจาก Rule #1"
+        },
+        {
+          "level": 3,
+          "text": "ตัวอย่าง (Engine validation case)"
+        },
+        {
+          "level": 3,
+          "text": "Engine logic implication"
+        },
+        {
+          "level": 3,
+          "text": "Anti-pattern ที่ต้องหลีกเลี่ยง"
+        },
+        {
+          "level": 3,
+          "text": "Validation rule for wording generation"
+        },
+        {
+          "level": 3,
+          "text": "KB rule audit checklist (apply เมื่อ review transit rules)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-26T20:00 — มหาจักร hallucination corrected (user-verified)"
+        },
+        {
+          "level": 3,
+          "text": "Root cause of BIBLE memory bug"
+        },
+        {
+          "level": 3,
+          "text": "Universal rule (re-confirmed)"
+        },
+        {
+          "level": 3,
+          "text": "Engine.js MAHACHAK_MAP also WRONG"
+        },
+        {
+          "level": 3,
+          "text": "Open: ค่ามหาจักรของอีก 7 ดาว (รอ user verify)"
+        },
+        {
+          "level": 3,
+          "text": "Source-of-truth rule"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-26T22:00 — มหาจักร table complete (user-verified all 8 planets) + new single-source-of-truth file"
+        },
+        {
+          "level": 3,
+          "text": "Action taken"
+        },
+        {
+          "level": 3,
+          "text": "Complete มหาจักร table (user-verified)"
+        },
+        {
+          "level": 3,
+          "text": "Net findings — engine.js MAHACHAK_MAP เกือบถูก (7/8)"
+        },
+        {
+          "level": 3,
+          "text": "BIBLE memory bug fully traced"
+        },
+        {
+          "level": 3,
+          "text": "KB extraction impact reassessment (corrected from earlier overstatement)"
+        },
+        {
+          "level": 3,
+          "text": "New file v3/quality_maps.json — schema v1.0"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-26T22:00 — 📖 TALS terminology established (supersedes \"สุริยยาตร์\" generic usage)"
+        },
+        {
+          "level": 3,
+          "text": "TALS = ระบบที่เราใช้"
+        },
+        {
+          "level": 3,
+          "text": "Terminology cleanup — supersedes prior usage"
+        },
+        {
+          "level": 3,
+          "text": "LOG entries above ที่ใช้คำ \"สุริยยาตร์\" — ตีความใหม่"
+        },
+        {
+          "level": 3,
+          "text": "Scope ของ TALS"
+        },
+        {
+          "level": 3,
+          "text": "Files updated (Phase 1 — BIBLE scope)"
+        },
+        {
+          "level": 3,
+          "text": "Files pending (Phase 2 — cross-project notes)"
+        },
+        {
+          "level": 3,
+          "text": "Why NOT touch archive + KB rule content"
+        },
+        {
+          "level": 3,
+          "text": "Public-facing strategy (per user)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-26T23:00 — TALS vs other systems: user teaches 7 distinctions"
+        },
+        {
+          "level": 3,
+          "text": "1. ฤกษ์ — TALS excludes (electional vs natal distinction)"
+        },
+        {
+          "level": 3,
+          "text": "2. มฤตยู (Uranus) historical addition"
+        },
+        {
+          "level": 3,
+          "text": "3. ราชาโชค — ผมพูดผิดเรื่อง \"geometric derivation\""
+        },
+        {
+          "level": 3,
+          "text": "4. มฤตยู interpretation"
+        },
+        {
+          "level": 3,
+          "text": "5. ราหู interpretation"
+        },
+        {
+          "level": 3,
+          "text": "6. เรือนนอก/เรือนใน (ch011)"
+        },
+        {
+          "level": 3,
+          "text": "7. อนุเกษตร + ประเกษตร"
+        },
+        {
+          "level": 3,
+          "text": "Files updated this round (Phase 1 BIBLE scope)"
+        },
+        {
+          "level": 3,
+          "text": "Open questions still pending"
+        },
+        {
+          "level": 3,
+          "text": "Lesson learned (process)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T00:00 — TALS FOUNDATIONAL RULES expanded (#2 + #3)"
+        },
+        {
+          "level": 3,
+          "text": "RULE #2 — QUALIFIER: สัมพันธ์ลัคนา/ตนุลัคน์"
+        },
+        {
+          "level": 3,
+          "text": "RULE #3 — STRENGTH: chart resilience"
+        },
+        {
+          "level": 3,
+          "text": "TALS Interpretation Hierarchy (canonical)"
+        },
+        {
+          "level": 3,
+          "text": "Files updated"
+        },
+        {
+          "level": 3,
+          "text": "Cross-link to existing memory"
+        },
+        {
+          "level": 3,
+          "text": "Anti-patterns to avoid (NEW)"
+        }
+      ],
+      "keywords": [
+        "pinned",
+        "hallucination",
+        "verified",
+        "foundational",
+        "⚠️ has-corrections",
+        "📌 has-pinned",
+        "🟡 has-pending"
+      ],
+      "pinned": [
+        "2026-05-25 — 📌 PINNED: Ground-truth extraction architecture (user-defined)",
+        "2026-05-25 — 📌 PINNED v2: TRIANGULATION ARCHITECTURE (supersedes v1 above)",
+        "**Why this entry:** earlier today v1 PINNED framed ground truth as \"100CH verbatim only\" — user corrected:",
+        "2026-05-26T00:00 — 📌 PINNED v3: INTERPRETATION PRINCIPLE — natal = 80%, transit = stimulator only",
+        "2026-05-26T00:30 — Corollary to PINNED v3: similar-natal differentiation = ดาวจร",
+        "PINNED v2 (LOG 2026-05-25) มี table:",
+        "- ❌ **ไม่อ้าง BIBLE memory PINNED v2 มหาจักร table** (deprecated)",
+        "PINNED v2 มหาจักร pair table = hallucinated mostly:"
+      ],
+      "corrections": []
+    },
+    "PLANETS.md": {
+      "last_updated": "2026-05-23",
+      "lines": 77,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — PLANETS"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable if error found)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 2,
+          "text": "ดาวเคราะห์ 10 ดวง"
+        },
+        {
+          "level": 2,
+          "text": "ความหมายหลัก (สั้นที่สุด)"
+        },
+        {
+          "level": 2,
+          "text": "ดาวคู่ (Planet Pairs)"
+        },
+        {
+          "level": 2,
+          "text": "ความเร็วโคจร (ราศีต่อช่วงเวลา)"
+        },
+        {
+          "level": 2,
+          "text": "ดาวเกษตร (เจ้าเรือน)"
+        },
+        {
+          "level": 2,
+          "text": "ความหมายขยาย — ดาว 0, 8 (user 2026-05-26 verified)"
+        },
+        {
+          "level": 3,
+          "text": "มฤตยู (0) — Uranus"
+        },
+        {
+          "level": 3,
+          "text": "ราหู (8)"
+        },
+        {
+          "level": 3,
+          "text": "เกตุ (9)"
+        }
+      ],
+      "keywords": [
+        "มฤตยู",
+        "ราหู",
+        "เกตุ",
+        "อาทิตย์",
+        "จันทร์",
+        "อังคาร",
+        "พุธ",
+        "พฤหัสบดี",
+        "ศุกร์",
+        "เสาร์",
+        "alias",
+        "คู่มิตร",
+        "คู่ศัตรู"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "SIGNS.md": {
+      "last_updated": "2026-05-23",
+      "lines": 119,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — SIGNS (ราศี)"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable if error found)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 2,
+          "text": "ราศีทั้ง 12"
+        },
+        {
+          "level": 2,
+          "text": "ตำแหน่งมาตรฐาน"
+        },
+        {
+          "level": 3,
+          "text": "อุจ (Exaltation) — แรงสม่ำเสมอ ระดับสูง"
+        },
+        {
+          "level": 3,
+          "text": "นิจ (Fall) = ราศีตรงข้ามอุจ → (sign_id + 6) % 12"
+        },
+        {
+          "level": 3,
+          "text": "มหาจักร pairs (memory code: ๗๒ ๑๘ ๔๓ ๕๖)"
+        },
+        {
+          "level": 2,
+          "text": "⚠️ Correction 2026-05-26 — ราหู uchcha/nicha (supersedes 2026-05-23 tables above)"
+        },
+        {
+          "level": 2,
+          "text": "⚠️ Correction 2026-05-26 — มหาจักร table DEPRECATED (supersedes 2026-05-23 มหาจักร pairs section above)"
+        },
+        {
+          "level": 2,
+          "text": "✅ Mahachakra table COMPLETE (user-verified all 8, 2026-05-26)"
+        }
+      ],
+      "keywords": [
+        "เมษ",
+        "พฤษภ",
+        "มิถุน",
+        "กรกฎ",
+        "สิงห์",
+        "กันย์",
+        "ตุล",
+        "พิจิก",
+        "ธนู",
+        "มังกร",
+        "กุมภ์",
+        "มีน",
+        "อุจ",
+        "นิจ",
+        "มหาจักร",
+        "correction",
+        "⚠️ has-corrections"
+      ],
+      "pinned": [],
+      "corrections": [
+        "⚠️ Correction 2026-05-26 — ราหู uchcha/nicha (supersedes 2026-05-23 tables above)",
+        "⚠️ Correction 2026-05-26 — มหาจักร table DEPRECATED (supersedes 2026-05-23 มหาจักร pairs section above)"
+      ]
+    },
+    "HOUSES.md": {
+      "last_updated": "2026-05-23",
+      "lines": 57,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — HOUSES & ASPECTS (ภพ + มุมสัมพันธ์)"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable if error found)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 2,
+          "text": "ภพทั้ง 12"
+        },
+        {
+          "level": 2,
+          "text": "ภพพิเศษ"
+        },
+        {
+          "level": 2,
+          "text": "มุมสัมพันธ์ (Aspects)"
+        },
+        {
+          "level": 2,
+          "text": "Priority การแสดงผล (confirmed ch101)"
+        },
+        {
+          "level": 2,
+          "text": "Number Disambiguation ⚠️"
+        }
+      ],
+      "keywords": [
+        "ภพ",
+        "ตนุ",
+        "กฎุมพะ",
+        "สหัชชะ",
+        "พันธุ",
+        "ปุตตะ",
+        "อริ",
+        "ปัตนิ",
+        "มรณะ",
+        "ศุภะ",
+        "กัมมะ",
+        "ลาภะ",
+        "วินาศ",
+        "aspect",
+        "กุม",
+        "เล็ง",
+        "โยค",
+        "ตรีโกณ",
+        "⚠️ has-corrections"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "QUALITY.md": {
+      "last_updated": "2026-05-23",
+      "lines": 67,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — QUALITY (คุณภาพดาว)"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable if error found)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 2,
+          "text": "ตารางคุณภาพ"
+        },
+        {
+          "level": 2,
+          "text": "กฎลบ-ลบ=บวก (Quality Reversal)"
+        },
+        {
+          "level": 2,
+          "text": "อุจ vs มหาจักร — ความต่าง (confirmed ch101)"
+        },
+        {
+          "level": 2,
+          "text": "คุณภาพดาว + ไม่สัมพันธ์ลัคนา"
+        },
+        {
+          "level": 2,
+          "text": "Clarifications + Warnings (user 2026-05-26)"
+        },
+        {
+          "level": 3,
+          "text": "ราชาโชค — Thai tradition (NOT geometric)"
+        },
+        {
+          "level": 3,
+          "text": "เทวีโชค — ความสัมพันธ์กับ ราชาโชค"
+        },
+        {
+          "level": 3,
+          "text": "อนุเกษตร — interpretation นัยใหม่"
+        },
+        {
+          "level": 3,
+          "text": "ประเกษตร / ประ"
+        }
+      ],
+      "keywords": [
+        "เกษตร",
+        "ประเกษตร",
+        "อุจ",
+        "นิจ",
+        "มหาจักร",
+        "จุลจักร",
+        "ราชาโชค",
+        "เทวีโชค",
+        "อุจจาวิลาส",
+        "อุจจาภิมุข",
+        "อนุเกษตร",
+        "กฎลบ",
+        "⚠️ has-corrections"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "VOCAB.md": {
+      "last_updated": "2026-05-26",
+      "lines": 182,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — VOCABULARY (TALS)"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable — เพิ่มเมื่อพบคำใหม่)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-26"
+        },
+        {
+          "level": 1,
+          "text": "System: TALS (Thai Astrology Logical Style — โหราศาสตร์ไทยแนวตรรกะ)"
+        },
+        {
+          "level": 1,
+          "text": "Founder: ยืนยง นาวาสมุทร (แดง เมืองตราด)"
+        },
+        {
+          "level": 2,
+          "text": "Compound Words (คำประสม — ห้ามตัด)"
+        },
+        {
+          "level": 2,
+          "text": "Key Concepts"
+        },
+        {
+          "level": 3,
+          "text": "ลัคนา (Ascendant)"
+        },
+        {
+          "level": 3,
+          "text": "ตนุลัคน์ (House Lord)"
+        },
+        {
+          "level": 3,
+          "text": "ตนุเศษ"
+        },
+        {
+          "level": 3,
+          "text": "สามระดับ (ตนุเศษ / กุมลัคนา / ตนุลัคน์)"
+        },
+        {
+          "level": 3,
+          "text": "โฉลก (Auspiciousness)"
+        },
+        {
+          "level": 3,
+          "text": "สมพงศ์ (Chart Compatibility) — 3 เงื่อนไข"
+        },
+        {
+          "level": 2,
+          "text": "Domain Keywords"
+        },
+        {
+          "level": 2,
+          "text": "ตนุเศษ — calculation + per-planet trait table (appended 2026-05-25)"
+        },
+        {
+          "level": 3,
+          "text": "Calculation (formula)"
+        },
+        {
+          "level": 3,
+          "text": "Per-planet personality (verbatim from ch013)"
+        },
+        {
+          "level": 2,
+          "text": "ตนุลัคน์ — per-planet inner-self table (appended 2026-05-25)"
+        },
+        {
+          "level": 2,
+          "text": "3-layer identity model — interpretation FLOW (appended 2026-05-25, supersedes \"อาจเสริมหรือขัด\")"
+        },
+        {
+          "level": 2,
+          "text": "Naming variants (appended 2026-05-25)"
+        },
+        {
+          "level": 2,
+          "text": "TALS concept clarifications (user 2026-05-26)"
+        },
+        {
+          "level": 3,
+          "text": "ฤกษ์ — ไม่ใช้ใน TALS"
+        },
+        {
+          "level": 3,
+          "text": "เรือนนอก / เรือนใน"
+        },
+        {
+          "level": 3,
+          "text": "อนุเกษตร — รายละเอียดเพิ่ม"
+        },
+        {
+          "level": 3,
+          "text": "ประเกษตร (ประ)"
+        },
+        {
+          "level": 3,
+          "text": "ราชาโชค — Thai tradition (warning)"
+        }
+      ],
+      "keywords": [
+        "ลัคนา",
+        "ตนุลัคน์",
+        "ตนุเศษ",
+        "โฉลก",
+        "สมพงศ์",
+        "เรือนนอก",
+        "เรือนใน",
+        "ฤกษ์",
+        "⚠️ has-corrections"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "SYNTAX.md": {
+      "last_updated": "2026-05-23",
+      "lines": 110,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — SYNTAX & EXTRACTION LOGIC"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable if error found)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 2,
+          "text": "สูตรกฎพื้นฐาน"
+        },
+        {
+          "level": 2,
+          "text": "Rule Types"
+        },
+        {
+          "level": 2,
+          "text": "Extraction Decision Tree"
+        },
+        {
+          "level": 3,
+          "text": "NATAL_ATOMIC (tier 1)"
+        },
+        {
+          "level": 3,
+          "text": "NATAL_COMBINATION (tier 2)"
+        },
+        {
+          "level": 3,
+          "text": "TRANSIT_NATAL (tier 1-2)"
+        },
+        {
+          "level": 2,
+          "text": "Transit Markers (บ่งชี้กฎ transit)"
+        },
+        {
+          "level": 2,
+          "text": "Case Study Markers (ห้าม extract เป็น rule โดยตรง)"
+        },
+        {
+          "level": 2,
+          "text": "Principle Markers"
+        },
+        {
+          "level": 2,
+          "text": "Polarity Detection"
+        },
+        {
+          "level": 2,
+          "text": "Ground Truth Test — CH036"
+        },
+        {
+          "level": 2,
+          "text": "Claude-derive pattern (process lesson, 2026-05-25)"
+        }
+      ],
+      "keywords": [
+        "⚠️ has-corrections"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "TAXONOMY.md": {
+      "last_updated": "2026-05-23",
+      "lines": 194,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — TAXONOMY (Rule Schema Spec)"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable if schema changes)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 1,
+          "text": "Purpose: LLM-readable spec — Typhoon/Groq/Claude reads this to extract rules correctly"
+        },
+        {
+          "level": 2,
+          "text": "Rule JSON Schema (every extracted rule must match this)"
+        },
+        {
+          "level": 2,
+          "text": "Field Definitions"
+        },
+        {
+          "level": 3,
+          "text": "rule_use"
+        },
+        {
+          "level": 3,
+          "text": "type"
+        },
+        {
+          "level": 3,
+          "text": "tier (test ง่าย)"
+        },
+        {
+          "level": 3,
+          "text": "polarity"
+        },
+        {
+          "level": 3,
+          "text": "domain (ค่าที่ใช้จริงใน KB — ไม่ต้องแก้ถ้า extract ตรงกับบริบท)"
+        },
+        {
+          "level": 2,
+          "text": "Extraction Decision Tree"
+        },
+        {
+          "level": 2,
+          "text": "Good vs Bad Examples"
+        },
+        {
+          "level": 3,
+          "text": "✅ GOOD — NATAL_ATOMIC tier 1"
+        },
+        {
+          "level": 3,
+          "text": "✅ GOOD — NATAL_COMBINATION tier 2"
+        },
+        {
+          "level": 3,
+          "text": "✅ GOOD — TRANSIT_NATAL"
+        },
+        {
+          "level": 3,
+          "text": "❌ BAD — case study นำมาเป็น match rule"
+        },
+        {
+          "level": 3,
+          "text": "❌ BAD — copy กรณีศึกษา 5 ข้อเป็น 5 match rules"
+        },
+        {
+          "level": 2,
+          "text": "Edge Cases"
+        },
+        {
+          "level": 3,
+          "text": "กฎลบ-ลบ=บวก"
+        },
+        {
+          "level": 3,
+          "text": "Number disambiguation (ตัวเลขในตำรา)"
+        },
+        {
+          "level": 3,
+          "text": "คุณภาพดาว + ไม่สัมพันธ์ลัคนา"
+        },
+        {
+          "level": 3,
+          "text": "Transit ทับลัคนา vs ทับตนุลัคน์"
+        },
+        {
+          "level": 3,
+          "text": "กุมลัคนา priority"
+        },
+        {
+          "level": 2,
+          "text": "Validation Checklist (ก่อน commit rule ลง KB)"
+        }
+      ],
+      "keywords": [],
+      "pinned": [],
+      "corrections": []
+    },
+    "PROMPTS.md": {
+      "last_updated": "2026-05-23",
+      "lines": 154,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — PROMPTS (Extraction Templates)"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (editable as prompts improve)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 1,
+          "text": "Purpose: Copy-paste ready prompts for Groq/Typhoon/Claude extraction"
+        },
+        {
+          "level": 2,
+          "text": "Template 1: Standard Chapter Extraction"
+        },
+        {
+          "level": 3,
+          "text": "System Prompt"
+        },
+        {
+          "level": 2,
+          "text": "Planet IDs"
+        },
+        {
+          "level": 2,
+          "text": "⚠️ Number Disambiguation"
+        },
+        {
+          "level": 2,
+          "text": "Planet Positions (ch006)"
+        },
+        {
+          "level": 2,
+          "text": "Relations"
+        },
+        {
+          "level": 2,
+          "text": "rule_use"
+        },
+        {
+          "level": 2,
+          "text": "rule type"
+        },
+        {
+          "level": 2,
+          "text": "⚠️ Anti-patterns"
+        },
+        {
+          "level": 2,
+          "text": "Output (JSON array เท่านั้น ไม่มี markdown)"
+        },
+        {
+          "level": 3,
+          "text": "User Prompt Template"
+        },
+        {
+          "level": 2,
+          "text": "Template 2: Long Chapter (>10K chars) — Chunked"
+        },
+        {
+          "level": 3,
+          "text": "System Prompt"
+        },
+        {
+          "level": 3,
+          "text": "User Prompt Template"
+        },
+        {
+          "level": 2,
+          "text": "Template 3: Q&A / Case Study Heavy Chapters"
+        },
+        {
+          "level": 3,
+          "text": "System Prompt เพิ่มเติม (append ท้าย Template 1)"
+        },
+        {
+          "level": 2,
+          "text": "บทนี้มีกรณีศึกษาหนาแน่น — ลำดับการ extract:"
+        },
+        {
+          "level": 2,
+          "text": "Template 4: Batch Small Chapters"
+        },
+        {
+          "level": 3,
+          "text": "User Prompt Template"
+        },
+        {
+          "level": 2,
+          "text": "Quality Control Checklist (ก่อน merge เข้า KB)"
+        },
+        {
+          "level": 2,
+          "text": "Prompt Tuning Log (append เมื่อพบปัญหา)"
+        },
+        {
+          "level": 2,
+          "text": "Token Estimates (Groq/Typhoon)"
+        }
+      ],
+      "keywords": [
+        "⚠️ has-corrections"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "CHAPTERS.md": {
+      "last_updated": "2026-05-23",
+      "lines": 76,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — CHAPTERS & PROGRESS"
+        },
+        {
+          "level": 1,
+          "text": "Type: Editable (อัปเดตทุก session)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-23"
+        },
+        {
+          "level": 2,
+          "text": "Extraction Progress"
+        },
+        {
+          "level": 2,
+          "text": "Chapter Map"
+        },
+        {
+          "level": 2,
+          "text": "Quality Notes"
+        },
+        {
+          "level": 2,
+          "text": "Raw text access (appended 2026-05-25)"
+        },
+        {
+          "level": 2,
+          "text": "Extraction depth notes (appended 2026-05-25)"
+        }
+      ],
+      "keywords": [
+        "🟡 has-pending"
+      ],
+      "pinned": [],
+      "corrections": []
+    },
+    "LLM_CONTROL.md": {
+      "last_updated": "2026-05-26",
+      "lines": 201,
+      "headings": [
+        {
+          "level": 1,
+          "text": "BIBLE Memory — LLM CONTROL ARCHITECTURE"
+        },
+        {
+          "level": 1,
+          "text": "Type: Reference (design pattern)"
+        },
+        {
+          "level": 1,
+          "text": "Last updated: 2026-05-26"
+        },
+        {
+          "level": 1,
+          "text": "Purpose: วิธีใช้ knowledge (KB + master_dict + foundational rules) มาคุม LLM"
+        },
+        {
+          "level": 1,
+          "text": "ให้ output ไม่ hallucinate และตรง TALS framework"
+        },
+        {
+          "level": 2,
+          "text": "Strategy: Constrained Generation"
+        },
+        {
+          "level": 2,
+          "text": "6 Layers — เรียงตาม leverage มาก→น้อย"
+        },
+        {
+          "level": 3,
+          "text": "Layer 1: Pre-select rules before sending to LLM ✅ (POC v2 shipped)"
+        },
+        {
+          "level": 3,
+          "text": "Layer 2: Structured output (JSON schema) 🟡 (schema มี, enforce ยังไม่ทำ)"
+        },
+        {
+          "level": 3,
+          "text": "Layer 3: Validator loop 🔴 (pending implementation)"
+        },
+        {
+          "level": 3,
+          "text": "Layer 4: Decomposition — split 1 big prompt → 3 small phases 🔴 (pending)"
+        },
+        {
+          "level": 3,
+          "text": "Layer 5: Tool-use / function calling 🔴 (pending; master_dict v1.4 ready)"
+        },
+        {
+          "level": 3,
+          "text": "Layer 6: Triangulation / multi-vendor self-consistency 🟡 (architecture ออกแบบไว้แล้ว)"
+        },
+        {
+          "level": 2,
+          "text": "Implementation status (2026-05-26)"
+        },
+        {
+          "level": 2,
+          "text": "Recommended next-step order (highest leverage first)"
+        },
+        {
+          "level": 2,
+          "text": "Anti-patterns (อย่าทำ)"
+        },
+        {
+          "level": 2,
+          "text": "Cross-ref to existing files"
+        }
+      ],
+      "keywords": [
+        "🟡 has-pending"
+      ],
+      "pinned": [],
+      "corrections": []
+    }
+  }
+}

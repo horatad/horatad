@@ -18,6 +18,14 @@
           { "type": "command", "command": "bash .claude/hooks/pre-close.sh" }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/pre-edit-memory.sh" }
+        ]
+      }
     ]
   }
 }
