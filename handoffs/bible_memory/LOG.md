@@ -1728,6 +1728,26 @@ ch020 เน้น "ดาวไม่สัมพันธ์" เพราะ 
 
 ---
 
+## 2026-05-28T00:00 — สร้าง tals_elements.json — Single Master File สำหรับ TALS Elements
+
+### งานที่ทำ
+- สร้าง `v3/tals_elements.json` (33KB, 733 lines) — consolidate ทั้ง quality_maps.json + master_dict_meanings.json
+- **ใช้ canonical ID scheme**: signs 0-11, planets 0-9 ตลอดทั้งไฟล์
+- embed planet positions (uchcha/kaset/mahachak/anukaset/rajayok) ตรงใน planet entry
+
+### Pattern ที่แก้ไข
+- **Naming bug พบใหม่**: `master_dict_meanings.json` field `prakaset` ใน planet_positions จริงๆ เก็บค่า ANUKASET (mitr partner's kaset) ไม่ใช่ PRAKASET (ประเกษตร = opposite of kaset)
+  - ตรวจสอบทั้ง 8 ดาว confirm ✓
+  - `tals_elements.json` ใช้ชื่อถูก: `anukaset` field
+
+### Pending ยังเหมือนเดิม
+- rajayok per-planet (8 values) = null ทั้งหมด รอ user จาก 100CH
+- มหาจักร strength_pct = 80% (quality_maps) vs ≈ 100% (QUALITY.md/ch025) — ยัง unresolved
+- เทวีโชค = ราชาโชค+6 geometric assumption ยังไม่ confirmed
+
+### สถานะ consumers
+- `tools/master_dict_editor.html` ยังใช้ master_dict_meanings.json อยู่ — PENDING: migrate ให้ใช้ tals_elements.json
+
 ## 2026-05-27T21:00 — อัจฉริยภาพภายใน: กลไก + ดาวจร trigger
 
 ### ความเข้าใจที่ลึกขึ้น (จาก discussion)
