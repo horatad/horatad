@@ -913,5 +913,33 @@
       ],
       "note": "ทั้ง 3 ชั้น อาจขัดกันได้ — ตีความรวมกัน ไม่ใช้ชั้นเดียว"
     }
+  },
+  "ruen_nok_nai_rule": {
+    "_source": "ch011+ch016+ch021",
+    "definitions": {
+      "ruen_nok": {
+        "name_th": "ดาวเคราะห์เรือนนอก",
+        "alt_name": "ดาวลอย",
+        "description": "ดาว 10 ดวงที่เขียนลงในแผ่นดวงชาตา — มีคุณภาพตามตำแหน่งจริงในชาร์ต",
+        "quality": "ตามที่คำนวณได้จริง (อุจ/เกษตร/มหาจักร/นิจ/ฯลฯ)",
+        "engine_note": "ใช้ quality จาก quality_maps.json ตามราศีที่ดาวสถิต"
+      },
+      "ruen_nai": {
+        "name_th": "ดาวเคราะห์เรือนใน",
+        "alt_name": "ดาวเจ้าเรือน / เกษตรเรือนใน",
+        "description": "เจ้าเรือน (ruler) ของราศีแต่ละราศี — มีอยู่เสมอ ซ่อนอยู่หลังฉาก",
+        "quality": "เกษตร เสมอ (strength_pct=80) ในราศีของตัวเอง",
+        "engine_note": "lookup: tals_signs.json → ruler field"
+      }
+    },
+    "scoring_rule": {
+      "rule": "ทุกภพมีทั้ง เรือนนอก (ดาวลอย ถ้ามี) + เรือนใน (เจ้าเรือน เสมอ) — ต้องพิจารณาทั้งคู่",
+      "ruen_nai_base_strength": 80,
+      "ruen_nai_quality_fixed": "เกษตร",
+      "ruen_nok_strength": "ตามคุณภาพจริง (อุจ=100, เกษตร=80, ประเกษตร=-80, นิจ=-100)",
+      "combination_method": "ดู เรือนใน + เรือนนอก แยกกัน แล้วนำมาประมวลรวม",
+      "special_case_kum_lagna": "ถ้าเรือนนอก กุมลัคนา → aspect_weight 100% → เสริมหรือลดคุณสมบัติลัคนา"
+    },
+    "engine_implementation_note": "prediction engine ต้องคำนวณทั้ง เรือนนอก + เรือนใน ของทุกภพ ไม่ใช่แค่ดาวลอย"
   }
 }

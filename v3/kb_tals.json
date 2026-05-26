@@ -5,7 +5,9 @@
     "description": "TALS Primary KB — 100CH ตำราเท่านั้น (authoritative core)",
     "schema": "2.1-multidb",
     "rule_count": 290,
-    "created": "2026-05-28"
+    "created": "2026-05-28",
+    "score_field_added": "2026-05-29",
+    "score_note": "score 0.0-1.0: REFERENCE/DEFINITION=0 (lookup only) · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6 · NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL tier1=0.8 (engine เพิ่ม 0.2x transit multiplier ภายหลัง)"
   },
   "rules": [
     {
@@ -25,7 +27,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch001"
+      "source_ref": "ch001",
+      "score": 0.0
     },
     {
       "id": "R002",
@@ -43,7 +46,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch001"
+      "source_ref": "ch001",
+      "score": 0.0
     },
     {
       "id": "R003",
@@ -73,7 +77,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch002"
+      "source_ref": "ch002",
+      "score": 0.0
     },
     {
       "id": "R004",
@@ -98,7 +103,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch002"
+      "source_ref": "ch002",
+      "score": 0.0
     },
     {
       "id": "R005",
@@ -119,7 +125,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch002"
+      "source_ref": "ch002",
+      "score": 0.8
     },
     {
       "id": "R006",
@@ -141,7 +148,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch002"
+      "source_ref": "ch002",
+      "score": 0.8
     },
     {
       "id": "R007",
@@ -170,7 +178,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch002"
+      "source_ref": "ch002",
+      "score": 0.0
     },
     {
       "id": "R008",
@@ -188,7 +197,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch003"
+      "source_ref": "ch003",
+      "score": 0.0
     },
     {
       "id": "R009",
@@ -206,7 +216,8 @@
       "domain": "ความสูญเสีย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch003"
+      "source_ref": "ch003",
+      "score": 0.8
     },
     {
       "id": "R010",
@@ -224,7 +235,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch003"
+      "source_ref": "ch003",
+      "score": 0.8
     },
     {
       "id": "R011",
@@ -244,7 +256,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R012",
@@ -264,7 +277,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R013",
@@ -284,7 +298,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R014",
@@ -304,7 +319,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R015",
@@ -324,7 +340,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R016",
@@ -344,7 +361,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R017",
@@ -364,7 +382,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R018",
@@ -384,7 +403,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R019",
@@ -404,7 +424,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R020",
@@ -424,7 +445,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R021",
@@ -444,7 +466,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R022",
@@ -465,7 +488,8 @@
       "domain": "หน้าที่การงาน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R023",
@@ -486,7 +510,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R024",
@@ -507,7 +532,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch004"
+      "source_ref": "ch004",
+      "score": 0.8
     },
     {
       "id": "R025",
@@ -535,7 +561,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch005"
+      "source_ref": "ch005",
+      "score": 0.0
     },
     {
       "id": "R026",
@@ -553,7 +580,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R027",
@@ -571,7 +599,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R028",
@@ -589,7 +618,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R029",
@@ -607,7 +637,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R030",
@@ -625,7 +656,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R031",
@@ -643,7 +675,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R032",
@@ -661,7 +694,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R033",
@@ -679,7 +713,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.0
     },
     {
       "id": "R034",
@@ -701,7 +736,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R035",
@@ -723,7 +759,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R036",
@@ -748,7 +785,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R037",
@@ -773,7 +811,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R038",
@@ -798,7 +837,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R039",
@@ -823,7 +863,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R040",
@@ -845,7 +886,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R041",
@@ -867,7 +909,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R042",
@@ -889,7 +932,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R043",
@@ -911,7 +955,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R044",
@@ -933,7 +978,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R045",
@@ -955,7 +1001,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R046",
@@ -974,7 +1021,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R047",
@@ -1003,7 +1051,8 @@
       "notes": "ความหมายของ memory code ๗๒ ๑๘ ๔๓ ๕๖ — ต้องการตรวจสอบ sign positions จาก source",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch006"
+      "source_ref": "ch006",
+      "score": 0.8
     },
     {
       "id": "R048",
@@ -1033,7 +1082,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch007"
+      "source_ref": "ch007",
+      "score": 0.0
     },
     {
       "id": "R049",
@@ -1052,7 +1102,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch007"
+      "source_ref": "ch007",
+      "score": 0.0
     },
     {
       "id": "R050",
@@ -1070,7 +1121,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch007"
+      "source_ref": "ch007",
+      "score": 0.8
     },
     {
       "id": "R051",
@@ -1091,7 +1143,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch007"
+      "source_ref": "ch007",
+      "score": 0.8
     },
     {
       "id": "R052",
@@ -1112,7 +1165,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch007"
+      "source_ref": "ch007",
+      "score": 0.8
     },
     {
       "id": "R053",
@@ -1131,7 +1185,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.8
     },
     {
       "id": "R054",
@@ -1159,7 +1214,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.0
     },
     {
       "id": "R055",
@@ -1181,7 +1237,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.8
     },
     {
       "id": "R056",
@@ -1200,7 +1257,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.8
     },
     {
       "id": "R057",
@@ -1228,7 +1286,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.0
     },
     {
       "id": "R058",
@@ -1249,7 +1308,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.8
     },
     {
       "id": "R059",
@@ -1268,7 +1328,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.8
     },
     {
       "id": "R060",
@@ -1296,7 +1357,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch008"
+      "source_ref": "ch008",
+      "score": 0.0
     },
     {
       "id": "R061",
@@ -1315,7 +1377,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch009"
+      "source_ref": "ch009",
+      "score": 0.0
     },
     {
       "id": "R062",
@@ -1333,7 +1396,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch009"
+      "source_ref": "ch009",
+      "score": 0.8
     },
     {
       "id": "R063",
@@ -1353,7 +1417,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch010"
+      "source_ref": "ch010",
+      "score": 0.8
     },
     {
       "id": "R064",
@@ -1373,7 +1438,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch010"
+      "source_ref": "ch010",
+      "score": 0.8
     },
     {
       "id": "R065",
@@ -1393,7 +1459,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch010"
+      "source_ref": "ch010",
+      "score": 0.8
     },
     {
       "id": "R066",
@@ -1413,7 +1480,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch010"
+      "source_ref": "ch010",
+      "score": 0.8
     },
     {
       "id": "R067",
@@ -1433,7 +1501,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch010"
+      "source_ref": "ch010",
+      "score": 0.8
     },
     {
       "id": "R068",
@@ -1451,7 +1520,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch010"
+      "source_ref": "ch010",
+      "score": 1.0
     },
     {
       "id": "R069",
@@ -1469,7 +1539,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.0
     },
     {
       "id": "R070",
@@ -1490,7 +1561,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R071",
@@ -1511,7 +1583,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R072",
@@ -1532,7 +1605,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R073",
@@ -1553,7 +1627,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R074",
@@ -1574,7 +1649,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R075",
@@ -1595,7 +1671,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R076",
@@ -1616,7 +1693,8 @@
       "condition_type": "tanu_sert",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R077",
@@ -1634,7 +1712,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.0
     },
     {
       "id": "R078",
@@ -1655,7 +1734,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R079",
@@ -1676,7 +1756,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R080",
@@ -1697,7 +1778,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R081",
@@ -1718,7 +1800,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R082",
@@ -1739,7 +1822,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R083",
@@ -1760,7 +1844,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R084",
@@ -1781,7 +1866,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R085",
@@ -1802,7 +1888,8 @@
       "condition_type": "tanu_lagn",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R086",
@@ -1820,7 +1907,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R087",
@@ -1838,7 +1926,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch013"
+      "source_ref": "ch013",
+      "score": 0.8
     },
     {
       "id": "R088",
@@ -1857,7 +1946,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch014"
+      "source_ref": "ch014",
+      "score": 0.0
     },
     {
       "id": "R089",
@@ -1876,7 +1966,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch014"
+      "source_ref": "ch014",
+      "score": 0.9
     },
     {
       "id": "R090",
@@ -1894,7 +1985,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.9
     },
     {
       "id": "R091",
@@ -1914,7 +2006,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R092",
@@ -1934,7 +2027,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R093",
@@ -1954,7 +2048,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.6
     },
     {
       "id": "R094",
@@ -1974,7 +2069,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R095",
@@ -1994,7 +2090,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R096",
@@ -2014,7 +2111,8 @@
       "domain": "โชคชะตา",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R097",
@@ -2034,7 +2132,8 @@
       "domain": "โชคชะตา",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R098",
@@ -2052,7 +2151,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.9
     },
     {
       "id": "R099",
@@ -2072,7 +2172,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R100",
@@ -2092,7 +2193,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R101",
@@ -2112,7 +2214,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R102",
@@ -2132,7 +2235,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R103",
@@ -2152,7 +2256,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R104",
@@ -2172,7 +2277,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R105",
@@ -2192,7 +2298,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R106",
@@ -2210,7 +2317,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R107",
@@ -2230,7 +2338,8 @@
       "domain": "ปัตนิ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.6
     },
     {
       "id": "R108",
@@ -2250,7 +2359,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.6
     },
     {
       "id": "R109",
@@ -2271,7 +2381,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R110",
@@ -2292,7 +2403,8 @@
       "domain": "โชคชะตา",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R111",
@@ -2314,7 +2426,8 @@
       "domain": "สุขภาพจิต",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.8
     },
     {
       "id": "R112",
@@ -2332,7 +2445,8 @@
       "domain": "ปัตนิ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.6
     },
     {
       "id": "R113",
@@ -2350,7 +2464,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch015"
+      "source_ref": "ch015",
+      "score": 0.9
     },
     {
       "id": "R114",
@@ -2370,7 +2485,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R115",
@@ -2390,7 +2506,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R116",
@@ -2410,7 +2527,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R117",
@@ -2430,7 +2548,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R118",
@@ -2450,7 +2569,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R119",
@@ -2470,7 +2590,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R120",
@@ -2490,7 +2611,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R121",
@@ -2510,7 +2632,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R122",
@@ -2530,7 +2653,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.8
     },
     {
       "id": "R123",
@@ -2550,7 +2674,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.6
     },
     {
       "id": "R124",
@@ -2568,7 +2693,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.9
     },
     {
       "id": "R125",
@@ -2586,7 +2712,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.9
     },
     {
       "id": "R126",
@@ -2604,7 +2731,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.6
     },
     {
       "id": "R127",
@@ -2622,7 +2750,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch016"
+      "source_ref": "ch016",
+      "score": 0.9
     },
     {
       "id": "R128",
@@ -2640,7 +2769,8 @@
       "domain": "ปัตนิ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch017"
+      "source_ref": "ch017",
+      "score": 0.8
     },
     {
       "id": "R129",
@@ -2658,7 +2788,8 @@
       "domain": "ปัตนิ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch017"
+      "source_ref": "ch017",
+      "score": 0.8
     },
     {
       "id": "R130",
@@ -2678,7 +2809,8 @@
       "domain": "ปัตนิ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch017"
+      "source_ref": "ch017",
+      "score": 0.8
     },
     {
       "id": "R131",
@@ -2696,7 +2828,8 @@
       "domain": "ทรัพย์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch018"
+      "source_ref": "ch018",
+      "score": 0.8
     },
     {
       "id": "R132",
@@ -2716,7 +2849,8 @@
       "domain": "ทรัพย์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch018"
+      "source_ref": "ch018",
+      "score": 0.6
     },
     {
       "id": "R133",
@@ -2736,7 +2870,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch019"
+      "source_ref": "ch019",
+      "score": 0.6
     },
     {
       "id": "R134",
@@ -2756,7 +2891,8 @@
       "domain": "ทรัพย์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch019"
+      "source_ref": "ch019",
+      "score": 0.6
     },
     {
       "id": "R135",
@@ -2774,7 +2910,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch020"
+      "source_ref": "ch020",
+      "score": 0.8
     },
     {
       "id": "R136",
@@ -2792,7 +2929,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch020"
+      "source_ref": "ch020",
+      "score": 0.9
     },
     {
       "id": "R137",
@@ -2810,7 +2948,8 @@
       "domain": "ตัวตน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch021"
+      "source_ref": "ch021",
+      "score": 0.9
     },
     {
       "id": "R138",
@@ -2828,7 +2967,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch021"
+      "source_ref": "ch021",
+      "score": 0.8
     },
     {
       "id": "R139",
@@ -2846,7 +2986,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch021"
+      "source_ref": "ch021",
+      "score": 0.8
     },
     {
       "id": "R140",
@@ -2864,7 +3005,8 @@
       "domain": "โชคชะตา",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch022"
+      "source_ref": "ch022",
+      "score": 0.6
     },
     {
       "id": "R141",
@@ -2882,7 +3024,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch023"
+      "source_ref": "ch023",
+      "score": 0.9
     },
     {
       "id": "R142",
@@ -2900,7 +3043,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch023"
+      "source_ref": "ch023",
+      "score": 0.8
     },
     {
       "id": "R143",
@@ -2918,7 +3062,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch023"
+      "source_ref": "ch023",
+      "score": 0.8
     },
     {
       "id": "R144",
@@ -2938,7 +3083,8 @@
       "domain": "โชคชะตา",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch024"
+      "source_ref": "ch024",
+      "score": 0.6
     },
     {
       "id": "R145",
@@ -2958,7 +3104,8 @@
       "domain": "โชคชะตา",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch025"
+      "source_ref": "ch025",
+      "score": 0.6
     },
     {
       "id": "R146",
@@ -2979,7 +3126,8 @@
       "domain": "ชื่อเสียง",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch027"
+      "source_ref": "ch027",
+      "score": 0.0
     },
     {
       "id": "R147",
@@ -2997,7 +3145,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch027"
+      "source_ref": "ch027",
+      "score": 0.9
     },
     {
       "id": "R148",
@@ -3017,7 +3166,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch028"
+      "source_ref": "ch028",
+      "score": 0.8
     },
     {
       "id": "R149",
@@ -3037,7 +3187,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch028"
+      "source_ref": "ch028",
+      "score": 0.8
     },
     {
       "id": "R150",
@@ -3057,7 +3208,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch028"
+      "source_ref": "ch028",
+      "score": 0.8
     },
     {
       "id": "R151",
@@ -3077,7 +3229,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch028"
+      "source_ref": "ch028",
+      "score": 0.8
     },
     {
       "id": "R152",
@@ -3097,7 +3250,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch029"
+      "source_ref": "ch029",
+      "score": 0.8
     },
     {
       "id": "R153",
@@ -3117,7 +3271,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch029"
+      "source_ref": "ch029",
+      "score": 0.8
     },
     {
       "id": "R154",
@@ -3137,7 +3292,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch029"
+      "source_ref": "ch029",
+      "score": 0.8
     },
     {
       "id": "R155",
@@ -3157,7 +3313,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch029"
+      "source_ref": "ch029",
+      "score": 0.8
     },
     {
       "id": "R156",
@@ -3175,7 +3332,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R157",
@@ -3193,7 +3351,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R158",
@@ -3211,7 +3370,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R159",
@@ -3229,7 +3389,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R160",
@@ -3247,7 +3408,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R161",
@@ -3265,7 +3427,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R162",
@@ -3285,7 +3448,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R163",
@@ -3305,7 +3469,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R164",
@@ -3325,7 +3490,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R165",
@@ -3345,7 +3511,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R166",
@@ -3365,7 +3532,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R167",
@@ -3385,7 +3553,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R168",
@@ -3405,7 +3574,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R169",
@@ -3425,7 +3595,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R170",
@@ -3445,7 +3616,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R171",
@@ -3465,7 +3637,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R172",
@@ -3485,7 +3658,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R173",
@@ -3505,7 +3679,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R174",
@@ -3525,7 +3700,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R175",
@@ -3545,7 +3721,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R176",
@@ -3565,7 +3742,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R177",
@@ -3586,7 +3764,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.6
     },
     {
       "id": "R178",
@@ -3607,7 +3786,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R179",
@@ -3627,7 +3807,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R180",
@@ -3647,7 +3828,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R181",
@@ -3667,7 +3849,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R182",
@@ -3688,7 +3871,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.6
     },
     {
       "id": "R183",
@@ -3709,7 +3893,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R184",
@@ -3729,7 +3914,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R185",
@@ -3749,7 +3935,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R186",
@@ -3769,7 +3956,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R187",
@@ -3790,7 +3978,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R188",
@@ -3808,7 +3997,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch026"
+      "source_ref": "ch026",
+      "score": 0.8
     },
     {
       "id": "R189",
@@ -3826,7 +4016,8 @@
       "domain": "methodology",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch030"
+      "source_ref": "ch030",
+      "score": 0.8
     },
     {
       "id": "R190",
@@ -3844,7 +4035,8 @@
       "domain": "methodology",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch030"
+      "source_ref": "ch030",
+      "score": 0.8
     },
     {
       "id": "R191",
@@ -3868,7 +4060,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R192",
@@ -3894,7 +4087,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R193",
@@ -3917,7 +4111,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R194",
@@ -3941,7 +4136,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R195",
@@ -3966,7 +4162,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R196",
@@ -3988,7 +4185,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R197",
@@ -4007,7 +4205,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch036"
+      "source_ref": "ch036",
+      "score": 0.6
     },
     {
       "id": "R198",
@@ -4028,7 +4227,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch031"
+      "source_ref": "ch031",
+      "score": 0.8
     },
     {
       "id": "R199",
@@ -4049,7 +4249,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch031"
+      "source_ref": "ch031",
+      "score": 0.8
     },
     {
       "id": "R200",
@@ -4070,7 +4271,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch031"
+      "source_ref": "ch031",
+      "score": 0.8
     },
     {
       "id": "R201",
@@ -4091,7 +4293,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch031"
+      "source_ref": "ch031",
+      "score": 0.8
     },
     {
       "id": "R202",
@@ -4110,7 +4313,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R203",
@@ -4129,7 +4333,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R204",
@@ -4151,7 +4356,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R205",
@@ -4173,7 +4379,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R206",
@@ -4194,7 +4401,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R207",
@@ -4216,7 +4424,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R208",
@@ -4238,7 +4447,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch034"
+      "source_ref": "ch034",
+      "score": 0.6
     },
     {
       "id": "R209",
@@ -4257,7 +4467,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch035"
+      "source_ref": "ch035",
+      "score": 0.6
     },
     {
       "id": "R210",
@@ -4282,7 +4493,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.8
     },
     {
       "id": "R211",
@@ -4301,7 +4513,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.8
     },
     {
       "id": "R212",
@@ -4322,7 +4535,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R213",
@@ -4344,7 +4558,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R214",
@@ -4366,7 +4581,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R215",
@@ -4388,7 +4604,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R216",
@@ -4409,7 +4626,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R217",
@@ -4431,7 +4649,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R218",
@@ -4453,7 +4672,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R219",
@@ -4474,7 +4694,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R220",
@@ -4498,7 +4719,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R221",
@@ -4520,7 +4742,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R222",
@@ -4541,7 +4764,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R223",
@@ -4563,7 +4787,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R224",
@@ -4584,7 +4809,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.8
     },
     {
       "id": "R225",
@@ -4605,7 +4831,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R226",
@@ -4627,7 +4854,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R227",
@@ -4649,7 +4877,8 @@
       "domain": "โชคลาภ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.6
     },
     {
       "id": "R228",
@@ -4670,7 +4899,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.8
     },
     {
       "id": "R229",
@@ -4689,7 +4919,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch033"
+      "source_ref": "ch033",
+      "score": 0.8
     },
     {
       "id": "R230",
@@ -4709,7 +4940,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 0.8
     },
     {
       "id": "R231",
@@ -4729,7 +4961,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 0.8
     },
     {
       "id": "R232",
@@ -4749,7 +4982,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 0.8
     },
     {
       "id": "R233",
@@ -4769,7 +5003,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 0.8
     },
     {
       "id": "R234",
@@ -4792,7 +5027,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 1.0
     },
     {
       "id": "R235",
@@ -4810,7 +5046,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 1.0
     },
     {
       "id": "R236",
@@ -4830,7 +5067,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 0.8
     },
     {
       "id": "R237",
@@ -4850,7 +5088,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch032"
+      "source_ref": "ch032",
+      "score": 0.6
     },
     {
       "id": "R238",
@@ -4869,7 +5108,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch037"
+      "source_ref": "ch037",
+      "score": 0.8
     },
     {
       "id": "R239",
@@ -4891,7 +5131,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch048"
+      "source_ref": "ch048",
+      "score": 0.6
     },
     {
       "id": "R240",
@@ -4914,7 +5155,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch049"
+      "source_ref": "ch049",
+      "score": 0.6
     },
     {
       "id": "R241",
@@ -4932,7 +5174,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch050"
+      "source_ref": "ch050",
+      "score": 0.8
     },
     {
       "id": "R242",
@@ -4950,7 +5193,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch050"
+      "source_ref": "ch050",
+      "score": 0.8
     },
     {
       "id": "R243",
@@ -4968,7 +5212,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch052"
+      "source_ref": "ch052",
+      "score": 0.8
     },
     {
       "id": "R244",
@@ -4986,7 +5231,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch052"
+      "source_ref": "ch052",
+      "score": 0.8
     },
     {
       "id": "R245",
@@ -5008,7 +5254,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch053"
+      "source_ref": "ch053",
+      "score": 0.6
     },
     {
       "id": "R246",
@@ -5026,7 +5273,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch054"
+      "source_ref": "ch054",
+      "score": 0.8
     },
     {
       "id": "R247",
@@ -5044,7 +5292,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch055"
+      "source_ref": "ch055",
+      "score": 0.6
     },
     {
       "id": "R248",
@@ -5073,7 +5322,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch038"
+      "source_ref": "ch038",
+      "score": 0.8
     },
     {
       "id": "R249",
@@ -5094,7 +5344,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch038"
+      "source_ref": "ch038",
+      "score": 0.8
     },
     {
       "id": "R250",
@@ -5114,7 +5365,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch038"
+      "source_ref": "ch038",
+      "score": 0.8
     },
     {
       "id": "R251",
@@ -5134,7 +5386,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch038"
+      "source_ref": "ch038",
+      "score": 0.6
     },
     {
       "id": "R252",
@@ -5152,7 +5405,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch038"
+      "source_ref": "ch038",
+      "score": 0.8
     },
     {
       "id": "R253",
@@ -5170,7 +5424,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.8
     },
     {
       "id": "R254",
@@ -5190,7 +5445,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.6
     },
     {
       "id": "R255",
@@ -5213,7 +5469,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 1.0
     },
     {
       "id": "R256",
@@ -5234,7 +5491,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.8
     },
     {
       "id": "R257",
@@ -5255,7 +5513,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.8
     },
     {
       "id": "R258",
@@ -5276,7 +5535,8 @@
       "domain": "ดาวจร",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.6
     },
     {
       "id": "R259",
@@ -5299,7 +5559,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 1.0
     },
     {
       "id": "R260",
@@ -5321,7 +5582,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.8
     },
     {
       "id": "R261",
@@ -5341,7 +5603,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch039"
+      "source_ref": "ch039",
+      "score": 0.8
     },
     {
       "id": "R262",
@@ -5361,7 +5624,8 @@
       "domain": "สุขภาพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch041"
+      "source_ref": "ch041",
+      "score": 0.8
     },
     {
       "id": "R263",
@@ -5379,7 +5643,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch041"
+      "source_ref": "ch041",
+      "score": 0.8
     },
     {
       "id": "R264",
@@ -5399,7 +5664,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch042"
+      "source_ref": "ch042",
+      "score": 0.6
     },
     {
       "id": "R265",
@@ -5417,7 +5683,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch041"
+      "source_ref": "ch041",
+      "score": 1.0
     },
     {
       "id": "R266",
@@ -5435,7 +5702,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch044"
+      "source_ref": "ch044",
+      "score": 0.8
     },
     {
       "id": "R267",
@@ -5455,7 +5723,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch044"
+      "source_ref": "ch044",
+      "score": 0.6
     },
     {
       "id": "R268",
@@ -5473,7 +5742,8 @@
       "domain": "ทั่วไป",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch041"
+      "source_ref": "ch041",
+      "score": 0.9
     },
     {
       "id": "R269",
@@ -5491,7 +5761,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch043"
+      "source_ref": "ch043",
+      "score": 0.6
     },
     {
       "id": "R270",
@@ -5509,7 +5780,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch056"
+      "source_ref": "ch056",
+      "score": 0.8
     },
     {
       "id": "R271",
@@ -5529,7 +5801,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch056"
+      "source_ref": "ch056",
+      "score": 0.8
     },
     {
       "id": "R272",
@@ -5547,7 +5820,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch059"
+      "source_ref": "ch059",
+      "score": 0.8
     },
     {
       "id": "R273",
@@ -5565,7 +5839,8 @@
       "domain": "การเงิน",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch063"
+      "source_ref": "ch063",
+      "score": 0.8
     },
     {
       "id": "R274",
@@ -5586,7 +5861,8 @@
       "domain": "อาชีพ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch064"
+      "source_ref": "ch064",
+      "score": 0.8
     },
     {
       "id": "R275",
@@ -5606,7 +5882,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch057"
+      "source_ref": "ch057",
+      "score": 0.6
     },
     {
       "id": "R276",
@@ -5624,7 +5901,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch067"
+      "source_ref": "ch067",
+      "score": 0.6
     },
     {
       "id": "R277",
@@ -5646,7 +5924,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch069"
+      "source_ref": "ch069",
+      "score": 1.0
     },
     {
       "id": "R278",
@@ -5664,7 +5943,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch070"
+      "source_ref": "ch070",
+      "score": 0.9
     },
     {
       "id": "R279",
@@ -5682,7 +5962,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch072"
+      "source_ref": "ch072",
+      "score": 0.9
     },
     {
       "id": "R280",
@@ -5701,7 +5982,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch073"
+      "source_ref": "ch073",
+      "score": 0.8
     },
     {
       "id": "R281",
@@ -5719,7 +6001,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch078"
+      "source_ref": "ch078",
+      "score": 1.0
     },
     {
       "id": "R282",
@@ -5739,7 +6022,8 @@
       "domain": "ความสัมพันธ์",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch083"
+      "source_ref": "ch083",
+      "score": 0.6
     },
     {
       "id": "R283",
@@ -5760,7 +6044,8 @@
       "domain": "นิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch088"
+      "source_ref": "ch088",
+      "score": 0.8
     },
     {
       "id": "R284",
@@ -5781,7 +6066,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch090"
+      "source_ref": "ch090",
+      "score": 0.8
     },
     {
       "id": "R285",
@@ -5799,7 +6085,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch094"
+      "source_ref": "ch094",
+      "score": 0.9
     },
     {
       "id": "R286",
@@ -5818,7 +6105,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch096"
+      "source_ref": "ch096",
+      "score": 0.9
     },
     {
       "id": "R287",
@@ -5838,7 +6126,8 @@
       "domain": "ลักษณะนิสัย",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch101"
+      "source_ref": "ch101",
+      "score": 0.9
     },
     {
       "id": "R288",
@@ -5856,7 +6145,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch101"
+      "source_ref": "ch101",
+      "score": 0.9
     },
     {
       "id": "R289",
@@ -5879,7 +6169,8 @@
       "domain": "หลักการ",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch101"
+      "source_ref": "ch101",
+      "score": 0.6
     },
     {
       "id": "R290",
@@ -5897,7 +6188,8 @@
       "domain": "อ้างอิง",
       "db": "kb_tals",
       "source_level": 1,
-      "source_ref": "ch100"
+      "source_ref": "ch100",
+      "score": 0.7
     }
   ]
 }
