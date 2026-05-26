@@ -720,7 +720,8 @@
   "pending_user_verification": [
     "rajayok per-planet (8 values) — ต้องการค่าจาก 100CH Thai tradition. ห้าม derive geometric.",
     "เทวีโชค = ราชาโชค + 6 — engine.js implements geometric formula แต่ตำรายังไม่ confirm",
-    "มหาจักร strength_pct — quality_maps=80% vs ch025 implies ≈ อุจ (100%). รอ user confirm."
+    "มหาจักร strength_pct — quality_maps=80% vs ch025 implies ≈ อุจ (100%). รอ user confirm.",
+    "เสาร์ dual-rulership: kaset=[9,10] (มกร+กุมภ์) ใน tals_elements.json แต่ engine.js KASET_MAP[10]=ราหู(8) — TALS ถือว่าเสาร์ co-rule กุมภ์ด้วยไหม? ถ้าใช่ → แก้ engine; ถ้าไม่ → แก้ tals_elements เป็น kaset=[9]"
   ],
 
   "naming_collision_warnings": {
