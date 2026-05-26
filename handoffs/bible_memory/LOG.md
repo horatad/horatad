@@ -1171,3 +1171,216 @@ function chartStrength(chart) {
 
 ❌ Predict outcome จาก natal เฉยๆ ไม่ filter ผ่าน Rule #2
 ✅ Filter ดาวที่สัมพันธ์ลัคนา/ตนุลัคน์ ก่อนตีความ "ความสามารถของเจ้าชะตา"
+
+## 2026-05-27T08:00 — 📌 PINNED v4: ch020 canonical procedure + ch025 ดาวเด่น scoring (CRITICAL CORRECTIONS)
+
+User shared ch020 + ch025 raw text. Major corrections to my prior understanding + new authoritative weights.
+
+### 🔴 CORRECTION #1 — Rule #3 ผมเข้าใจผิด
+
+**ผมเคยบันทึก:** Rule #3 = ภพ 1 + ภพ 2 + ภพ 7 = chart strength
+**ch020 step 4 บอกจริง:**
+> "ประเมินความเข้มแข็งของดวงชาตา โดยดูจาก**ดาวตนุลัคน์และดาวกุมลัคนา** ว่ามีคุณภาพเป็นอย่างไร เข้มแข็งทั้งภายในและภายนอก หรือนอกเข้มแข็ง ในอ่อน ฯลฯ"
+
+**Corrected Rule #3:**
+- **chart_strength = function(ตนุลัคน์ quality, ดาวกุมลัคนา quality)**
+- 2 layers: inner (ตนุลัคน์) + outer (กุมลัคนา)
+- 4 combinations: ใน+นอก ทั้งคู่แข็ง / ในแข็งนอกอ่อน / ในอ่อนนอกแข็ง / ทั้งคู่อ่อน
+
+**ภพ 1+2+7 ไม่ใช่ chart strength** — ภพ 2 (กฎุมพะ) ปรากฏใน step 8 priority list = important houses (ไม่ใช่ strength definer)
+
+### 🔴 CORRECTION #2 — อัจฉริยภาพภายใน = ดาวที่ "ไม่สัมพันธ์ลัคนา"
+
+**ผมเคยเดา:** ตนุลัคน์ที่ aspect ลัคนา
+**ch020 step 7 บอกจริง:**
+> "ดูลักษณะนิสัยเจ้าชาตาจาก**ดาวที่ไม่สัมพันธ์ลัคนา** ในฐานะ**อัจฉริยภาพภายใน**ของเจ้าชาตา"
+
+**Corrected definition:**
+- อัจฉริยภาพภายใน = ดาวที่ NONE_ASPECT กับลัคนา (ไม่กุม/เล็ง/โยค/ตรีโกณ)
+- = inner potential ที่ไม่แสดงออก, ซ่อนอยู่
+- Logic: ดาวสัมพันธ์ลัคนา = expression (visible) · ไม่สัมพันธ์ = hidden reserve
+- ขั้น advanced — พูดท้ายเมื่อชำนาญ
+
+### 🔴 CORRECTION #3 — Priority houses (step 8)
+
+**ผมเคยจำ:** Big 3 = ตนุ + ปัตนิ + กฎุมพะ
+**ch020 step 8 บอกจริง:**
+> "พยากรณ์ภพอื่นๆ ตามลำดับ ... เช่น ปัตนิ กฎุมพะ กัมมะ สหัชชะ ฯลฯ"
+
+**Corrected priority list (post-tanu):**
+1. ปัตนิ (7) — partner
+2. กฎุมพะ (2) — wealth
+3. **กัมมะ (10)** — career ← ที่ผมพลาด
+4. สหัชชะ (3) — siblings/effort
+
+ตนุ (1) handled in step 1-7 (= self analysis โดยรวม) — ไม่อยู่ใน step 8 priority list
+
+### 🟢 NEW — ch025 ดาวเด่น quantitative scoring framework
+
+**Aspect weights (canonical, supersedes drift):**
+
+| Aspect | weight |
+|---|---|
+| กุมลัคนา | 100% |
+| เล็งลัคนา | 80% |
+| โยคหน้า / โยคหลัง | 60% (each) |
+| ตรีโกณลัคนา | 50% |
+
+**Note:** "โยคหน้า" + "โยคหลัง" = 2 types of โยค — TODO clarify exact astronomical definition
+
+**Verification:**
+- engine.js ASPECT_STRENGTH = {KUM:1.0, LENG:0.8, YOK:0.6, TRI:0.5} ✅ MATCHES ch025
+- master_dict.aspect_strengths = {กุม:100%, เล็ง:75%, โยค:50%, ตรีโกณ:25%} ❌ WRONG per ch025
+- **Action:** fix master_dict aspect_strengths to match ch025 + engine.js
+
+### 🟢 NEW — Cross-class quality comparison (ch025)
+
+**Same-class:** เปรียบ aspect weight ได้ตรงๆ (e.g. อุจกุม > อุจเล็ง > อุจโยค > อุจตรีโกณ)
+
+**Cross-class examples (verbatim ch025):**
+| Comparison | Result |
+|---|---|
+| อุจกุมลัคนา vs เกษตร/ราชาโชค กุมลัคนา | อุจ > เกษตร/ราชาโชค |
+| อุจกุมลัคนา vs มหาจักรกุมลัคนา | ≈ พอๆ (ผลคนละด้าน, ต่างกันเล็กน้อย) |
+| อุจกุมลัคนา vs มหาจักร เล็ง/โยค/ตรี | อุจ > มหาจักร (กุม > non-กุม) |
+| มหาจักรกุมลัคนา vs อุจ เล็ง/โยค/ตรี | มหาจักร > อุจ (กุม > non-กุม) |
+| เกษตรกุมลัคนา vs อุจ/มหาจักร โยค/ตรี | ≈ พอๆ |
+| อุจ/มหาจักร เล็งลัคนา vs เกษตรกุมลัคนา | อุจ/มหาจักร > เกษตร (ในวัยต้น — ให้ผลเร็วแรง) |
+| **บั้นปลาย** | เกษตร > อุจ/มหาจักร (เกษตรช้าแต่มั่นคง) |
+
+**Key insight — TIME PROFILE matters:**
+- อุจ/มหาจักร = strong + fast (ให้ผลเร็วแรง)
+- เกษตร = slow but enduring (ช้าแต่มั่นคง — บั้นปลายชนะ)
+- → scoring formula ต้องคิด phase/อายุ context
+
+### 🟢 NEW — อาชีพดูจาก "ดาวเด่น" ไม่ใช่ "ภพกัมมะ"
+
+ch025 ตรงๆ:
+> "การเปรียบเทียบดาวเด่นในดวงชาตาเช่นนี้ ... โดยเฉพาะอย่างยิ่ง กรณีการประกอบอาชีพ อาชีพใดจะถูกโฉลกที่สุด ... ก็ดูได้จากดาวเด่นเหล่านี้ **(ไม่ใช่ดูจากภพกัมมะ)**"
+
+→ **Anti-pattern flagged:** ดูอาชีพจาก ภพ 10 อย่างเดียว = ผิด TALS
+→ **Correct:** ดูอาชีพจาก "ดาวเด่น" (= aspect_weight × quality_score ของทุกดาว) — เลือก top
+→ Per ดาวเด่น: ดาวไหนแรงสุด → อาชีพถูกโฉลก, อันดับ 2 → option รอง
+
+### 📋 TALS Canonical Prediction Procedure (จาก ch020) — recorded
+
+```
+PREPARATION:
+  - ลัคนาราศีอะไร
+  - ดาว 10 ดวงในภพอะไร + คุณภาพ
+  - sambandh + คู่ดาว (มิตร/ธาตุ/สมพล/ศัตรู)
+  - rectify lagna (ถ้าชำนาญ)
+
+PREDICTION ORDER (10 steps):
+   1. ลัคนาราศี
+   2. ดาวกุมลัคนา → ลักษณะเด่น + success type
+   3. ตนุลัคน์ + ภพที่อยู่ → สันดานแท้ + เน้นเรื่องนั้น
+   4. ความเข้มแข็งดวง ← ตนุลัคน์ + ดาวกุมลัคนา (ใน+นอก)
+   5. ตนุเศษ → นิสัยสั้นๆ
+   6. ดาวเล็ง/โยค/ตรีโกณลัคนา → ลักษณะนิสัยรอง
+   7. ดาวไม่สัมพันธ์ลัคนา = อัจฉริยภาพภายใน (ขั้นชำนาญ)
+   8. ภพอื่น priority: ปัตนิ → กฎุมพะ → กัมมะ → สหัชชะ
+   9. อาชีพ — ดาวเด่น (NOT ภพกัมมะ), ถูก/ไม่ถูกโฉลก
+  10. ดาวจร (สุดท้าย)
+```
+
+### Updated TALS Foundational Rules (per ch020)
+
+**RULE #1 — WEIGHT** (unchanged)
+- พื้นดวง = 80% · ดาวจร = stimulator (20%)
+- Corollary: ดวงคล้าย → outcome TYPE เดียวกัน, ต่างที่ดาวจร
+
+**RULE #2 — QUALIFIER** (refined)
+- ดาวสัมพันธ์ลัคนา/ตนุลัคน์ = visible effect (active)
+- ดาวไม่สัมพันธ์ลัคนา = อัจฉริยภาพภายใน (hidden reserve)
+- ทั้ง 2 มีบทบาท แต่ active vs hidden ต่างกัน
+
+**RULE #3 — STRENGTH** (corrected!)
+- ❌ Old (wrong): ภพ 1 + ภพ 2 + ภพ 7
+- ✅ New (per ch020 step 4): chart_strength = function(ตนุลัคน์, ดาวกุมลัคนา)
+- 4 patterns: ใน+นอกแข็ง / ในแข็งนอกอ่อน / ในอ่อนนอกแข็ง / ทั้งคู่อ่อน
+
+**RULE #4 (NEW) — MISSION**
+- TALS = event prediction (ถูก/ผิด, เป็น/ตาย, รวย/จน)
+- ไม่ใช่ personality/psychology (นั่นงานนักจิตวิทยา/นักบวช)
+- Output ที่ measure ไม่ได้ → useless
+
+**RULE #5 (NEW) — DOMAIN PRIORITY**
+- อาชีพ ดู "ดาวเด่น" (NOT ภพกัมมะ)
+- ภพอื่น priority: ปัตนิ → กฎุมพะ → กัมมะ → สหัชชะ
+
+### Quantitative scoring (per ch020 + ch025)
+
+```
+ดาวเด่น_score(planet) = quality_strength × aspect_to_lagna_weight × time_phase_factor
+
+quality_strength:
+  อุจ ≈ มหาจักร = 100% (fast/strong)
+  เกษตร = 80% (slow/lasting — wins บั้นปลาย)
+  ราชาโชค ≈ 60% (easy)
+  อุจจาวิลาส ≈ 60%
+  อุจจาภิมุข ≈ 60%
+  เทวีโชค ≈ 40%
+  จุลจักร ≈ 40%
+  ประเกษตร = -60%
+  นิจ = -100%
+
+aspect_to_lagna_weight (ch025 canonical):
+  กุม = 100%
+  เล็ง = 80%
+  โยคหน้า / โยคหลัง = 60% each
+  ตรีโกณ = 50%
+  ไม่สัมพันธ์ = NULL (counts as อัจฉริยภาพภายใน, separate)
+
+time_phase_factor:
+  Early life: อุจ/มหาจักร × 1.0, เกษตร × 0.6
+  Late life:  เกษตร × 1.0, อุจ/มหาจักร × 0.7
+```
+
+Use this to rank ดาวเด่น → first/second/third strongest planet
+
+### Implication: chart score formula (TALS-aligned)
+
+```
+chart_score (0-100) =
+
+  inner_strength(0-50)
+    = ตนุลัคน์ quality × ตนุลัคน์ aspect_to_lagna × ภพที่อยู่
+    + อัจฉริยภาพภายใน sum (ดาวไม่สัมพันธ์ลัคนา quality)
+
+  outer_strength(0-50)
+    = Σ ดาวกุมลัคนา quality (capped at 50)
+    + bonus from เล็ง/โยค/ตรีโกณ ดาวคุณภาพดี
+
+  PLUS adjustments:
+    + special_configs (มหาจักรกุมลัคนา = +10, etc.)
+    - มฤตยู สัมพันธ์ลัคนา strong = -5 (instability)
+    - 3+ บาปกุมลัคนา = -5 (heavy inner conflict)
+
+  normalized to 0-100
+```
+
+### Open from ch020/ch025 — ที่ TALS book ยังต้องเปิดต่อ
+
+1. **"อัจฉริยภาพภายใน" detail** — ch020 step 7 บอก "อธิบายในบทต่อไป" — chapter ไหน?
+2. **"พระกับโจรและคนเจ้าชู้"** — ch025 mention หัวข้อนี้ — chapter ไหน?
+3. **โยคหน้า / โยคหลัง** — astronomical definition (orb? sign-based? exact?)
+4. **Time phase boundary** — "บั้นปลาย" เริ่มกี่ปี?
+5. **TALS principle for no-birth-time scoring** — user said มีหลัก แต่ยังไม่ teach
+
+### Anti-patterns flagged (must NOT do)
+
+❌ ดูอาชีพจาก ภพกัมมะ (10) อย่างเดียว → ผิด ch025
+❌ ตัดสิน chart strength จาก ภพ 1+2+7 → ผิด ch020 (เคยเข้าใจผิด)
+❌ Predict ตัวตน/personality เป็น output หลัก → ผิด TALS Mission
+❌ Score ไม่ได้ = output → useless per user
+✅ Score quantitatively → rank ดาวเด่น → use for อาชีพ/wasana
+
+### Files affected by these corrections
+
+To update:
+- handoffs/bible_memory/INDEX.md — supersede Rule #3 (ภพ 1+2+7) → corrected
+- handoffs/bible_memory/VOCAB.md — fix อัจฉริยภาพภายใน definition
+- handoffs/bible_memory/QUALITY.md — add ch025 cross-class comparison + time phase
+- v3/master_dict_meanings.json — fix aspect_strengths to match ch025 (100/80/60/50)
+- v3/quality_maps.json — note ch025 aspect canonical

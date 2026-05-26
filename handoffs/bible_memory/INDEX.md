@@ -46,14 +46,33 @@
   → explains ถูกโฉลก (relation present) vs ไม่ถูกโฉลก (no relation)
 
   ─────  RULE #3  ─────  STRENGTH: chart resilience  ─────
-  ความเข้มแข็งของดวง = function(ภพตนุ, ภพปัตนิ, ภพกฎุมพะ)
+  ⚠ CORRECTED 2026-05-27 (per ch020 step 4)
 
-  • ภพ 1 ตนุ      = ตัวตน · self
-  • ภพ 2 กฎุมพะ   = ทรัพยากร · resources/foundation
-  • ภพ 7 ปัตนิ    = อีกขั้ว · partner/other-half
+  chart_strength = function(ตนุลัคน์ quality, ดาวกุมลัคนา quality)
 
-  → 3 ภพแข็ง = ดวงเข้มแข็ง → ทน transit ร้าย (R289 evidence)
-  → 3 ภพอ่อน = ดวงอ่อน → transit เล็กน้อยก็กระทบ
+  • ภายใน = ตนุลัคน์ quality + ภพที่อยู่
+  • ภายนอก = Σ ดาวกุมลัคนา quality
+
+  → 4 patterns:
+    [strong inner + strong outer] = ดวงเข้มแข็งครบ
+    [strong inner + weak outer]   = ในเข้ม นอกอ่อน
+    [weak inner + strong outer]   = นอกเด่น ในกลวง
+    [weak inner + weak outer]     = ดวงอ่อน
+
+  → R289 evidence (4 ดาวจรร้าย + ดวงเข้มแข็ง → ไม่ถึงฆาต)
+
+  ❌ Previous interpretation (wrong): ภพ 1+2+7
+  ภพ 2 อยู่ใน step 8 priority list (ปัตนิ→กฎุมพะ→กัมมะ→สหัชชะ)
+  NOT chart strength definer
+
+  ─────  RULE #4  ─────  MISSION (added 2026-05-26)  ─────
+  TALS = event prediction (ถูก/ผิด, เป็น/ตาย, รวย/จน)
+  ไม่ใช่ personality/psychology
+  Output ที่ measure ไม่ได้ → useless
+
+  ─────  RULE #5  ─────  DOMAIN PRIORITY (added 2026-05-27)  ─────
+  อาชีพ ดู "ดาวเด่น" (NOT ภพกัมมะ) — ch025
+  ภพอื่น priority: ปัตนิ → กฎุมพะ → กัมมะ → สหัชชะ — ch020 step 8
 
 ═══════════════════════════════════════════════════════════════════════
 

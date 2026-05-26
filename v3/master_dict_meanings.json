@@ -243,10 +243,13 @@
     "ทั่วไป":        {"description": "หลายด้านพร้อมกัน หรือไม่ระบุชัดเจน", "en": "general"}
   },
   "aspect_strengths": {
-    "KUM":  {"name": "กุม",     "degree": 0,   "strength_pct": 100, "note": "ทับ/conjunction — แรงที่สุด"},
-    "LENG": {"name": "เล็ง",    "degree": 180, "strength_pct": 75,  "note": "ตรงข้าม/opposition"},
-    "YOK":  {"name": "โยค",     "degree": 90,  "strength_pct": 50,  "note": "90°/270°"},
-    "TRI":  {"name": "ตรีโกณ", "degree": 120, "strength_pct": 25,  "note": "120°/240°"},
+    "_corrected": "2026-05-27 per ch025 — previous 100/75/50/25 was incorrect; canonical TALS = 100/80/60/50",
+    "_source": "ch025 verbatim quote: 'กุม 100% เล็ง 80% โยคหน้า/หลัง 60% ตรีโกณ 50%'",
+    "_cross_check": "engine.js ASPECT_STRENGTH = {KUM:1.0, LENG:0.8, YOK:0.6, TRI:0.5} matches ch025",
+    "KUM":  {"name": "กุม",        "degree": 0,   "strength_pct": 100, "note": "ทับ/conjunction — กุมลัคนา = แรงที่สุด"},
+    "LENG": {"name": "เล็ง",       "degree": 180, "strength_pct": 80,  "note": "ตรงข้าม/opposition"},
+    "YOK":  {"name": "โยคหน้า/หลัง", "degree": 90,  "strength_pct": 60,  "note": "โยคหน้า + โยคหลัง 60% each (2 types per ch025)"},
+    "TRI":  {"name": "ตรีโกณ",    "degree": 120, "strength_pct": 50,  "note": "ตรีโกณ — 50% per ch025"},
     "NONE": {"name": "ไม่สัมพันธ์", "degree": null, "strength_pct": 0, "note": "ไม่มี aspect"}
   },
 

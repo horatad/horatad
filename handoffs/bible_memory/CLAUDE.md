@@ -26,13 +26,26 @@
 
 ---
 
-## 3 Foundational Rules — ใช้ก่อนทุกการพยากรณ์
+## 5 Foundational Rules — ใช้ก่อนทุกการพยากรณ์ (corrected 2026-05-27)
 
 ```
 Rule #1  natal 80% / transit 20%
-Rule #2  ดาวต้องสัมพันธ์ลัคนา/ตนุลัคน์ ถึงส่งผล
-Rule #3  ภพ 1 (ตนุ) + 2 (กฎุมพะ) + 7 (ปัตนิ) = chart strength
+
+Rule #2  ดาวต้องสัมพันธ์ลัคนา/ตนุลัคน์ ถึงส่งผล (visible)
+         ดาวไม่สัมพันธ์ = อัจฉริยภาพภายใน (hidden reserve)
+
+Rule #3  chart_strength = function(ตนุลัคน์, ดาวกุมลัคนา)
+         ❌ NOT ภพ 1+2+7 (ที่เคยเข้าใจผิด — supersede per ch020 step 4)
+         ภพ 2 อยู่ใน step 8 priority list (ปัตนิ→กฎุมพะ→กัมมะ→สหัชชะ)
+
+Rule #4  TALS = event prediction (ถูก/ผิด, เป็น/ตาย) — NOT personality
+
+Rule #5  อาชีพ ดู "ดาวเด่น" (NOT ภพกัมมะ) per ch025
 ```
+
+**Aspect-to-Lagna canonical weights (ch025):**
+กุม 100% · เล็ง 80% · โยคหน้า/หลัง 60% · ตรีโกณ 50%
+(❌ master_dict เดิม 100/75/50/25 — corrected)
 
 ---
 

@@ -64,3 +64,62 @@
 - "ประ" = **คุณภาพเสีย** (degraded) ชัดเจน
 - ตำแหน่ง: ราศีตรงข้ามเกษตร = (kaset + 6) mod 12
 - Strength: -60% (per script.js STD_SCORE)
+
+---
+## ⚠ CORRECTIONS + ADDITIONS 2026-05-27 (per ch020 + ch025)
+
+### Aspect-to-Lagna weights (CANONICAL per ch025)
+
+| Aspect | Weight | Source |
+|---|---|---|
+| กุมลัคนา | 100% | ch025 |
+| เล็งลัคนา | 80% | ch025 |
+| โยคหน้า | 60% | ch025 |
+| โยคหลัง | 60% | ch025 |
+| ตรีโกณลัคนา | 50% | ch025 |
+| ไม่สัมพันธ์ | NULL — counts as อัจฉริยภาพภายใน | ch020 step 7 |
+
+**Engine.js MATCHES** (KUM:1.0, LENG:0.8, YOK:0.6, TRI:0.5) ✅
+**master_dict_meanings.json WRONG** (100/75/50/25) ❌ — needs fix
+
+### ดาวเด่น cross-class comparison (ch025)
+
+**Same-class:** weight by aspect (กุม > เล็ง > โยค > ตรีโกณ)
+
+**Cross-class:**
+- อุจกุมลัคนา > เกษตร/ราชาโชค กุมลัคนา
+- อุจกุมลัคนา ≈ มหาจักรกุมลัคนา (ผลคนละด้าน, ต่างเล็กน้อย)
+- (อุจ/มหาจักร)กุมลัคนา > อันเดียวกัน เล็ง/โยค/ตรี
+- เกษตรกุมลัคนา ≈ (อุจ/มหาจักร) โยค/ตรี
+- (อุจ/มหาจักร) เล็งลัคนา > เกษตรกุมลัคนา (วัยต้น — ให้ผลเร็วแรง)
+- **บั้นปลาย: เกษตร > อุจ/มหาจักร** (เกษตรช้าแต่มั่นคง)
+
+### Quality TIME PROFILE (critical for scoring)
+
+| Quality | Onset | Sustainability |
+|---|---|---|
+| อุจ / มหาจักร | Fast / strong | Variable (peak then drop) |
+| เกษตร | Slow | Lasting (บั้นปลายชนะ) |
+| ราชาโชค / เทวีโชค | Moderate | Steady (สม่ำเสมอ) |
+| อุจจาวิลาส | Building (pre-อุจ) | Rising 60% |
+| อุจจาภิมุข | Declining (post-อุจ) | Falling 60% |
+| จุลจักร | Moderate | Like มหาจักร but ~60% |
+| ประเกษตร | Slow decline | Worsens บั้นปลาย |
+| นิจ | Immediate weakness | Permanent low |
+
+### ดาวเด่น scoring formula (TALS-canonical)
+
+```
+ดาวเด่น_score(planet) = quality_strength × aspect_weight × time_phase_factor
+
+→ Use ranking to:
+  • อาชีพ_top = top-ranked planet (career = ถูกโฉลกที่สุด)
+  • อาชีพ_secondary = 2nd-ranked
+  • Same logic for: ลักษณะเด่น, สมพงศ์ comparison, etc.
+```
+
+### 🔴 Anti-pattern: ดูอาชีพจาก ภพกัมมะ อย่างเดียว
+
+ch025 explicitly states career judged by **ดาวเด่น (planet ranking)**, NOT ภพกัมมะ (10) alone.
+→ Common Vedic/Western pattern of "10th house = career" → WRONG in TALS
+→ TALS: rank all planets by ดาวเด่น_score → top planet's nature = career direction

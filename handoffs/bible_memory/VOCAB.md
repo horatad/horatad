@@ -179,3 +179,39 @@ Corollary: ดวงคล้ายกัน → outcome TYPE เดียวก
 - เป็น **tradition ของไทย** — pure lookup per planet, **ไม่ใช่ derivable formula**
 - ⚠️ **ระวังชื่อซ้ำ:** Vedic มี "Raja Yoga" แต่เป็นคนละ concept (ดาวคนละตำแหน่ง คนละเรื่อง)
 - ห้าม conflate TALS ราชาโชค กับ Vedic Raja Yoga ในการ extract/wording
+
+---
+## ⚠ CORRECTIONS 2026-05-27 (per ch020 + ch025)
+
+### อัจฉริยภาพภายใน — CORRECTED definition
+
+**Per ch020 step 7:**
+> "ดูลักษณะนิสัยเจ้าชาตาจาก**ดาวที่ไม่สัมพันธ์ลัคนา** ในฐานะ**อัจฉริยภาพภายใน**ของเจ้าชาตา"
+
+**Correct:**
+- อัจฉริยภาพภายใน = **ดาวที่ NONE_ASPECT กับลัคนา**
+- = inner potential ที่ไม่แสดงออก (hidden reserve)
+- ตรงข้ามกับ ดาวสัมพันธ์ลัคนา (= visible expression)
+- ขั้น advanced — พูดท้ายเมื่อชำนาญ ch020 step 7
+
+**❌ My previous wrong guess:** "ตนุลัคน์ aspect to ลัคนา" — SUPERSEDED
+
+### TALS canonical procedure (ch020) — quick reference
+
+10 steps in prediction order:
+1. ลัคนาราศี
+2. ดาวกุมลัคนา + คุณภาพ
+3. ตนุลัคน์ + ภพ
+4. ความเข้มแข็งดวง (ตนุลัคน์ + กุมลัคนา)  ← Rule #3 corrected
+5. ตนุเศษ → นิสัยสั้น
+6. ดาว เล็ง/โยค/ตรีโกณ ลัคนา
+7. ดาว NOT สัมพันธ์ลัคนา = อัจฉริยภาพภายใน
+8. ภพอื่น: ปัตนิ → กฎุมพะ → กัมมะ → สหัชชะ
+9. อาชีพ — ดาวเด่น (NOT ภพกัมมะ)
+10. ดาวจร
+
+### ดาวเด่น (new term)
+
+- = planet ranked top by (quality × aspect_weight × time_phase)
+- Used for: อาชีพ assessment, ลักษณะเด่น identification, สมพงศ์ comparison
+- ch025 quantitative framework — see QUALITY.md for tables
