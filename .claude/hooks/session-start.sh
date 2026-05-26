@@ -71,6 +71,26 @@ if [ -f "$SCOPE_FILE" ]; then
     echo "   📝 shared: CLAUDE.md · PROJECT_STATUS.md · handoffs/${SCOPE}*"
     echo "   ❌ ห้ามแก้ไฟล์ project อื่น"
     echo "   ⚠ Claude: ถ้า scope เปลี่ยน ให้รัน: echo 'NEW_PROJECT' > .claude/hooks/session_scope"
+
+    # BIBLE: hard reminder — memory files MUST be read before any task
+    if [ "$SCOPE" = "BIBLE" ]; then
+      echo ""
+      echo "⛔ BIBLE MEMORY GATE — อ่านก่อนทำงานใดๆ (แม้มี compaction summary):"
+      echo "   1. Read handoffs/bible_memory/INDEX.md"
+      echo "   2. Read handoffs/bible_memory/LOG.md  (PINNED entries + 5 latest)"
+      echo "   → หรือรัน /bible-start เพื่อ bootstrap ทั้งหมดในทีเดียว"
+      # Surface last LOG entry to show what Claude should already know
+      LOG_FILE="handoffs/bible_memory/LOG.md"
+      if [ -f "$LOG_FILE" ]; then
+        LAST_ENTRY=$(grep -n "^## 20" "$LOG_FILE" | tail -1 | cut -d: -f1)
+        if [ -n "$LAST_ENTRY" ]; then
+          LAST_LINE=$(grep -n "^## 20" "$LOG_FILE" | tail -1 | sed 's/:.*$//')
+          SNIPPET=$(sed -n "${LAST_LINE},$((LAST_LINE+3))p" "$LOG_FILE" 2>/dev/null | head -4)
+          echo "   📌 Last LOG entry:"
+          echo "$SNIPPET" | sed 's/^/      /'
+        fi
+      fi
+    fi
   fi
 fi
 
