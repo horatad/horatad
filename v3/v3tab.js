@@ -92,14 +92,28 @@ let _vcRulesCtx = '';  // natal rules context injected into system prompt
 
 function _vcSystemPrompt() {
   const natal = typeof getNatal === 'function' ? getNatal() : null;
-  let ctx = '';
+  const hasRules = !!_vcRulesCtx;
+
+  // base role
+  let prompt = 'คุณคือผู้เชี่ยวชาญโหราศาสตร์ไทยระบบ TALS ตอบภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำ';
+
+  // constraint — เพิ่มเฉพาะเมื่อมีกฎให้อ้างอิง
+  if (hasRules) {
+    prompt += '\nใช้เฉพาะข้อมูลกฎที่ให้มาตอบ ถ้าคำถามเกินขอบเขต ให้บอกว่า "ดวงนี้ไม่มีข้อมูลในส่วนนั้น"';
+  }
+
+  // chart context
   if (natal && natal.pos) {
     const asc = get_lagna(natal.pos);
-    ctx = '\nข้อมูลดวงชาตาของผู้ใช้: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
+    prompt += '\n\nดวงชาตา: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
   }
-  const rulesSection = _vcRulesCtx ? '\n\nกฎโหราศาสตร์สุริยยาตร์ที่ตรงกับดวง (ตอบจากกฎเหล่านี้เท่านั้น):\n' + _vcRulesCtx : '';
-  const constraint = '\nตอบจากกฎที่ระบุเท่านั้น ห้ามเพิ่มเนื้อหานอกกฎ ถ้าคำถามนอกขอบเขตกฎที่ให้มา ตอบว่า "ดวงนี้ไม่มีข้อมูลในส่วนนั้น"';
-  return 'คุณคือโหราจารย์ไทยระบบ Horatad ตอบคำถามโหราศาสตร์สุริยยาตร์ไทย ภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำต่อคำตอบ' + constraint + ctx + rulesSection;
+
+  // rules — format: [R001][ดี][อาชีพ] meaning
+  if (hasRules) {
+    prompt += '\n\nกฎโหราศาสตร์ที่ตรงกับดวง:\n' + _vcRulesCtx;
+  }
+
+  return prompt;
 }
 
 async function _vcBuildRulesCtx() {
@@ -112,10 +126,11 @@ async function _vcBuildRulesCtx() {
       .filter(r => r.type === 'NATAL_ATOMIC' || r.type === 'NATAL_COMBINATION')
       .sort((a, b) => (a.tier || 9) - (b.tier || 9))
       .slice(0, 20);
-    _vcRulesCtx = matched.map(r => {
+    _vcRulesCtx = matched.map((r, i) => {
+      const rid = r.id || ('R' + String(i + 1).padStart(3, '0'));
       const pol = r.polarity === '+' ? '[ดี]' : r.polarity === '-' ? '[ร้าย]' : '[กลาง]';
       const dom = r.domain ? `[${r.domain}]` : '';
-      return `• ${pol}${dom} ${r.meaning}`;
+      return `• [${rid}]${pol}${dom} ${r.meaning}`;
     }).join('\n');
   } catch(_) { _vcRulesCtx = ''; }
 }
