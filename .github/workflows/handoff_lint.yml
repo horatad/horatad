@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: lts/*
+          node-version: '24'
       - name: Lint handoffs (strict mode)
         run: node scripts/admin/handoff_lint.mjs --strict
 
@@ -37,7 +37,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v5
         with:
-          node-version: lts/*
+          node-version: '24'
       - name: Regenerate risk register
         run: node scripts/admin/gen_risk_register.mjs
       - name: Commit if changed
