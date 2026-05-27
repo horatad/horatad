@@ -368,19 +368,17 @@ export function _ruleId(r){
  * ห้ามใส่ข้อความพยากรณ์ใน prompt — rules จาก kb_context เท่านั้น
  */
 function build_prompt(natalPayload, matchedRules, isQA=false){
-  // M8: tagged phrase cluster format — [polarity+domain] keywords
+  // รองรับทั้ง V24 format (r.meaning + r.keywords[]) และ old KB format (r.p)
   const rulesText=matchedRules
     .map(r=>{
       const rid=_ruleId(r);
-      const pol=classify_rule_polarity(r);
-      const domain=get_rule_domain(r,natalPayload);
-      const tag=`[${pol}${domain?domain:'ทั่วไป'}]`;
-      const kws=r.p
-        .replace(/\([^)]*\)/g,'')
-        .replace(/[—→=+|[\]]/g,' ')
-        .split(/[\s,，]+/)
-        .filter(p=>p.length>=3&&/[ก-๙]/.test(p))
-        .join(', ');
+      const isV24=r.meaning!==undefined;
+      const pol=isV24?(r.polarity||'~'):classify_rule_polarity(r);
+      const domain=isV24?(r.domain||'ทั่วไป'):get_rule_domain(r,natalPayload);
+      const tag=`[${pol}${domain}]`;
+      const kws=isV24
+        ?(r.keywords||[]).map(k=>k.k||k).filter(Boolean).join(', ')||r.meaning
+        :r.p.replace(/\([^)]*\)/g,'').replace(/[—→=+|[\]]/g,' ').split(/[\s,，]+/).filter(p=>p.length>=3&&/[ก-๙]/.test(p)).join(', ');
       const transitMark=r._isTransit?'[จร]':'';
       return `• [${rid}]${transitMark}${tag} ${kws}`;
     })

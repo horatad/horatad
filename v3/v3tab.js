@@ -10,6 +10,7 @@ import { get_lagna, buildNatalState, matchRulesV24, ZODIAC_TH } from './engine.j
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
 import { match_rules, send_to_typhoon, send_chat, _ruleId } from './typhoon.js';
 import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
+import { getEmpiricalP } from './julian_adapter.js';
 
 // ── M8: แปลง compose_local_prediction() output → display text ──────────────
 function _renderComposed(predictions) {
@@ -363,6 +364,23 @@ async function _loadKbV24() {
   return _v3KbRulesV24;
 }
 
+// ── JULIAN plug-in: เพิ่ม empirical_p + final_score ให้ matched rules ──────
+// JULIAN session จะ implement getEmpiricalP() จริง — ตอนนี้ return null (no-op)
+function _augmentWithJulian(matched) {
+  return matched.map(r => {
+    const ep = getEmpiricalP(r.id);
+    return ep === null ? r : { ...r, empirical_p: ep, final_score: (r.score || 1) * ep };
+  });
+}
+
+// ── V24 chart context สำหรับ Typhoon prompt ─────────────────────────────────
+function _buildV24Context(natalState) {
+  return {
+    lagna: { name: ZODIAC_TH[natalState.ascSign] },
+    overall: { strength: 'ตาม BIBLE rules' },
+  };
+}
+
 // ── DOM helpers ─────────────────────────────────────────────
 function _el(id) { return document.getElementById(id); }
 
@@ -598,34 +616,34 @@ async function v3Typhoon() {
   _clearResult();
   _showSpinner(true);
 
-  // M2: payload + matched ต้องอยู่นอก try เพื่อให้ fallback เข้าถึงได้
-  let payload = null, matched = null;
+  // V24 pipeline: matched ต้องอยู่นอก try เพื่อให้ fallback เข้าถึงได้
+  let matched = null, ctx = null;
   try {
-    const kbRules = await _loadKb();
+    const v24Rules = await _loadKbV24();
     const pos = natal.pos;
-    const ascSign = get_lagna(pos);
-    payload = build_natal_payload(pos, ascSign);
+    const natalState = buildNatalState(pos);
     const transit = typeof getTransit === 'function' ? getTransit() : null;
     const transitPos = transit?.pos || null;
-    if (transitPos) payload._include_transit = true;
+    const transitState = transitPos ? buildNatalState(transitPos, null, natalState.ascSign) : null;
     if (_v3Mode !== 'natal' && !transitPos) {
       _showToastV3('ไม่มีข้อมูลดาวจร — กรุณาตั้งวันดาวจรที่แท็บ "วันนี้" ก่อน');
     }
-    const allMatched = match_rules(pos, ascSign, kbRules, transitPos, payload);
-    matched = _filterByMode(allMatched);
-    _showRulesPanel(matched, payload);
+    const allMatched = matchRulesV24(natalState, v24Rules, transitState)
+      .map(r => ({ ...r, _isTransit: r.type === 'TRANSIT_NATAL' }));
+    matched = _augmentWithJulian(_filterByMode(allMatched));
+    ctx = _buildV24Context(natalState);
+    _showRulesPanel(matched, null);
     const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';
-    const text = await send_to_typhoon(payload, matched, {
+    const text = await send_to_typhoon(ctx, matched, {
       onPromptReady: (sys, user) => _showInputPanel(sys, user)
     });
     _showSpinner(false);
-    _showResult(text, false, `🤖 Typhoon AI ${modeLabel}`);
+    _showResult(text, false, `🤖 Typhoon AI V24 ${modeLabel}`);
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
-    if (payload && matched) {
-      const fallbackText = _renderComposed(compose_local_prediction(matched, payload));
-      _showResult(fallbackText, true, '⚠️ Typhoon ไม่ตอบ — ใช้ keyword engine');
+    if (matched) {
+      _showResult(_renderV24(matched), true, '⚠️ Typhoon ไม่ตอบ — ใช้กฎ BIBLE ดิบ');
       _showToastV3('Typhoon ไม่ตอบ — ใช้กฎดิบแทน');
     } else {
       _showToastV3('เกิดข้อผิดพลาด: ' + err.message);
