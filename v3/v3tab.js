@@ -164,45 +164,34 @@ async function _vcBuildRulesCtx() {
   } catch(_) { _vcAllRules = []; _vcRulesCtx = ''; }
 }
 
-async function _vcSendGreeting() {
+function _vcSendGreeting() {
   if (!_vcAllRules.length) return;
   const natal = typeof getNatal === 'function' ? getNatal() : null;
-  const top3 = _vcAllRules.slice(0, 3);
-  const rulesStr = top3.map(_vcFormatRule).join('\n');
-  let greetSys = 'คุณคือ "นก" หมอดูหญิงผู้เชี่ยวชาญโหราศาสตร์ไทยระบบ TALS ' +
-                 'ทักทายผู้มาหาอย่างเป็นกันเอง แล้วพยากรณ์คร่าวๆ 1-2 ข้อจากกฎที่ให้มา ' +
-                 'ไม่เกิน 50 คำ ไม่ต้องรอให้ถาม';
-  if (natal && natal.pos) {
-    const asc = get_lagna(natal.pos);
-    greetSys += '\n\nดวงชาตา: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
-  }
-  greetSys += '\n\nกฎโหราศาสตร์:\n' + rulesStr;
+  const name = natal && natal.name ? natal.name : '';
+  const asc = natal && natal.pos ? ZODIAC_TH[get_lagna(natal.pos)] : '';
 
-  _vcSetStatus('กำลังทักทาย...');
-  _vcSetMicState('thinking');
-  try {
-    const reply = await send_chat([
-      { role: 'system', content: greetSys },
-      { role: 'user', content: 'สวัสดี' },
-    ]);
-    _vcHistory.push({ role: 'assistant', content: reply });
-    _vcAppendBubble('assistant', reply);
-    _vcSetStatus('กำลังพูด...');
-    _vcSetMicState('speaking');
-    nokSpeak(reply, {
-      rate: _v3SpeakRate,
-      onState: (event) => {
-        if (event === 'end' || event === 'error') {
-          _vcSetStatus('กดไมค์เพื่อพูด');
-          _vcSetMicState('idle');
-        }
-      },
-    });
-  } catch(err) {
-    console.warn('[VC greeting]', err);
-    _vcSetStatus('กดไมค์เพื่อพูด');
-    _vcSetMicState('idle');
-  }
+  // Local template — instant, no API call, grounded in real rules
+  const top = _vcAllRules[0];
+  const nameStr = name ? `คุณ${name}` : 'คุณ';
+  const lagnaStr = asc ? `ลัคนา${asc} ` : '';
+  let body = top
+    ? (top.domain ? `ดวง${lagnaStr}เด่นเรื่อง${top.domain} — ${top.meaning}` : `${lagnaStr}${top.meaning}`)
+    : `${lagnaStr}มีอะไรอยากถามไหมคะ`;
+  const reply = `สวัสดีค่ะ ${nameStr} ฉันนก ${body} มีอะไรอยากถามเพิ่มไหมคะ?`;
+
+  _vcHistory.push({ role: 'assistant', content: reply });
+  _vcAppendBubble('assistant', reply);
+  _vcSetStatus('กำลังพูด...');
+  _vcSetMicState('speaking');
+  nokSpeak(reply, {
+    rate: _v3SpeakRate,
+    onState: (event) => {
+      if (event === 'end' || event === 'error') {
+        _vcSetStatus('กดไมค์เพื่อพูด');
+        _vcSetMicState('idle');
+      }
+    },
+  });
 }
 
 function _vcSetStatus(text) {
