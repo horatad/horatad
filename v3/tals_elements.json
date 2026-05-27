@@ -511,18 +511,14 @@
       "tanulagn_inner": "คิดมาก ไตร่ตรอง รอบคอบ",
       "positions": {
         "uchcha": 6,
-        "kaset": [
-          9
-        ],
-        "kaset_note": "มกร(9) เท่านั้น ยืนยัน 2026-05-28 — กุมภ์=ราหู (เจ้าเกษตร≠ตนุเศษ คนละเรื่อง ch013)",
+        "kaset": [9, 10],
+        "kaset_note": "มกร(9)=primary เกษตร + กุมภ์(10)=secondary เกษตร (confirmed Peter 2026-05-27) | เจ้าเรือนกุมภ์=ราหู(8) เท่านั้น — เกษตร≠เจ้าเรือน",
         "mahachak": 1,
-        "anukaset": [
-          3
-        ],
-        "anukaset_note": "ประเกษตร = opposite ของ kaset: (9+6)%12=3(กรกฎ)",
+        "anukaset": [3, 4],
+        "anukaset_note": "ประเกษตร = opposite ของ kaset: มกร(9)→กรกฎ(3), กุมภ์(10)→สิงห์(4)",
         "rajayok": null,
         "rajayok_pending": "ต้องการค่าจาก 100CH",
-        "verified_by": "user 2026-05-28 (kaset=[9] final; ch013 confirmed)"
+        "verified_by": "user 2026-05-27 (kaset=[9,10] confirmed; เกษตร≠เจ้าเรือน clarified)"
       },
       "rajayok": "พิจิก"
     },
@@ -1652,7 +1648,7 @@
     "rajayok per-planet (8 values) — ต้องการค่าจาก 100CH Thai tradition. ห้าม derive geometric.",
     "เทวีโชค = ราชาโชค + 6 — engine.js implements geometric formula แต่ตำรายังไม่ confirm",
     "มหาจักร strength_pct — quality_maps=80% vs ch025 implies ≈ อุจ (100%). รอ user confirm.",
-    "⚠ RESOLVED 2026-05-28 (ch013): เจ้าเกษตรกับตนุเศษเป็นคนละเรื่อง — KASET_MAP[10]=ราหู(8) ถูกต้อง; เสาร์ kaset=[9] เท่านั้น; ราหูเป็นเจ้าเรือนได้แต่ไม่ใช่ผลตนุเศษ((A×B)%7→1-7)"
+    "⚠ CORRECTED 2026-05-27 (ch013 + Peter confirm): เสาร์ kaset=[9,10] (มกร+กุมภ์); ราหู kaset=[10] (กุมภ์); เกษตร≠เจ้าเรือน — เจ้าเรือนกุมภ์=ราหู(8) เท่านั้น ('1ดาว1ราศี' apply to เจ้าเรือน ไม่ใช่ เกษตร); supersedes 2026-05-28 entry ที่ระบุ kaset=[9]เท่านั้น"
   ],
   "naming_collision_warnings": {
     "ราชาโชค vs Raja Yoga": {

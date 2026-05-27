@@ -82,7 +82,7 @@
       "pattern": "เบากว่าราชาโชค สม่ำเสมอ",
       "time_profile": "Moderate and steady, lighter than ราชาโชค",
       "lop_applicable": false,
-      "derivation_pending": "engine.js implements เทวีโชค = ราชาโชค + 6 (mod 12) — geometric vs tradition ยังไม่ confirmed. ต้อง verify เมื่อได้ค่า ราชาโชค"
+      "derivation": "เทวีโชค = ราชาโชค_idx + 6 (mod 12) — geometric confirmed 2026-05-28 (Peter)"
     },
     "อุจจาวิลาส": {
       "strength_pct": 60,

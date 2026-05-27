@@ -72,24 +72,33 @@ if [ -f "$SCOPE_FILE" ]; then
     echo "   ❌ ห้ามแก้ไฟล์ project อื่น"
     echo "   ⚠ Claude: ถ้า scope เปลี่ยน ให้รัน: echo 'NEW_PROJECT' > .claude/hooks/session_scope"
 
-    # BIBLE: hard reminder — memory files MUST be read before any task
+    # BIBLE: embed foundational rules + last 3 LOG entries DIRECTLY (Claude reads without tool calls)
     if [ "$SCOPE" = "BIBLE" ]; then
-      echo ""
-      echo "⛔ BIBLE MEMORY GATE — อ่านก่อนทำงานใดๆ (แม้มี compaction summary):"
-      echo "   1. Read handoffs/bible_memory/INDEX.md"
-      echo "   2. Read handoffs/bible_memory/LOG.md  (PINNED entries + 5 latest)"
-      echo "   → หรือรัน /bible-start เพื่อ bootstrap ทั้งหมดในทีเดียว"
-      # Surface last LOG entry to show what Claude should already know
+      INDEX_FILE="handoffs/bible_memory/INDEX.md"
       LOG_FILE="handoffs/bible_memory/LOG.md"
+      echo ""
+      echo "══════════════════════════════════════════════════════"
+      echo "📚 BIBLE MEMORY — embedded (ไม่ต้อง tool call)"
+      echo "══════════════════════════════════════════════════════"
+      # Embed TALS FOUNDATIONAL RULES: from first ═══ separator to first --- after second ═══
+      if [ -f "$INDEX_FILE" ]; then
+        awk '
+          /^═+$/ { sep++; if(sep==1){printing=1}; print; next }
+          /^---$/ && sep>=2 { exit }
+          printing { print }
+        ' "$INDEX_FILE" | head -80
+      fi
+      echo ""
+      echo "── Last 3 LOG entries ──────────────────────────────────"
+      # Extract last 3 ## 20YY entries from LOG.md
       if [ -f "$LOG_FILE" ]; then
-        LAST_ENTRY=$(grep -n "^## 20" "$LOG_FILE" | tail -1 | cut -d: -f1)
-        if [ -n "$LAST_ENTRY" ]; then
-          LAST_LINE=$(grep -n "^## 20" "$LOG_FILE" | tail -1 | sed 's/:.*$//')
-          SNIPPET=$(sed -n "${LAST_LINE},$((LAST_LINE+3))p" "$LOG_FILE" 2>/dev/null | head -4)
-          echo "   📌 Last LOG entry:"
-          echo "$SNIPPET" | sed 's/^/      /'
+        THIRD_LAST=$(grep -n "^## 20" "$LOG_FILE" | tail -3 | head -1 | cut -d: -f1)
+        if [ -n "$THIRD_LAST" ]; then
+          tail -n "+${THIRD_LAST}" "$LOG_FILE" | head -100
         fi
       fi
+      echo "══════════════════════════════════════════════════════"
+      echo "⛔ ถ้าต้องการ context เพิ่ม: Read handoffs/bible_memory/INDEX.md + LOG.md"
     fi
   fi
 fi

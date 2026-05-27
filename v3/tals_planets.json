@@ -815,9 +815,8 @@
       "tanusesh_trait": "คิดมาก ไตร่ตรองรอบคอบมากๆ",
       "tanulagn_inner": "คิดมาก ไตร่ตรอง รอบคอบ",
       "uchcha": 6,
-      "kaset": [
-        9
-      ],
+      "kaset": [9, 10],
+      "kaset_note": "มกร(9)=primary เกษตร, กุมภ์(10)=secondary เกษตร | เจ้าเรือนกุมภ์=ราหู(8) เท่านั้น — เกษตร≠เจ้าเรือน (confirmed Peter 2026-05-27)",
       "mahachak": 1,
       "rajayok": "พิจิก",
       "keywords": [
