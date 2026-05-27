@@ -155,25 +155,41 @@ LINE OA รับวันเกิดจาก user
 
 ---
 
-## Engine Architecture — ชั้นคำนวณและมาตรฐานดาว (2026-05-27)
+## Engine Architecture — 3-module target design (2026-05-27)
 
-> **Architectural Decision** — บันทึกไว้เป็น shared contract ทุก project อ้างอิงร่วมกัน
+> **Architectural Decision** — บันทึกไว้เป็น shared contract ทุก project อ้างอิงร่วมกัน  
+> **สถานะ: DECIDED · ยังไม่ implement — รอจนกว่าจะใช้ Swiss Ephemeris จริง**
 
-### แนวคิดหลัก: แยก 2 ชั้นออกจากกัน
+### โครงสร้างเป้าหมาย
 
 ```
-Layer A — Position Calculation  (ใช้ engine ไหนก็ได้)
-  สุริยยาตร์  → pos[] arcminutes  ─┐
-  Swiss Eph   → degrees[] float   ─┤── normalize() ──→  sign[] (0-11)
-  Vedic / อื่น → output ใดก็ตาม   ─┘
-                                            ↓
-Layer B — Standard Assessment   (TALS rules — ใช้ร่วมกัน)
-  assessStandards(planetIdx, sign)
-  → { labels: ['เกษตร','มหาจักร',...], score: int }
+engine.js (ปัจจุบัน)
+├── 1. CALCULATOR   — สุริยยาตร์ → pos[] (องศา/ราศี/ลิบดา)
+├── 2. EVALUATOR    — KASET_MAP, RACHA_MAP, getStandards()
+└── 3. MATCHER      — matchRulesV24() (KB rule matching)
 ```
 
-**กฎ:** Layer B รับ **sign (0-11)** เท่านั้น — ไม่รับ pos[], ไม่รับ degrees[]  
-ทุก engine ต้องผ่าน normalize ก่อนส่งต่อ Layer B
+แยกเป็น 3 module:
+
+```
+v3/calculator.js    ← source-dependent (แก้เมื่อเปลี่ยน calculation engine)
+  สุริยยาตร์ / Swiss Ephemeris → pos[] (arc-min)
+  get_data(), get_j(), get_lagna(), get_all_houses(), getHouse()
+
+v3/standards.js     ← TALS rules (ไม่แตะเมื่อเปลี่ยน calculation source)
+  KASET_MAP, RACHA_MAP, MAHACHAK_MAP, EXALT_MAP
+  get_tanu_lagna(), assessStandards(pos[]) → { labels[], score }
+  getStrength(), compute_std_score()
+
+v3/matcher.js       ← BIBLE domain (แยกอยู่บางส่วนแล้วใน interpretation.js)
+  buildNatalState(), matchRulesV24(state, rules)
+```
+
+### หลักการสำคัญ
+
+- **calculator.js เปลี่ยนได้** เมื่อ swap สุริยยาตร์ → Swiss Ephemeris — ไม่กระทบ standards/matcher
+- **standards.js ไม่แตะ** เมื่อเปลี่ยน calculation engine — TALS rules คงอยู่เหมือนเดิม
+- **sign (0-11) คือ interface** ระหว่าง calculator และ standards — ทุก engine normalize มาที่นี่
 
 ### TALS rules ที่ compatible กับทุก engine (sign-level)
 
@@ -188,26 +204,25 @@ Layer B — Standard Assessment   (TALS rules — ใช้ร่วมกัน
 | Retrograde (วक्र) | velocity | ⚠️ ต้องส่ง velocity แยก |
 | Mrityou | Thai-specific | ❌ ไม่มีใน Swiss Ephemeris |
 
-### Swiss Ephemeris — compatibility notes
+### Swiss Ephemeris — หมายเหตุ
 
 - **Lagna:** คำนวณต่างจากสุริยยาตร์ (sidereal time + latitude จริง vs sunrise=06:00)  
-  → House ของทุกดาวอาจต่างกัน 1-2 ภพ — **ไม่ใช่ bug, เป็น design choice ตาม system**
-- **Rahu/Ketu:** Swiss มี mean + true nodes — สุริยยาตร์ใช้ mean  
-  → ระบุใน normalize() ว่าใช้ mean nodes เสมอ (consistent กับ TALS)
-- **Sign:** `Math.trunc(degree / 30)` = sign 0-11 — ตรงไปตรงมา
+  → House ของทุกดาวอาจต่างกัน 1-2 ภพ — ไม่ใช่ bug, เป็น design choice ตาม system
+- **Rahu/Ketu:** Swiss มี mean + true nodes — สุริยยาตร์ใช้ mean nodes → ระบุใน normalize()
+- **Sign:** `Math.trunc(degree / 30)` = sign 0-11
 
-### สถานะปัจจุบัน (2026-05-27)
+### ทำไมรอ — เหตุผล
 
-- `engine.js` ตอนนี้: Layer A + Layer B ยังผสมกันใน `getStandards(pos, i)`  
-- **Target:** แยกเป็น `assessStandards(planetIdx, sign)` — รอ implement  
-- **ไม่ urgent:** HORATAD/BIBLE/JULIAN ใช้สุริยยาตร์ทั้งหมด — separation ทำเมื่อต้องการ Swiss Eph จริง
+refactor มี 3 ขั้น (สร้าง standards.js → สร้าง calculator.js → อัป importers ทุกไฟล์)  
+ถ้าทำก่อนมี Swiss Ephemeris = regression risk ทั้งหมด โดยไม่ได้ประโยชน์จริง  
+→ **implement เมื่อมีโปรเจคที่ต้องการ Swiss Ephemeris จริงเท่านั้น**
 
-### สำหรับ project ใหม่ที่ต้องการ Swiss Ephemeris
+### สำหรับโปรเจคใหม่ที่ต้องการ Swiss Ephemeris
 
-1. ใช้ `swisseph` npm หรือ WASM port
-2. เขียน `normalize_swisseph(swe_output)` → `sign[]` + `vel[]`
-3. import `assessStandards()` จาก `engine.js` (หลัง separation implement)
-4. TALS rules ใช้ได้ทันที — ไม่ต้อง rewrite
+1. implement `v3/calculator.js` (แยกจาก engine.js)
+2. implement `v3/standards.js` (ย้าย TALS maps + assessStandards)
+3. เขียน normalize: `swisseph_output → pos[]` (arcmin) หรือ `sign[]` ตรง
+4. `standards.js` และ `matcher.js` ใช้ได้ทันที — ไม่ต้อง rewrite TALS rules
 
 ---
 
