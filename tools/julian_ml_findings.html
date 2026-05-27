@@ -292,6 +292,29 @@
     </p>
   </div>
 
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">✅ Skeptic Test 4: Demographic Confound Control (Uranus)</div>
+    <p style="font-size:.9rem;color:#555;margin-bottom:12px;">
+      ถ้าการกระจายตัวของปีเกิดในตัวอย่างไม่สม่ำเสมอ ดาวโคจรช้าๆ ใดก็ตาม
+      จะแสดง lift สูงในบางราศีโดยบังเอิญ — ไม่ใช่เพราะโหราศาสตร์ แต่เพราะ
+      กลุ่มคนเกิดช่วงเดียวกัน (birth cohort) มีสัดส่วน event ต่างกัน
+      ทดสอบด้วย <strong>ดาวยูเรนัส (~84 ปีต่อรอบ, ~7 ปีต่อราศี)</strong>
+      ซึ่ง <em>ไม่อยู่ใน TALS</em> — ถ้า lift สูงกว่า 1.3 = confound ยืนยัน
+    </p>
+    <table>
+      <tr><th>ราศียูเรนัสนาตาล (birth cohort)</th><th>death</th><th>award</th><th>position_start</th><th>สรุป</th></tr>
+      <tr><td>Aries (กลุ่มเกิด ~1927, ~2011)</td><td>0.798</td><td>1.043</td><td>0.560</td><td>✅ ปกติ</td></tr>
+      <tr><td>Scorpio (กลุ่มเกิด ~1974)</td><td>0.597</td><td>0.548</td><td>0.554</td><td>✅ ปกติ</td></tr>
+      <tr><td>Capricorn (กลุ่มเกิด ~1988, ใหญ่สุด 7,878 คน)</td><td>0.960</td><td>0.677</td><td>0.485</td><td>✅ ปกติ</td></tr>
+      <tr><td colspan="4" style="font-style:italic;color:#888;">ทุก 12 ราศี — ไม่มีราศีใด lift ≥ 1.30</td><td>✅✅✅</td></tr>
+    </table>
+    <p style="font-size:.85rem;color:#27ae60;margin-top:12px;font-weight:600;">
+      → ไม่พบ demographic confound — การกระจายตัวปีเกิดในตัวอย่างสม่ำเสมอเพียงพอ
+      ไม่สร้างสัญญาณเทียมในดาวช้า และไม่สามารถอธิบาย MR×MR lift=2.264 ได้เลย
+      (เพราะ MR นาตาลเปลี่ยนราศีทุก ~30 วัน ไม่ใช่ทุก 7 ปี)
+    </p>
+  </div>
+
   <!-- Secondary finding: SU×SA -->
   <h2 class="section-title">การค้นพบรอง — อาทิตย์กระทบเสาร์นาตาล</h2>
 
@@ -327,7 +350,7 @@
     <h3>บทสรุป — สถานะหลักฐาน</h3>
     <ul>
       <li>MR×MR conjunction เป็นอันดับ 1 จาก 2,100 การรวมกัน ด้วย lift = 2.264</li>
-      <li>ผ่านการหักล้าง 3 วิธี: orbital period confound, generic MR transit, generic natal MR</li>
+      <li>ผ่านการหักล้าง 4 วิธี: orbital period confound, generic MR transit, generic natal MR, demographic cohort confound (Uranus control)</li>
       <li>Effect เฉพาะเจาะจง (specificity) — เกิดเฉพาะ MR×MR ไม่กระจาย → hard to explain as artifact</li>
       <li>Benjamini-Hochberg FDR correction: p_adj ≈ 0 — ผ่าน multiple testing อย่างเข้มงวด</li>
       <li class="warn">ข้อจำกัด: ข้อมูล Wikidata = บุคคลมีชื่อเสียง ไม่ใช่ประชากรทั่วไป</li>
