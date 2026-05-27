@@ -5,7 +5,7 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.36 | **URL:** horatad.com
+**Version:** V3.3.49 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
