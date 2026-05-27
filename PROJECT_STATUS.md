@@ -123,7 +123,28 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 **Priority:** distinct birthdate (jd) สำคัญกว่า total count | birth time = optional (validate หน้างานด้วย accuracy A-F)
 
-### สถานะ (2026-05-27 — updated session 2)
+### 🔒 JULIAN Policy (2026-05-27) — Prediction Focus
+> **JULIAN ต้องมุ่งเป้าที่ "พยากรณ์อนาคต" โดยใช้ผลการทดสอบที่พิสูจน์แล้วเป็นหลักฐาน**
+- กฎที่นำไปใช้ใน prediction engine ต้องผ่าน: lift ≥ 1.5 + FDR q<0.05 + ผ่าน skeptic test ≥ 1 วิธี
+- ไม่นำ rule ที่ยังไม่ผ่าน statistical validation ไปใส่ใน kb.json
+- empirical_p = lift-based probability ที่ calibrated จาก real events เท่านั้น
+- งาน ML ทุกชิ้นต้องมี "what prediction does this enable?" เป็น exit criterion
+
+### ⚠️ Engine Compatibility (engine.js recoding — 2026-05-27)
+JULIAN workers พึ่งพา engine.js ใน 5 ไฟล์ — **สิ่งที่ห้ามเปลี่ยนโดยไม่แจ้ง JULIAN:**
+
+| Invariant | ผลถ้าเปลี่ยน |
+|---|---|
+| Raw position unit = **1800 steps/sign** (21600 total) | ต้องรีคำนวณ features + retrain CNN ทั้งหมด |
+| Planet index order: sp[0]=LA, sp[1]=SU … sp[10]=MR | model ทำนายผิดดาว — ผิดทั้งระบบ |
+| `get_data(d, m, y, hr, mn, lng)` signature | arg order สลับ → ตำแหน่งดาวผิดทั้งหมด |
+| `getStandards(pos,i)` → slash-sep string | quality parse พัง |
+| `get_data` returns array length ≥ 11 | null guard พัง |
+
+**ปลอดภัย**: เพิ่ม export ใหม่, ย้าย function ไป sub-module (standards.js ✅), เปลี่ยน algorithm ภายใน
+**ต้องแจ้ง JULIAN session ก่อน**: เปลี่ยน unit, เปลี่ยน index order, เปลี่ยน return format
+
+### สถานะ (2026-05-27 — updated session 3)
 - Records: 66,912 (workflow ยังรันต่อ — ~704 batches เหลือจาก 1331)
 - **🆕 ML Pipeline: ✅ COMPLETE**
   - 50,983 ML features (`data/julian_ml_features.jsonl`)
