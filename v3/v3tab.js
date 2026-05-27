@@ -6,7 +6,8 @@
 //     ตอน user ยังไม่ผูกดวง
 //   - KB_PATH ใส่ ?v=APP_VERSION ให้ตรงกับ SW CORE_ASSETS key → offline ทำงาน
 
-import { get_lagna, buildNatalState, matchRulesV24, ZODIAC_TH } from './engine.js';
+import { get_lagna, buildNatalState, ZODIAC_TH } from './engine.js';
+import { matchRulesV24 } from './matcher.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
 import { match_rules, send_to_typhoon, send_chat, _ruleId } from './typhoon.js';
 import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
