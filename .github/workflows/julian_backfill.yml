@@ -6,19 +6,21 @@ name: JULIAN Accuracy Backfill
 #   2. Regrade — re-compute accuracy จาก evidence rules (julian_evidence.mjs)
 #
 # Flow:
-#   P3447 backfill → Regrade → commit
+#   P3447 backfill → Regrade → commit (ถ้า partial → save checkpoint → trigger ตัวเอง run ต่อ)
 #
 # ตั้งค่า inputs:
 #   p3447_limit : จำนวน records ที่จะ query P3447 (0 = ข้าม step นี้)
 #   regrade_only: รันแค่ regrade ไม่ query Wikidata (ถ้าต้องการ regrade เพียงอย่างเดียว)
 
 on:
+  schedule:
+    - cron: '0 */6 * * *'    # รันทุก 6 ชั่วโมงจนกว่า checkpoint จะหาย (all done)
   workflow_dispatch:
     inputs:
       p3447_limit:
         description: 'P3447 backfill: query กี่ records (0 = ข้าม, blank = ทั้งหมด)'
         type: string
-        default: '500'
+        default: ''
       regrade_only:
         description: 'regrade อย่างเดียว (ไม่ query Wikidata P3447)'
         type: boolean
@@ -26,11 +28,12 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 jobs:
   backfill:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -45,37 +48,80 @@ jobs:
         with:
           node-version: '24'
 
-      # ── Step 1: P3447 backfill (update source → astrotheme:{id}) ────────────
-      - name: P3447 backfill
-        if: inputs.regrade_only != 'true' && inputs.regrade_only != true && inputs.p3447_limit != '0'
+      # ── Skip schedule run if no checkpoint (already complete) ───────────────
+      - name: Check if work remains (schedule only)
+        id: check
+        if: github.event_name == 'schedule'
         run: |
-          ARGS="--dry-run"
-          if [ -n "${{ inputs.p3447_limit }}" ] && [ "${{ inputs.p3447_limit }}" != "0" ]; then
+          if [ ! -f workers/julian_p3447_checkpoint.json ]; then
+            echo "No checkpoint — P3447 backfill already complete, skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Checkpoint found — continuing backfill"
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      # ── Step 1: P3447 backfill ───────────────────────────────────────────────
+      - name: P3447 backfill
+        id: p3447
+        if: steps.check.outputs.skip != 'true' && inputs.regrade_only != 'true' && inputs.regrade_only != true && inputs.p3447_limit != '0'
+        run: |
+          ARGS="--resume --time-budget 1800"
+          if [ -n "${{ inputs.p3447_limit }}" ]; then
             ARGS="$ARGS --limit ${{ inputs.p3447_limit }}"
           fi
-          echo "Dry-run first:"
-          node workers/julian_p3447_backfill.mjs $ARGS
-          echo ""
-          echo "Applying:"
-          APPLY_ARGS="${ARGS/--dry-run/}"
-          node workers/julian_p3447_backfill.mjs $APPLY_ARGS
+          OUTPUT=$(node workers/julian_p3447_backfill.mjs $ARGS 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "STATUS=partial"; then
+            echo "status=partial" >> $GITHUB_OUTPUT
+          else
+            echo "status=complete" >> $GITHUB_OUTPUT
+          fi
 
-      # ── Step 2: Regrade (compute accuracy from evidence rules) ──────────────
+      # ── Step 2: Regrade ──────────────────────────────────────────────────────
       - name: Regrade accuracy
+        if: steps.check.outputs.skip != 'true'
         run: |
           node workers/julian_regrade.mjs --verbose
           echo "Regrade complete"
 
       # ── Step 3: Commit ───────────────────────────────────────────────────────
       - name: Commit changes
+        if: steps.check.outputs.skip != 'true'
         run: |
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
-          git add data/julian_all.json
+          git add data/julian_all.json workers/julian_p3447_checkpoint.json || true
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "JULIAN: P3447 backfill + accuracy regrade"
+            STATUS="${{ steps.p3447.outputs.status }}"
+            if [ "$STATUS" = "partial" ]; then
+              git commit -m "JULIAN: P3447 backfill partial — checkpoint saved, continuing next run"
+            else
+              git commit -m "JULIAN: P3447 backfill complete + accuracy regrade"
+            fi
             git pull --rebase origin main
             git push origin HEAD:main
+          fi
+
+      # ── Step 4: Disable schedule when completely done ────────────────────────
+      - name: Disable schedule when done
+        if: steps.p3447.outputs.status == 'complete' && github.event_name == 'schedule'
+        run: |
+          echo "P3447 backfill complete — disabling scheduled runs"
+          gh workflow disable julian_backfill.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Summary ──────────────────────────────────────────────────────────────
+      - name: Summary
+        if: always()
+        run: |
+          echo "## JULIAN Backfill Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- P3447 status: ${{ steps.p3447.outputs.status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          if [ -f workers/julian_p3447_checkpoint.json ]; then
+            echo "- Checkpoint: $(cat workers/julian_p3447_checkpoint.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log('batch '+d.batch_index+'/'+d.total_batches+' saved '+d.saved_at)")" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Checkpoint: none (complete or not started)" >> $GITHUB_STEP_SUMMARY
           fi
