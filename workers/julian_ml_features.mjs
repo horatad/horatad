@@ -55,7 +55,7 @@ function getPlanetData(jd) {
   const { y, m, d } = jdToDate(jd);
   let rawPos;
   try {
-    rawPos = get_data(y, m, d, 6, 100.5);  // h=6 สุริยยาตร์ convention, lng=100.5 Bangkok
+    rawPos = get_data(d, m, y, 6, 0);  // get_data(d,m,y,hr,mn) — hr=6 สุริยยาตร์ convention, lng=100.5 default
   } catch (_) {
     return null;
   }
