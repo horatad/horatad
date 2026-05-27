@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.37
-// Version 3.3.37 | 2026-05-27
+// HORATAD:SCRIPT:3.3.38
+// Version 3.3.38 | 2026-05-27
+// Changes: [V3.3.38] feat(about): TALS naming + credit ยืนยง นาวาสมุทร · แก้ meta description ทุกไฟล์
 // Changes: [V3.3.37] fix(quality): MAHACHAK_MAP อาทิตย์ 6→3 + swap อุจจาวิลาส/อุจจาภิมุข ใน script.js
 // Changes: [V3.3.36] feat(about): restore เกาะในฝัน BGM button on About page
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
@@ -21,7 +22,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.37';
+const APP_VERSION='3.3.38';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

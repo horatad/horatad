@@ -1,7 +1,7 @@
 {
   "name": "Horatad โหราทาส",
   "short_name": "Horatad",
-  "description": "เครื่องผูกดวงโหราศาสตร์ไทยระบบสุริยยาตร์",
+  "description": "เครื่องผูกดวงโหราศาสตร์ไทยแนวตรรกะ (TALS) · ผูกดวง พยากรณ์ ออฟไลน์ได้",
   "lang": "th",
   "dir": "ltr",
   "start_url": "./",

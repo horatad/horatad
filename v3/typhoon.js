@@ -404,7 +404,7 @@ function build_prompt(natalPayload, matchedRules, isQA=false){
 
   // SYSTEM INSTRUCTION ฝั่ง Typhoon — anti-hallucination + M3 structured output
   const systemPrompt=
-`คุณคือโหราจารย์ไทยระบบ Horatad ที่พยากรณ์ตามกฎโหราศาสตร์สุริยยาตร์ไทยเท่านั้น
+`คุณคือโหราจารย์ไทยระบบ Horatad ที่พยากรณ์ตามกฎโหราศาสตร์ไทยแนวตรรกะ (TALS) เท่านั้น
 
 กฎเหล็ก:
 - ตอบในรูปแบบ JSON เท่านั้น: {"predictions":[{"rule_id":"R01","text":"คำพยากรณ์"},…]}
