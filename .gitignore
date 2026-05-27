@@ -29,5 +29,12 @@ Thumbs.db
 # Misc
 *.log
 
+# ML model artifacts (large binary — regenerate with ml/julian_cnn_train.py)
+ml/models/*.keras
+ml/models/*.h5
+ml/models/*.pkl
+ml/models/training_history.json
+# NOTE: ml/models/label_encoder.json + julian_rules.json are committed (small, needed downstream)
+
 # Per-session ephemeral state — ห้าม commit (race condition ระหว่าง sandboxes)
 .claude/hooks/session_scope
