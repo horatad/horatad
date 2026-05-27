@@ -1,6 +1,6 @@
-// HORATAD:SCRIPT:3.3.38
-// Version 3.3.38 | 2026-05-27
-// Changes: [V3.3.38] feat(about): TALS naming + credit ยืนยง นาวาสมุทร · แก้ meta description ทุกไฟล์
+// HORATAD:SCRIPT:3.3.39
+// Version 3.3.39 | 2026-05-27
+// Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
 // Changes: [V3.3.37] fix(quality): MAHACHAK_MAP อาทิตย์ 6→3 + swap อุจจาวิลาส/อุจจาภิมุข ใน script.js
 // Changes: [V3.3.36] feat(about): restore เกาะในฝัน BGM button on About page
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
@@ -22,7 +22,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.38';
+const APP_VERSION='3.3.39';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -190,6 +190,9 @@ function switchTab(n){
     // About tab — lazy init donate QR on first visit
     if(!_donateInitialized){_updateDonateQR(_donateAmount);_donateInitialized=true;}
   }
+  // เกาะในฝัน: auto-play เมื่อเข้าหน้า about, หยุดเมื่อออก — ห้ามแก้ไขโดยไม่ได้รับอนุญาต
+  const _bgm=document.getElementById('about-bgm');
+  if(_bgm){if(n===2){_bgm.play().catch(()=>{});}else{_bgm.pause();_bgm.currentTime=0;}}
   // V2.1.9: hide H1 logo when About active
   document.body.classList.toggle('about-active',n===2);
   document.querySelectorAll('.tab-content').forEach((el,i)=>el.classList.toggle('hidden',i!==n));
@@ -3597,22 +3600,6 @@ function cancelLongPress(){
   document.querySelectorAll('.btn-share-progress').forEach(b=>b.classList.remove('pressing'));
 }
 
-function toggleAboutBgm(){
-  const audio=document.getElementById('about-bgm');
-  const btn=document.getElementById('about-bgm-btn');
-  const icon=document.getElementById('about-bgm-icon');
-  if(!audio)return;
-  if(audio.paused){
-    audio.play();
-    icon.textContent='⏸';
-    btn.classList.add('playing');
-  } else {
-    audio.pause();
-    icon.textContent='▶';
-    btn.classList.remove('playing');
-  }
-  audio.onended=()=>{icon.textContent='▶';btn.classList.remove('playing');};
-}
 function showContactPage(){
   document.getElementById('about-main').classList.add('hidden');
   document.getElementById('about-contact').classList.remove('hidden');
