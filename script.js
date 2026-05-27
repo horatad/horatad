@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.44
-// Version 3.3.44 | 2026-05-27
+// HORATAD:SCRIPT:3.3.45
+// Version 3.3.45 | 2026-05-27
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
@@ -24,7 +24,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.44';
+const APP_VERSION='3.3.45';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -3899,6 +3899,26 @@ window.addEventListener('DOMContentLoaded',()=>{
   // event search
   document.getElementById('event-search')?.addEventListener('input',e=>{
     _renderEvents(e.target.value);
+  });
+
+  // V3.3.45: auto-format HH:MM for text time inputs
+  document.querySelectorAll('input.time-input').forEach(el=>{
+    el.addEventListener('input',e=>{
+      let v=e.target.value.replace(/[^\d]/g,'');
+      if(v.length>4)v=v.slice(0,4);
+      if(v.length>2)v=v.slice(0,2)+':'+v.slice(2);
+      // preserve cursor if user deleted the colon
+      const sel=e.target.selectionStart;
+      e.target.value=v;
+      if(sel!==null){try{e.target.setSelectionRange(sel,sel);}catch(x){}}
+    });
+    el.addEventListener('blur',e=>{
+      const digits=e.target.value.replace(/[^\d]/g,'');
+      if(!digits){return;}
+      const hr=parseInt(digits.slice(0,2)||'0');
+      const mn=parseInt(digits.slice(2,4)||'0');
+      e.target.value=String(Math.min(23,hr)).padStart(2,'0')+':'+String(Math.min(59,mn)).padStart(2,'0');
+    });
   });
 
   // donate custom input Enter key

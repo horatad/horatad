@@ -96,7 +96,7 @@ select{background:#f0f0f0}
 /* D/M/Y/T row */
 .form-row-dmy{display:grid;grid-template-columns:0.6fr 0.6fr 1fr 1.1fr;gap:6px}
 .form-row-dmy>div{min-width:0}
-input[type="time"]{min-width:0;padding:4px 2px}
+input.time-input{min-width:0;padding:4px 2px}
 
 /* Province row */
 .prov-row{display:flex;gap:6px;margin-top:5px;align-items:center}
@@ -327,7 +327,7 @@ body.about-active .logo-h1{display:none}
 @media(max-width:480px){
   body{padding:0.5rem}
   .form-row-dmy{grid-template-columns:0.7fr 0.7fr 1fr 1.3fr}
-  input[type="time"]{font-size:12px;padding:4px 2px}
+  input.time-input{font-size:12px;padding:4px 2px}
   #report td{font-size:12px;padding:2px 6px 2px 0}
   .donate-presets .donate-btn{min-width:48px;font-size:12px}
   .about-card{padding:0.85rem}
