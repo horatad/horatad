@@ -11,7 +11,54 @@
     "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending | batch1 ch002-ch010: 38 rules upgraded to PRIMARY (2026-05-29) | batch2 ch013-ch018: 43 rules upgraded (2026-05-29) | batch3 ch022-ch030: 42 rules upgraded (2026-05-29) | batch4 multi-ch: 54 rules upgraded (2026-05-29)",
     "source_type_audit": "batch5-complete 2026-05-29: upgraded 37 → PRIMARY. Final: PRIMARY=264, INFERRED=26. Remaining INFERRED are legitimately derived (combinations/context-specific/ancient refs).",
     "last_merge": "2026-05-27",
-    "keywords_added": "290 rules · 2026-05-27_kw_extract"
+    "keywords_added": "290 rules · 2026-05-27_kw_extract",
+    "keyword_schema": {
+      "version": "3.0",
+      "format": "{k, src, pol, ref}",
+      "src_types": {
+        "tals": {
+          "desc": "TALS 100CH — แดง เมืองตราด",
+          "auto": true,
+          "ref_required": false,
+          "ref_example": "ch004",
+          "trust": 5
+        },
+        "text": {
+          "desc": "ตำราสำนักอื่น",
+          "auto": false,
+          "ref_required": true,
+          "ref_example": "mahasara:ch3",
+          "trust": 4
+        },
+        "cross": {
+          "desc": "ตรงกัน ≥2 แหล่ง",
+          "auto": false,
+          "ref_required": true,
+          "ref_example": "tals:ch004+mahasara:ch3",
+          "trust": 5
+        },
+        "empirical": {
+          "desc": "JULIAN chart data — derived",
+          "auto": true,
+          "ref_required": false,
+          "ref_example": "julian_p001",
+          "trust": 4
+        },
+        "llm": {
+          "desc": "LLM generated — requires review",
+          "auto": true,
+          "ref_required": false,
+          "ref_example": "session_2026-05-27",
+          "trust": 2
+        }
+      },
+      "pol_values": [
+        "+",
+        "-",
+        "~"
+      ],
+      "validation": "text + cross src require non-empty ref"
+    }
   },
   "rules": [
     {

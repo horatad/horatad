@@ -8,7 +8,53 @@
     "created": "2026-05-28",
     "supersedes": "tals_elements.json (planets section)",
     "verified": "ราชาโชค verified 2026-05-28 (ปีเตอร์/100CH)",
-    "keyword_schema": "v2.1: keywords=[{k,src,pol,ref}] merged from pos/neg"
+    "keyword_schema": {
+      "version": "3.0",
+      "format": "{k, src, pol, ref}",
+      "src_types": {
+        "tals": {
+          "desc": "TALS 100CH — แดง เมืองตราด",
+          "auto": true,
+          "ref_required": false,
+          "ref_example": "ch004",
+          "trust": 5
+        },
+        "text": {
+          "desc": "ตำราสำนักอื่น",
+          "auto": false,
+          "ref_required": true,
+          "ref_example": "mahasara:ch3",
+          "trust": 4
+        },
+        "cross": {
+          "desc": "ตรงกัน ≥2 แหล่ง",
+          "auto": false,
+          "ref_required": true,
+          "ref_example": "tals:ch004+mahasara:ch3",
+          "trust": 5
+        },
+        "empirical": {
+          "desc": "JULIAN chart data — derived",
+          "auto": true,
+          "ref_required": false,
+          "ref_example": "julian_p001",
+          "trust": 4
+        },
+        "llm": {
+          "desc": "LLM generated — requires review",
+          "auto": true,
+          "ref_required": false,
+          "ref_example": "session_2026-05-27",
+          "trust": 2
+        }
+      },
+      "pol_values": [
+        "+",
+        "-",
+        "~"
+      ],
+      "validation": "text + cross src require non-empty ref"
+    }
   },
   "planets": {
     "0": {
@@ -815,7 +861,10 @@
       "tanusesh_trait": "คิดมาก ไตร่ตรองรอบคอบมากๆ",
       "tanulagn_inner": "คิดมาก ไตร่ตรอง รอบคอบ",
       "uchcha": 6,
-      "kaset": [9, 10],
+      "kaset": [
+        9,
+        10
+      ],
       "kaset_note": "มกร(9)=primary เกษตร, กุมภ์(10)=secondary เกษตร | เจ้าเรือนกุมภ์=ราหู(8) เท่านั้น — เกษตร≠เจ้าเรือน (confirmed Peter 2026-05-27)",
       "mahachak": 1,
       "rajayok": "พิจิก",

@@ -30,6 +30,12 @@ tr:nth-child(even) td { background: #fafafa; }
 tr:hover td { background: #e8eaf6; }
 .pill { display: inline-block; background: #e8eaf6; color: #283593;
         border-radius: 10px; padding: 1px 7px; font-size: 0.7rem; margin: 1px; }
+/* src color coding */
+.pill-tals      { background: #e8eaf6; color: #283593; }
+.pill-text      { background: #e8f5e9; color: #1b5e20; }
+.pill-cross     { background: #f3e5f5; color: #4a148c; }
+.pill-empirical { background: #fff3e0; color: #e65100; }
+.pill-llm       { background: #eceff1; color: #546e7a; }
 .pos { color: #2e7d32; font-weight: bold; }
 .neg { color: #c62828; font-weight: bold; }
 .na { color: #999; font-style: italic; }
@@ -47,6 +53,15 @@ tr:hover td { background: #e8eaf6; }
 <header>
   <h1>TALS Master Dictionary — โหราทาส</h1>
   <p id="meta-info">กำลังโหลด...</p>
+  <p style="margin:4px 0 0;font-size:0.72rem;color:#555">
+    Keyword src:
+    <span class="pill pill-tals">T = TALS 100CH</span>
+    <span class="pill pill-text">TX = ตำราสำนักอื่น</span>
+    <span class="pill pill-cross">CX = cross ≥2 แหล่ง</span>
+    <span class="pill pill-empirical">E = empirical (JULIAN)</span>
+    <span class="pill pill-llm">AI = LLM generated</span>
+    &nbsp;·&nbsp; ⁺ = ดี &nbsp; ⁻ = ร้าย &nbsp; (ว่าง) = กลาง
+  </p>
 </header>
 <div class="tabs">
   <button class="tab active" onclick="showTab('planets')">🪐 ดาว</button>
@@ -162,16 +177,25 @@ function showTab(name) {
   event.target.classList.add('active');
 }
 
+const SRC_LABEL = { tals:'T', text:'TX', cross:'CX', empirical:'E', llm:'AI' };
+const SRC_TITLE = {
+  tals:      'TALS 100CH — แดง เมืองตราด',
+  text:      'ตำราสำนักอื่น',
+  cross:     'ตรงกัน ≥2 แหล่ง',
+  empirical: 'JULIAN chart data',
+  llm:       'LLM generated'
+};
 function pills(arr) {
   if (!arr || !arr.length) return '<span class="na">—</span>';
-  // Support both string array and keyword object array
   return arr.map(x => {
-    if (typeof x === 'string') return `<span class="pill">${x}</span>`;
-    const src = x.src||'?';
-    const pol = x.pol;
-    const cls = pol==='+' ? 'kw-pos' : pol==='-' ? 'kw-neg' : 'kw-neu';
-    const srcBadge = src==='tals' ? '📖' : src==='llm' ? '🤖' : src==='ntals' ? '📚' : '?';
-    return `<span class="pill ${cls}" title="${src}: ${x.ref||''}">${x.k}${srcBadge}</span>`;
+    if (typeof x === 'string') return `<span class="pill pill-tals">${x}</span>`;
+    const src = x.src || 'llm';
+    const srcCls = `pill-${['tals','text','cross','empirical','llm'].includes(src) ? src : 'llm'}`;
+    const polMark = x.pol==='+' ? '⁺' : x.pol==='-' ? '⁻' : '';
+    const badge = SRC_LABEL[src] || '?';
+    const tipSrc = SRC_TITLE[src] || src;
+    const tipRef = x.ref ? ` · ${x.ref}` : '';
+    return `<span class="pill ${srcCls}" title="${tipSrc}${tipRef}">${x.k}${polMark} <sup style="opacity:.6;font-size:.6rem">${badge}</sup></span>`;
   }).join('');
 }
 function pillsKwByPol(arr, pol) {
