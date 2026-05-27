@@ -1,0 +1,118 @@
+name: JULIAN Events Scraper
+
+# รัน daily จนกว่า checkpoint จะหายไป (all done)
+# Input: data/julian_all.json → Wikidata events API
+# Output: data/julian_events.jsonl + data/julian_ml_features.jsonl
+
+on:
+  schedule:
+    - cron: '0 2 * * *'    # 02:00 UTC daily — ไม่ชนกับ julian_sync (00/06/12/18)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  events:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      # ── Skip schedule if already complete ─────────────────────────────────
+      - name: Check if work remains
+        id: check
+        if: github.event_name == 'schedule'
+        run: |
+          HAS_CP=$([ -f workers/julian_events_checkpoint.json ] && echo "true" || echo "false")
+          HAS_DATA=$([ -f data/julian_events.jsonl ] && echo "true" || echo "false")
+          if [ "$HAS_CP" = "false" ] && [ "$HAS_DATA" = "true" ]; then
+            echo "No checkpoint + events file exists — scraping already complete"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      # ── Scrape life events from Wikidata ──────────────────────────────────
+      - name: Scrape events
+        id: scrape
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          OUTPUT=$(node workers/julian_event_scraper.mjs --resume --time-budget 1800 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "STATUS=partial"; then
+            echo "status=partial" >> $GITHUB_OUTPUT
+          else
+            echo "status=complete" >> $GITHUB_OUTPUT
+          fi
+
+      # ── Build ML feature vectors (only when scraping fully complete) ──────
+      - name: Build ML features
+        if: steps.check.outputs.skip != 'true' && steps.scrape.outputs.status == 'complete'
+        run: |
+          node workers/julian_ml_features.mjs
+          FEAT_COUNT=$(wc -l < data/julian_ml_features.jsonl)
+          echo "ML features: ${FEAT_COUNT} records"
+
+      # ── Commit ────────────────────────────────────────────────────────────
+      - name: Commit
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git config user.name  'JULIAN Bot'
+          git config user.email 'julian-bot@horatad.com'
+          git add data/julian_events.jsonl data/julian_ml_features.jsonl workers/julian_events_checkpoint.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            STATUS="${{ steps.scrape.outputs.status }}"
+            if [ "$STATUS" = "partial" ]; then
+              EVENT_COUNT=$(wc -l < data/julian_events.jsonl 2>/dev/null || echo 0)
+              git commit -m "JULIAN events: partial scrape (${EVENT_COUNT} total) — checkpoint saved"
+            else
+              EVENT_COUNT=$(wc -l < data/julian_events.jsonl 2>/dev/null || echo 0)
+              FEAT_COUNT=$(wc -l < data/julian_ml_features.jsonl 2>/dev/null || echo 0)
+              git commit -m "JULIAN events: complete — ${EVENT_COUNT} events, ${FEAT_COUNT} ML features"
+            fi
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      # ── Disable schedule when complete ────────────────────────────────────
+      - name: Disable schedule when done
+        if: steps.scrape.outputs.status == 'complete' && github.event_name == 'schedule'
+        run: |
+          echo "Events scraping complete — disabling daily schedule"
+          gh workflow disable julian_events.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Summary ───────────────────────────────────────────────────────────
+      - name: Summary
+        if: always()
+        run: |
+          echo "## JULIAN Events Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ steps.scrape.outputs.status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/julian_events.jsonl ]; then
+            echo "- Events scraped: $(wc -l < data/julian_events.jsonl)" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f data/julian_ml_features.jsonl ]; then
+            echo "- ML features: $(wc -l < data/julian_ml_features.jsonl)" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -f workers/julian_events_checkpoint.json ]; then
+            node -e "
+              const cp = JSON.parse(require('fs').readFileSync('workers/julian_events_checkpoint.json','utf8'));
+              console.log('- Checkpoint: batch ' + cp.batch_index + '/' + cp.total_batches);
+            " >> $GITHUB_STEP_SUMMARY || true
+          fi

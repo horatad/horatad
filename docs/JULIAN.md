@@ -457,7 +457,8 @@ Manual / on-demand:
 | Coord enrichment | 🟡 Built, not wired | `julian_wikidata_coord.mjs` exists, not in sync workflow |
 | Planet positions | ✅ Generated | `julian_positions_by_jd.json` — regen at 100K |
 | Empirical validation | 🟡 Built | Needs Cloudflare D1 data to be meaningful |
-| ML event scraper | 🔴 TODO | Phase 1 — Wikidata structured events |
-| ML features | 🔴 TODO | Phase 1 — natal × transit matrix |
-| CNN model | 🔴 TODO | Phase 2 — Python/Colab |
-| Rule feedback | 🔴 TODO | Phase 3 — SHAP → kb.json |
+| Coord enrichment | ✅ Wired | `julian_wikidata_coord.mjs` in `julian_sync.yml` (≤300/run) |
+| ML event scraper | ✅ Built | `julian_event_scraper.mjs` + `julian_events.yml` workflow (checkpoint/resume) |
+| ML features | ✅ Built | `julian_ml_features.mjs` → `julian_ml_features.jsonl` (sign-level vectors) |
+| CNN model | 🔴 TODO | Phase 2 — Python/Colab (train on `julian_ml_features.jsonl`) |
+| Rule feedback | 🔴 TODO | Phase 3 — SHAP → `julian_ml_correlate.mjs` → `kb.json` |

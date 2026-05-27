@@ -200,6 +200,58 @@ jobs:
             git push origin HEAD:main
           fi
 
+      # ─── Wikidata Coord enrichment — เติม lat/lng จาก P19+P625 ─────────────
+      # รันหลัง wiki_th — ใช้ Wikidata birthplace coordinates แทน Astrotheme lat/lng
+      # (Astrotheme lat/lng parser broken — returns 0,0 สำหรับ 599 C-grade records)
+      - name: Wikidata coord enrichment
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          echo "── Filter records without lat/lng ──"
+          node -e "
+            const fs = require('fs');
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync('data/julian_all.json', 'utf8')); } catch(e) {}
+            const noCoord = data.filter(r => r && r.jd && r.name
+              && r.source?.startsWith('wikidata:')
+              && (!r.lat || r.lat === 0)).slice(0, 300);
+            fs.writeFileSync('/tmp/no_coord.jsonl', noCoord.map(r => JSON.stringify(r)).join('\n'));
+            console.log('Records to enrich:', noCoord.length);
+          "
+          if [ ! -s /tmp/no_coord.jsonl ]; then
+            echo "All wikidata records have lat/lng — skip"
+            exit 0
+          fi
+          node workers/julian_wikidata_coord.mjs /tmp/no_coord.jsonl > /tmp/coord_enriched.jsonl || true
+          ENRICHED_COUNT=$(node -e "
+            const fs = require('fs');
+            const dataFile = 'data/julian_all.json';
+            let data = [];
+            try { data = JSON.parse(fs.readFileSync(dataFile, 'utf8')); } catch(e) {}
+            const lines = fs.readFileSync('/tmp/coord_enriched.jsonl', 'utf8').split('\n').filter(Boolean);
+            const enrichMap = new Map();
+            for (const l of lines) {
+              try { const r = JSON.parse(l); if (r.jd && r.name) enrichMap.set(r.jd+'|'+r.name, r); } catch(e) {}
+            }
+            let count = 0;
+            for (const r of data) {
+              const e = enrichMap.get(r.jd+'|'+r.name);
+              if (!e) continue;
+              if (e.lat && e.lat !== 0 && (!r.lat || r.lat === 0)) { r.lat = e.lat; r.lng = e.lng; count++; }
+              if (e.notes && !r.notes) r.notes = e.notes;
+            }
+            fs.writeFileSync(dataFile, JSON.stringify(data));
+            console.log(count);
+          ")
+          echo "Applied coord enrichment to ${ENRICHED_COUNT} records"
+          if [ "${ENRICHED_COUNT}" != "0" ]; then
+            git config user.name  "JULIAN Bot"
+            git config user.email "julian-bot@horatad.com"
+            git add data/julian_all.json
+            git commit -m "JULIAN enrich: +${ENRICHED_COUNT} lat/lng from Wikidata P19+P625"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       # ─── Regrade accuracy (evidence-based) ──────────────────────────────────
       # รันหลัง enrichment ทุกแหล่ง — re-compute accuracy จาก julian_evidence.mjs
       # ป้องกัน human error: accuracy ไม่สามารถตั้งค่ามือได้ ต้อง derive จาก evidence
