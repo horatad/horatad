@@ -97,8 +97,9 @@ function _vcSystemPrompt() {
     const asc = get_lagna(natal.pos);
     ctx = '\nข้อมูลดวงชาตาของผู้ใช้: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
   }
-  const rulesSection = _vcRulesCtx ? '\n\nกฎโหราศาสตร์สุริยยาตร์ที่ตรงกับดวง (ใช้ข้อมูลนี้ตอบ):\n' + _vcRulesCtx : '';
-  return 'คุณคือโหราจารย์ไทยระบบ Horatad ตอบคำถามโหราศาสตร์สุริยยาตร์ไทย ภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำต่อคำตอบ' + ctx + rulesSection;
+  const rulesSection = _vcRulesCtx ? '\n\nกฎโหราศาสตร์สุริยยาตร์ที่ตรงกับดวง (ตอบจากกฎเหล่านี้เท่านั้น):\n' + _vcRulesCtx : '';
+  const constraint = '\nตอบจากกฎที่ระบุเท่านั้น ห้ามเพิ่มเนื้อหานอกกฎ ถ้าคำถามนอกขอบเขตกฎที่ให้มา ตอบว่า "ดวงนี้ไม่มีข้อมูลในส่วนนั้น"';
+  return 'คุณคือโหราจารย์ไทยระบบ Horatad ตอบคำถามโหราศาสตร์สุริยยาตร์ไทย ภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำต่อคำตอบ' + constraint + ctx + rulesSection;
 }
 
 async function _vcBuildRulesCtx() {
@@ -111,7 +112,11 @@ async function _vcBuildRulesCtx() {
       .filter(r => r.type === 'NATAL_ATOMIC' || r.type === 'NATAL_COMBINATION')
       .sort((a, b) => (a.tier || 9) - (b.tier || 9))
       .slice(0, 20);
-    _vcRulesCtx = matched.map(r => '• ' + r.meaning).join('\n');
+    _vcRulesCtx = matched.map(r => {
+      const pol = r.polarity === '+' ? '[ดี]' : r.polarity === '-' ? '[ร้าย]' : '[กลาง]';
+      const dom = r.domain ? `[${r.domain}]` : '';
+      return `• ${pol}${dom} ${r.meaning}`;
+    }).join('\n');
   } catch(_) { _vcRulesCtx = ''; }
 }
 

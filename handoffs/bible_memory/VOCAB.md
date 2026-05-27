@@ -728,3 +728,49 @@ Logic: กุม > เล็ง (R288 priority) — ดาวบาปกุม 
 - **เกษตร** = ยิ่งแก่ยิ่งแรง (บั้นปลาย)
 - **อุจจาภิมุข** = แรงก่อน สม่ำเสมอตลอด ไม่ตก
 - **มหาจักร** = แรงเป็นพักๆ ไม่สม่ำเสมอ บทจะโกงโกงกว่าอุจ
+
+---
+## Extraction Vocabulary — taxonomy_keywords (added 2026-05-27)
+# ใช้สำหรับ extraction session + query parsing ใน Horatad app
+
+### planet_synonyms — map ทุก alias → planet_id
+| alias | planet_id |
+|---|---|
+| พระอาทิตย์ · ดาวอาทิตย์ · อา | 1 |
+| พระจันทร์ · ดาวจันทร์ · จ | 2 |
+| ดาวอังคาร · พระอังคาร · อ | 3 |
+| ดาวพุธ · พระพุธ · พ | 4 |
+| ดาวพฤหัส · พระพฤหัส · ฤ · พฤหัสบดี | 5 |
+| ดาวศุกร์ · พระศุกร์ · ศ | 6 |
+| ดาวเสาร์ · พระเสาร์ · ส | 7 |
+| ราหู · พระราหู · รา | 8 |
+| เกตุ · พระเกตุ · เก | 9 |
+| มฤตยู | 0 |
+
+**กฎ:** planet_ids ใน kb_tals.json ใช้ตัวเลขเสมอ ห้ามใช้ชื่อ
+
+### prediction_verbs — signal ว่าข้อความนี้คือ prediction rule
+ให้ · ทำให้ · จะได้ · มักจะ · ส่งผลให้ · เป็นเหตุให้ · ย่อมได้ · จะมี · ทำนายว่า · พยากรณ์ว่า · บ่งบอกว่า · ชี้ให้เห็นว่า
+
+### polarity_signals — detect polarity จากข้อความ
+| polarity | คำสัญญาณ |
+|---|---|
+| `+` (บวก) | ดี · มั่งคั่ง · โชคดี · สำเร็จ · มีโชค · เจริญ · ได้ลาภ |
+| `-` (ลบ) | ร้าย · เสียหาย · ทุกข์ · โทษ · อันตราย · สูญเสีย · พินาศ |
+| `~` (กลาง) | ขึ้นอยู่กับ · แล้วแต่ · บางครั้ง · ในบางกรณี |
+
+### source_type_signals — ช่วย LLM ตัดสิน PRIMARY vs INFERRED
+| source_type | signal ในตำรา |
+|---|---|
+| PRIMARY | "ตำรากล่าวว่า" · "โหรากล่าวว่า" · "ว่าไว้ว่า" · "กล่าวตรงๆ" |
+| INFERRED | "น่าจะ" · "derive จาก" · "รวมกับ" · "ผสมกัน" · "เกิดความหมายใหม่" |
+
+### aspect_terms — คำ aspect ในตำรา → canonical form
+กุม=conjunction · เล็ง=opposition · ตรีโกณ=trine · จตุรัส=square · โยค=combination · สัมพันธ์=aspect_general · ร่วมราศี=conjunction · ตรงข้าม=opposition · ทับ=conjunction_exact
+
+### tokenization_rules
+- split_on: และ · หรือ · แต่ · ถ้า · เมื่อ · เพราะ
+- keep_together: ดาวอาทิตย์ · ดาวจันทร์ · ดาวอังคาร
+- ignore: ครั้น · แล · นั้น · อัน · ซึ่ง
+
+**ไฟล์ full JSON:** `docs/bible_extraction/taxonomy_keywords.json`

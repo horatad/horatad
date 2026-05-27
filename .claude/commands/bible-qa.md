@@ -21,8 +21,10 @@ Confidence: สูง / กลาง / ต่ำ
 
 ## กฎ TALS ที่ต้องใช้ก่อนตอบทุกคำถาม
 - Rule #1: natal 80% / transit 20%
-- Rule #2: ดาวต้องสัมพันธ์ลัคนา/ตนุลัคน์ ถึงจะส่งผล
-- Rule #3: ภพ 1/2/7 = chart strength
+- Rule #2: ดาวต้องสัมพันธ์ลัคนา/ตนุลัคน์ ถึงจะส่งผล — ไม่สัมพันธ์ = อัจฉริยภาพภายใน (hidden)
+- Rule #3: chart_strength = f(ตนุลัคน์, ดาวกุมลัคนา) — NOT ภพ 1/2/7
+- Rule #4: TALS = event prediction เท่านั้น (ไม่ใช่ personality)
+- Rule #5: อาชีพดู "ดาวเด่น" — NOT ภพกัมมะ
 
 ## ห้าม
 - ตอบแบบ Western/Vedic โดยไม่บอก
