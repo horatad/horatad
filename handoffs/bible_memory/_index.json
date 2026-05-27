@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "generated": "2026-05-26T03:22",
+    "generated": "2026-05-27T04:12",
     "purpose": "Machine-readable index of BIBLE memory files — helps Claude find relevant content without reading all files",
     "usage": "Check this index first, then read only the specific files needed",
     "regenerate": "node workers/build_bible_index.mjs"
@@ -46,7 +46,7 @@
   "files": {
     "CLAUDE.md": {
       "last_updated": "2026-05-27",
-      "lines": 73,
+      "lines": 86,
       "headings": [
         {
           "level": 1,
@@ -70,7 +70,7 @@
         },
         {
           "level": 2,
-          "text": "3 Foundational Rules — ใช้ก่อนทุกการพยากรณ์"
+          "text": "5 Foundational Rules — ใช้ก่อนทุกการพยากรณ์ (corrected 2026-05-27)"
         },
         {
           "level": 2,
@@ -103,7 +103,7 @@
     },
     "INDEX.md": {
       "last_updated": "2026-05-26",
-      "lines": 240,
+      "lines": 261,
       "headings": [
         {
           "level": 1,
@@ -203,7 +203,7 @@
     },
     "LOG.md": {
       "last_updated": null,
-      "lines": 1174,
+      "lines": 2475,
       "headings": [
         {
           "level": 1,
@@ -704,10 +704,603 @@
         {
           "level": 3,
           "text": "Anti-patterns to avoid (NEW)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T08:00 — 📌 PINNED v4: ch020 canonical procedure + ch025 ดาวเด่น scoring (CRITICAL CORRECTIONS)"
+        },
+        {
+          "level": 3,
+          "text": "🔴 CORRECTION #1 — Rule #3 ผมเข้าใจผิด"
+        },
+        {
+          "level": 3,
+          "text": "🔴 CORRECTION #2 — อัจฉริยภาพภายใน = ดาวที่ \"ไม่สัมพันธ์ลัคนา\""
+        },
+        {
+          "level": 3,
+          "text": "🔴 CORRECTION #3 — Priority houses (step 8)"
+        },
+        {
+          "level": 3,
+          "text": "🟢 NEW — ch025 ดาวเด่น quantitative scoring framework"
+        },
+        {
+          "level": 3,
+          "text": "🟢 NEW — Cross-class quality comparison (ch025)"
+        },
+        {
+          "level": 3,
+          "text": "🟢 NEW — อาชีพดูจาก \"ดาวเด่น\" ไม่ใช่ \"ภพกัมมะ\""
+        },
+        {
+          "level": 3,
+          "text": "📋 TALS Canonical Prediction Procedure (จาก ch020) — recorded"
+        },
+        {
+          "level": 3,
+          "text": "Updated TALS Foundational Rules (per ch020)"
+        },
+        {
+          "level": 3,
+          "text": "Quantitative scoring (per ch020 + ch025)"
+        },
+        {
+          "level": 3,
+          "text": "Implication: chart score formula (TALS-aligned)"
+        },
+        {
+          "level": 3,
+          "text": "Open from ch020/ch025 — ที่ TALS book ยังต้องเปิดต่อ"
+        },
+        {
+          "level": 3,
+          "text": "Anti-patterns flagged (must NOT do)"
+        },
+        {
+          "level": 3,
+          "text": "Files affected by these corrections"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T10:00 — master_dict v1.5.0: PINNED v4 corrections applied"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T10:30 — Files from PINNED v4 \"Files affected\" — DONE"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T11:00 — Memory improvement: 5 techniques — effectiveness audit"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T12:00 — Q&A: วาสนา (fate/destiny in TALS)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T14:00 — Empirical pruning + aspect definitions + memory methodology"
+        },
+        {
+          "level": 3,
+          "text": "1. Aspect definitions resolved (ch009 verbatim)"
+        },
+        {
+          "level": 3,
+          "text": "2. Empirical pruning methodology (new process)"
+        },
+        {
+          "level": 3,
+          "text": "3. เกตุ (9) — empirical verification complete"
+        },
+        {
+          "level": 3,
+          "text": "4. มฤตยู (0) — empirical verification"
+        },
+        {
+          "level": 3,
+          "text": "5. ราหู (8) — partial verification"
+        },
+        {
+          "level": 3,
+          "text": "6. Planet letter codes (เพิ่มใน PLANETS.md)"
+        },
+        {
+          "level": 3,
+          "text": "7. Memory methodology — Pool → Combination → Self-Q&A"
+        },
+        {
+          "level": 3,
+          "text": "Files committed this session"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T15:00 — Pool expansion: ch007/ch008/ch021/ch039 autonomous read"
+        },
+        {
+          "level": 3,
+          "text": "New element rules added to VOCAB.md"
+        },
+        {
+          "level": 3,
+          "text": "อัจฉริยภาพภายใน ≠ ดาวไม่สัมพันธ์ลัคนา (clarification)"
+        },
+        {
+          "level": 3,
+          "text": "คำถาม open ที่ยังไม่ resolve"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T16:00 — ch022 + ch028: ธาตุ weight clarification + case study patterns"
+        },
+        {
+          "level": 3,
+          "text": "ch022 — ธาตุ quantitative + TALS weight"
+        },
+        {
+          "level": 3,
+          "text": "ch028 — patterns จาก case study ดาราจอมลวงโลก"
+        },
+        {
+          "level": 3,
+          "text": "TALS philosophy (ch022)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T18:00 — ch029 + ch032 + ch033 + ch037 + ch039: อาชีพ + ราหู + ดาวจร + พื้นเพ"
+        },
+        {
+          "level": 3,
+          "text": "ch029 — บทอาชีพ (user: \"สำคัญมาก อาจต้องกลับมาอ่านซ้ำ\")"
+        },
+        {
+          "level": 3,
+          "text": "ch032 — ราหู(8) กรณีต่างๆ"
+        },
+        {
+          "level": 3,
+          "text": "ch039 — ความหมายดาวในบริบทต่างๆ"
+        },
+        {
+          "level": 3,
+          "text": "ch033 — ดาวจร priority + rules"
+        },
+        {
+          "level": 3,
+          "text": "ch037 สรุปสั้น"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T19:00 — Correction: ภพ vs ดาว, น้ำหนักระบบ"
+        },
+        {
+          "level": 3,
+          "text": "❌ Misconception ที่เกิดในช่วงนี้ (corrected by user)"
+        },
+        {
+          "level": 3,
+          "text": "✅ Framework ที่ถูก"
+        },
+        {
+          "level": 3,
+          "text": "⚠️ แก้ไข Rule #5 (2026-05-27) — ภพกัมมะยังใช้ แต่คนละบริบท"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T20:00 — ch031: พระ vs โจร + เจ้าชู้ — Comparative Analysis"
+        },
+        {
+          "level": 3,
+          "text": "Core insight: หัวใจ TALS = เปรียบเทียบคู่ดาว ไม่ใช่ดูเดี่ยว"
+        },
+        {
+          "level": 3,
+          "text": "กฎใหม่ที่สำคัญ"
+        },
+        {
+          "level": 3,
+          "text": "สูตรเจ้าชู้"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T00:00 — สร้าง tals_elements.json — Single Master File สำหรับ TALS Elements"
+        },
+        {
+          "level": 3,
+          "text": "งานที่ทำ"
+        },
+        {
+          "level": 3,
+          "text": "Pattern ที่แก้ไข"
+        },
+        {
+          "level": 3,
+          "text": "Pending ยังเหมือนเดิม"
+        },
+        {
+          "level": 3,
+          "text": "สถานะ consumers"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-27T21:00 — อัจฉริยภาพภายใน: กลไก + ดาวจร trigger"
+        },
+        {
+          "level": 3,
+          "text": "ความเข้าใจที่ลึกขึ้น (จาก discussion)"
+        },
+        {
+          "level": 3,
+          "text": "ตนุลัคน์ vs เรือนในอื่น"
+        },
+        {
+          "level": 3,
+          "text": "กลไก trigger อัจฉริยภาพภายใน"
+        },
+        {
+          "level": 3,
+          "text": "เหตุที่ ราหู(8) มหาจักร ไม่สัมพันธ์ลัคนา = \"คาดการณ์ยาก\""
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T00:00 — ch013 ตนุเศษ vs เจ้าเกษตร: ความแตกต่างที่ชัดเจน"
+        },
+        {
+          "level": 3,
+          "text": "ค้นพบจาก ch013 (ตำรา 100CH)"
+        },
+        {
+          "level": 3,
+          "text": "Hallucination ที่เกิดและแก้แล้ว (2026-05-28)"
+        },
+        {
+          "level": 3,
+          "text": "Code naming note"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T12:00 — Multi-DB Architecture implementation"
+        },
+        {
+          "level": 3,
+          "text": "สิ่งที่ทำ"
+        },
+        {
+          "level": 3,
+          "text": "Architecture สรุป"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T15:00 — Cross-tradition comparison: เจ้าเกษตร์ราศีกุมภ์"
+        },
+        {
+          "level": 3,
+          "text": "ทำไมตำราอื่นจึงให้เสาร์ปกครองกุมภ์"
+        },
+        {
+          "level": 3,
+          "text": "ราหู ↔ ยูเรนัส (Modern Western): energy เดียวกัน คนละดาว"
+        },
+        {
+          "level": 3,
+          "text": "สรุปหลักการ TALS ที่ต่างจากสายอื่น"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T15:30 — แก่นของระบบ BIBLE/TALS"
+        },
+        {
+          "level": 3,
+          "text": "insight จากการสนทนา"
+        },
+        {
+          "level": 3,
+          "text": "User identity (บันทึก 2026-05-28)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T17:00 — เกตุ และ มฤตยู: ความหมายจากตำรา TALS"
+        },
+        {
+          "level": 3,
+          "text": "เกตุ (planet_id=9) — ดาววิญญาณธาตุ"
+        },
+        {
+          "level": 3,
+          "text": "มฤตยู (planet_id=0) — ดาวอากาศธาตุ"
+        },
+        {
+          "level": 3,
+          "text": "หลักการสรุป"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T18:00 — CRITICAL: อนุเกษตร ≠ ประเกษตร (correction)"
+        },
+        {
+          "level": 3,
+          "text": "ผิดที่เดิม (ต้องแก้ใน tals_elements.json)"
+        },
+        {
+          "level": 3,
+          "text": "อนุเกษตร (ch010) — คืออะไรจริงๆ"
+        },
+        {
+          "level": 3,
+          "text": "กฎเล็งกัน ch010 — ลบ-ลบ = บวก"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T18:01 — Derivation pattern: ตรงข้าม = +6%12 (confirmed)"
+        },
+        {
+          "level": 3,
+          "text": "กฎสากล: position_opposite = (position + 6) % 12"
+        },
+        {
+          "level": 3,
+          "text": "เทวีโชค pending → RESOLVED"
+        },
+        {
+          "level": 3,
+          "text": "Implication ต่อ schema"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T18:02 — Master Dictionary restructure plan (priority)"
+        },
+        {
+          "level": 3,
+          "text": "Architecture ที่ตกลงแล้ว"
+        },
+        {
+          "level": 3,
+          "text": "ลำดับงานถัดไป (priority order)"
+        },
+        {
+          "level": 3,
+          "text": "Schema v2.0 per planet (flat)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T18:03 — Engine separation (confirmed needed NOW)"
+        },
+        {
+          "level": 3,
+          "text": "ทำไมต้องแยกก่อน (Peter's reasoning)"
+        },
+        {
+          "level": 3,
+          "text": "แผน: 3 ไฟล์ (HORATAD session)"
+        },
+        {
+          "level": 3,
+          "text": "SE Adapter (อนาคต)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T20:00 — 📌 PINNED: Keyword Taxonomy + AI-Only Ingestion Policy"
+        },
+        {
+          "level": 3,
+          "text": "3-Source Keyword Taxonomy (user-confirmed)"
+        },
+        {
+          "level": 3,
+          "text": "Schema patch — keywords field (per planet / sign / house)"
+        },
+        {
+          "level": 3,
+          "text": "AI-Only Ingestion Policy (ถาวร — standing rule จาก user)"
+        },
+        {
+          "level": 3,
+          "text": "ไฟล์ที่ต้องอัปเดต (pending — schema migration)"
+        },
+        {
+          "level": 3,
+          "text": "Audit ของ keywords ที่มีอยู่แล้ว (ต้อง tag ย้อนหลัง)"
+        },
+        {
+          "level": 3,
+          "text": "Keyword Audit — Multi-LLM Triangulation (user-confirmed)"
+        },
+        {
+          "level": 3,
+          "text": "Cross-link"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T20:30 — 📌 PINNED: Zero-Human-Input Policy (final, absolute)"
+        },
+        {
+          "level": 3,
+          "text": "Policy (standing rule — ถาวร)"
+        },
+        {
+          "level": 3,
+          "text": "Implication ต่อ existing data"
+        },
+        {
+          "level": 3,
+          "text": "ทำไมต้อง strict ขนาดนี้"
+        },
+        {
+          "level": 3,
+          "text": "Cross-link"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-28T22:00 — Architecture: Rules vs Dictionary, Synonym, Bilingual"
+        },
+        {
+          "level": 3,
+          "text": "ถาม: rules อยู่ใน tals_*.json หรือไม่?"
+        },
+        {
+          "level": 3,
+          "text": "ถาม: prediction ใน rules เป็น keyword หรือ text?"
+        },
+        {
+          "level": 3,
+          "text": "ถาม: synonym/alias สำหรับ AI extraction และ Q&A?"
+        },
+        {
+          "level": 3,
+          "text": "ถาม: Thai-English bilingual ready?"
+        },
+        {
+          "level": 3,
+          "text": "Priority ที่เหลือ"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T00:00 — Schema Gap Analysis: สิ่งที่ขาดใน Master Dictionary"
+        },
+        {
+          "level": 3,
+          "text": "Gap Table"
+        },
+        {
+          "level": 3,
+          "text": "คำอธิบายเพิ่มเติม"
+        },
+        {
+          "level": 3,
+          "text": "ไฟล์ใหม่ที่ต้องสร้าง"
+        },
+        {
+          "level": 3,
+          "text": "ผลต่อ viewer (tals_dict_export.html)"
+        },
+        {
+          "level": 3,
+          "text": "Priority"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T00:30 — 📌 PINNED: Element Table vs Rule Table (coding architecture)"
+        },
+        {
+          "level": 3,
+          "text": "ความแตกต่างหลัก"
+        },
+        {
+          "level": 3,
+          "text": "กฎแยกประเภท (ใช้ถามตัวเอง)"
+        },
+        {
+          "level": 3,
+          "text": "Coding problems ถ้าสับสน"
+        },
+        {
+          "level": 3,
+          "text": "Peter's concern (verbatim)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T01:00 — ch023: เกษตรตกภพร้าย + Two-factor interpretation"
+        },
+        {
+          "level": 3,
+          "text": "Pattern ใหม่ที่พบ: Two-factor interpretation"
+        },
+        {
+          "level": 3,
+          "text": "Bad house severity scale"
+        },
+        {
+          "level": 3,
+          "text": "ตัวแปรปรับ (modifiers)"
+        },
+        {
+          "level": 3,
+          "text": "Rule pattern (สำหรับ kb_tals.json)"
+        },
+        {
+          "level": 3,
+          "text": "Element table implication"
+        },
+        {
+          "level": 3,
+          "text": "Peter confirmation"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T02:00 — tals_lagna.json + score field + เรือนนอก/ใน rule"
+        },
+        {
+          "level": 3,
+          "text": "งานที่ทำเสร็จ"
+        },
+        {
+          "level": 3,
+          "text": "Pattern ที่ค้นพบ (ตนุลัคน์ รายดาว)"
+        },
+        {
+          "level": 3,
+          "text": "กฎสำคัญ (ch013/ch023)"
+        },
+        {
+          "level": 3,
+          "text": "งาน PENDING ที่ยังค้าง"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T04:00 — Tab Rules + source_type migration + two-factor fields"
+        },
+        {
+          "level": 3,
+          "text": "งานที่ทำเสร็จ (3 tasks)"
+        },
+        {
+          "level": 3,
+          "text": "Pattern ที่ค้นพบ (two-factor model)"
+        },
+        {
+          "level": 3,
+          "text": "commit: d169732 (bible-twofactor-rules-v1 backup)"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T05:00 — มหาจักร strength model — user confirmed"
+        },
+        {
+          "level": 3,
+          "text": "Canonical มหาจักร model (ยืนยันแล้ว)"
+        },
+        {
+          "level": 3,
+          "text": "Engine implication"
+        },
+        {
+          "level": 3,
+          "text": "Files updated"
+        },
+        {
+          "level": 2,
+          "text": "2026-05-29T06:00 — source_type audit COMPLETE (batch5)"
+        },
+        {
+          "level": 3,
+          "text": "Final result"
+        },
+        {
+          "level": 3,
+          "text": "Remaining INFERRED = 26 rules (legitimate)"
+        },
+        {
+          "level": 3,
+          "text": "Pattern learned"
+        },
+        {
+          "level": 3,
+          "text": "Files updated"
         }
       ],
       "keywords": [
         "pinned",
+        "correction",
         "hallucination",
         "verified",
         "foundational",
@@ -723,13 +1316,22 @@
         "2026-05-26T00:30 — Corollary to PINNED v3: similar-natal differentiation = ดาวจร",
         "PINNED v2 (LOG 2026-05-25) มี table:",
         "- ❌ **ไม่อ้าง BIBLE memory PINNED v2 มหาจักร table** (deprecated)",
-        "PINNED v2 มหาจักร pair table = hallucinated mostly:"
+        "PINNED v2 มหาจักร pair table = hallucinated mostly:",
+        "2026-05-27T08:00 — 📌 PINNED v4: ch020 canonical procedure + ch025 ดาวเด่น scoring (CRITICAL CORRECTIONS)",
+        "2026-05-27T10:00 — master_dict v1.5.0: PINNED v4 corrections applied",
+        "2026-05-27T10:30 — Files from PINNED v4 \"Files affected\" — DONE",
+        "ทุก file ที่ PINNED v4 ระบุว่าต้องแก้ → แก้ครบแล้ว:",
+        "2026-05-28T20:00 — 📌 PINNED: Keyword Taxonomy + AI-Only Ingestion Policy",
+        "2026-05-28T20:30 — 📌 PINNED: Zero-Human-Input Policy (final, absolute)",
+        "2026-05-29T00:30 — 📌 PINNED: Element Table vs Rule Table (coding architecture)"
       ],
-      "corrections": []
+      "corrections": [
+        "⚠️ แก้ไข Rule #5 (2026-05-27) — ภพกัมมะยังใช้ แต่คนละบริบท"
+      ]
     },
     "PLANETS.md": {
       "last_updated": "2026-05-23",
-      "lines": 77,
+      "lines": 100,
       "headings": [
         {
           "level": 1,
@@ -750,6 +1352,10 @@
         {
           "level": 2,
           "text": "ความหมายหลัก (สั้นที่สุด)"
+        },
+        {
+          "level": 2,
+          "text": "บทบาทพิเศษ เกตุ(9) และ มฤตยู(0)"
         },
         {
           "level": 2,
@@ -873,8 +1479,8 @@
       ]
     },
     "HOUSES.md": {
-      "last_updated": "2026-05-23",
-      "lines": 57,
+      "last_updated": "2026-05-27",
+      "lines": 71,
       "headings": [
         {
           "level": 1,
@@ -886,7 +1492,11 @@
         },
         {
           "level": 1,
-          "text": "Last updated: 2026-05-23"
+          "text": "Last updated: 2026-05-27"
+        },
+        {
+          "level": 2,
+          "text": "มุมสัมพันธ์ 4 ประเภท (ch009 verbatim — นับ inclusive จากราศีเริ่ม=1)"
         },
         {
           "level": 2,
@@ -935,7 +1545,7 @@
     },
     "QUALITY.md": {
       "last_updated": "2026-05-23",
-      "lines": 67,
+      "lines": 134,
       "headings": [
         {
           "level": 1,
@@ -959,7 +1569,7 @@
         },
         {
           "level": 2,
-          "text": "อุจ vs มหาจักร — ความต่าง (confirmed ch101)"
+          "text": "อุจ vs มหาจักร — ความต่าง (confirmed ch101 + user 2026-05-29)"
         },
         {
           "level": 2,
@@ -984,6 +1594,30 @@
         {
           "level": 3,
           "text": "ประเกษตร / ประ"
+        },
+        {
+          "level": 2,
+          "text": "⚠ CORRECTIONS + ADDITIONS 2026-05-27 (per ch020 + ch025)"
+        },
+        {
+          "level": 3,
+          "text": "Aspect-to-Lagna weights (CANONICAL per ch025)"
+        },
+        {
+          "level": 3,
+          "text": "ดาวเด่น cross-class comparison (ch025)"
+        },
+        {
+          "level": 3,
+          "text": "Quality TIME PROFILE (critical for scoring)"
+        },
+        {
+          "level": 3,
+          "text": "ดาวเด่น scoring formula (TALS-canonical)"
+        },
+        {
+          "level": 3,
+          "text": "🔴 Anti-pattern: ดูอาชีพจาก ภพกัมมะ อย่างเดียว"
         }
       ],
       "keywords": [
@@ -1006,7 +1640,7 @@
     },
     "VOCAB.md": {
       "last_updated": "2026-05-26",
-      "lines": 182,
+      "lines": 731,
       "headings": [
         {
           "level": 1,
@@ -1027,6 +1661,22 @@
         {
           "level": 1,
           "text": "Founder: ยืนยง นาวาสมุทร (แดง เมืองตราด)"
+        },
+        {
+          "level": 2,
+          "text": "ธาตุ — interaction rules (ch007 verbatim)"
+        },
+        {
+          "level": 3,
+          "text": "ธาตุราศีทั้ง 12"
+        },
+        {
+          "level": 3,
+          "text": "กฎ ดาวธาตุ + ราศีธาตุ (ch007 + ch022 verbatim)"
+        },
+        {
+          "level": 2,
+          "text": "ดาวคู่ 4 ประเภท — effect rules (ch008 verbatim)"
         },
         {
           "level": 2,
@@ -1111,6 +1761,202 @@
         {
           "level": 3,
           "text": "ราชาโชค — Thai tradition (warning)"
+        },
+        {
+          "level": 2,
+          "text": "⚠ CORRECTIONS 2026-05-27 (per ch020 + ch025)"
+        },
+        {
+          "level": 3,
+          "text": "อัจฉริยภาพภายใน — CORRECTED definition"
+        },
+        {
+          "level": 3,
+          "text": "TALS canonical procedure (ch020) — quick reference"
+        },
+        {
+          "level": 3,
+          "text": "ดาวเด่น (new term)"
+        },
+        {
+          "level": 2,
+          "text": "ดาวสวมหมวก 2 ใบ — 2 บทบาทของดาวทุกดวง (ch021 verbatim)"
+        },
+        {
+          "level": 3,
+          "text": "Rule อัจฉริยภาพภายใน (ch021)"
+        },
+        {
+          "level": 3,
+          "text": "Rule ปัจจัยภายนอก (ch021)"
+        },
+        {
+          "level": 3,
+          "text": "ความหมายดาว = identity คงที่ (ch021 verbatim)"
+        },
+        {
+          "level": 3,
+          "text": "อัจฉริยภาพภายใน ≠ ทักษะ ≠ พรสวรรค์ (ch039 verbatim)"
+        },
+        {
+          "level": 3,
+          "text": "การพิจารณาดาวครบ 2 บทบาท (ch021)"
+        },
+        {
+          "level": 2,
+          "text": "TALS Exclusions — สิ่งที่ไม่ใช้ (ch022 verbatim)"
+        },
+        {
+          "level": 2,
+          "text": "เสียทั้งนอกและใน — double-bad house pattern (ch028 case study)"
+        },
+        {
+          "level": 2,
+          "text": "ราหูบดบังพฤหัส — dominant malefic pattern (ch028 case study)"
+        },
+        {
+          "level": 2,
+          "text": "พื้นเพของตน — birth context modifier (ch039)"
+        },
+        {
+          "level": 2,
+          "text": "ถูกโฉลก vs ไม่ถูกโฉลก — full mechanics (ch039)"
+        },
+        {
+          "level": 2,
+          "text": "สอบลัคนา ด้วยดาวพุธ (ch039 + ch043/044)"
+        },
+        {
+          "level": 2,
+          "text": "อาชีพ — ดาวเดี่ยว + ดาวผสม (ch029 — บทอาชีพ)"
+        },
+        {
+          "level": 3,
+          "text": "หลักทั่วไป (3 ข้อ)"
+        },
+        {
+          "level": 3,
+          "text": "ดาวเดี่ยว → อาชีพ (ch029 section 29.2)"
+        },
+        {
+          "level": 3,
+          "text": "ดาวผสม → อาชีพ (ch029 combinations)"
+        },
+        {
+          "level": 2,
+          "text": "ราหู(8) พื้น vs จร — คนละทิศ (ch039+ch032)"
+        },
+        {
+          "level": 2,
+          "text": "เสาร์(7) — misconception + ข้อเท็จจริง (ch039)"
+        },
+        {
+          "level": 2,
+          "text": "พฤหัส(5) interactions — ช่วย vs หลงดี (ch039)"
+        },
+        {
+          "level": 2,
+          "text": "ดาวจร — หลักการ + ลำดับพิจารณา (ch033 + ch037)"
+        },
+        {
+          "level": 3,
+          "text": "หลักพื้นฐาน"
+        },
+        {
+          "level": 3,
+          "text": "ลำดับพิจารณาดาวจร (ch033 verbatim)"
+        },
+        {
+          "level": 3,
+          "text": "กฎสำคัญ (ch033)"
+        },
+        {
+          "level": 3,
+          "text": "สรุป ch037"
+        },
+        {
+          "level": 2,
+          "text": "พระ vs โจร — Comparative Analysis Framework (ch031)"
+        },
+        {
+          "level": 3,
+          "text": "พฤหัส(5) = ความดี / ราหู(8) = ความชั่ว"
+        },
+        {
+          "level": 3,
+          "text": "5 กรณี (ประเมินจากสัดส่วน แรงต่างกันมากแค่ไหน)"
+        },
+        {
+          "level": 3,
+          "text": "มิติเวลาของคุณภาพ (สำคัญมาก)"
+        },
+        {
+          "level": 3,
+          "text": "กฎ: Position overcomes quality (ราหู)"
+        },
+        {
+          "level": 3,
+          "text": "ตัวดัดแปลง (modifiers)"
+        },
+        {
+          "level": 2,
+          "text": "คนเจ้าชู้ — สูตร (ch031)"
+        },
+        {
+          "level": 2,
+          "text": "ลัคนา / ตนุลัคน์ / อัจฉริยภาพภายใน — กลไกจริง (ch032 + discussion)"
+        },
+        {
+          "level": 3,
+          "text": "Analogy หลัก"
+        },
+        {
+          "level": 3,
+          "text": "ตนุลัคน์ — สองกรณี"
+        },
+        {
+          "level": 3,
+          "text": "อัจฉริยภาพภายใน — กลไกสมบูรณ์"
+        },
+        {
+          "level": 3,
+          "text": "Trigger — ดาวจรใหญ่"
+        },
+        {
+          "level": 2,
+          "text": "ราหู(8) กรณีต่างๆ — Matrix ครบ (ch032)"
+        },
+        {
+          "level": 3,
+          "text": "ดาวแม่สี — หลักการสำคัญ"
+        },
+        {
+          "level": 3,
+          "text": "ราหู(8) กุมลัคนา — Matrix"
+        },
+        {
+          "level": 3,
+          "text": "ราหู(8) ไม่สัมพันธ์ลัคนา — Matrix"
+        },
+        {
+          "level": 3,
+          "text": "คนราศีกุมภ์ — ตนุลัคน์ = ราหู(8)"
+        },
+        {
+          "level": 3,
+          "text": "TALS ต่างจากทั่วไป"
+        },
+        {
+          "level": 3,
+          "text": "ราหู(8) ที่ดีที่สุด (TALS เลือก)"
+        },
+        {
+          "level": 3,
+          "text": "3 ตัวตรวจสอบราหู(8) เสมอ"
+        },
+        {
+          "level": 3,
+          "text": "มิติเวลาคุณภาพ (สำคัญ)"
         }
       ],
       "keywords": [
@@ -1200,7 +2046,7 @@
     },
     "TAXONOMY.md": {
       "last_updated": "2026-05-23",
-      "lines": 194,
+      "lines": 271,
       "headings": [
         {
           "level": 1,
@@ -1300,10 +2146,36 @@
         },
         {
           "level": 2,
+          "text": "Multi-DB Architecture (2026-05-28)"
+        },
+        {
+          "level": 3,
+          "text": "Source Hierarchy — 4 ฐานข้อมูล แยกกันเด็ดขาด"
+        },
+        {
+          "level": 3,
+          "text": "Cross-DB Linking Schema"
+        },
+        {
+          "level": 3,
+          "text": "Relation Types"
+        },
+        {
+          "level": 3,
+          "text": "Engine Loading Modes"
+        },
+        {
+          "level": 3,
+          "text": "Source Fields (เพิ่มใน rule ทุก level)"
+        },
+        {
+          "level": 2,
           "text": "Validation Checklist (ก่อน commit rule ลง KB)"
         }
       ],
-      "keywords": [],
+      "keywords": [
+        "🟡 has-pending"
+      ],
       "pinned": [],
       "corrections": []
     },
