@@ -90,20 +90,21 @@ function _core(d,m,y,hr,mn){
 // ── Public API ────────────────────────────────────────────────────────────
 
 /**
- * get_data(d, m, y, hr, mn, lng) → sp[0..10]
+ * get_data(d, m, y, hr, mn, lng, tz=7) → sp[0..10]
  * lng = longitude of birthplace (degrees east), default 100.5 (Bangkok)
+ * tz  = UTC offset of input time (e.g. 7 for UTC+7), default 7
  * sp[0]=lagna, sp[1]=SU, sp[2]=MO, sp[3]=MA, sp[4]=ME,
  * sp[5]=JU, sp[6]=VE, sp[7]=SA, sp[8]=RA, sp[9]=KE, sp[10]=MR
  * unit: 21600 = full circle
  */
-export function get_data(d,m,y,hr,mn,lng=100.5){
+export function get_data(d,m,y,hr,mn,lng=100.5,tz=7){
   if(!Number.isFinite(d)||d<1||d>31)throw new RangeError('bad day: '+d);
   if(!Number.isFinite(m)||m<1||m>12)throw new RangeError('bad month: '+m);
   if(!Number.isFinite(y))throw new RangeError('bad year: '+y);
   if(!Number.isFinite(hr)||hr<0||hr>47)throw new RangeError('bad hour: '+hr);
   if(!Number.isFinite(mn)||mn<0||mn>59)throw new RangeError('bad min: '+mn);
   if(!Number.isFinite(lng)||lng<-180||lng>180)throw new RangeError('bad lng: '+lng);
-  return _core(d,m,y,hr-(105-lng)*4/60,mn);
+  return _core(d,m,y,hr-tz+lng/15,mn);
 }
 
 /**

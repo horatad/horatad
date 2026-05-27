@@ -24,7 +24,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.48';
+const APP_VERSION='3.3.49';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -117,6 +117,7 @@ let _db1TypeFilter='natal'; // Phase 12: DB1 browser type filter
 let _groupDetailUid=null;   // Phase 12: group ที่กำลัง view detail
 let _natalPickerGroupUid=null; // Phase 12: group ที่กำลังเพิ่มสมาชิก
 let _customLng1=null,_customLng2=null,_customLngT=null;
+let _customTz1=null,_customTz2=null,_customTzT=null;
 let _transitDate=null;
 let _donateAmount=50;
 let _donateInitialized=false;
@@ -238,19 +239,19 @@ function _nowStr(){
 function resetChart1(){
   const n=_nowStr();
   _setField('d1',n.d);_setField('m1',n.m);_setField('y1',n.y);_setField('t1',n.t);
-  _customLng1=null;
+  _customLng1=null;_customTz1=null;
   _applyInputColors('1','init');
 }
 function resetChart2(){
   const n=_nowStr();
   _setField('d2',n.d);_setField('m2',n.m);_setField('y2',n.y);_setField('t2',n.t);
-  _customLng2=null;
+  _customLng2=null;_customTz2=null;
   _applyInputColors('2','init');
 }
 function resetTransit(){
   const n=_nowStr();
   _setField('dt',n.d);_setField('mt',n.m);_setField('yt',n.y);_setField('tt',n.t);
-  _customLngT=null;
+  _customLngT=null;_customTzT=null;
 }
 
 // ── V2.1.9: Sound (Web Audio beep) ────────────────────────
@@ -321,11 +322,11 @@ function _clearSection(sec){
   if(sec==='1'){
     document.getElementById('prov1').value='กรุงเทพมหานคร';
     document.getElementById('gender1').value='ชาย';
-    _customLng1=null;_applyInputColors('1','init');
+    _customLng1=null;_customTz1=null;_applyInputColors('1','init');
   }else{
     document.getElementById('prov2').value='กรุงเทพมหานคร';
     document.getElementById('gender2').value='ชาย';
-    _customLng2=null;_applyInputColors('2','init');
+    _customLng2=null;_customTz2=null;_applyInputColors('2','init');
   }
 }
 
@@ -364,7 +365,7 @@ function clearForm(section){
   const ids=[`name-${s}`,`d${s}`,`m${s}`,`y${s}`,`t${s}`,`prov${s}`];
   ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='prov'+s?'กรุงเทพมหานคร':'');});
   const g=document.getElementById('gender'+s);if(g)g.value='ชาย';
-  if(s==='1')_customLng1=null;else if(s==='2')_customLng2=null;
+  if(s==='1'){_customLng1=null;_customTz1=null;}else if(s==='2'){_customLng2=null;_customTz2=null;}
   _updateLngUI(s);
   _updateDbIndicator(s);
   if(typeof _chartTags!=='undefined'){_chartTags[s]=[];if(typeof _renderTagRow==='function')_renderTagRow(s);}
@@ -619,7 +620,7 @@ function _core(d,m,y,hr,mn){
   sp[0]=Math.trunc(((un-UNTO[idx-1])/(UNTO[idx]-UNTO[idx-1])+idx-1)*1800);
   return sp;
 }
-function get_data(d,m,y,hr,mn,lng){return _core(d,m,y,hr-(105-lng)*4/60,mn);}
+function get_data(d,m,y,hr,mn,lng,tz=7){return _core(d,m,y,hr-tz+lng/15,mn);}
 
 // ── Pre-2484 BE→CE conversion helper ─────────────────────
 // ก่อน พ.ศ.2484 ปีไทยเริ่ม 1 เม.ย. → ม.ค.-มี.ค. ต้องบวก 1 ปี
@@ -1169,9 +1170,10 @@ function cycleMemory(dir){
     const s=buf[_synastryIdx];
     const y_be=s.y_be||0;
     const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+    const tz=typeof s.tz==='number'?s.tz:7;
     const y_ce=_beToce(y_be,s.m);
     const[hr,mn2]=(s.t||'00:00').split(':').map(Number);
-    const pos=get_data(s.d,s.m,y_ce,hr,mn2,lng);
+    const pos=get_data(s.d,s.m,y_ce,hr,mn2,lng,tz);
     synastry={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
     _playBeep(700);
     _showToast(`สมพงศ์ ${_synastryIdx+1}/${buf.length} · ${s.name||'—'}`);
@@ -1186,10 +1188,11 @@ function cycleMemory(dir){
     localStorage.setItem('horatad_event_idx',_eventIdx);
     const s=buf[_eventIdx];
     const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+    const tz=typeof s.tz==='number'?s.tz:7;
     const y_ce=_beToce(s.y_be,s.m);
     const[hr,mn2]=(s.t||'00:00').split(':').map(Number);
-    const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn2,lng);
-    const pos2=get_data(s.d,s.m,y_ce,hr+24,mn2,lng);
+    const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn2,lng,tz);
+    const pos2=get_data(s.d,s.m,y_ce,hr+24,mn2,lng,tz);
     const vel=s.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
     eventChart={name:s.name,gender:s.gender||'เหตุการณ์',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
     _playBeep(700);
@@ -1213,6 +1216,7 @@ function cycleMemory(dir){
   _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
   document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
   _customLng1=(typeof m.lng==='number')?m.lng:null;
+  _customTz1=(typeof m.tz==='number')?m.tz:null;
   _updateLngUI('1');
   calculateChart1();
   _playBeep(700);
@@ -1435,9 +1439,11 @@ function _calcChart(num){
   const provVal=noTime?'':(provRaw||'กรุงเทพมหานคร');
   const customLng=num==='1'?_customLng1:_customLng2;
   const lng=customLng!==null?customLng:(PROVINCES[provVal]||100.50);
+  const customTz=num==='1'?_customTz1:_customTz2;
+  const tz=typeof customTz==='number'?customTz:7;
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
-  const pos=get_data(d,m,y_ce,hr,mn,lng);
-  const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
+  const pos=get_data(d,m,y_ce,hr,mn,lng,tz);
+  const pos2=get_data(d,m,y_ce,hr+24,mn,lng,tz);
   if(noTime){pos[0]=pos[1];pos2[0]=pos2[1];}
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=noTime?'':String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
@@ -1484,9 +1490,10 @@ function calculateTransit(){
   _setField('tt',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
   const provVal=document.getElementById('provt').value||'กรุงเทพมหานคร';
   const lng=_customLngT!==null?_customLngT:(PROVINCES[provVal]||100.50);
+  const tz=typeof _customTzT==='number'?_customTzT:7;
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
-  const pos=get_data(d,m,y_ce,hr,mn,lng);
-  const pos2=get_data(d,m,y_ce,hr+24,mn,lng);
+  const pos=get_data(d,m,y_ce,hr,mn,lng,tz);
+  const pos2=get_data(d,m,y_ce,hr+24,mn,lng,tz);
   const vel=pos2.map((v,i)=>((v-pos[i])+21600)%21600);
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
   _transitDate={pos,vel,d,m,y_be,t,prov:provVal};
@@ -1534,8 +1541,8 @@ function calculateBoth(){
   // V2.2.38: pass replaceKey ถ้ากำลังแก้ไข section นั้น → ลบ entry เดิมแม้ key เปลี่ยน
   const _rk1=_editingMemSection==='1'?_editingMemKey:null;
   const _rk2=_editingMemSection==='2'?_editingMemKey:null;
-  if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
-  if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,noTime:_chart2.noTime},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
+  if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
+  if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
   _editingMemKey=null;_editingMemSection=null;
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
@@ -1952,7 +1959,7 @@ function _v3AddDB1(rec){return _dbUpsert({...rec,type:'natal'});}
 
 // V4 record factory
 function _v3Record(input,type='natal'){
-  const{name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,pos=null,vel=null,linkedNatalUid=null}=input||{};
+  const{name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,tz=null,pos=null,vel=null,linkedNatalUid=null}=input||{};
   const lat2=(typeof lat==='number')?lat:(PROVINCES_LAT[prov]||13.75);
   const lng2=(typeof lng==='number')?lng:(PROVINCES[prov]||100.50);
   const rec={
@@ -1960,6 +1967,7 @@ function _v3Record(input,type='natal'){
     name:(name||'').toString().slice(0,20),
     gender,d,m,y_be,t,
     prov,lat:lat2,lng:lng2,
+    tz:(typeof tz==='number')?tz:null,
     jd:(d&&m&&y_be)?Math.trunc(_calcJD(d,m,y_be)):null,
     pos,vel,savedAt:Date.now(),
     source:(input&&input.source)||'private',
@@ -2480,6 +2488,7 @@ function _pickMemory(i){
     _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
     document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
     _customLng1=(typeof m.lng==='number')?m.lng:null;
+    _customTz1=(typeof m.tz==='number')?m.tz:null;
     _updateLngUI('1');_applyInputColors('1','init');
   }else{
     _setField('name-2',m.name||'');
@@ -2487,6 +2496,7 @@ function _pickMemory(i){
     _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.noTime?'':m.t);
     document.getElementById('prov2').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
     _customLng2=(typeof m.lng==='number')?m.lng:null;
+    _customTz2=(typeof m.tz==='number')?m.tz:null;
     _updateLngUI('2');_applyInputColors('2','init');
   }
   closeMemory();
@@ -2576,7 +2586,7 @@ function saveEvent(){
   const prov=document.getElementById('provt').value||'กรุงเทพมหานคร';
   const y_be=_era==='BE'?y:y+543;
   const t=String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0');
-  const entry={name,d,m,y_be,t,prov,lng:_customLngT,savedAt:Date.now()};
+  const entry={name,d,m,y_be,t,prov,lng:_customLngT,tz:_customTzT,savedAt:Date.now()};
   const key=v=>`${v.name}|${v.d}/${v.m}/${v.y_be}|${v.t}|${v.prov}`;
   const isDup=_loadEvents().some(v=>key(v)===key(entry));
   const _doSave=()=>{
@@ -2637,6 +2647,7 @@ function _pickEvent(i){
   _setField('dt',ev.d);_setField('mt',ev.m);_setField('yt',y_use);_setField('tt',ev.t);
   if(ev.prov)document.getElementById('provt').value=ev.prov;
   _customLngT=(typeof ev.lng==='number')?ev.lng:null;
+  _customTzT=(typeof ev.tz==='number')?ev.tz:null;
   _updateLngUI('t');
   closeEvents();
   calculateTransit();
@@ -2831,9 +2842,10 @@ function _sompongLoadByUid(uid){
   const s=_dbFind(uid);
   if(!s)return;
   const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+  const tz=typeof s.tz==='number'?s.tz:7;
   const y_ce=_beToce(s.y_be,s.m);
   const[hr,mn]=(s.t||'00:00').split(':').map(Number);
-  const pos=get_data(s.d,s.m,y_ce,hr,mn,lng);
+  const pos=get_data(s.d,s.m,y_ce,hr,mn,lng,tz);
   synastry={name:s.name,gender:s.gender||'ชาย',pos,vel:[],d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
   _compareMode=1;_viewMode=1;_applyViewMode();_redraw();
   _closeSompongPopup();
@@ -2888,10 +2900,11 @@ function _renderEventSlotsList(){
 function _eventSlotLoadRecord(s){
   if(!s)return;
   const lng=(typeof s.lng==='number')?s.lng:(PROVINCES[s.prov||'']||100.50);
+  const tz=typeof s.tz==='number'?s.tz:7;
   const y_ce=_beToce(s.y_be,s.m);
   const[hr,mn]=(s.t||'00:00').split(':').map(Number);
-  const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn,lng);
-  const pos2=get_data(s.d,s.m,y_ce,hr+24,mn,lng);
+  const pos=s.pos||get_data(s.d,s.m,y_ce,hr,mn,lng,tz);
+  const pos2=get_data(s.d,s.m,y_ce,hr+24,mn,lng,tz);
   const vel=s.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
   eventChart={name:s.name,gender:s.gender||'เหตุการณ์',pos,vel,d:s.d,m:s.m,y_be:s.y_be,t:s.t,prov:s.prov||'กรุงเทพมหานคร'};
   _compareMode=2;_viewMode=1;_applyViewMode();_redraw();
@@ -3078,10 +3091,11 @@ function _db1Load(uid){
   const r=_v3FindDB1(uid);
   if(!r)return;
   const lng=(typeof r.lng==='number')?r.lng:(PROVINCES[r.prov||'']||100.50);
+  const tz=typeof r.tz==='number'?r.tz:7;
   const y_ce=_beToce(r.y_be,r.m);
   const[hr,mn]=(r.t||'00:00').split(':').map(Number);
-  const pos=r.pos||get_data(r.d,r.m,y_ce,hr,mn,lng);
-  const pos2=get_data(r.d,r.m,y_ce,hr+24,mn,lng);
+  const pos=r.pos||get_data(r.d,r.m,y_ce,hr,mn,lng,tz);
+  const pos2=get_data(r.d,r.m,y_ce,hr+24,mn,lng,tz);
   const vel=r.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
   natal={...r,pos,vel};
   _calc1Done=true;
@@ -3346,10 +3360,11 @@ function _groupLoadAsNatal1(natalUid){
   const r=_v3FindDB1(natalUid);
   if(!r)return;
   const lng=(typeof r.lng==='number')?r.lng:(PROVINCES[r.prov||'']||100.50);
+  const tz=typeof r.tz==='number'?r.tz:7;
   const y_ce=_beToce(r.y_be,r.m);
   const[hr,mn]=(r.t||'00:00').split(':').map(Number);
-  const pos=r.pos||get_data(r.d,r.m,y_ce,hr,mn,lng);
-  const pos2=get_data(r.d,r.m,y_ce,hr+24,mn,lng);
+  const pos=r.pos||get_data(r.d,r.m,y_ce,hr,mn,lng,tz);
+  const pos2=get_data(r.d,r.m,y_ce,hr+24,mn,lng,tz);
   const vel=r.vel||pos2.map((v,ji)=>((v-pos[ji])+21600)%21600);
   natal={...r,pos,vel};
   _calc1Done=true;_viewMode=0;_tsInited=false;
@@ -3362,9 +3377,10 @@ function _groupLoadAsNatal2(natalUid){
   if(!r)return;
   if(!natal){_showToast('ผูกดวง 1 ก่อน');return;}
   const lng=(typeof r.lng==='number')?r.lng:(PROVINCES[r.prov||'']||100.50);
+  const tz=typeof r.tz==='number'?r.tz:7;
   const y_ce=_beToce(r.y_be,r.m);
   const[hr,mn]=(r.t||'00:00').split(':').map(Number);
-  const pos=get_data(r.d,r.m,y_ce,hr,mn,lng);
+  const pos=get_data(r.d,r.m,y_ce,hr,mn,lng,tz);
   synastry={...r,pos,vel:[]};
   _compareMode=1;_viewMode=1;_applyViewMode();_redraw();
   _closeGroupPopup();
@@ -3852,6 +3868,7 @@ function _quickLoad(i){
   if(m.prov&&!m.noTime)document.getElementById('prov1').value=m.prov;
   else if(m.noTime)document.getElementById('prov1').value='';
   _customLng1=(typeof m.lng==='number')?m.lng:null;
+  _customTz1=(typeof m.tz==='number')?m.tz:null;
   _updateLngUI('1');
   calculateBoth();
 }
