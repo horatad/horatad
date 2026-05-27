@@ -19,13 +19,11 @@ import numpy as np
 from pathlib import Path
 from collections import Counter
 import tensorflow as tf
-import shap
 
 FEATURES_FILE = "data/julian_ml_features.jsonl"
 MODEL_DIR     = Path("ml/models")
 TOP_K         = 15    # top K natal×transit pairs per event type
-SHAP_SAMPLES  = 500   # samples per class for SHAP analysis
-BG_SAMPLES    = 200   # background samples for DeepExplainer
+GRAD_SAMPLES  = 500   # samples per class for gradient saliency
 
 PLANET_NAMES = ['SU','MO','MA','ME','JU','VE','SA','RA','KE','MR']
 ASPECT_NAMES = {0:'conjunction', 2:'sextile', 3:'square', 4:'trine', 6:'opposition'}
@@ -80,12 +78,17 @@ X = np.stack(X_list)
 y = np.array(y_list)
 print(f"Loaded {len(X)} samples")
 
-# ── SHAP DeepExplainer ────────────────────────────────────────────────────────
+# ── Gradient saliency (TF GradientTape — works with GlobalMaxPooling2D) ───────
 rng = np.random.default_rng(42)
-bg  = X[rng.choice(len(X), min(BG_SAMPLES, len(X)), replace=False)]
-print(f"\nBuilding SHAP explainer (background={len(bg)} samples)...")
-# GradientExplainer รองรับ GlobalMaxPooling2D ใน TF >= 2.5 (DeepExplainer ไม่รองรับ)
-explainer = shap.GradientExplainer(model, bg)
+
+def gradient_importance(X_sample, class_idx):
+    """Mean |∂output_class/∂input| over samples → importance (10,10)."""
+    X_t = tf.Variable(X_sample.astype(np.float32))
+    with tf.GradientTape() as tape:
+        preds  = model(X_t, training=False)
+        target = preds[:, class_idx]
+    grads = tape.gradient(target, X_t).numpy()   # (N, 10, 10, 4)
+    return np.abs(grads).sum(axis=3).mean(axis=0)  # (10, 10)
 
 # ── Extract rules per event type ──────────────────────────────────────────────
 all_rules = {}
@@ -99,17 +102,12 @@ for class_idx, event_type in enumerate(label_list):
         print(f"  Skip {event_type} — too few samples ({len(X_class)})")
         continue
 
-    sample_n = min(SHAP_SAMPLES, len(X_class))
+    sample_n   = min(GRAD_SAMPLES, len(X_class))
     idx_sample = rng.choice(len(X_class), sample_n, replace=False)
-    X_sample = X_class[idx_sample]
+    X_sample   = X_class[idx_sample]
 
-    print(f"\nSHAP for '{event_type}' ({sample_n}/{len(X_class)} samples)...")
-    shap_vals = explainer.shap_values(X_sample)
-    # shap_vals: list of n_classes arrays, each (N, 10, 10, 4)
-    sv = np.array(shap_vals[class_idx])  # (N, 10, 10, 4)
-
-    # importance[i,j] = mean |SHAP| summed over 4 feature channels
-    importance = np.abs(sv).sum(axis=3).mean(axis=0)   # (10, 10)
+    print(f"\nGradient saliency for '{event_type}' ({sample_n}/{len(X_class)} samples)...")
+    importance = gradient_importance(X_sample, class_idx)   # (10, 10)
 
     # Top K pairs
     flat_sorted = np.argsort(importance.flatten())[::-1][:TOP_K]
