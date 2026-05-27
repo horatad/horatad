@@ -32,7 +32,7 @@ PLANET_NAMES = ['SU','MO','MA','ME','JU','VE','SA','RA','KE','MR']
 # ── Load features ─────────────────────────────────────────────────────────────
 print(f"Loading {FEATURES_FILE}...")
 records = []
-with open(FEATURES_FILE) as f:
+with open(FEATURES_FILE, encoding='utf-8') as f:
     for line in f:
         line = line.strip()
         if not line:
