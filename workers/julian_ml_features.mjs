@@ -53,36 +53,35 @@ function getPlanetData(jd) {
   if (jdCache.has(jd)) return jdCache.get(jd);
 
   const { y, m, d } = jdToDate(jd);
-  let planets;
+  let rawPos;
   try {
-    planets = get_data(y, m, d, 6, 100.5);  // h=6 สุริยยาตร์ convention, lng=100.5 Bangkok
+    rawPos = get_data(y, m, d, 6, 100.5);  // h=6 สุริยยาตร์ convention, lng=100.5 Bangkok
   } catch (_) {
     return null;
   }
-  if (!Array.isArray(planets) || planets.length < 10) return null;
+  // engine returns 11 values: LA(0) SU(1) MO(2) MA(3) ME(4) JU(5) VE(6) SA(7) RA(8) KE(9) MR(10)
+  if (!Array.isArray(rawPos) || rawPos.length < 11) return null;
 
   const signs     = [];
   const qualities = [];
 
   for (let i = 0; i < 10; i++) {
-    const p    = planets[i];
-    // sign: prefer p.sign, fallback to degree/30
-    const sign = typeof p?.sign === 'number'
-      ? p.sign
-      : Math.floor(((p?.longitude ?? p?.deg ?? 0) % 360 + 360) % 360 / 30);
-    signs.push(sign & 0xf); // clamp 0-11
+    const engineIdx = i + 1;  // skip LA(0) → feature[0]=SU..feature[9]=MR
+    // raw value unit: 1800 steps per sign → Math.trunc(val/1800) = sign 0-11
+    const sign = Math.trunc(rawPos[engineIdx] / 1800) % 12;
+    signs.push(sign);
 
-    // quality: KE (8) and MR (9) have no mapping → 0
+    // quality: KE (feature[8]=engineIdx 9) and MR (feature[9]=engineIdx 10) have no mapping → 0
     let q = 0;
     if (i < 8) {
       try {
-        const stds = getStandards(i, sign);
-        if (stds && typeof stds === 'object') {
-          let bestVal = -Infinity, bestKey = null;
-          for (const [k, v] of Object.entries(stds)) {
-            if (typeof v === 'number' && v > bestVal) { bestVal = v; bestKey = k; }
+        // getStandards(pos, engineIdx) returns slash-separated quality string e.g. 'เกษตร/มหาอุจ'
+        const stdsStr = getStandards(rawPos, engineIdx);
+        if (stdsStr) {
+          for (const name of stdsStr.split('/')) {
+            const score = QUALITY_SCORE[name] ?? 0;
+            if (score > q) q = score;
           }
-          q = QUALITY_SCORE[bestKey] ?? 0;
         }
       } catch (_) {}
     }

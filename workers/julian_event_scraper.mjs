@@ -16,7 +16,7 @@
  *   --resume       : continue from last checkpoint
  */
 
-import { readFileSync, writeFileSync, existsSync, appendFileSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, appendFileSync, mkdirSync, unlinkSync } from 'fs';
 
 const DRY_RUN     = process.argv.includes('--dry-run');
 const RESUME      = process.argv.includes('--resume');
@@ -189,7 +189,6 @@ async function main() {
   const allDone = lastBatchDone >= batches.length - 1;
 
   if (!DRY_RUN && allDone && existsSync(CHECKPOINT_FILE)) {
-    const { unlinkSync } = await import('fs');
     try { unlinkSync(CHECKPOINT_FILE); } catch (_) {}
     console.log('Checkpoint cleared (all done)');
   }
