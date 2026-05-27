@@ -114,6 +114,14 @@ async function sparqlQuery(sparql) {
   throw new Error(`Wikidata query failed after ${MAX_RETRIES} retries`);
 }
 
+// ── Importance score: tier(0.30) + sitelinks_log(0.40) + accuracy(0.30) ──────
+function computeImportance(tier, sitelinks, accuracy) {
+  const tierScore = tier === 1 ? 1.0 : tier === 2 ? 0.6 : 0.3;
+  const slScore   = sitelinks ? Math.min(1.0, Math.log(1 + sitelinks) / Math.log(1001)) : 0.05;
+  const accScore  = { A: 1.0, B: 0.9, C: 0.7, D: 0.4, F: 0.1 }[accuracy] ?? 0.4;
+  return Math.round((0.30 * tierScore + 0.40 * slScore + 0.30 * accScore) * 100) / 100;
+}
+
 // ── Process one query — returns records written (0 = exhausted/skip) ──────────
 async function processQuery(query, progress, batchFile, today) {
   const { limit } = calcRunLimit(progress);
@@ -163,7 +171,9 @@ async function processQuery(query, progress, batchFile, today) {
     //     OR upgraded by Astrotheme / Wikipedia TH enrichment (cited source)
     // เหตุผล: precision=13 distribution กระจุกที่ round hour (7:00, 8:00, 16:00…)
     // = editor กรอกประมาณ — ไม่ใช่ official birth time ควรเป็น D
-    const accuracy = (time_utc && birthPrecNum >= 14) ? 'C' : 'D';
+    const accuracy  = (time_utc && birthPrecNum >= 14) ? 'C' : 'D';
+    const sitelinks = b.links?.value ? parseInt(b.links.value) : null;
+    const importance = computeImportance(query.tier, sitelinks, accuracy);
     records.push({
       jd: birth.jd, name,
       event_label: query.label, type: 'human',
@@ -174,6 +184,8 @@ async function processQuery(query, progress, batchFile, today) {
       source: astroId ? `astrotheme:${astroId}` : `wikidata:${qid}`,
       source_type: 'internet',
       accuracy,
+      sitelinks,
+      importance,
       validated_count: 0,
       confidence: time_utc ? 0.95 : 0.85,
       notes: null,
