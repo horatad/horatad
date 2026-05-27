@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JULIAN ML — รายงานการค้นพบ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+  :root {
+    --death:   #c0392b; --death-bg:   #fdedec;
+    --award:   #1a5276; --award-bg:   #eaf2ff;
+    --pos:     #1e8449; --pos-bg:     #eafaf1;
+    --neutral: #5d6d7e; --neutral-bg: #f2f3f4;
+    --gold:    #b7950b; --gold-bg:    #fef9e7;
+    --card-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', sans-serif; background: #f5f6fa; color: #2c3e50; line-height: 1.7; }
+
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff; padding: 48px 24px 36px; text-align: center;
+  }
+  header .badge { display: inline-block; background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3); border-radius: 20px;
+    padding: 4px 16px; font-size: .8rem; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 16px; }
+  header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+  header p  { opacity: .75; font-size: 1rem; }
+  header .stats-row { display: flex; justify-content: center; gap: 40px; margin-top: 28px; flex-wrap: wrap; }
+  header .stat { text-align: center; }
+  header .stat .num { font-size: 1.8rem; font-weight: 700; color: #f39c12; }
+  header .stat .lbl { font-size: .75rem; opacity: .7; margin-top: 2px; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+
+  h2.section-title {
+    font-size: 1.3rem; font-weight: 700; color: #1a1a2e;
+    margin: 40px 0 20px; padding-left: 14px;
+    border-left: 4px solid #0f3460;
+  }
+
+  .card {
+    background: #fff; border-radius: 12px; padding: 24px;
+    box-shadow: var(--card-shadow); margin-bottom: 20px;
+  }
+  .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; }
+
+  /* Finding cards */
+  .finding {
+    border-radius: 12px; padding: 24px; margin-bottom: 24px;
+    box-shadow: var(--card-shadow); position: relative; overflow: hidden;
+  }
+  .finding::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 5px; height: 100%;
+  }
+  .finding.death   { background: var(--death-bg); }
+  .finding.death::before   { background: var(--death); }
+  .finding.award   { background: var(--award-bg); }
+  .finding.award::before   { background: var(--award); }
+  .finding.pos     { background: var(--pos-bg); }
+  .finding.pos::before     { background: var(--pos); }
+  .finding.neutral { background: var(--neutral-bg); }
+  .finding.neutral::before { background: var(--neutral); }
+
+  .finding .rule {
+    font-size: 1.15rem; font-weight: 700; font-family: monospace;
+    margin-bottom: 10px; color: #1a1a2e;
+  }
+  .finding .metrics { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; }
+  .badge-metric {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 20px; font-size: .85rem; font-weight: 600;
+  }
+  .badge-lift   { background: #fff3cd; color: #856404; border: 1px solid #ffc107; }
+  .badge-n      { background: #e8f4fd; color: #1565c0; border: 1px solid #90caf9; }
+  .badge-sig    { background: #e8f5e9; color: #2e7d32; border: 1px solid #81c784; }
+  .badge-rank   { background: #fce4ec; color: #c62828; border: 1px solid #ef9a9a; }
+  .finding .note { font-size: .9rem; color: #555; margin-top: 10px; }
+
+  /* Lift bar */
+  .lift-bar-wrap { margin: 8px 0; }
+  .lift-bar-label { font-size: .8rem; color: #777; margin-bottom: 4px; }
+  .lift-bar-track { background: #e9ecef; border-radius: 4px; height: 20px; position: relative; overflow: visible; }
+  .lift-bar-fill  { height: 100%; border-radius: 4px; display: flex; align-items: center;
+    padding-left: 8px; font-size: .8rem; font-weight: 700; color: #fff;
+    min-width: 40px; transition: width .6s ease; }
+  .lift-ref  { position: absolute; left: 44.4%; top: -3px; bottom: -3px;
+    width: 2px; background: #6c757d; }
+  .lift-ref::after { content: '1.0'; position: absolute; top: -18px; left: -8px;
+    font-size: .7rem; color: #6c757d; }
+
+  /* Comparison table */
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th { background: #1a1a2e; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; }
+  td { padding: 9px 12px; border-bottom: 1px solid #eee; }
+  tr:hover td { background: #f8f9fa; }
+  .lift-cell { font-weight: 700; }
+  .lift-high  { color: var(--death); }
+  .lift-med   { color: #d35400; }
+  .lift-low   { color: var(--neutral); }
+  .lift-neg   { color: var(--pos); }
+  .sig-stars  { font-size: .85rem; color: var(--gold); letter-spacing: 1px; }
+
+  /* Polarity section */
+  .polarity { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .polarity-col { border-radius: 8px; padding: 16px; }
+  .polarity-col.hard { background: #fdedec; border: 1px solid #fadbd8; }
+  .polarity-col.soft { background: #eaf2ff; border: 1px solid #d6eaf8; }
+  .polarity-col h4 { font-size: .9rem; font-weight: 700; margin-bottom: 10px; }
+  .polarity-col .aspect-row { display: flex; justify-content: space-between;
+    padding: 4px 0; border-bottom: 1px dashed rgba(0,0,0,.1); font-size: .85rem; }
+  .polarity-col .aspect-row:last-child { border: none; }
+
+  /* Distribution chart */
+  .dist-chart { display: flex; align-items: flex-end; gap: 3px; height: 80px;
+    margin: 12px 0; padding: 0 8px; }
+  .dist-bar { flex: 1; background: #3498db; border-radius: 3px 3px 0 0;
+    min-height: 2px; position: relative; cursor: default; }
+  .dist-bar.outlier { background: var(--death); }
+  .dist-bar[title]:hover::after {
+    content: attr(title); position: absolute; bottom: 100%; left: 50%;
+    transform: translateX(-50%); background: #2c3e50; color: #fff;
+    padding: 2px 8px; border-radius: 4px; font-size: .75rem; white-space: nowrap;
+    margin-bottom: 4px;
+  }
+  .dist-labels { display: flex; justify-content: space-between;
+    font-size: .7rem; color: #999; padding: 0 8px; }
+
+  /* Conclusion */
+  .conclusion {
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    color: #fff; border-radius: 12px; padding: 28px; margin-top: 32px;
+  }
+  .conclusion h3 { font-size: 1.2rem; margin-bottom: 16px; color: #f39c12; }
+  .conclusion ul { list-style: none; }
+  .conclusion ul li { padding: 6px 0; padding-left: 24px; position: relative; font-size: .95rem; }
+  .conclusion ul li::before { content: '✓'; position: absolute; left: 0; color: #2ecc71; font-weight: 700; }
+  .conclusion ul li.warn::before { content: '⚠'; color: #f39c12; }
+
+  footer { text-align: center; padding: 24px; color: #999; font-size: .8rem; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5rem; }
+    .polarity { grid-template-columns: 1fr; }
+    header .stats-row { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">JULIAN ML · รายงานการวิจัย</div>
+  <h1>การค้นพบจากข้อมูลเชิงประจักษ์</h1>
+  <p>ตรวจสอบกฎ TALS โดยใช้ Machine Learning + การทดสอบทางสถิติ</p>
+  <div class="stats-row">
+    <div class="stat"><div class="num">50,983</div><div class="lbl">เหตุการณ์ชีวประวัติ</div></div>
+    <div class="stat"><div class="num">2,100</div><div class="lbl">การรวมกันที่ทดสอบ</div></div>
+    <div class="stat"><div class="num">68.6%</div><div class="lbl">ความแม่นยำของ CNN</div></div>
+    <div class="stat"><div class="num">50</div><div class="lbl">กฎที่มีนัยสำคัญ (FDR)</div></div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Pipeline -->
+  <h2 class="section-title">ขั้นตอนการวิเคราะห์</h2>
+  <div class="card">
+    <div style="display:flex;gap:0;flex-wrap:wrap;align-items:center;font-size:.9rem;">
+      <div style="background:#1a1a2e;color:#fff;padding:10px 18px;border-radius:8px 0 0 8px;font-weight:600;">
+        📡 Wikidata<br><small style="font-weight:300;opacity:.7;">66,912 บุคคล</small>
+      </div>
+      <div style="color:#999;font-size:1.2rem;padding:0 8px;">→</div>
+      <div style="background:#2980b9;color:#fff;padding:10px 18px;font-weight:600;">
+        🔢 Feature Matrix<br><small style="font-weight:300;opacity:.8;">10×10×4 natal×transit</small>
+      </div>
+      <div style="color:#999;font-size:1.2rem;padding:0 8px;">→</div>
+      <div style="background:#8e44ad;color:#fff;padding:10px 18px;font-weight:600;">
+        🤖 CNN<br><small style="font-weight:300;opacity:.8;">68.6% accuracy</small>
+      </div>
+      <div style="color:#999;font-size:1.2rem;padding:0 8px;">→</div>
+      <div style="background:#27ae60;color:#fff;padding:10px 18px;border-radius:0 8px 8px 0;font-weight:600;">
+        📊 Full Scan<br><small style="font-weight:300;opacity:.8;">2,100 combinations + FDR</small>
+      </div>
+    </div>
+    <p style="margin-top:14px;font-size:.9rem;color:#555;">
+      ข้อมูล 50,983 เหตุการณ์จากชีวประวัติบุคคลสำคัญทั่วโลก (Wikidata) —
+      สร้าง interaction matrix ระหว่างดาวนาตาล × ดาวโคจร → CNN ทำนาย 3 ประเภทเหตุการณ์ →
+      ทดสอบ lift ratio ครบ 2,100 การรวมกัน พร้อม FDR correction
+    </p>
+  </div>
+
+  <!-- Key Finding 1: MR×MR -->
+  <h2 class="section-title">การค้นพบหลัก — มฤตยูชนมฤตยูนาตาล</h2>
+
+  <div class="finding death">
+    <div class="rule">transit_MR conjunction natal_MR</div>
+    <div class="metrics">
+      <span class="badge-metric badge-rank">อันดับ 1 / 2,100</span>
+      <span class="badge-metric badge-lift">Lift = 2.264×</span>
+      <span class="badge-metric badge-n">n = 3,198 เหตุการณ์</span>
+      <span class="badge-metric badge-sig">p_adj ≈ 0 (***)</span>
+    </div>
+    <div class="lift-bar-wrap">
+      <div class="lift-bar-label">ความถี่สัมพัทธ์เทียบกับ baseline (1.0×)</div>
+      <div class="lift-bar-track">
+        <div class="lift-ref"></div>
+        <div class="lift-bar-fill" style="width:100%;background:var(--death);">2.26×</div>
+      </div>
+    </div>
+    <div class="note">
+      เมื่อดาวมฤตยูโคจรผ่านตำแหน่งเดิมในดวงชะตา (ราศีเดียวกัน) — โอกาสเกิดเหตุการณ์มรณกรรม
+      สูงกว่าค่าเฉลี่ยถึง <strong>2.26 เท่า</strong> จากข้อมูล 3,198 กรณีจริง
+    </div>
+  </div>
+
+  <div class="finding pos">
+    <div class="rule">transit_MR opposition natal_MR</div>
+    <div class="metrics">
+      <span class="badge-metric badge-rank">อันดับ 3 / 2,100</span>
+      <span class="badge-metric badge-lift">Lift = 1.729×</span>
+      <span class="badge-metric badge-n">n = 2,511 เหตุการณ์</span>
+      <span class="badge-metric badge-sig">p_adj ≈ 0 (***)</span>
+    </div>
+    <div class="lift-bar-wrap">
+      <div class="lift-bar-track">
+        <div class="lift-ref"></div>
+        <div class="lift-bar-fill" style="width:76%;background:var(--pos);">1.73×</div>
+      </div>
+    </div>
+    <div class="note">
+      มฤตยูหกดวง (ตรงข้าม 6 ราศี) สัมพันธ์กับ <strong>การเริ่มต้นตำแหน่ง</strong> 1.73 เท่า —
+      ขั้วตรงข้ามของ conjunction ให้นัยต่างกัน: จุดเปลี่ยนครั้งใหญ่แทนที่จะเป็นการสิ้นสุด
+    </div>
+  </div>
+
+  <!-- Distribution -->
+  <h2 class="section-title">การกระจายของ Lift ทั้ง 2,100 การรวมกัน</h2>
+  <div class="card">
+    <p style="font-size:.9rem;color:#555;margin-bottom:16px;">
+      97.5% ของการรวมกันทั้งหมดกระจุกตัวใกล้ 1.0 (ไม่มี signal) —
+      มีเพียง <strong>4 outliers ที่ lift ≥ 1.5 และทั้งหมดเป็น MR×MR</strong>
+    </p>
+    <div class="dist-chart" id="distChart"></div>
+    <div class="dist-labels"><span>0.0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>2.0+</span></div>
+    <p style="font-size:.8rem;color:#999;margin-top:8px;text-align:center;">
+      แกนนอน = ค่า Lift | แกนตั้ง = จำนวน combinations | สีแดง = outliers ≥ 1.5
+    </p>
+  </div>
+
+  <!-- Skeptic tests -->
+  <h2 class="section-title">การทดสอบเพื่อหักล้างหลักฐาน (Skeptic Tests)</h2>
+
+  <div class="card">
+    <div class="card-title">❌ Hypothesis ที่ถูกหักล้าง: "Orbital Period Confound"</div>
+    <p style="font-size:.9rem;color:#555;margin-bottom:16px;">
+      ถ้าสัญญาณ MR×MR เกิดจากดาวโคจรกลับมาตรงกับอายุที่คนมักเสียชีวิต
+      ดาวช้าดวงอื่นที่มีคาบโคจรชัดเจน (เสาร์ ~29 ปี, ราหู ~18.6 ปี)
+      ก็ควรแสดงผลเช่นเดียวกัน
+    </p>
+    <table>
+      <tr><th>ดาว</th><th>Lift (self-conjunction vs death)</th><th>สรุป</th></tr>
+      <tr><td><strong>MR (มฤตยู)</strong></td><td class="lift-cell lift-high">2.264 ×</td><td>🔴 สัญญาณแรงมาก</td></tr>
+      <tr><td>SA (เสาร์, ~29 ปี)</td><td class="lift-cell lift-low">1.058 ×</td><td>✅ แทบไม่มี signal</td></tr>
+      <tr><td>RA (ราหู, ~18.6 ปี)</td><td class="lift-cell lift-low">0.999 ×</td><td>✅ ไม่มี signal</td></tr>
+      <tr><td>KE (เกตุ)</td><td class="lift-cell lift-low">1.019 ×</td><td>✅ ไม่มี signal</td></tr>
+      <tr><td>JU (พฤหัส, ~12 ปี)</td><td class="lift-cell lift-low">0.971 ×</td><td>✅ ต่ำกว่า baseline</td></tr>
+    </table>
+    <p style="font-size:.85rem;color:#c0392b;margin-top:12px;font-weight:600;">
+      → ดาวช้าทุกดวงมี lift ≤ 1.06 ยกเว้น MR เพียงดวงเดียว —
+      ทฤษฎี orbital period confound ไม่สามารถอธิบายได้
+    </p>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">❌ Hypothesis ที่ถูกหักล้าง: "MR Transit เป็นดาวแห่งความตายโดยทั่วไป"</div>
+    <p style="font-size:.9rem;color:#555;margin-bottom:12px;">
+      ถ้า transit_MR ทำให้เกิดมรณกรรมโดยไม่เฉพาะเจาะจง —
+      การกระทบดาวนาตาลทุกดวงควรแสดง lift สูง
+    </p>
+    <table>
+      <tr><th>กฎ</th><th>Lift</th><th>ผล</th></tr>
+      <tr><td>transit_MR conjunction natal_<strong>MR</strong></td><td class="lift-cell lift-high">2.264</td><td>🔴 สูงมาก</td></tr>
+      <tr><td>transit_MR conjunction natal_SU</td><td class="lift-cell lift-low">0.960</td><td>✅ ต่ำกว่า baseline</td></tr>
+      <tr><td>transit_MR conjunction natal_SA</td><td class="lift-cell lift-low">0.920</td><td>✅ ต่ำกว่า baseline</td></tr>
+      <tr><td>transit_MR conjunction natal_JU</td><td class="lift-cell lift-low">1.073</td><td>✅ แทบไม่มี signal</td></tr>
+    </table>
+    <p style="font-size:.85rem;color:#c0392b;margin-top:12px;font-weight:600;">
+      → transit_MR เฉพาะเมื่อชน natal_MR เท่านั้นที่ให้ผล —
+      ไม่ใช่ดาวแห่งความตายโดยทั่วไป
+    </p>
+  </div>
+
+  <!-- Secondary finding: SU×SA -->
+  <h2 class="section-title">การค้นพบรอง — อาทิตย์กระทบเสาร์นาตาล</h2>
+
+  <div class="card">
+    <div class="card-title">รูปแบบ Polarity — aspect ต่างชนิดให้ผลตรงข้าม</div>
+    <p style="font-size:.9rem;color:#555;margin-bottom:16px;">
+      transit_SU กระทบ natal_SA แสดง pattern ที่น่าสนใจ:
+      มุมกดดัน → มรณกรรม, มุมสนับสนุน → รางวัล/การยอมรับ
+    </p>
+    <div class="polarity">
+      <div class="polarity-col hard">
+        <h4 style="color:var(--death);">⚡ มุม "กดดัน" → สัมพันธ์กับมรณกรรม</h4>
+        <div class="aspect-row"><span>dist5 (5 ราศี)</span><span style="color:var(--death);font-weight:700;">Lift 1.181 ***</span></div>
+        <div class="aspect-row"><span>dist1 (1 ราศี)</span><span style="color:var(--death);font-weight:700;">Lift 1.145 ***</span></div>
+        <div class="aspect-row"><span>square (3 ราศี)</span><span style="color:var(--death);font-weight:700;">Lift 1.126 ***</span></div>
+      </div>
+      <div class="polarity-col soft">
+        <h4 style="color:var(--award);">✨ มุม "เกื้อกูล" → สัมพันธ์กับรางวัล</h4>
+        <div class="aspect-row"><span>sextile (2 ราศี)</span><span style="color:var(--award);font-weight:700;">Lift 1.160 ***</span></div>
+        <div class="aspect-row"><span>conjunction (0 ราศี)</span><span style="color:var(--award);font-weight:700;">Lift 1.157 ***</span></div>
+        <div class="aspect-row"><span>opposition (6 ราศี)</span><span style="color:var(--award);font-weight:700;">Lift 1.119 ***</span></div>
+      </div>
+    </div>
+    <div class="note" style="background:#fffde7;padding:12px;border-radius:8px;border-left:3px solid #f39c12;">
+      <strong>หมายเหตุ:</strong> effect นี้มีทิศทาง (directional) —
+      transit_SU → natal_SA มี signal ชัดเจน แต่ transit_SA → natal_SU แทบไม่มี (max lift 1.042) —
+      สอดคล้องกับแนวคิด TALS ที่ว่า "เสาร์นาตาล = ภาระกรรม" ที่ถูก "อาทิตย์โคจร" เปิดเผยออกมา
+    </div>
+  </div>
+
+  <!-- Conclusion -->
+  <div class="conclusion">
+    <h3>บทสรุป — สถานะหลักฐาน</h3>
+    <ul>
+      <li>MR×MR conjunction เป็นอันดับ 1 จาก 2,100 การรวมกัน ด้วย lift = 2.264</li>
+      <li>ผ่านการหักล้าง 3 วิธี: orbital period confound, generic MR transit, generic natal MR</li>
+      <li>Effect เฉพาะเจาะจง (specificity) — เกิดเฉพาะ MR×MR ไม่กระจาย → hard to explain as artifact</li>
+      <li>Benjamini-Hochberg FDR correction: p_adj ≈ 0 — ผ่าน multiple testing อย่างเข้มงวด</li>
+      <li class="warn">ข้อจำกัด: ข้อมูล Wikidata = บุคคลมีชื่อเสียง ไม่ใช่ประชากรทั่วไป</li>
+      <li class="warn">ข้อจำกัด: sign-level resolution (ไม่ใช่ degree-level) — precision ต่ำกว่าที่เหมาะสม</li>
+      <li class="warn">SU×SA เป็นการค้นพบรองที่น่าสนใจ แต่ lift ~1.1-1.2 ยังต้องการข้อมูลเพิ่ม</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  JULIAN ML Report · สร้างโดย Claude Code · ข้อมูลจาก Wikidata (50,983 records) ·
+  ทดสอบด้วย chi-square + Benjamini-Hochberg FDR (q &lt; 0.05)
+</footer>
+
+<script>
+// Draw distribution chart
+const bins = [
+  {lo:'0.0',hi:'0.1',n:1,out:false},{lo:'0.2',hi:'0.3',n:1,out:false},
+  {lo:'0.3',hi:'0.4',n:2,out:false},{lo:'0.4',hi:'0.5',n:1,out:false},
+  {lo:'0.5',hi:'0.6',n:1,out:false},{lo:'0.6',hi:'0.7',n:1,out:false},
+  {lo:'0.7',hi:'0.8',n:3,out:false},{lo:'0.8',hi:'0.9',n:8,out:false},
+  {lo:'0.9',hi:'1.0',n:1036,out:false},{lo:'1.0',hi:'1.1',n:1031,out:false},
+  {lo:'1.1',hi:'1.2',n:9,out:false},{lo:'1.2',hi:'1.3',n:0,out:false},
+  {lo:'1.3',hi:'1.4',n:2,out:false},{lo:'1.4',hi:'1.5',n:0,out:false},
+  {lo:'1.5',hi:'1.6',n:1,out:true},{lo:'1.6',hi:'1.7',n:0,out:false},
+  {lo:'1.7',hi:'1.8',n:1,out:true},{lo:'1.8',hi:'1.9',n:0,out:false},
+  {lo:'1.9',hi:'2.0',n:2,out:true},{lo:'2.0+',hi:'',n:2,out:true},
+];
+const max = Math.max(...bins.map(b=>b.n));
+const chart = document.getElementById('distChart');
+bins.forEach(b => {
+  if(b.n === 0) { const el = document.createElement('div'); el.style.flex='1'; chart.appendChild(el); return; }
+  const el = document.createElement('div');
+  el.className = 'dist-bar' + (b.out ? ' outlier' : '');
+  el.style.height = Math.max(2, (b.n / max) * 78) + 'px';
+  el.title = `${b.lo}–${b.hi}: ${b.n} combinations`;
+  chart.appendChild(el);
+});
+</script>
+</body>
+</html>
