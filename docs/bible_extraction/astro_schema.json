@@ -1,0 +1,129 @@
+{
+  "_comment": "kb_tals.json schema — match กับ BIBLE ทุก field | updated 2026-05-29",
+
+  "enums": {
+    "type": ["REFERENCE", "DEFINITION", "PRINCIPLE", "NATAL_ATOMIC", "NATAL_COMBINATION", "TRANSIT_NATAL"],
+    "rule_use": {
+      "reference": "ใช้กับ REFERENCE / DEFINITION / PRINCIPLE",
+      "match":     "ใช้กับ NATAL_ATOMIC / NATAL_COMBINATION / TRANSIT_NATAL",
+      "principle": "ใช้กับ PRINCIPLE ที่เป็น overarching rule (rare)"
+    },
+    "tier": {
+      "1": "core / ชัดเจน / ตรงจากตำรา",
+      "2": "derived / complex / combination"
+    },
+    "polarity": {
+      "+": "ให้คุณ / ดี",
+      "-": "ให้โทษ / เสีย",
+      "~": "ขึ้นกับบริบท / กลาง"
+    },
+    "source_type": {
+      "PRIMARY":  "ประกาศตรงจากตำรา (text บอกตรงๆ ว่า X → Y)",
+      "INFERRED": "derive จาก principle / combination / ไม่แน่ใจ"
+    },
+    "contexts": {
+      "natal":   "พื้นดวงชาตา",
+      "transit": "ดาวจร"
+    },
+    "domain": [
+      "ทั่วไป",
+      "ตัวตน",
+      "นิสัย",
+      "ลักษณะนิสัย",
+      "หลักการ",
+      "อาชีพ",
+      "หน้าที่การงาน",
+      "การเงิน",
+      "ทรัพย์",
+      "ความสัมพันธ์",
+      "ปัตนิ",
+      "สุขภาพ",
+      "สุขภาพจิต",
+      "โชคลาภ",
+      "โชคชะตา",
+      "ดาวจร",
+      "ความสูญเสีย",
+      "ชื่อเสียง",
+      "methodology",
+      "อ้างอิง"
+    ]
+  },
+
+  "planet_ids": {
+    "0": "มฤตยู",
+    "1": "อาทิตย์",
+    "2": "จันทร์",
+    "3": "อังคาร",
+    "4": "พุธ",
+    "5": "พฤหัส",
+    "6": "ศุกร์",
+    "7": "เสาร์",
+    "8": "ราหู",
+    "9": "เกตุ"
+  },
+
+  "sign_ids": {
+    "0": "เมษ",
+    "1": "พฤษภ",
+    "2": "มิถุน",
+    "3": "กรกฎ",
+    "4": "สิงห์",
+    "5": "กันย์",
+    "6": "ตุล",
+    "7": "พิจิก",
+    "8": "ธนู",
+    "9": "มังกร",
+    "10": "กุมภ์",
+    "11": "มีน"
+  },
+
+  "quality_values": [
+    "เกษตร", "ประเกษตร",
+    "อุจ", "อุจจาวิลาส", "อุจจาภิมุข",
+    "นิจ",
+    "มหาจักร", "จุลจักร",
+    "ราชาโชค", "เทวีโชค"
+  ],
+
+  "score_table": {
+    "REFERENCE_tier1":        0.0,
+    "DEFINITION_tier1":       0.0,
+    "PRINCIPLE_tier1":        0.9,
+    "NATAL_ATOMIC_tier1":     0.8,
+    "NATAL_ATOMIC_tier2":     0.6,
+    "NATAL_COMBINATION_tier1": 1.0,
+    "NATAL_COMBINATION_tier2": 0.8,
+    "TRANSIT_NATAL_tier1":    0.8,
+    "TRANSIT_NATAL_tier2":    0.6
+  },
+
+  "required_fields": [
+    "id", "ch", "rule_use", "type", "tier",
+    "c", "meaning", "polarity",
+    "planet_ids", "contexts", "domain",
+    "db", "source_level", "source_ref",
+    "score", "source_type", "source_chapter", "source_quote"
+  ],
+
+  "fixed_values": {
+    "db": "kb_tals",
+    "source_level": 1,
+    "source_ref": "ค่าเดียวกับ ch"
+  },
+
+  "optional_fields": {
+    "sign_id":          "rule ระบุดาวอยู่ราศีเดียวเฉพาะ",
+    "sign_ids":         "rule ระบุหลายราศี",
+    "quality":          "rule เกี่ยวกับ quality เฉพาะ",
+    "quality_req":      "rule ต้องการ quality เป็นเงื่อนไข input",
+    "quality_condition":"quality ที่ใช้เป็น condition",
+    "aspect":           "มีการระบุ aspect (กุม/เล็ง/โยค/ตรีโกณ)",
+    "notes":            "หมายเหตุภายใน / ข้อสงสัยที่ต้องตรวจสอบ"
+  },
+
+  "id_counter": {
+    "_note": "R001–R290 มีอยู่แล้วใน kb_tals.json — rule ใหม่เริ่มจาก R291",
+    "current_max": "R290",
+    "next_id": "R291"
+  }
+}
