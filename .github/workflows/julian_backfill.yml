@@ -73,14 +73,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "$(cat <<'EOF'
-JULIAN: P3447 backfill + accuracy regrade
-
-- update source → astrotheme:{id} สำหรับ records ที่มี Wikidata P3447
-- recompute accuracy จาก evidence rules (julian_evidence.mjs)
-- Astrotheme time → B, Wikidata prec=13 placeholder → F
-EOF
-)"
+            git commit -m "JULIAN: P3447 backfill + accuracy regrade"
             git pull --rebase origin main
             git push origin HEAD:main
           fi
