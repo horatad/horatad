@@ -123,47 +123,47 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 **Priority:** distinct birthdate (jd) สำคัญกว่า total count | birth time = optional (validate หน้างานด้วย accuracy A-F)
 
-### สถานะ (2026-05-27)
-- Schema: ✅ + `accuracy` field A/B/C/D/F | JD: ✅
-- **Records: 66,912 / 100,000 (66.9%)** — workflow cron รันต่อเอง (+3,108 จากสัปดาห์ที่แล้ว)
-- Accuracy distribution: A=0 B=0 C=637 D=66,265 F=10
-- Automation: ✅ 137 queries | cron ทุก 6 ชม.
-- Export: ✅ `data/julian_all.json` (repo) + `data/julian_natal_stats.json` + `data/julian_positions_by_jd.json`
-- **🆕 Planet positions**: `data/julian_positions_by_jd.json` (900KB) — 28,174 unique JDs × 10 planets (SU-MR)
-- **🆕 Quality stats**: `data/julian_natal_stats.json` — aggregate counts per quality per planet → ใช้สำหรับ BIBLE triangulation
-- **Manual seed input tool**: `tools/julian_seed_input.html` + workflow merge step (รอ user เริ่มกรอก)
-- **Backfill workflow**: `.github/workflows/julian_backfill.yml` พร้อม manual trigger
+### สถานะ (2026-05-27 — updated session 2)
+- Records: 66,912 (workflow ยังรันต่อ — ~704 batches เหลือจาก 1331)
+- **🆕 ML Pipeline: ✅ COMPLETE**
+  - 50,983 ML features (`data/julian_ml_features.jsonl`)
+  - CNN 68.6% accuracy — 3 classes (award_received / death / position_start)
+  - `ml/models/julian_rules.json` — 45 rules · `ml/models/julian_ml_report.json` — lift ratios
+- **🔑 Key finding**: transit_MR conjunction natal_MR → death lift=**2.26** (empirical proof of TALS มฤตยู theory)
+- Planet positions: `data/julian_positions_by_jd.json` (900KB) ✅
+- Manual seed: `tools/julian_seed_input.html` (รอ user กรอก)
+- Backfill workflow: `.github/workflows/julian_backfill.yml` (รอ user trigger)
 
-### Accuracy grades
-- **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user เติมผ่าน tool)
-- **B** คนใกล้ชิด / family testimony — ครอบครัวยืนยัน (ยังไม่มี)
-- **C** สาธารณะ verified — Astrotheme + Wikipedia cite source (588 records)
-- **D** สาธารณะ unverified — Wikidata date only, no time (52,550 records)
-- **F** unknown — placeholder default (10 records)
+### ML Files (NEW 2026-05-27)
+| ไฟล์ | หน้าที่ |
+|---|---|
+| `ml/julian_cnn_train.py` | Train CNN (run locally: `py -3.11 ml/julian_cnn_train.py`) |
+| `ml/julian_cnn_explain.py` | GradientTape saliency → julian_rules.json |
+| `workers/julian_ml_correlate.mjs` | CNN rules + lift ratios → julian_ml_report.json |
+| `workers/julian_correlate_kb.mjs` | Query tool: natal quality → empirical support |
+| `ml/requirements.txt` | Python deps (TF + sklearn) |
 
-### Architecture (NEW 2026-05-24) — Raw Source Buckets
-- ✅ **Phase 1**: dual-write raw — `workers/julian_raw_writer.mjs` + scrapers ทั้ง 3 เขียน `data/julian_raw/<source>.jsonl`
-- ✅ **Phase 2**: standalone merge — `workers/julian_merge.mjs` priority: seed > wiki_th > astrotheme > wikidata_coord > wikidata > existing
-- ⏸ **Phase 3**: validate (deferred จนกว่า raw มี data)
-- 🔴 **Phase 4 BLOCKED**: GUARD ต้อง patch workflow yaml ให้ `git add data/julian_raw/` + wire wikidata_coord step
-
-### Data quality improvements (2026-05-24 continuation)
-- ✅ **Accuracy fix**: scraper.mjs precision>=14 only for C (เดิม overgrade precision-13 → C)
-- ✅ **Wiki TH parser**: 4 patterns ใหม่ (ฤกษ์เกิด/ดวงเกิด/ลืมตา/เกิดในเวลา) — tests 13/13
-- ✅ **Wikidata P19+P625 enricher**: `workers/julian_wikidata_coord.mjs` แทน Astrotheme lat/lng broken — tests 12/12 + merge integrated
+### Architecture
+- ✅ **Phase 1**: dual-write raw — `workers/julian_raw_writer.mjs`
+- ✅ **Phase 2**: standalone merge — `workers/julian_merge.mjs`
+- ✅ **ML Pipeline**: features → CNN → explain → correlate (complete)
+- ⏸ **Phase 3 validate**: รอ raw buckets accumulate
+- 🔴 **Phase 4 BLOCKED**: GUARD ต้อง patch workflow yaml (`git add data/julian_raw/`)
 
 ### Next (Claude ทำได้)
-- [ ] Phase 3 validate.mjs — รอ raw buckets accumulate (post Phase 4 GUARD)
-- [x] ~~Backfill 602 C-grade records~~ ✅ script + workflow ready → ⭐ รอ user trigger
+- [ ] Retrain CNN เมื่อ event workflow เก็บ data ครบ (คาด 5-8 event classes)
+- [ ] Phase 3 validate.mjs — รอ raw buckets
+- [ ] BIBLE analytics script (low effort — query positions_by_jd.json)
 
 ### Blocked (รอ user/อื่น)
-- [ ] ⭐ **trigger `JULIAN Backfill Accuracy` workflow** (dry-run → apply, 2 clicks)
-- [ ] 🔴 **Phase 4** — GUARD session patch `.github/workflows/julian_sync.yml` ให้ commit raw bucket files
+- [ ] ⭐ **BIBLE session**: apply `ml/models/julian_ml_report.json` → empirical_p ใน kb.json
+- [ ] ⭐ **trigger `julian_events.yml`** ให้ครบ (ยังเหลือ ~704 batches)
+- [ ] ⭐ **trigger `JULIAN Backfill Accuracy` workflow**
 - [ ] ⭐ **เปิด `tools/julian_seed_input.html`** กรอก records accuracy A/B/C
-- [ ] [ทดลองใช้] ทดสอบ HORATAD → "ดาวน์โหลดข้อมูลสาธารณะ" (schema ไม่เปลี่ยน — ควรใช้ได้)
+- [ ] 🔴 **Phase 4** — GUARD patch `julian_sync.yml`
 
 ### Handoff ล่าสุด
-`handoffs/JULIAN_20260525_v1.md`
+`handoffs/JULIAN_20260527_v2.md`
 
 ---
 
