@@ -160,6 +160,11 @@ LINE OA รับวันเกิดจาก user
 > **Architectural Decision** — บันทึกไว้เป็น shared contract ทุก project อ้างอิงร่วมกัน  
 > **สถานะ: DECIDED · ยังไม่ implement — รอจนกว่าจะใช้ Swiss Ephemeris จริง**
 
+> 🔴 **CRITICAL — ห้าม AI rewrite calculation functions**  
+> Gemini เคยเขียน `get_data/_core/get_j` ใหม่ → ตัวเลขดาวเพี้ยนทั้งหมด  
+> **`get_data`, `_core`, `get_j`, `_calcJD`, `get_s`, `get_pk` = protected, ห้าม rewrite ไม่ว่ากรณีใด**  
+> แก้ได้เฉพาะหลังผ่าน random regression test (20-30 cases) เท่านั้น
+
 ### โครงสร้างเป้าหมาย
 
 ```

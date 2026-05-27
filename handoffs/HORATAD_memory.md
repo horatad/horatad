@@ -115,7 +115,24 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 - การ port ต้องใช้ random sampling + ทดสอบให้ output ตรงกับต้นฉบับก่อนจึงยอมรับ
 - ปัญหาที่เคยเจอตอน port: ตัวเลข precision ไม่ตรง, แปลง ค.ศ./พ.ศ. ผิด
 
-### กฎเหล็ก: ห้ามแก้ calculator code โดยไม่ผ่าน random regression test
+### 🔴 HARD RULE — ห้าม rewrite ฟังก์ชันคำนวณ
+
+**Gemini incident (2026):** AI เคยถูกขอให้ปรับปรุง engine — ดันเขียน calculation functions ใหม่ทั้งหมด → ตัวเลขตำแหน่งดาวเพี้ยนทุกดวง → ใช้งานไม่ได้
+
+**กฎ: ฟังก์ชันเหล่านี้ห้าม rewrite ไม่ว่ากรณีใด**
+```
+get_data()   _core()   get_j()   _calcJD()   get_s()   get_pk()
+```
+- ห้ามเขียนใหม่แม้ "ดูเหมือนง่ายกว่า" หรือ "clean กว่า"
+- ห้าม refactor logic แม้แต่การ rename ตัวแปรภายใน
+- ถ้า AI session ใดเสนอ "ปรับปรุง" functions เหล่านี้ → ปฏิเสธทันที
+
+**ทำได้เฉพาะ:**
+- เพิ่ม input validation (ก่อน/หลัง core logic ไม่แตะกลาง)
+- เพิ่ม comment อธิบาย
+- แก้ bug ที่พิสูจน์ได้ด้วย regression test ก่อน commit
+
+### กฎเหล็ก: regression test ก่อนแก้ทุกครั้ง
 
 ```
 ขั้นตอนก่อนแก้ calculator (get_data, _core, get_j, _calcJD):
