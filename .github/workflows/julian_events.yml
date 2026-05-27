@@ -72,13 +72,9 @@ jobs:
         run: |
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
-          echo "── Files on disk ──"
-          ls -la data/julian_events.jsonl workers/julian_events_checkpoint.json data/julian_ml_features.jsonl 2>&1 || true
-          echo "── git status before add ──"
-          git status --short
-          git add data/julian_events.jsonl data/julian_ml_features.jsonl workers/julian_events_checkpoint.json
-          echo "── git status after add ──"
-          git status --short
+          [ -f data/julian_events.jsonl ]              && git add data/julian_events.jsonl
+          [ -f workers/julian_events_checkpoint.json ] && git add workers/julian_events_checkpoint.json
+          [ -f data/julian_ml_features.jsonl ]         && git add data/julian_ml_features.jsonl
           if git diff --cached --quiet; then
             echo "Nothing to commit"
           else
