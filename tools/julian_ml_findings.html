@@ -191,48 +191,26 @@
     </p>
   </div>
 
-  <!-- Key Finding 1: MR×MR -->
-  <h2 class="section-title">การค้นพบหลัก — มฤตยูชนมฤตยูนาตาล</h2>
+  <!-- Key Finding 1: MR×MR — DEBUNKED -->
+  <h2 class="section-title">ผลเบื้องต้น — มฤตยูชนมฤตยูนาตาล (ถูกหักล้างโดย Skeptic Test 5)</h2>
 
-  <div class="finding death">
-    <div class="rule">transit_MR conjunction natal_MR</div>
-    <div class="metrics">
-      <span class="badge-metric badge-rank">อันดับ 1 / 2,100</span>
-      <span class="badge-metric badge-lift">Lift = 2.264×</span>
-      <span class="badge-metric badge-n">n = 3,198 เหตุการณ์</span>
-      <span class="badge-metric badge-sig">p_adj ≈ 0 (***)</span>
-    </div>
-    <div class="lift-bar-wrap">
-      <div class="lift-bar-label">ความถี่สัมพัทธ์เทียบกับ baseline (1.0×)</div>
-      <div class="lift-bar-track">
-        <div class="lift-ref"></div>
-        <div class="lift-bar-fill" style="width:100%;background:var(--death);">2.26×</div>
-      </div>
-    </div>
-    <div class="note">
-      เมื่อดาวมฤตยูโคจรผ่านตำแหน่งเดิมในดวงชะตา (ราศีเดียวกัน) — โอกาสเกิดเหตุการณ์มรณกรรม
-      สูงกว่าค่าเฉลี่ยถึง <strong>2.26 เท่า</strong> จากข้อมูล 3,198 กรณีจริง
-    </div>
-  </div>
-
-  <div class="finding pos">
-    <div class="rule">transit_MR opposition natal_MR</div>
-    <div class="metrics">
-      <span class="badge-metric badge-rank">อันดับ 3 / 2,100</span>
-      <span class="badge-metric badge-lift">Lift = 1.729×</span>
-      <span class="badge-metric badge-n">n = 2,511 เหตุการณ์</span>
-      <span class="badge-metric badge-sig">p_adj ≈ 0 (***)</span>
-    </div>
-    <div class="lift-bar-wrap">
-      <div class="lift-bar-track">
-        <div class="lift-ref"></div>
-        <div class="lift-bar-fill" style="width:76%;background:var(--pos);">1.73×</div>
-      </div>
-    </div>
-    <div class="note">
-      มฤตยูหกดวง (ตรงข้าม 6 ราศี) สัมพันธ์กับ <strong>การเริ่มต้นตำแหน่ง</strong> 1.73 เท่า —
-      ขั้วตรงข้ามของ conjunction ให้นัยต่างกัน: จุดเปลี่ยนครั้งใหญ่แทนที่จะเป็นการสิ้นสุด
-    </div>
+  <div class="card" style="border:2px solid #c0392b;background:#fff8f8;">
+    <div class="card-title" style="color:#c0392b;">⛔ INVALIDATED — ทั้ง 4 rules เป็น Age Proxy Artifact</div>
+    <p style="font-size:.9rem;color:#555;margin-bottom:14px;">
+      ดาวมฤตยู (MR) ในสุริยยาตร์มีคาบโคจร <strong>83 ปี</strong> (คำนวณจาก engine formula: klp/84+klp/7224)
+      ดังนั้น transit_MR × natal_MR ที่ dist=N คือตัวชี้วัดอายุ <strong>ไม่ใช่ aspect จริง:</strong>
+    </p>
+    <table>
+      <tr><th>dist</th><th>ตรงกับอายุ</th><th>Event สูง</th><th>Lift (เดิม)</th><th>คำอธิบาย</th></tr>
+      <tr><td>0 (conj)</td><td>~83 ปี</td><td>death</td><td style="color:#c0392b;">2.264×</td><td>คนอายุ 83 เสียชีวิตสูงตามธรรมชาติ</td></tr>
+      <tr><td>1</td><td>~76 ปี</td><td>death</td><td style="color:#c0392b;">2.022×</td><td>อายุ 76 = median อายุตายในตัวอย่าง</td></tr>
+      <tr><td>6 (oppo)</td><td>~41.5 ปี</td><td>position_start</td><td style="color:#1a5276;">1.729×</td><td>วัยกลางคน = ช่วงเริ่มตำแหน่งสูงสุด</td></tr>
+      <tr><td>5</td><td>~48 ปี</td><td>position_start</td><td style="color:#1a5276;">1.583×</td><td>ช่วงอายุ 40-50 = peak career</td></tr>
+    </table>
+    <p style="font-size:.85rem;margin-top:12px;color:#c0392b;font-weight:600;">
+      → Median อายุในกลุ่ม MR-conj deaths = <strong>82.9 ปี</strong> (MR period = 83.03 ปี)
+      ตรงกันแทบสมบูรณ์ — ไม่ใช่สัญญาณโหราศาสตร์ แต่เป็น life-stage demographics
+    </p>
   </div>
 
   <!-- Distribution -->
@@ -252,12 +230,32 @@
   <!-- Skeptic tests -->
   <h2 class="section-title">การทดสอบเพื่อหักล้างหลักฐาน (Skeptic Tests)</h2>
 
-  <div class="card">
-    <div class="card-title">❌ Hypothesis ที่ถูกหักล้าง: "Orbital Period Confound"</div>
+  <div class="card" style="border-left:4px solid #c0392b;">
+    <div class="card-title" style="color:#c0392b;">⛔ Skeptic Test 5 (DECISIVE): MR Orbital Period = Age Proxy</div>
+    <p style="font-size:.9rem;color:#555;margin-bottom:12px;">
+      MR (มฤตยู) ใน engine มีคาบ 83 ปี ดังนั้น transit_MR อยู่ห่างจาก natal_MR N ราศี = คนมีอายุ (83 − N×6.9) ปี
+      ทดสอบ: median อายุในแต่ละ dist ตรงกับอายุที่คาดหวังจาก period หรือไม่?
+    </p>
+    <table>
+      <tr><th>dist</th><th>Expected age</th><th>Median death age</th><th>Median pos_start age</th><th>ผล</th></tr>
+      <tr><td>0</td><td>~83.0 ปี</td><td>82.9</td><td>80.6</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+      <tr><td>1</td><td>~76.1 ปี</td><td>79.8</td><td>74.6</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+      <tr><td>2</td><td>~69.2 ปี</td><td>71.0</td><td>68.3</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+      <tr><td>3</td><td>~62.3 ปี</td><td>62.8</td><td>61.5</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+      <tr><td>4</td><td>~55.4 ปี</td><td>54.8</td><td>54.5</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+      <tr><td>5</td><td>~48.4 ปี</td><td>46.6</td><td>46.9</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+      <tr><td>6 (oppo)</td><td>~41.5 ปี</td><td>41.7</td><td>42.0</td><td style="color:#c0392b;">⚠ MATCH</td></tr>
+    </table>
+    <p style="font-size:.85rem;color:#c0392b;margin-top:10px;font-weight:600;">
+      → ตรงกันทุก dist ทุก event type — MR aspects ไม่ใช่โหราศาสตร์ แต่เป็น life-stage clock
+    </p>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title">❌ Hypothesis ที่ถูกหักล้าง: "Orbital Period Confound" (เสาร์/ราหู)</div>
     <p style="font-size:.9rem;color:#555;margin-bottom:16px;">
-      ถ้าสัญญาณ MR×MR เกิดจากดาวโคจรกลับมาตรงกับอายุที่คนมักเสียชีวิต
-      ดาวช้าดวงอื่นที่มีคาบโคจรชัดเจน (เสาร์ ~29 ปี, ราหู ~18.6 ปี)
-      ก็ควรแสดงผลเช่นเดียวกัน
+      ทดสอบว่าดาวช้าดวงอื่น (เสาร์ ~29 ปี, ราหู ~18.6 ปี)
+      แสดง self-conjunction lift สูงหรือไม่ — ถ้าสูงแสดงว่า orbital period confound ทั่วไป
     </p>
     <table>
       <tr><th>ดาว</th><th>Lift (self-conjunction vs death)</th><th>สรุป</th></tr>
@@ -293,30 +291,27 @@
   </div>
 
   <div class="card" style="margin-top:16px;">
-    <div class="card-title">✅ Skeptic Test 4: Demographic Confound Control (Uranus)</div>
+    <div class="card-title">✅ Skeptic Test 4: Birth-Year Demographic Confound (control planet)</div>
     <p style="font-size:.9rem;color:#555;margin-bottom:12px;">
-      ถ้าการกระจายตัวของปีเกิดในตัวอย่างไม่สม่ำเสมอ ดาวโคจรช้าๆ ใดก็ตาม
-      จะแสดง lift สูงในบางราศีโดยบังเอิญ — ไม่ใช่เพราะโหราศาสตร์ แต่เพราะ
-      กลุ่มคนเกิดช่วงเดียวกัน (birth cohort) มีสัดส่วน event ต่างกัน
-      ทดสอบด้วย <strong>ดาวยูเรนัส (~84 ปีต่อรอบ, ~7 ปีต่อราศี)</strong>
-      ซึ่ง <em>ไม่อยู่ใน TALS</em> — ถ้า lift สูงกว่า 1.3 = confound ยืนยัน
+      ทดสอบว่าการกระจายตัวของ <em>ปีเกิด</em> สร้างสัญญาณเทียมในราศีนาตาลหรือไม่
+      ใช้ดาวนอก TALS คาบ ~84 ปีเป็น control — ถ้า lift &gt; 1.3 = birth-year confound
+      <strong>หมายเหตุ: ดาวมฤตยู (MR) ใน TALS ≠ ยูเรนัส</strong> — แต่คาบ ~83 ปี เหมือนกัน
     </p>
     <table>
-      <tr><th>ราศียูเรนัสนาตาล (birth cohort)</th><th>death</th><th>award</th><th>position_start</th><th>สรุป</th></tr>
+      <tr><th>ราศีนาตาล (birth cohort)</th><th>death</th><th>award</th><th>position_start</th><th>สรุป</th></tr>
       <tr><td>Aries (กลุ่มเกิด ~1927, ~2011)</td><td>0.798</td><td>1.043</td><td>0.560</td><td>✅ ปกติ</td></tr>
       <tr><td>Scorpio (กลุ่มเกิด ~1974)</td><td>0.597</td><td>0.548</td><td>0.554</td><td>✅ ปกติ</td></tr>
       <tr><td>Capricorn (กลุ่มเกิด ~1988, ใหญ่สุด 7,878 คน)</td><td>0.960</td><td>0.677</td><td>0.485</td><td>✅ ปกติ</td></tr>
       <tr><td colspan="4" style="font-style:italic;color:#888;">ทุก 12 ราศี — ไม่มีราศีใด lift ≥ 1.30</td><td>✅✅✅</td></tr>
     </table>
     <p style="font-size:.85rem;color:#27ae60;margin-top:12px;font-weight:600;">
-      → ไม่พบ demographic confound — การกระจายตัวปีเกิดในตัวอย่างสม่ำเสมอเพียงพอ
-      ไม่สร้างสัญญาณเทียมในดาวช้า และไม่สามารถอธิบาย MR×MR lift=2.264 ได้เลย
-      (เพราะ MR นาตาลเปลี่ยนราศีทุก ~30 วัน ไม่ใช่ทุก 7 ปี)
+      → ไม่พบ birth-year demographic confound — ตัวอย่างสม่ำเสมอเพียงพอ
+      แต่ confound ที่แท้จริงของ MR×MR คือ event-time age (Test 5) ไม่ใช่ birth-year
     </p>
   </div>
 
-  <!-- Secondary finding: SU×SA -->
-  <h2 class="section-title">การค้นพบรอง — อาทิตย์กระทบเสาร์นาตาล</h2>
+  <!-- Primary finding: SU×SA — now the main validated finding -->
+  <h2 class="section-title">การค้นพบหลักที่ผ่านการทดสอบ — อาทิตย์กระทบเสาร์นาตาล</h2>
 
   <div class="card">
     <div class="card-title">รูปแบบ Polarity — aspect ต่างชนิดให้ผลตรงข้าม</div>
@@ -346,17 +341,26 @@
   </div>
 
   <!-- Conclusion -->
-  <div class="conclusion">
-    <h3>บทสรุป — สถานะหลักฐาน</h3>
+  <div class="conclusion" style="background:linear-gradient(135deg,#1a0000,#3c0a0a);">
+    <h3 style="color:#e74c3c;">⛔ บทสรุปที่แก้ไขแล้ว — MR×MR ถูกหักล้าง</h3>
     <ul>
-      <li>MR×MR conjunction เป็นอันดับ 1 จาก 2,100 การรวมกัน ด้วย lift = 2.264</li>
-      <li>ผ่านการหักล้าง 4 วิธี: orbital period confound, generic MR transit, generic natal MR, demographic cohort confound (Uranus control)</li>
-      <li>Effect เฉพาะเจาะจง (specificity) — เกิดเฉพาะ MR×MR ไม่กระจาย → hard to explain as artifact</li>
-      <li>Benjamini-Hochberg FDR correction: p_adj ≈ 0 — ผ่าน multiple testing อย่างเข้มงวด</li>
-      <li class="warn">ข้อจำกัด: ข้อมูล Wikidata = บุคคลมีชื่อเสียง ไม่ใช่ประชากรทั่วไป</li>
-      <li class="warn">ข้อจำกัด: sign-level resolution (ไม่ใช่ degree-level) — precision ต่ำกว่าที่เหมาะสม</li>
-      <li class="warn">SU×SA เป็นการค้นพบรองที่น่าสนใจ แต่ lift ~1.1-1.2 ยังต้องการข้อมูลเพิ่ม</li>
+      <li style="color:#e74c3c;" class="warn">MR (มฤตยู) ใน engine มีคาบ ~83 ปี — transit_MR × natal_MR aspects เป็น age proxy ทั้งหมด</li>
+      <li style="color:#e74c3c;" class="warn">MR conj → อายุ ~83, MR oppo → อายุ ~41.5 — ตรงกับ life stage ตามธรรมชาติ ไม่ใช่โหราศาสตร์</li>
+      <li style="color:#e74c3c;" class="warn">Skeptic Test 5 (age distribution): median 82.9 ปี ใน MR-conj deaths = ยืนยัน age confound</li>
+      <li style="color:#e74c3c;" class="warn">MR×MR rules ต้องถูก REMOVED จาก JULIAN valid findings ทั้งหมด</li>
     </ul>
+    <h3 style="color:#f39c12;margin-top:20px;">✅ สิ่งที่ยังคงอยู่ — SU×SA Polarity</h3>
+    <ul>
+      <li>transit_SU มีคาบ 1 ปี — ไม่เป็น age proxy (คนทุกอายุได้รับ SU aspects ทุกปี)</li>
+      <li>Hard aspects (SU→SA): death lift ~1.12-1.18 | Soft aspects: award lift ~1.12-1.16</li>
+      <li>Directional effect: SU→SA works, SA→SU ไม่ work — ไม่ใช่ artifact symmetric</li>
+      <li>Benjamini-Hochberg FDR: p_adj &lt; 0.05 — ผ่าน multiple testing</li>
+      <li class="warn">Effect size เล็ก (1.1-1.2) — ต้องการ degree-level data + birth time precision สูงขึ้น</li>
+      <li class="warn">ข้อมูล Wikidata = บุคคลมีชื่อเสียง ไม่ใช่ประชากรทั่วไป</li>
+    </ul>
+    <p style="margin-top:16px;font-size:.85rem;opacity:.8;">
+      การหักล้าง MR×MR เป็นผลเชิงวิทยาศาสตร์ที่สำคัญ — ป้องกัน false positive จากเข้าสู่ production
+    </p>
   </div>
 
 </div>
