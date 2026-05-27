@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ลัคนาตลอดวัน — 20 ก.พ. 2509</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#c9d1d9;font-family:'Sarabun',sans-serif;padding:1.5rem;max-width:1280px;margin:0 auto}
+h1{font-size:1.4rem;color:#b8860b;text-align:center;margin-bottom:.3rem}
+.subtitle{text-align:center;color:#8b949e;font-size:.9rem;margin-bottom:2rem}
+section{margin-bottom:2.5rem}
+h2{font-size:1rem;color:#b8860b;border-bottom:1px solid #21262d;padding-bottom:.4rem;margin-bottom:1.2rem}
+canvas{display:block;max-width:100%}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.chart-wrap{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:1rem}
+.chart-title{font-size:.85rem;color:#b8860b;text-align:center;margin-bottom:.5rem;font-weight:600}
+.chart-sub{font-size:.75rem;color:#8b949e;text-align:center;margin-bottom:.7rem}
+.loading{text-align:center;color:#8b949e;padding:2rem}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:.8rem}
+.leg-item{display:flex;align-items:center;gap:.3rem;font-size:.75rem}
+.leg-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.timeline-wrap{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:1rem;overflow-x:auto}
+</style>
+</head>
+<body>
+<h1>ลัคนาตลอดวัน — 20 กุมภาพันธ์ 2509</h1>
+<p class="subtitle">20 February 1966 · กรุงเทพฯ (100.5°E) · ทุก 15 นาที = 96 ช่วง</p>
+
+<div class="loading" id="loading">⏳ กำลังคำนวณ...</div>
+
+<div id="main" style="display:none">
+
+<section>
+  <h2>วงล้อลัคนา 24 ชั่วโมง</h2>
+  <div style="display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;justify-content:center">
+    <div>
+      <canvas id="wheel" width="500" height="500"></canvas>
+    </div>
+    <div style="flex:1;min-width:220px">
+      <canvas id="timeline" width="220" height="500"></canvas>
+    </div>
+  </div>
+  <div class="legend" id="legend"></div>
+</section>
+
+<section>
+  <h2>ตัวอย่าง 5 ดวง</h2>
+  <div class="charts-grid" id="charts-grid"></div>
+</section>
+
+</div>
+
+<script type="module">
+import { get_data } from '../v3/engine.js';
+
+// ── Sign colors & names ──────────────────────────────────
+const SIGN_TH=['เมษ','พฤษภ','มิถุน','กรกฎ','สิงห์','กันย์','ตุลย์','พิจิก','ธนู','มกร','กุมภ์','มีน'];
+const SIGN_COL=['#c0392b','#27ae60','#c8a91b','#1a8c8c','#e67e22','#7d6608','#8e44ad','#922b21','#1a5276','#1e8449','#117a8b','#6c3483'];
+const SIGN_LIGHT=['#ff7675','#55efc4','#f9ca24','#74b9ff','#fdcb6e','#dfe6e9','#a29bfe','#fd79a8','#74b9ff','#b8e994','#81ecec','#d63031'];
+const PT=['ล','๑','๒','๓','๔','๕','๖','๗','๘','๙','๐'];
+const PT_FULL=['ลัคนา','อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์','ราหู','เกตุ','มฤตยู'];
+// Angle for each sign in the chart wheel (เมษ=top=90°, going counterclockwise)
+const Z_REFS=[90,120,150,180,210,240,270,300,330,0,30,60];
+const Z_SPECS={90:[2,2,2,2],120:[3,3,2],150:[2,3,3],180:[4,4,0],210:[3,3,2],240:[2,3,3],270:[2,2,2,2],300:[2,3,3],330:[3,3,2],0:[4,4,0],30:[2,3,3],60:[3,3,2]};
+const OFFSETS={0:[0,20],180:[0,-20]};
+
+// ── Compute all 96 slots ─────────────────────────────────
+const D=20,M=2,Y=1966,LNG=100.5;
+function getData(hr,mn){
+  const h=hr+Math.floor(mn/60),m=mn%60;
+  return get_data(D,M,Y,h,m,LNG);
+}
+
+const slots=[];
+for(let s=0;s<96;s++){
+  const tm=s*15,hr=Math.floor(tm/60),mn=tm%60;
+  const pos=getData(hr,mn);
+  const posNext=getData(hr+24,mn);
+  const vel24=pos.map((v,i)=>((posNext[i]-v)+21600)%21600);
+  slots.push({hr,mn,pos,vel24,lag:Math.trunc(pos[0]/1800)});
+}
+
+// ── Draw lagna wheel ─────────────────────────────────────
+function drawWheel(){
+  const cv=document.getElementById('wheel');
+  const ctx=cv.getContext('2d');
+  const W=500,H=500,CX=250,CY=250;
+  const OR=230,IR=140,LR=186; // outer, inner, label radius
+
+  ctx.fillStyle='#0d1117';
+  ctx.fillRect(0,0,W,H);
+
+  // draw 96 arc segments
+  for(let s=0;s<96;s++){
+    const {lag}=slots[s];
+    const startAngle=(-Math.PI/2)+(s/96)*2*Math.PI;
+    const endAngle=(-Math.PI/2)+((s+1)/96)*2*Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(CX,CY);
+    ctx.arc(CX,CY,OR,startAngle,endAngle);
+    ctx.closePath();
+    ctx.fillStyle=SIGN_COL[lag]+'cc';
+    ctx.fill();
+    ctx.strokeStyle='#0d1117';
+    ctx.lineWidth=0.5;
+    ctx.stroke();
+  }
+
+  // inner circle mask
+  ctx.beginPath();
+  ctx.arc(CX,CY,IR,0,2*Math.PI);
+  ctx.fillStyle='#0d1117';
+  ctx.fill();
+
+  // outer ring border
+  ctx.beginPath();
+  ctx.arc(CX,CY,OR,0,2*Math.PI);
+  ctx.strokeStyle='#b8860b';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // inner ring border
+  ctx.beginPath();
+  ctx.arc(CX,CY,IR,0,2*Math.PI);
+  ctx.strokeStyle='#21262d';
+  ctx.lineWidth=1.5;
+  ctx.stroke();
+
+  // lagna transition marks + sign labels on outer ring
+  let prevLag=-1;
+  for(let s=0;s<96;s++){
+    const {hr,mn,lag}=slots[s];
+    if(lag!==prevLag){
+      const angle=(-Math.PI/2)+(s/96)*2*Math.PI;
+      // tick mark
+      ctx.beginPath();
+      ctx.moveTo(CX+IR*Math.cos(angle),CY+IR*Math.sin(angle));
+      ctx.lineTo(CX+OR*Math.cos(angle),CY+OR*Math.sin(angle));
+      ctx.strokeStyle='#ffffff66';
+      ctx.lineWidth=1.5;
+      ctx.stroke();
+      // time label on inner ring
+      const lx=CX+(IR-18)*Math.cos(angle),ly=CY+(IR-18)*Math.sin(angle);
+      ctx.save();
+      ctx.translate(lx,ly);
+      ctx.rotate(angle+Math.PI/2);
+      ctx.font='bold 9px Sarabun,sans-serif';
+      ctx.fillStyle='#e6edf3';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.fillText(`${String(hr).padStart(2,'0')}:${String(mn).padStart(2,'0')}`,0,0);
+      ctx.restore();
+      prevLag=lag;
+    }
+  }
+
+  // sign name labels at midpoint of each lagna arc
+  const lagBands=[];
+  let cur={lag:slots[0].lag,start:0,end:0};
+  for(let s=1;s<=96;s++){
+    const lag=(s<96)?slots[s].lag:-1;
+    if(lag!==cur.lag){
+      cur.end=s-1;
+      lagBands.push({...cur});
+      if(s<96)cur={lag,start:s,end:s};
+    }
+  }
+  lagBands.forEach(({lag,start,end})=>{
+    const mid=(start+end)/2;
+    const angle=(-Math.PI/2)+(mid/96)*2*Math.PI;
+    const lx=CX+LR*Math.cos(angle),ly=CY+LR*Math.sin(angle);
+    ctx.save();
+    ctx.translate(lx,ly);
+    ctx.rotate(angle+Math.PI/2);
+    ctx.font='bold 13px Sarabun,sans-serif';
+    ctx.fillStyle='#ffffff';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillText(SIGN_TH[lag],0,0);
+    ctx.restore();
+  });
+
+  // hour marks on inner circle
+  for(let h=0;h<24;h++){
+    const angle=(-Math.PI/2)+(h/24)*2*Math.PI;
+    const x1=CX+(IR-4)*Math.cos(angle),y1=CY+(IR-4)*Math.sin(angle);
+    const x2=CX+(IR+4)*Math.cos(angle),y2=CY+(IR+4)*Math.sin(angle);
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+    ctx.strokeStyle='#586069';
+    ctx.lineWidth=h%6===0?2:1;
+    ctx.stroke();
+    if(h%6===0){
+      const tx=CX+(IR-28)*Math.cos(angle),ty=CY+(IR-28)*Math.sin(angle);
+      ctx.font='bold 14px Sarabun,sans-serif';
+      ctx.fillStyle='#8b949e';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(h+':00',tx,ty);
+    }
+  }
+
+  // center text
+  ctx.font='bold 18px Sarabun,sans-serif';
+  ctx.fillStyle='#b8860b';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('20 ก.พ.',CX,CY-12);
+  ctx.fillText('2509',CX,CY+10);
+  ctx.font='12px Sarabun,sans-serif';
+  ctx.fillStyle='#586069';
+  ctx.fillText('ลัคนาตลอดวัน',CX,CY+30);
+}
+
+// ── Draw vertical timeline ───────────────────────────────
+function drawTimeline(){
+  const cv=document.getElementById('timeline');
+  const ctx=cv.getContext('2d');
+  const W=220,H=500;
+  ctx.fillStyle='#0d1117';
+  ctx.fillRect(0,0,W,H);
+
+  const BAR_X=30, BAR_W=60;
+
+  // vertical bar
+  for(let s=0;s<96;s++){
+    const {lag}=slots[s];
+    const y=(s/96)*H;
+    const h2=H/96+1;
+    ctx.fillStyle=SIGN_COL[lag];
+    ctx.fillRect(BAR_X,y,BAR_W,h2);
+  }
+
+  // lagna change labels
+  let prev=-1;
+  const labelPositions=[];
+  for(let s=0;s<96;s++){
+    const {hr,mn,lag}=slots[s];
+    if(lag!==prev){
+      const y=(s/96)*H;
+      labelPositions.push({y,lag,hr,mn});
+      // tick
+      ctx.beginPath();
+      ctx.moveTo(BAR_X,y);ctx.lineTo(BAR_X+BAR_W,y);
+      ctx.strokeStyle='#ffffff66';ctx.lineWidth=1;
+      ctx.stroke();
+      prev=lag;
+    }
+  }
+
+  // label text
+  ctx.textBaseline='top';
+  labelPositions.forEach(({y,lag,hr,mn},idx)=>{
+    const nextY=(idx+1<labelPositions.length)?labelPositions[idx+1].y:H;
+    const cy=y+(nextY-y)/2;
+    ctx.font='bold 11px Sarabun,sans-serif';
+    ctx.fillStyle=SIGN_LIGHT[lag];
+    ctx.textAlign='left';
+    ctx.textBaseline='middle';
+    ctx.fillText(SIGN_TH[lag],BAR_X+BAR_W+6,cy);
+    ctx.font='10px Sarabun,sans-serif';
+    ctx.fillStyle='#8b949e';
+    ctx.fillText(`${String(hr).padStart(2,'0')}:${String(mn).padStart(2,'0')}`,BAR_X+BAR_W+6,cy+14);
+  });
+
+  // axis labels (hours) on left
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  for(let h=0;h<24;h+=3){
+    const y=(h/24)*H;
+    ctx.font='10px Sarabun,sans-serif';
+    ctx.fillStyle='#586069';
+    ctx.fillText(h+':00',BAR_X-4,y);
+    ctx.beginPath();ctx.moveTo(BAR_X-2,y);ctx.lineTo(BAR_X,y);
+    ctx.strokeStyle='#586069';ctx.lineWidth=1;ctx.stroke();
+  }
+
+  // border
+  ctx.strokeStyle='#21262d';ctx.lineWidth=1;
+  ctx.strokeRect(BAR_X,0,BAR_W,H);
+
+  // title
+  ctx.font='bold 10px Sarabun,sans-serif';
+  ctx.fillStyle='#b8860b';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+}
+
+// ── Draw legend ──────────────────────────────────────────
+function drawLegend(){
+  const el=document.getElementById('legend');
+  SIGN_TH.forEach((name,i)=>{
+    el.innerHTML+=`<div class="leg-item"><div class="leg-dot" style="background:${SIGN_COL[i]}"></div><span>${name}</span></div>`;
+  });
+}
+
+// ── Draw one birth chart (circle) ───────────────────────
+function drawBirthChart(cv, pos, vel24, lagSign){
+  const ctx=cv.getContext('2d');
+  const SZ=300,C2=150,R2=135,G2=26,GAP=15.3;
+  ctx.clearRect(0,0,SZ,SZ);
+  ctx.fillStyle='#0d1117';
+  ctx.fillRect(0,0,SZ,SZ);
+
+  function deg2rad(d){return d*Math.PI/180;}
+  function sc(i){return i===0?'#ffd966':'#e6edf3';}
+
+  // chart structure
+  ctx.strokeStyle='#b8860b';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(C2,C2,R2,0,2*Math.PI);ctx.stroke();
+  for(let dx of[-G2,G2]){
+    let dy=Math.sqrt(Math.max(0,R2*R2-dx*dx));
+    ctx.beginPath();ctx.moveTo(C2+dx,C2-dy);ctx.lineTo(C2+dx,C2+dy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(C2-dy,C2+dx);ctx.lineTo(C2+dy,C2+dx);ctx.stroke();
+  }
+  let de=Math.round(R2/Math.sqrt(2));
+  for(let [sx,sy] of[[-1,1],[1,1],[-1,-1],[1,-1]]){
+    ctx.beginPath();ctx.moveTo(C2+sx*G2,C2+sy*G2);ctx.lineTo(C2+sx*de,C2+sy*de);ctx.stroke();
+  }
+
+  // build planet model per sign
+  const model=Array.from({length:12},()=>[]);
+  for(let i=0;i<11;i++){
+    const z=Math.trunc(pos[i]/1800);
+    if(z>=0&&z<12){
+      const v=vel24[i];
+      const canRetro=i<=7||i===10;
+      const ret=canRetro&&v>15000?' พ':'';
+      model[z].push({ch:PT[i]+ret,col:sc(i),idx:i});
+    }
+  }
+
+  // lagna sign highlight (background arc)
+  const lagAng=Z_REFS[lagSign];
+  const lagRad=deg2rad(lagAng);
+  const startArc=lagRad-Math.PI/12;
+  const endArc=lagRad+Math.PI/12;
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(C2,C2);
+  ctx.arc(C2,C2,R2,startArc,endArc);
+  ctx.closePath();
+  ctx.fillStyle='#b8860b22';
+  ctx.fill();
+  ctx.restore();
+
+  // draw planet labels
+  ctx.font='bold 22px Sarabun,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  const cW=18.6;
+  for(let iz=0;iz<12;iz++){
+    const items=model[iz];if(!items.length)continue;
+    const ang=Z_REFS[iz],spec=Z_SPECS[ang]||[3,3,2];
+    const rad=deg2rad(ang);
+    const dist=ang%90===0?Math.round(((G2+R2)/2)*1.02):Math.round(((G2*1.414+R2)/2)*1.02);
+    const [ox,oy]=OFFSETS[ang]||[0,0];
+    const tx=C2+Math.round(dist*Math.cos(rad))+ox;
+    const ty=C2-Math.round(dist*Math.sin(rad))+oy;
+    const gap=Math.round(GAP);
+    let rows,yo;
+    if(spec.length===4){
+      rows=[items.slice(0,spec[0]),items.slice(spec[0],spec[0]+spec[1]),items.slice(spec[0]+spec[1],spec[0]+spec[1]+spec[2]),items.slice(spec[0]+spec[1]+spec[2])];
+      yo=[-1.5*gap,-0.5*gap,0.5*gap,1.5*gap];
+    }else{
+      rows=[items.slice(0,spec[0]),items.slice(spec[0],spec[0]+spec[1]),items.slice(spec[0]+spec[1])];
+      yo=[-gap,0,gap];
+    }
+    for(let ri=0;ri<rows.length;ri++){
+      if(!rows[ri].length)continue;
+      const ri_items=rows[ri];
+      const sx2=tx-(ri_items.length-1)*cW/2;
+      for(let ci=0;ci<ri_items.length;ci++){
+        ctx.fillStyle=ri_items[ci].col;
+        // scale down font if retrograde label
+        const txt=ri_items[ci].ch;
+        ctx.font=txt.length>2?'bold 14px Sarabun,sans-serif':'bold 22px Sarabun,sans-serif';
+        ctx.fillText(txt,sx2+ci*cW,ty+yo[ri]);
+      }
+    }
+  }
+
+  // sign labels on outer ring
+  ctx.font='bold 9px Sarabun,sans-serif';
+  for(let iz=0;iz<12;iz++){
+    const ang=Z_REFS[iz],rad=deg2rad(ang);
+    const lx=C2+Math.round((R2-8)*Math.cos(rad));
+    const ly=C2-Math.round((R2-8)*Math.sin(rad));
+    const isLag=iz===lagSign;
+    ctx.fillStyle=isLag?'#ffd966':'#586069';
+    ctx.font=isLag?'bold 9px Sarabun':'9px Sarabun,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(SIGN_TH[iz],lx,ly);
+  }
+
+  // Sun degree at center
+  const sg=Math.trunc((pos[1]%1800)/60),sm=pos[1]%60;
+  ctx.font='bold 11px Sarabun,sans-serif';ctx.fillStyle='#b8860b';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(`${String(sg).padStart(2,'0')}°${String(sm).padStart(2,'0')}'`,C2,C2);
+}
+
+// ── Build 5 sample charts ────────────────────────────────
+function buildCharts(){
+  const grid=document.getElementById('charts-grid');
+  const samples=[0,24,48,72,95]; // 00:00, 06:00, 12:00, 18:00, 23:45
+
+  samples.forEach(idx=>{
+    const {hr,mn,pos,vel24,lag}=slots[idx];
+    const time=`${String(hr).padStart(2,'0')}:${String(mn).padStart(2,'0')}`;
+
+    // notable features
+    const notable=[];
+    for(let i=1;i<=10;i++){
+      const v=vel24[i];
+      const canRetro=i<=7||i===10;
+      if(canRetro&&v>15000) notable.push(PT_FULL[i]+' (พ)');
+    }
+    // planets in same sign as lagna
+    const lagConjunct=[];
+    for(let i=1;i<=10;i++){
+      if(Math.trunc(pos[i]/1800)===lag) lagConjunct.push(PT[i]);
+    }
+
+    const wrap=document.createElement('div');
+    wrap.className='chart-wrap';
+    wrap.innerHTML=`
+      <div class="chart-title" style="color:${SIGN_COL[lag]}">${time} น. · ลัคนา ${SIGN_TH[lag]}</div>
+      <div class="chart-sub">${lagConjunct.length?'กุม: '+lagConjunct.join(' '):'─'} ${notable.length?' · ถอยหลัง: '+notable.join(', '):''}</div>
+      <canvas width="300" height="300" style="margin:0 auto"></canvas>
+      <div style="margin-top:.7rem;font-size:.75rem;color:#8b949e;line-height:1.7">`;
+
+    grid.appendChild(wrap);
+    const cv=wrap.querySelector('canvas');
+    drawBirthChart(cv,pos,vel24,lag);
+
+    // planet table
+    const tbl=wrap.querySelector('div:last-child');
+    let rows='';
+    for(let i=1;i<=10;i++){
+      const s=Math.trunc(pos[i]/1800);
+      const dg=Math.trunc((pos[i]%1800)/60);
+      const v=vel24[i];
+      const canRetro=i<=7||i===10;
+      const ret=canRetro&&v>15000?'<span style="color:#f85149"> พ</span>':'';
+      const house=(s-lag+12)%12+1;
+      rows+=`<div style="display:flex;gap:.4rem;align-items:center">
+        <span style="color:#b8860b;min-width:22px">${PT[i]}</span>
+        <span style="min-width:55px;color:#c9d1d9">${SIGN_TH[s]} ${dg}°</span>
+        <span style="min-width:24px;color:#586069">ร${house}</span>
+        ${ret}
+      </div>`;
+    }
+    tbl.innerHTML=rows;
+  });
+}
+
+// ── Init ─────────────────────────────────────────────────
+document.getElementById('loading').style.display='none';
+document.getElementById('main').style.display='block';
+drawWheel();
+drawTimeline();
+drawLegend();
+buildCharts();
+</script>
+</body>
+</html>
