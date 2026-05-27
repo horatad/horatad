@@ -155,6 +155,62 @@ LINE OA รับวันเกิดจาก user
 
 ---
 
+## Engine Architecture — ชั้นคำนวณและมาตรฐานดาว (2026-05-27)
+
+> **Architectural Decision** — บันทึกไว้เป็น shared contract ทุก project อ้างอิงร่วมกัน
+
+### แนวคิดหลัก: แยก 2 ชั้นออกจากกัน
+
+```
+Layer A — Position Calculation  (ใช้ engine ไหนก็ได้)
+  สุริยยาตร์  → pos[] arcminutes  ─┐
+  Swiss Eph   → degrees[] float   ─┤── normalize() ──→  sign[] (0-11)
+  Vedic / อื่น → output ใดก็ตาม   ─┘
+                                            ↓
+Layer B — Standard Assessment   (TALS rules — ใช้ร่วมกัน)
+  assessStandards(planetIdx, sign)
+  → { labels: ['เกษตร','มหาจักร',...], score: int }
+```
+
+**กฎ:** Layer B รับ **sign (0-11)** เท่านั้น — ไม่รับ pos[], ไม่รับ degrees[]  
+ทุก engine ต้องผ่าน normalize ก่อนส่งต่อ Layer B
+
+### TALS rules ที่ compatible กับทุก engine (sign-level)
+
+| Rule | ขึ้นอยู่กับ | Compatible |
+|---|---|---|
+| เกษตร / ประเกษตร | sign เท่านั้น | ✅ ทุก engine |
+| มหาอุจ / นิจ | sign เท่านั้น | ✅ ทุก engine |
+| อุจจาวิลาส / อุจจาภิมุข | sign เท่านั้น | ✅ ทุก engine |
+| มหาจักร / จุลจักร | sign เท่านั้น | ✅ ทุก engine |
+| ราชาโชค / เทวีโชค | sign เท่านั้น | ✅ ทุก engine |
+| House (ภพ) | sign + Lagna | ⚠️ Lagna คำนวณต่างกันต่าง engine |
+| Retrograde (วक्र) | velocity | ⚠️ ต้องส่ง velocity แยก |
+| Mrityou | Thai-specific | ❌ ไม่มีใน Swiss Ephemeris |
+
+### Swiss Ephemeris — compatibility notes
+
+- **Lagna:** คำนวณต่างจากสุริยยาตร์ (sidereal time + latitude จริง vs sunrise=06:00)  
+  → House ของทุกดาวอาจต่างกัน 1-2 ภพ — **ไม่ใช่ bug, เป็น design choice ตาม system**
+- **Rahu/Ketu:** Swiss มี mean + true nodes — สุริยยาตร์ใช้ mean  
+  → ระบุใน normalize() ว่าใช้ mean nodes เสมอ (consistent กับ TALS)
+- **Sign:** `Math.trunc(degree / 30)` = sign 0-11 — ตรงไปตรงมา
+
+### สถานะปัจจุบัน (2026-05-27)
+
+- `engine.js` ตอนนี้: Layer A + Layer B ยังผสมกันใน `getStandards(pos, i)`  
+- **Target:** แยกเป็น `assessStandards(planetIdx, sign)` — รอ implement  
+- **ไม่ urgent:** HORATAD/BIBLE/JULIAN ใช้สุริยยาตร์ทั้งหมด — separation ทำเมื่อต้องการ Swiss Eph จริง
+
+### สำหรับ project ใหม่ที่ต้องการ Swiss Ephemeris
+
+1. ใช้ `swisseph` npm หรือ WASM port
+2. เขียน `normalize_swisseph(swe_output)` → `sign[]` + `vel[]`
+3. import `assessStandards()` จาก `engine.js` (หลัง separation implement)
+4. TALS rules ใช้ได้ทันที — ไม่ต้อง rewrite
+
+---
+
 ## External Projects (ไม่อยู่ใน ecosystem นี้)
 
 โปรเจคที่อยู่คนละ repo — BIG **ไม่ track active** · ไม่มี handoff ใน horatad · develop ผ่าน Claude Code session แยกของ repo ตัวเอง
