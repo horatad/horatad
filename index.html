@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.47 -->
-<!-- Version 3.3.47 | 2026-05-27 -->
+<!-- HORATAD:INDEX:3.3.48 -->
+<!-- Version 3.3.48 | 2026-05-27 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.47">
+<link rel="stylesheet" href="style.css?v=3.3.48">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -125,6 +125,8 @@ canvas{max-width:100%;height:auto}
 .priv-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
 .priv-tag-chip{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
 .priv-tag-chip.active{background:#1a3c6b;border-color:#4a9eff;color:#79c0ff;}
+.mem-tag-badges{display:inline-flex;gap:3px;margin-left:5px;vertical-align:middle;}
+.mem-tag-badge{background:#1a2b3c;border:1px solid #2a4a6b;border-radius:8px;color:#79c0ff;font-size:10px;padding:0 5px;line-height:1.6;font-family:'Sarabun',sans-serif;}
 .julian-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px;}
 .julian-sub-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;padding-left:8px;border-left:2px solid #30363d;}
 .julian-tag-btn{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
@@ -143,7 +145,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.47</span>
+  <span class="brand-ver">V 3.3.48</span>
 </h1>
 
 <!-- Tab nav -->
@@ -295,7 +297,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.47</div>
+        <div class="about-version">V 3.3.48</div>
         <div class="about-update">อัปเดต 27 พ.ค. 2569 · เพลงเกาะในฝัน auto-play · TALS naming</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -329,7 +331,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.47" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.48" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -912,8 +914,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.47"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.47"></script>
+<script type="module" src="script.js?v=3.3.48"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.48"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -955,7 +957,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.47"></script>
+<script src="auth-pin.js?v=3.3.48"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
 <!-- V2.2.35: Add-tag modal -->

@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.47
-// Version 3.3.47 | 2026-05-27
+// HORATAD:SCRIPT:3.3.48
+// Version 3.3.48 | 2026-05-27
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
@@ -24,7 +24,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.47';
+const APP_VERSION='3.3.48';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2181,10 +2181,13 @@ function _renderTank(filter){
     const y_ce=_beToce(m.y_be,m.m);
     const tCell=m.noTime?'<span class="no-time-tag">ไม่ทราบเวลาเกิด</span>':_escHtml(m.t);
     const meta=`${_escHtml(m.d)}/${_escHtml(m.m)}/${_escHtml(m.y_be)} (${_escHtml(y_ce)}) · ${tCell}`;
+    // D1: tag badges
+    const tagBadges=_activeTank==='private'&&(m.tags||[]).length
+      ?`<span class="mem-tag-badges">${(m.tags||[]).map(t=>`<span class="mem-tag-badge">${_escHtml(t)}</span>`).join('')}</span>`:''
     if(_activeTank==='qr'){
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}${tagBadges}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
     }else{
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}${tagBadges}</div><div class="meta">${meta}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
     }
   });
   list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f?'ไม่พบรายการ':(_activeTank==='qr'?'ยังไม่มี QR ที่นำเข้า':'ยังไม่มีรายการในความทรงจำ')}</div>`;
@@ -3962,7 +3965,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     _renderEvents(e.target.value);
   });
 
-  // V3.3.47: auto-format HH:MM for text time inputs
+  // V3.3.48: auto-format HH:MM for text time inputs
   document.querySelectorAll('input.time-input').forEach(el=>{
     el.addEventListener('input',e=>{
       let v=e.target.value.replace(/[^\d]/g,'');
