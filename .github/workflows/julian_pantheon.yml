@@ -20,9 +20,16 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout data repo
+        uses: actions/checkout@v5
+        with:
+          repository: horatad/julian-data
+          path: data
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
@@ -39,20 +46,14 @@ jobs:
       - name: Commit
         if: steps.pantheon.outputs.status == 'complete'
         run: |
-          git config user.name  'JULIAN Bot'
-          git config user.email 'julian-bot@horatad.com'
-          [ -f data/julian_all.json ] && git add data/julian_all.json
-          if git diff --cached --quiet; then
-            echo "Nothing to commit — no HPI matches found"
-          else
-            MATCHED=$(node -e "
-              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
-              console.log(d.filter(r => r.hpi != null).length);
-            ")
-            git commit -m "JULIAN Pantheon: เพิ่ม HPI score ${MATCHED} records"
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
+          MATCHED=$(node -e "
+            const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
+            console.log(d.filter(r => r.hpi != null).length);
+          " 2>/dev/null || echo 0)
+          (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+            && git add julian_all.json \
+            && (git diff --cached --quiet || git commit -m "JULIAN Pantheon: HPI score ${MATCHED} records") \
+            && git push) || echo "Data repo: nothing to push"
 
       - name: Summary
         if: always()

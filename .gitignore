@@ -38,3 +38,9 @@ ml/models/training_history.json
 
 # Per-session ephemeral state — ห้าม commit (race condition ระหว่าง sandboxes)
 .claude/hooks/session_scope
+
+# JULIAN data files — ย้ายไป horatad/julian-data repo แล้ว
+# วิธี dev local: git clone https://github.com/horatad/julian-data data
+data/julian_all.json
+data/julian_events.jsonl
+data/julian_ml_features.jsonl

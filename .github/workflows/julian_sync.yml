@@ -31,9 +31,16 @@ jobs:
 
     steps:
       # ─── Checkout ─────────────────────────────────────────────
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout data repo
+        uses: actions/checkout@v5
+        with:
+          repository: horatad/julian-data
+          path: data
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # ─── Setup Node ───────────────────────────────────────────
@@ -88,9 +95,14 @@ jobs:
               fs.writeFileSync(dataFile, JSON.stringify(merged));
               console.log('data/julian_all.json: total=' + merged.length + ' (+' + newRecs.length + ' batch)');
             "
-            git add data/julian_all.json || true
+            # push merged data → data repo
+            (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+              && git add julian_all.json \
+              && (git diff --cached --quiet || git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})") \
+              && git push) || echo "Data repo: nothing to push"
           fi
-          git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})" || echo "Nothing to commit"
+          # push progress files → main repo
+          git commit -m "JULIAN sync: progress files updated" || echo "Nothing to commit"
           git pull --rebase origin main
           git push origin HEAD:main
 
@@ -141,10 +153,11 @@ jobs:
           if [ "${ENRICHED_COUNT}" != "0" ]; then
             git config user.name  "JULIAN Bot"
             git config user.email "julian-bot@horatad.com"
-            git add data/julian_all.json
-            git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Astrotheme"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # push to data repo
+            (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+              && git add julian_all.json \
+              && (git diff --cached --quiet || git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Astrotheme") \
+              && git push) || echo "Data repo: nothing to push"
           fi
 
       # ─── Wikipedia TH enrichment — โฟกัส tier 1 + country=TH ─────────────
@@ -195,10 +208,11 @@ jobs:
           if [ "${ENRICHED_COUNT}" != "0" ]; then
             git config user.name  "JULIAN Bot"
             git config user.email "julian-bot@horatad.com"
-            git add data/julian_all.json
-            git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Wikipedia TH"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # push to data repo
+            (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+              && git add julian_all.json \
+              && (git diff --cached --quiet || git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Wikipedia TH") \
+              && git push) || echo "Data repo: nothing to push"
           fi
 
       # ─── Wikidata Coord enrichment — เติม lat/lng จาก P19+P625 ─────────────
@@ -247,10 +261,11 @@ jobs:
           if [ "${ENRICHED_COUNT}" != "0" ]; then
             git config user.name  "JULIAN Bot"
             git config user.email "julian-bot@horatad.com"
-            git add data/julian_all.json
-            git commit -m "JULIAN enrich: +${ENRICHED_COUNT} lat/lng from Wikidata P19+P625"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # push to data repo
+            (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+              && git add julian_all.json \
+              && (git diff --cached --quiet || git commit -m "JULIAN enrich: +${ENRICHED_COUNT} lat/lng from Wikidata P19+P625") \
+              && git push) || echo "Data repo: nothing to push"
           fi
 
       # ─── Regrade accuracy (evidence-based) ──────────────────────────────────
@@ -267,10 +282,11 @@ jobs:
           if ! git diff --quiet data/julian_all.json; then
             git config user.name  "JULIAN Bot"
             git config user.email "julian-bot@horatad.com"
-            git add data/julian_all.json
-            git commit -m "JULIAN regrade: accuracy updated from evidence rules"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # push to data repo
+            (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+              && git add julian_all.json \
+              && (git diff --cached --quiet || git commit -m "JULIAN regrade: accuracy updated from evidence rules") \
+              && git push) || echo "Data repo: nothing to push"
           fi
 
       # ─── Manual seed merge — รวม data/julian_thai_seed.json → julian_all.json ──
@@ -284,10 +300,11 @@ jobs:
           else
             git config user.name  "JULIAN Bot"
             git config user.email "julian-bot@horatad.com"
-            git add data/julian_all.json
-            git commit -m "JULIAN seed: merge manual records"
-            git pull --rebase origin main
-            git push origin HEAD:main
+            # push to data repo
+            (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+              && git add julian_all.json \
+              && (git diff --cached --quiet || git commit -m "JULIAN seed: merge manual records") \
+              && git push) || echo "Data repo: nothing to push"
           fi
 
       # ─── Upload to GitHub Release ─────────────────────────────

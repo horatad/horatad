@@ -21,9 +21,16 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout data repo
+        uses: actions/checkout@v5
+        with:
+          repository: horatad/julian-data
+          path: data
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
@@ -44,19 +51,19 @@ jobs:
 
       - name: Commit
         run: |
+          STATUS="${{ steps.scrape.outputs.status }}"
+          TOTAL=$(node -e "try{const d=JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));console.log(d.length)}catch(e){console.log('?')}" 2>/dev/null || echo "?")
+          # ── push data → data repo ─────────────────────────────
+          (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+            && git add julian_all.json \
+            && (git diff --cached --quiet || git commit -m "JULIAN MusicBrainz: ${STATUS} — ${TOTAL} total") \
+            && git push) || echo "Data repo: nothing to push"
+          # ── push checkpoint → main repo ───────────────────────
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
-          [ -f data/julian_all.json ]              && git add data/julian_all.json
           [ -f workers/julian_mb_checkpoint.json ] && git add workers/julian_mb_checkpoint.json
-          if git diff --cached --quiet; then
-            echo "Nothing to commit"
-          else
-            TOTAL=$(wc -c < data/julian_all.json | xargs node -e "
-              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
-              console.log(d.length);
-            " 2>/dev/null || echo "?")
-            STATUS="${{ steps.scrape.outputs.status }}"
-            git commit -m "JULIAN MusicBrainz: ${STATUS} — ${TOTAL} total records"
+          if ! git diff --cached --quiet; then
+            git commit -m "JULIAN MusicBrainz: checkpoint (${STATUS})"
             git pull --rebase origin main
             git push origin HEAD:main
           fi

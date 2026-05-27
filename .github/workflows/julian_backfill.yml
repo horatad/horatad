@@ -39,9 +39,16 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=4096
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout data repo
+        uses: actions/checkout@v5
+        with:
+          repository: horatad/julian-data
+          path: data
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
@@ -90,18 +97,18 @@ jobs:
       - name: Commit changes
         if: steps.check.outputs.skip != 'true'
         run: |
+          STATUS="${{ steps.p3447.outputs.status }}"
+          # ── push julian_all.json → data repo ─────────────────
+          (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+            && git add julian_all.json \
+            && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS}") \
+            && git push) || echo "Data repo: nothing to push"
+          # ── push checkpoint → main repo ───────────────────────
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
-          git add data/julian_all.json workers/julian_p3447_checkpoint.json || true
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            STATUS="${{ steps.p3447.outputs.status }}"
-            if [ "$STATUS" = "partial" ]; then
-              git commit -m "JULIAN: P3447 backfill partial — checkpoint saved, continuing next run"
-            else
-              git commit -m "JULIAN: P3447 backfill complete + accuracy regrade"
-            fi
+          git add workers/julian_p3447_checkpoint.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "JULIAN backfill: checkpoint (${STATUS})"
             git pull --rebase origin main
             git push origin HEAD:main
           fi
