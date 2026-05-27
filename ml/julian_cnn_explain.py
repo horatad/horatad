@@ -84,7 +84,8 @@ print(f"Loaded {len(X)} samples")
 rng = np.random.default_rng(42)
 bg  = X[rng.choice(len(X), min(BG_SAMPLES, len(X)), replace=False)]
 print(f"\nBuilding SHAP explainer (background={len(bg)} samples)...")
-explainer = shap.DeepExplainer(model, bg)
+# GradientExplainer รองรับ GlobalMaxPooling2D ใน TF >= 2.5 (DeepExplainer ไม่รองรับ)
+explainer = shap.GradientExplainer(model, bg)
 
 # ── Extract rules per event type ──────────────────────────────────────────────
 all_rules = {}
