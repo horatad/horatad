@@ -88,29 +88,62 @@ window.v3CycleRate = function() {
 let _vcHistory = [];   // [{role:'user'|'assistant', content:string}]
 let _vcRecog = null;   // SpeechRecognition instance
 let _vcPanelOpen = false;
-let _vcRulesCtx = '';  // natal rules context injected into system prompt
+let _vcRulesCtx = '';     // formatted all-rules string (fallback)
+let _vcAllRules = [];     // raw rule objects for domain filtering
 
-function _vcSystemPrompt() {
+const _VC_DOMAIN_KEYWORDS = {
+  'อาชีพ':         ['งาน', 'อาชีพ', 'การงาน', 'ทำงาน', 'หน้าที่', 'ธุรกิจ', 'เงินเดือน', 'ตำแหน่ง', 'เจ้านาย', 'บริษัท', 'เลื่อน', 'ลาออก'],
+  'การเงิน':       ['เงิน', 'การเงิน', 'รายได้', 'หนี้', 'ทรัพย์', 'ลงทุน', 'ร่ำรวย', 'มั่งคั่ง', 'ขาดทุน', 'กำไร', 'หุ้น', 'ซื้อ', 'ขาย'],
+  'ความสัมพันธ์':  ['ความรัก', 'แฟน', 'คู่ครอง', 'แต่งงาน', 'สามี', 'ภรรยา', 'ความสัมพันธ์', 'ครอบครัว', 'ลูก', 'หย่า', 'เลิก', 'รัก', 'เพื่อน'],
+  'สุขภาพ':        ['สุขภาพ', 'เจ็บป่วย', 'โรค', 'หมอ', 'รักษา', 'ร่างกาย', 'บาดเจ็บ', 'อุบัติเหตุ', 'ป่วย', 'เจ็บ'],
+  'โชคลาภ':        ['โชค', 'ลาภ', 'โชคลาภ', 'เสี่ยงโชค', 'หวย', 'รางวัล', 'ดวง', 'โชคดี', 'โชคร้าย'],
+};
+
+function _vcDetectDomain(userText) {
+  const t = userText;
+  let best = null, bestCount = 0;
+  for (const [domain, kws] of Object.entries(_VC_DOMAIN_KEYWORDS)) {
+    const count = kws.filter(kw => t.includes(kw)).length;
+    if (count > bestCount) { bestCount = count; best = domain; }
+  }
+  return bestCount > 0 ? best : null;
+}
+
+function _vcFormatRule(r, i) {
+  const rid = r.id || ('R' + String(i + 1).padStart(3, '0'));
+  const pol = r.polarity === '+' ? '[ดี]' : r.polarity === '-' ? '[ร้าย]' : '[กลาง]';
+  const dom = r.domain ? `[${r.domain}]` : '';
+  return `• [${rid}]${pol}${dom} ${r.meaning}`;
+}
+
+function _vcGetRulesForDomain(domain) {
+  if (!domain || !_vcAllRules.length) return _vcRulesCtx;
+  const filtered = _vcAllRules.filter(r => r.domain === domain);
+  if (!filtered.length) return _vcRulesCtx;
+  return filtered.map(_vcFormatRule).join('\n');
+}
+
+function _vcSystemPrompt(domainRulesStr) {
   const natal = typeof getNatal === 'function' ? getNatal() : null;
-  const hasRules = !!_vcRulesCtx;
+  const rulesStr = domainRulesStr !== undefined ? domainRulesStr : _vcRulesCtx;
+  const hasRules = !!rulesStr;
 
-  // base role
-  let prompt = 'คุณคือผู้เชี่ยวชาญโหราศาสตร์ไทยระบบ TALS ตอบภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำ';
+  let prompt = 'คุณคือ "นก" หมอดูหญิงผู้เชี่ยวชาญโหราศาสตร์ไทยระบบ TALS ' +
+               'ตอบภาษาไทยกระชับเป็นธรรมชาติ ไม่เกิน 60 คำ พูดเป็นกันเองเหมือนหมอดูที่คุ้นเคย';
 
-  // constraint — เพิ่มเฉพาะเมื่อมีกฎให้อ้างอิง
   if (hasRules) {
-    prompt += '\nใช้เฉพาะข้อมูลกฎที่ให้มาตอบ ถ้าคำถามเกินขอบเขต ให้บอกว่า "ดวงนี้ไม่มีข้อมูลในส่วนนั้น"';
+    prompt += '\nใช้เฉพาะข้อมูลกฎที่ให้มาตอบ ถ้าคำถามเกินขอบเขตกฎเหล่านี้ ให้บอกว่า "ดวงนี้ไม่มีข้อมูลในส่วนนั้น"';
   }
 
-  // chart context
+  prompt += '\nถ้าตอบจากความรู้โหราศาสตร์ทั่วไปที่ไม่มีในกฎ TALS ที่ให้มา ให้ขึ้นต้นด้วย "หมอดูบางคนคิดว่า" — แต่เฉพาะครั้งแรกที่ออกนอก TALS ในบทสนทนานี้เท่านั้น';
+
   if (natal && natal.pos) {
     const asc = get_lagna(natal.pos);
     prompt += '\n\nดวงชาตา: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
   }
 
-  // rules — format: [R001][ดี][อาชีพ] meaning
   if (hasRules) {
-    prompt += '\n\nกฎโหราศาสตร์ที่ตรงกับดวง:\n' + _vcRulesCtx;
+    prompt += '\n\nกฎโหราศาสตร์ที่ตรงกับดวง:\n' + rulesStr;
   }
 
   return prompt;
@@ -126,13 +159,50 @@ async function _vcBuildRulesCtx() {
       .filter(r => r.type === 'NATAL_ATOMIC' || r.type === 'NATAL_COMBINATION')
       .sort((a, b) => (a.tier || 9) - (b.tier || 9))
       .slice(0, 20);
-    _vcRulesCtx = matched.map((r, i) => {
-      const rid = r.id || ('R' + String(i + 1).padStart(3, '0'));
-      const pol = r.polarity === '+' ? '[ดี]' : r.polarity === '-' ? '[ร้าย]' : '[กลาง]';
-      const dom = r.domain ? `[${r.domain}]` : '';
-      return `• [${rid}]${pol}${dom} ${r.meaning}`;
-    }).join('\n');
-  } catch(_) { _vcRulesCtx = ''; }
+    _vcAllRules = matched;
+    _vcRulesCtx = matched.map(_vcFormatRule).join('\n');
+  } catch(_) { _vcAllRules = []; _vcRulesCtx = ''; }
+}
+
+async function _vcSendGreeting() {
+  if (!_vcAllRules.length) return;
+  const natal = typeof getNatal === 'function' ? getNatal() : null;
+  const top3 = _vcAllRules.slice(0, 3);
+  const rulesStr = top3.map(_vcFormatRule).join('\n');
+  let greetSys = 'คุณคือ "นก" หมอดูหญิงผู้เชี่ยวชาญโหราศาสตร์ไทยระบบ TALS ' +
+                 'ทักทายผู้มาหาอย่างเป็นกันเอง แล้วพยากรณ์คร่าวๆ 1-2 ข้อจากกฎที่ให้มา ' +
+                 'ไม่เกิน 50 คำ ไม่ต้องรอให้ถาม';
+  if (natal && natal.pos) {
+    const asc = get_lagna(natal.pos);
+    greetSys += '\n\nดวงชาตา: ลัคนา' + ZODIAC_TH[asc] + (natal.name ? ' ชื่อ' + natal.name : '');
+  }
+  greetSys += '\n\nกฎโหราศาสตร์:\n' + rulesStr;
+
+  _vcSetStatus('กำลังทักทาย...');
+  _vcSetMicState('thinking');
+  try {
+    const reply = await send_chat([
+      { role: 'system', content: greetSys },
+      { role: 'user', content: 'สวัสดี' },
+    ]);
+    _vcHistory.push({ role: 'assistant', content: reply });
+    _vcAppendBubble('assistant', reply);
+    _vcSetStatus('กำลังพูด...');
+    _vcSetMicState('speaking');
+    nokSpeak(reply, {
+      rate: _v3SpeakRate,
+      onState: (event) => {
+        if (event === 'end' || event === 'error') {
+          _vcSetStatus('กดไมค์เพื่อพูด');
+          _vcSetMicState('idle');
+        }
+      },
+    });
+  } catch(err) {
+    console.warn('[VC greeting]', err);
+    _vcSetStatus('กดไมค์เพื่อพูด');
+    _vcSetMicState('idle');
+  }
 }
 
 function _vcSetStatus(text) {
@@ -165,10 +235,13 @@ async function _vcSendMessage(userText) {
   _vcSetStatus('กำลังคิด...');
   _vcSetMicState('thinking');
 
+  const domain = _vcDetectDomain(userText);
+  const domainRules = domain ? _vcGetRulesForDomain(domain) : undefined;
+
   const recent = _vcHistory.slice(-10); // keep last 5 exchanges
   try {
     const reply = await send_chat([
-      { role: 'system', content: _vcSystemPrompt() },
+      { role: 'system', content: _vcSystemPrompt(domainRules) },
       ...recent,
     ]);
     _vcHistory.push({ role: 'assistant', content: reply });
@@ -266,7 +339,15 @@ window.v3VcTogglePanel = function() {
   body.classList.toggle('hidden', !_vcPanelOpen);
   if (toggle) toggle.classList.toggle('open', _vcPanelOpen);
   if (arrow) arrow.textContent = _vcPanelOpen ? '▲' : '▼';
-  if (_vcPanelOpen && !_vcRulesCtx) _vcBuildRulesCtx();
+  if (_vcPanelOpen) {
+    if (!_vcRulesCtx) {
+      _vcBuildRulesCtx().then(() => {
+        if (_vcHistory.length === 0) _vcSendGreeting();
+      });
+    } else if (_vcHistory.length === 0) {
+      _vcSendGreeting();
+    }
+  }
   if (!_vcPanelOpen) {
     if (_vcRecog) { _vcRecog.abort(); _vcRecog = null; }
     if (nokIsSpeaking()) nokStop();
