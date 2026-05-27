@@ -200,6 +200,26 @@ jobs:
             git push origin HEAD:main
           fi
 
+      # ─── Regrade accuracy (evidence-based) ──────────────────────────────────
+      # รันหลัง enrichment ทุกแหล่ง — re-compute accuracy จาก julian_evidence.mjs
+      # ป้องกัน human error: accuracy ไม่สามารถตั้งค่ามือได้ ต้อง derive จาก evidence
+      - name: Regrade accuracy
+        if: steps.scrape.outputs.status == 'ok'
+        run: |
+          BEFORE=$(node -e "const d=require('./data/julian_all.json'); const a={A:0,B:0,C:0,D:0,F:0}; d.forEach(r=>a[r.accuracy]=(a[r.accuracy]||0)+1); console.log(JSON.stringify(a))")
+          node workers/julian_regrade.mjs
+          AFTER=$(node -e "const d=require('./data/julian_all.json'); const a={A:0,B:0,C:0,D:0,F:0}; d.forEach(r=>a[r.accuracy]=(a[r.accuracy]||0)+1); console.log(JSON.stringify(a))")
+          echo "Before: $BEFORE"
+          echo "After:  $AFTER"
+          if ! git diff --quiet data/julian_all.json; then
+            git config user.name  "JULIAN Bot"
+            git config user.email "julian-bot@horatad.com"
+            git add data/julian_all.json
+            git commit -m "JULIAN regrade: accuracy updated from evidence rules"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
       # ─── Manual seed merge — รวม data/julian_thai_seed.json → julian_all.json ──
       # รันหลัง enrichment ทุกแหล่ง — manual seed > scraped (accuracy A/B/C overrides D)
       - name: Manual seed merge

@@ -1,20 +1,28 @@
-name: JULIAN Backfill Accuracy
+name: JULIAN Accuracy Backfill
 
-# One-shot fix สำหรับ re-grade 588 C records จาก wikidata source
-# (scraper.mjs:166 เปลี่ยนกฎ precision >= 14 → C เมื่อ 2026-05-24)
-# รัน manual ผ่าน workflow_dispatch ไม่มี schedule
+# ใช้สำหรับ:
+#   1. P3447 backfill — update source → "astrotheme:{id}" สำหรับ records ที่ Wikidata เชื่อมไว้
+#      (แก้ bug seen_qids ทำให้ ASTROTHEME_SERIES ไม่ได้บันทึก astroId)
+#   2. Regrade — re-compute accuracy จาก evidence rules (julian_evidence.mjs)
+#
+# Flow:
+#   P3447 backfill → Regrade → commit
+#
+# ตั้งค่า inputs:
+#   p3447_limit : จำนวน records ที่จะ query P3447 (0 = ข้าม step นี้)
+#   regrade_only: รันแค่ regrade ไม่ query Wikidata (ถ้าต้องการ regrade เพียงอย่างเดียว)
 
 on:
   workflow_dispatch:
     inputs:
-      apply:
-        description: 'apply การเปลี่ยนแปลง (false = dry-run แสดง summary เท่านั้น)'
+      p3447_limit:
+        description: 'P3447 backfill: query กี่ records (0 = ข้าม, blank = ทั้งหมด)'
+        type: string
+        default: '500'
+      regrade_only:
+        description: 'regrade อย่างเดียว (ไม่ query Wikidata P3447)'
         type: boolean
         default: false
-      limit:
-        description: 'จำกัดจำนวน records (เว้นว่าง = ทั้งหมด ~588)'
-        type: string
-        default: ''
 
 permissions:
   contents: write
@@ -23,44 +31,53 @@ jobs:
   backfill:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
 
-      - name: Run backfill
+      # ── Step 1: P3447 backfill (update source → astrotheme:{id}) ────────────
+      - name: P3447 backfill
+        if: inputs.regrade_only != 'true' && inputs.regrade_only != true && inputs.p3447_limit != '0'
         run: |
-          ARGS=""
-          if [ "${{ inputs.apply }}" = "true" ]; then
-            ARGS="$ARGS --apply"
+          ARGS="--dry-run"
+          if [ -n "${{ inputs.p3447_limit }}" ] && [ "${{ inputs.p3447_limit }}" != "0" ]; then
+            ARGS="$ARGS --limit ${{ inputs.p3447_limit }}"
           fi
-          if [ -n "${{ inputs.limit }}" ]; then
-            ARGS="$ARGS --limit ${{ inputs.limit }}"
-          fi
-          echo "Running: node workers/julian_backfill_accuracy.mjs $ARGS"
-          node workers/julian_backfill_accuracy.mjs $ARGS
+          echo "Dry-run first:"
+          node workers/julian_p3447_backfill.mjs $ARGS
+          echo ""
+          echo "Applying:"
+          APPLY_ARGS="${ARGS/--dry-run/}"
+          node workers/julian_p3447_backfill.mjs $APPLY_ARGS
 
+      # ── Step 2: Regrade (compute accuracy from evidence rules) ──────────────
+      - name: Regrade accuracy
+        run: |
+          node workers/julian_regrade.mjs --verbose
+          echo "Regrade complete"
+
+      # ── Step 3: Commit ───────────────────────────────────────────────────────
       - name: Commit changes
-        if: inputs.apply == true
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name  'JULIAN Bot'
+          git config user.email 'julian-bot@horatad.com'
           git add data/julian_all.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "JULIAN: backfill accuracy re-grade (one-shot)
+            git commit -m "JULIAN: P3447 backfill + accuracy regrade
 
-ลด C records ที่ scraped ก่อน precision >= 14 fix (2026-05-24)
-ดู workers/julian_backfill_accuracy.mjs สำหรับ logic"
-            git push
+- update source → astrotheme:{id} สำหรับ records ที่มี Wikidata P3447
+- recompute accuracy จาก evidence rules (julian_evidence.mjs)
+- Astrotheme time → B, Wikidata prec=13 placeholder → F"
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
