@@ -6,7 +6,7 @@ name: JULIAN Events Scraper
 
 on:
   schedule:
-    - cron: '0 2 * * *'    # 02:00 UTC daily — ไม่ชนกับ julian_sync (00/06/12/18)
+    - cron: '0 2,8,14,20 * * *'   # ทุก 6 ชั่วโมง (4x/day) — เร่งให้เสร็จเร็วขึ้น
   workflow_dispatch:
 
 permissions:
@@ -16,7 +16,7 @@ permissions:
 jobs:
   events:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -50,7 +50,7 @@ jobs:
         id: scrape
         if: steps.check.outputs.skip != 'true'
         run: |
-          OUTPUT=$(node workers/julian_event_scraper.mjs --resume --time-budget 1800 2>&1)
+          OUTPUT=$(node workers/julian_event_scraper.mjs --resume --time-budget 2400 2>&1)
           echo "$OUTPUT"
           if echo "$OUTPUT" | grep -q "STATUS=partial"; then
             echo "status=partial" >> $GITHUB_OUTPUT
