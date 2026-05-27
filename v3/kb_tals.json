@@ -9,7 +9,8 @@
     "score_field_added": "2026-05-29",
     "score_note": "score 0.0-1.0: REFERENCE/DEFINITION=0 (lookup only) · PRINCIPLE=0.9 · NATAL_ATOMIC tier1=0.8/tier2=0.6 · NATAL_COMBINATION tier1=1.0/tier2=0.8 · TRANSIT_NATAL tier1=0.8 (engine เพิ่ม 0.2x transit multiplier ภายหลัง)",
     "source_type_migration": "2026-05-29: bulk INFERRED default; REFERENCE/DEFINITION/PRINCIPLE=PRIMARY; per-rule audit pending | batch1 ch002-ch010: 38 rules upgraded to PRIMARY (2026-05-29) | batch2 ch013-ch018: 43 rules upgraded (2026-05-29) | batch3 ch022-ch030: 42 rules upgraded (2026-05-29) | batch4 multi-ch: 54 rules upgraded (2026-05-29)",
-    "source_type_audit": "batch5-complete 2026-05-29: upgraded 37 → PRIMARY. Final: PRIMARY=264, INFERRED=26. Remaining INFERRED are legitimately derived (combinations/context-specific/ancient refs)."
+    "source_type_audit": "batch5-complete 2026-05-29: upgraded 37 → PRIMARY. Final: PRIMARY=264, INFERRED=26. Remaining INFERRED are legitimately derived (combinations/context-specific/ancient refs).",
+    "last_merge": "2026-05-27"
   },
   "rules": [
     {
@@ -30,7 +31,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch001",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch001",
       "source_quote": ""
@@ -52,7 +53,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch001",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch001",
       "source_quote": ""
@@ -86,7 +87,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch002",
       "source_quote": ""
@@ -115,7 +116,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch002",
       "source_quote": ""
@@ -199,7 +200,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch002",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch002",
       "source_quote": ""
@@ -221,7 +222,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch003",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch003",
       "source_quote": ""
@@ -633,7 +634,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch005",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch005",
       "source_quote": ""
@@ -655,7 +656,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -677,7 +678,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -699,7 +700,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -721,7 +722,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -743,7 +744,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -765,7 +766,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -787,7 +788,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -809,7 +810,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch006",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch006",
       "source_quote": ""
@@ -1223,7 +1224,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch007",
       "source_quote": ""
@@ -1246,7 +1247,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch007",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch007",
       "source_quote": ""
@@ -1373,7 +1374,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch008",
       "source_quote": ""
@@ -1454,7 +1455,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch008",
       "source_quote": ""
@@ -1534,7 +1535,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch008",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch008",
       "source_quote": ""
@@ -1557,7 +1558,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch009",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch009",
       "source_quote": ""
@@ -1720,7 +1721,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch010",
-      "score": 1.0,
+      "score": 1,
       "source_type": "PRIMARY",
       "source_chapter": "ch010",
       "source_quote": "กฎลบ-ลบ ใช้เฉพาะ เกษตร ประเกษตร อุจ นิจ เท่านั้น ห้ามใช้กับ มหาจักร อุจจาวิลาส อุจจาภิมุข ราชาโชค เทวีโชค"
@@ -1742,7 +1743,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch013",
       "source_quote": ""
@@ -1939,7 +1940,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch013",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch013",
       "source_quote": ""
@@ -2206,7 +2207,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch014",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch014",
       "source_quote": ""
@@ -3555,7 +3556,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch027",
-      "score": 0.0,
+      "score": 0,
       "source_type": "PRIMARY",
       "source_chapter": "ch027",
       "source_quote": ""
@@ -5711,7 +5712,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 1.0,
+      "score": 1,
       "source_type": "PRIMARY",
       "source_chapter": "ch032",
       "source_quote": "การดูราหู(8) ต้องดู 3 ดาวประกอบเสมอ: พฤหัส(5)=สติยั้งคิด อาทิตย์(1)=รักหน้า อังคาร(3)=ตรรกะ"
@@ -5733,7 +5734,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch032",
-      "score": 1.0,
+      "score": 1,
       "source_type": "PRIMARY",
       "source_chapter": "ch032",
       "source_quote": "เมื่อดาวสัมพันธ์กัน: ไม่หักล้างกันสมบูรณ์ แต่ผลัดกันแสดงออก"
@@ -6199,7 +6200,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 1.0,
+      "score": 1,
       "source_type": "INFERRED",
       "source_chapter": "ch039"
     },
@@ -6297,7 +6298,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch039",
-      "score": 1.0,
+      "score": 1,
       "source_type": "PRIMARY",
       "source_chapter": "ch039"
     },
@@ -6433,7 +6434,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch041",
-      "score": 1.0,
+      "score": 1,
       "source_type": "PRIMARY",
       "source_chapter": "ch041"
     },
@@ -6699,7 +6700,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch069",
-      "score": 1.0,
+      "score": 1,
       "source_type": "INFERRED",
       "source_chapter": "ch069"
     },
@@ -6786,7 +6787,7 @@
       "db": "kb_tals",
       "source_level": 1,
       "source_ref": "ch078",
-      "score": 1.0,
+      "score": 1,
       "source_type": "PRIMARY",
       "source_chapter": "ch078"
     },
