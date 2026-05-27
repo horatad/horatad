@@ -128,9 +128,9 @@ console.log(`\n── Top ${TOP_N} TALS Rule Candidates (per event type) ──`
 for (const [eventType, ruleList] of Object.entries(report)) {
   console.log(`\n${eventType} (${(byType[eventType]||[]).length} records):`);
   console.log(
-    `  ${'Rule'.padEnd(52)} ${'Imp':>6} ${'Lift':>6} ${'N(class)':>9}`
+    '  ' + 'Rule'.padEnd(52) + 'Imp'.padStart(7) + 'Lift'.padStart(7) + 'N(class)'.padStart(10)
   );
-  console.log('  ' + '─'.repeat(78));
+  console.log('  ' + '─'.repeat(76));
   for (const r of ruleList.slice(0, TOP_N)) {
     console.log(
       `  ${r.tals_rule.padEnd(52)}` +
