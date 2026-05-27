@@ -108,6 +108,39 @@ _updateNavHeader() — ต้องมี branch ทุก mode (0/1/2/3)
 
 ---
 
+## 4b. Calculator — Standing Rules (อ่านก่อนแตะ engine calculation)
+
+### ประวัติ
+- `engine.js` port มาจาก C บน Palm PDA — integer arithmetic แบบ C ทั้งหมด
+- การ port ต้องใช้ random sampling + ทดสอบให้ output ตรงกับต้นฉบับก่อนจึงยอมรับ
+- ปัญหาที่เคยเจอตอน port: ตัวเลข precision ไม่ตรง, แปลง ค.ศ./พ.ศ. ผิด
+
+### กฎเหล็ก: ห้ามแก้ calculator code โดยไม่ผ่าน random regression test
+
+```
+ขั้นตอนก่อนแก้ calculator (get_data, _core, get_j, _calcJD):
+1. สุ่มชุด input (d, m, y, hr, mn, lng) อย่างน้อย 20-30 กรณี
+2. บันทึก output ปัจจุบัน (pos[] ทุกดาว) เป็น reference
+3. แก้โค้ด
+4. รัน input ชุดเดิม → ต้องได้ output เหมือนเดิมทุกตัว
+5. ถ้าต่างแม้แต่ 1 arcmin → หาสาเหตุก่อน ห้าม commit
+```
+
+### สิ่งที่ต้องระวังพิเศษ
+- **Integer arithmetic** — C truncate ≠ JS Math.trunc ในบางกรณี edge case
+- **Year conversion ค.ศ./พ.ศ.** — offset 543 ปี แต่มี edge case ช่วงต้นปี (ม.ค.-มี.ค.) ที่ปีปฏิทินไทยกับ Julian ต่างกัน
+- **Longitude adjustment** — `(105-lng)*4/60` ชั่วโมง — ต้องตรงกับ timezone reference เดิม
+
+### 3-module target (implement เมื่อมี Swiss Ephemeris จริง)
+```
+calculator.js  ← black box นี้ — regression required ทุกครั้งที่แตะ
+standards.js   ← TALS maps + assessStandards(pos[]) — แยกออกมาปลอดภัย
+matcher.js     ← buildNatalState, matchRulesV24 — BIBLE domain
+```
+ดูรายละเอียด: `ECOSYSTEM.md` section "Engine Architecture"
+
+---
+
 ## 5. Recurring Bug Patterns
 
 ### XSS — escHtml gaps
