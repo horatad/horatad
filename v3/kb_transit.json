@@ -1,0 +1,594 @@
+{
+  "_meta": {
+    "file": "kb_transit.json",
+    "version": "1.0.0",
+    "created": "2026-05-27",
+    "description": "Transit rules — ดาวจรทับพื้น (transit to natal) เท่านั้น ไม่รวมจรทับจร",
+    "scope": "BIBLE project",
+    "rule_type": "transit",
+    "total_rules": 40,
+    "transit_planets": ["MR","SA","RA","JU","MA"],
+    "aspects": {
+      "KUM": {"th":"กุม","houses":[0],"strength":1.0,"note":"ดาวจรอยู่ราศีเดียวกับจุดพื้น"},
+      "LENG": {"th":"เล็ง","houses":[6],"strength":0.8,"note":"ดาวจรอยู่ตรงข้าม 6 ราศี"},
+      "YOK": {"th":"โยค","houses":[4,8],"strength":0.6,"note":"ดาวจรอยู่ภพ 5 หรือ 9"},
+      "TRI": {"th":"ตรีโกณ","houses":[2,10],"strength":0.5,"note":"ดาวจรอยู่ภพ 3 หรือ 11"}
+    },
+    "natal_targets": {
+      "LA": "ลัคนา — ตำแหน่งลัคนาพื้น (คงที่ตาม birth data)",
+      "TANU": "ตนุลัคน์ — ตำแหน่งเจ้าราศีลัคนาพื้น (ดาวที่ครองราศีลัคนา)"
+    },
+    "severity_scale": "1=เบา, 2=พอสังเกต, 3=ชัดเจน, 4=หนัก, 5=รุนแรงมาก",
+    "polarity": "bad=ร้าย, good=ดี, mixed=ดีร้ายผสม",
+    "source_type": "INFERRED",
+    "source_note": "derived from TALS planet natures + aspect strengths — ไม่ใช่ quote ตรงจาก chapter",
+    "matching_note": "ใช้ matchTransitRules(natal_pos, transit_pos, ascSign) — ต่างจาก matchRulesV24()",
+    "keyword_schema": "v3.0 — {k, src, pol} — ref ไม่บังคับสำหรับ transit rules"
+  },
+  "rules": [
+    {
+      "id": "TR001",
+      "transit_planet": "MR",
+      "aspect": "KUM",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 5,
+      "domain": "health",
+      "meaning": "มฤตยูจรกุมลัคนา — อันตรายสูงสุด อุบัติเหตุร้ายแรง สุขภาพวิกฤต ต้องระวังชีวิต",
+      "keywords": [
+        {"k":"อันตราย","src":"tals","pol":"bad"},
+        {"k":"อุบัติเหตุ","src":"tals","pol":"bad"},
+        {"k":"สุขภาพวิกฤต","src":"tals","pol":"bad"},
+        {"k":"ระวังชีวิต","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR002",
+      "transit_planet": "MR",
+      "aspect": "LENG",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 4,
+      "domain": "health",
+      "meaning": "มฤตยูจรเล็งลัคนา — ภยันตราย เสี่ยงอันตราย สูญเสีย บาดเจ็บ",
+      "keywords": [
+        {"k":"ภยันตราย","src":"tals","pol":"bad"},
+        {"k":"เสี่ยงอันตราย","src":"tals","pol":"bad"},
+        {"k":"สูญเสีย","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR003",
+      "transit_planet": "MR",
+      "aspect": "YOK",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 3,
+      "domain": "health",
+      "meaning": "มฤตยูจรโยคลัคนา — โรคภัยไข้เจ็บ ปัญหาสุขภาพ พักฟื้น",
+      "keywords": [
+        {"k":"โรคภัย","src":"tals","pol":"bad"},
+        {"k":"ปัญหาสุขภาพ","src":"tals","pol":"bad"},
+        {"k":"พักฟื้น","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR004",
+      "transit_planet": "MR",
+      "aspect": "TRI",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "มฤตยูจรตรีโกณลัคนา — อุปสรรค ปัญหาเล็กน้อย ต้องระวัง",
+      "keywords": [
+        {"k":"อุปสรรค","src":"tals","pol":"bad"},
+        {"k":"ระวัง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR005",
+      "transit_planet": "MR",
+      "aspect": "KUM",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 5,
+      "domain": "health",
+      "meaning": "มฤตยูจรกุมตนุลัคน์ — ดวงโดยรวมอ่อนแอมาก อันตรายสูง ชีวิตไม่ปลอดภัย",
+      "keywords": [
+        {"k":"ดวงอ่อน","src":"tals","pol":"bad"},
+        {"k":"อันตรายสูง","src":"tals","pol":"bad"},
+        {"k":"ไม่ปลอดภัย","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR006",
+      "transit_planet": "MR",
+      "aspect": "LENG",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 4,
+      "domain": "health",
+      "meaning": "มฤตยูจรเล็งตนุลัคน์ — กดดันดวง อุปสรรคหนัก สุขภาพแย่ลง",
+      "keywords": [
+        {"k":"กดดันดวง","src":"tals","pol":"bad"},
+        {"k":"สุขภาพแย่","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR007",
+      "transit_planet": "MR",
+      "aspect": "YOK",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "มฤตยูจรโยคตนุลัคน์ — ดวงไม่เป็นใจ ปัญหารุมเร้า ต้องสู้มากกว่าปกติ",
+      "keywords": [
+        {"k":"ดวงไม่เป็นใจ","src":"tals","pol":"bad"},
+        {"k":"ปัญหารุมเร้า","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR008",
+      "transit_planet": "MR",
+      "aspect": "TRI",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "มฤตยูจรตรีโกณตนุลัคน์ — ขัดขวางเล็กน้อย ดวงลดลงบ้าง",
+      "keywords": [
+        {"k":"ขัดขวาง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR009",
+      "transit_planet": "SA",
+      "aspect": "KUM",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 4,
+      "domain": "general",
+      "meaning": "เสาร์จรกุมลัคนา — เซ็งชีวิต ทุกข์ใจ อุปสรรคหนัก ทุกอย่างล่าช้าชะงัก",
+      "keywords": [
+        {"k":"เซ็งชีวิต","src":"tals","pol":"bad"},
+        {"k":"ทุกข์ใจ","src":"tals","pol":"bad"},
+        {"k":"ล่าช้า","src":"tals","pol":"bad"},
+        {"k":"ชะงัก","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR010",
+      "transit_planet": "SA",
+      "aspect": "LENG",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "เสาร์จรเล็งลัคนา — ความเครียด กดดัน หนักใจ ถูกขัดขวางจากคนอื่น",
+      "keywords": [
+        {"k":"เครียด","src":"tals","pol":"bad"},
+        {"k":"กดดัน","src":"tals","pol":"bad"},
+        {"k":"ถูกขัดขวาง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR011",
+      "transit_planet": "SA",
+      "aspect": "YOK",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "เสาร์จรโยคลัคนา — ล่าช้า ขัดขวาง ผลที่หวังต้องรอนานขึ้น",
+      "keywords": [
+        {"k":"ล่าช้า","src":"tals","pol":"bad"},
+        {"k":"รอนาน","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR012",
+      "transit_planet": "SA",
+      "aspect": "TRI",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "เสาร์จรตรีโกณลัคนา — ผลเล็กน้อย อาจรู้สึกช้าหรือหนักบ้าง",
+      "keywords": [
+        {"k":"ช้าเล็กน้อย","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR013",
+      "transit_planet": "SA",
+      "aspect": "KUM",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 4,
+      "domain": "general",
+      "meaning": "เสาร์จรกุมตนุลัคน์ — ดวงอ่อน ไม่ก้าวหน้า ทุกข์ทน ชีวิตหนักอึ้ง",
+      "keywords": [
+        {"k":"ดวงอ่อน","src":"tals","pol":"bad"},
+        {"k":"ไม่ก้าวหน้า","src":"tals","pol":"bad"},
+        {"k":"ชีวิตหนัก","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR014",
+      "transit_planet": "SA",
+      "aspect": "LENG",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "เสาร์จรเล็งตนุลัคน์ — กดดันดวง ขัดขวางชีวิต ทุกอย่างมีแรงต้าน",
+      "keywords": [
+        {"k":"กดดันดวง","src":"tals","pol":"bad"},
+        {"k":"แรงต้าน","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR015",
+      "transit_planet": "SA",
+      "aspect": "YOK",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "เสาร์จรโยคตนุลัคน์ — ล่าช้าเล็กน้อย ดวงลดลงบ้าง",
+      "keywords": [
+        {"k":"ล่าช้า","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR016",
+      "transit_planet": "SA",
+      "aspect": "TRI",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "เสาร์จรตรีโกณตนุลัคน์ — ผลเบาบาง แทบไม่รู้สึก",
+      "keywords": [
+        {"k":"ผลเบาบาง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR017",
+      "transit_planet": "RA",
+      "aspect": "KUM",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 4,
+      "domain": "general",
+      "meaning": "ราหูจรกุมลัคนา — สับสน ไม่มั่นคง เปลี่ยนแปลงกะทันหัน ถูกหลอก คนล้อมหน้าล้อมหลัง",
+      "keywords": [
+        {"k":"สับสน","src":"tals","pol":"bad"},
+        {"k":"ไม่มั่นคง","src":"tals","pol":"bad"},
+        {"k":"ถูกหลอก","src":"tals","pol":"bad"},
+        {"k":"เปลี่ยนแปลง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR018",
+      "transit_planet": "RA",
+      "aspect": "LENG",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "ราหูจรเล็งลัคนา — ปัญหาจากคนอื่น คนต่างถิ่น ถูกโกง ถูกใส่ร้าย",
+      "keywords": [
+        {"k":"ปัญหาจากคน","src":"tals","pol":"bad"},
+        {"k":"ถูกโกง","src":"tals","pol":"bad"},
+        {"k":"ถูกใส่ร้าย","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR019",
+      "transit_planet": "RA",
+      "aspect": "YOK",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "ราหูจรโยคลัคนา — ไม่มั่นคง วุ่นวาย เปลี่ยนแปลงบ่อย",
+      "keywords": [
+        {"k":"ไม่มั่นคง","src":"tals","pol":"bad"},
+        {"k":"วุ่นวาย","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR020",
+      "transit_planet": "RA",
+      "aspect": "TRI",
+      "natal_target": "LA",
+      "polarity": "mixed",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "ราหูจรตรีโกณลัคนา — ผลเล็กน้อย บางครั้งช่วยให้มีโอกาสแปลกใหม่",
+      "keywords": [
+        {"k":"ผันผวนเล็กน้อย","src":"tals","pol":"mixed"}
+      ]
+    },
+    {
+      "id": "TR021",
+      "transit_planet": "RA",
+      "aspect": "KUM",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 4,
+      "domain": "general",
+      "meaning": "ราหูจรกุมตนุลัคน์ — ดวงวนเวียน ไม่นิ่ง ไม่แน่นอน ไม่รู้ทิศทาง",
+      "keywords": [
+        {"k":"ดวงวนเวียน","src":"tals","pol":"bad"},
+        {"k":"ไม่แน่นอน","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR022",
+      "transit_planet": "RA",
+      "aspect": "LENG",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "ราหูจรเล็งตนุลัคน์ — กวนดวง ขัดขวาง มีคนคอยเป็นอุปสรรค",
+      "keywords": [
+        {"k":"กวนดวง","src":"tals","pol":"bad"},
+        {"k":"คนเป็นอุปสรรค","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR023",
+      "transit_planet": "RA",
+      "aspect": "YOK",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "ราหูจรโยคตนุลัคน์ — ไม่มั่นคงเล็กน้อย ผันผวน",
+      "keywords": [
+        {"k":"ผันผวน","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR024",
+      "transit_planet": "RA",
+      "aspect": "TRI",
+      "natal_target": "TANU",
+      "polarity": "mixed",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "ราหูจรตรีโกณตนุลัคน์ — ผลเล็กน้อย แทบไม่รู้สึก",
+      "keywords": [
+        {"k":"ผลเล็กน้อย","src":"tals","pol":"mixed"}
+      ]
+    },
+    {
+      "id": "TR025",
+      "transit_planet": "JU",
+      "aspect": "KUM",
+      "natal_target": "LA",
+      "polarity": "good",
+      "severity": 5,
+      "domain": "general",
+      "meaning": "พฤหัสจรกุมลัคนา — โชคดีสูงสุด ความเจริญรุ่งเรือง ได้รับการสนับสนุน ชีวิตดีขึ้นมาก",
+      "keywords": [
+        {"k":"โชคดีสูงสุด","src":"tals","pol":"good"},
+        {"k":"เจริญรุ่งเรือง","src":"tals","pol":"good"},
+        {"k":"ได้รับสนับสนุน","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR026",
+      "transit_planet": "JU",
+      "aspect": "LENG",
+      "natal_target": "LA",
+      "polarity": "good",
+      "severity": 4,
+      "domain": "general",
+      "meaning": "พฤหัสจรเล็งลัคนา — ช่วยเหลือ ดีต่อใจ ผ่านอุปสรรคได้ มีผู้ใหญ่หนุน",
+      "keywords": [
+        {"k":"ช่วยเหลือ","src":"tals","pol":"good"},
+        {"k":"ผู้ใหญ่หนุน","src":"tals","pol":"good"},
+        {"k":"ผ่านอุปสรรค","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR027",
+      "transit_planet": "JU",
+      "aspect": "YOK",
+      "natal_target": "LA",
+      "polarity": "good",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "พฤหัสจรโยคลัคนา — ดี สุขใจ มีโชค ชีวิตราบรื่น",
+      "keywords": [
+        {"k":"สุขใจ","src":"tals","pol":"good"},
+        {"k":"มีโชค","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR028",
+      "transit_planet": "JU",
+      "aspect": "TRI",
+      "natal_target": "LA",
+      "polarity": "good",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "พฤหัสจรตรีโกณลัคนา — ดีเล็กน้อย มีผลบวกเบาๆ",
+      "keywords": [
+        {"k":"ผลบวก","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR029",
+      "transit_planet": "JU",
+      "aspect": "KUM",
+      "natal_target": "TANU",
+      "polarity": "good",
+      "severity": 5,
+      "domain": "general",
+      "meaning": "พฤหัสจรกุมตนุลัคน์ — ดวงแข็ง โชคดี ประสบความสำเร็จ ชีวิตรุ่งโรจน์",
+      "keywords": [
+        {"k":"ดวงแข็ง","src":"tals","pol":"good"},
+        {"k":"ประสบความสำเร็จ","src":"tals","pol":"good"},
+        {"k":"รุ่งโรจน์","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR030",
+      "transit_planet": "JU",
+      "aspect": "LENG",
+      "natal_target": "TANU",
+      "polarity": "good",
+      "severity": 4,
+      "domain": "general",
+      "meaning": "พฤหัสจรเล็งตนุลัคน์ — เสริมดวง สนับสนุน ดีขึ้นชัดเจน",
+      "keywords": [
+        {"k":"เสริมดวง","src":"tals","pol":"good"},
+        {"k":"สนับสนุน","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR031",
+      "transit_planet": "JU",
+      "aspect": "YOK",
+      "natal_target": "TANU",
+      "polarity": "good",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "พฤหัสจรโยคตนุลัคน์ — ดวงดีเล็กน้อย ชีวิตดีขึ้นบ้าง",
+      "keywords": [
+        {"k":"ดวงดี","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR032",
+      "transit_planet": "JU",
+      "aspect": "TRI",
+      "natal_target": "TANU",
+      "polarity": "good",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "พฤหัสจรตรีโกณตนุลัคน์ — ผลดีเบาบาง มีแรงเสริมเล็กน้อย",
+      "keywords": [
+        {"k":"แรงเสริม","src":"tals","pol":"good"}
+      ]
+    },
+    {
+      "id": "TR033",
+      "transit_planet": "MA",
+      "aspect": "KUM",
+      "natal_target": "LA",
+      "polarity": "mixed",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "อังคารจรกุมลัคนา — กล้าหาญ มีพลัง แต่อาจรุนแรง ขัดแย้ง ไฟแรงต้องระวัง",
+      "keywords": [
+        {"k":"กล้าหาญ","src":"tals","pol":"good"},
+        {"k":"ขัดแย้ง","src":"tals","pol":"bad"},
+        {"k":"รุนแรง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR034",
+      "transit_planet": "MA",
+      "aspect": "LENG",
+      "natal_target": "LA",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "อังคารจรเล็งลัคนา — ความขัดแย้ง ปะทะ ถูกต่อต้าน ทะเลาะ",
+      "keywords": [
+        {"k":"ขัดแย้ง","src":"tals","pol":"bad"},
+        {"k":"ปะทะ","src":"tals","pol":"bad"},
+        {"k":"ทะเลาะ","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR035",
+      "transit_planet": "MA",
+      "aspect": "YOK",
+      "natal_target": "LA",
+      "polarity": "mixed",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "อังคารจรโยคลัคนา — กระฉับกระเฉง เร่งรีบ บางครั้งดี บางครั้งร้อนรน",
+      "keywords": [
+        {"k":"กระฉับกระเฉง","src":"tals","pol":"mixed"},
+        {"k":"เร่งรีบ","src":"tals","pol":"mixed"}
+      ]
+    },
+    {
+      "id": "TR036",
+      "transit_planet": "MA",
+      "aspect": "TRI",
+      "natal_target": "LA",
+      "polarity": "mixed",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "อังคารจรตรีโกณลัคนา — ผลเล็กน้อย กระตุ้นเล็กน้อย",
+      "keywords": [
+        {"k":"กระตุ้น","src":"tals","pol":"mixed"}
+      ]
+    },
+    {
+      "id": "TR037",
+      "transit_planet": "MA",
+      "aspect": "KUM",
+      "natal_target": "TANU",
+      "polarity": "mixed",
+      "severity": 3,
+      "domain": "general",
+      "meaning": "อังคารจรกุมตนุลัคน์ — ดวงแข็งกร้าว มีพลัง แต่อาจขัดแย้งภายใน ใจร้อน",
+      "keywords": [
+        {"k":"ดวงแข็งกร้าว","src":"tals","pol":"mixed"},
+        {"k":"ใจร้อน","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR038",
+      "transit_planet": "MA",
+      "aspect": "LENG",
+      "natal_target": "TANU",
+      "polarity": "bad",
+      "severity": 2,
+      "domain": "general",
+      "meaning": "อังคารจรเล็งตนุลัคน์ — กดดันดวง ปัญหาจากความขัดแย้ง",
+      "keywords": [
+        {"k":"กดดันดวง","src":"tals","pol":"bad"},
+        {"k":"ความขัดแย้ง","src":"tals","pol":"bad"}
+      ]
+    },
+    {
+      "id": "TR039",
+      "transit_planet": "MA",
+      "aspect": "YOK",
+      "natal_target": "TANU",
+      "polarity": "mixed",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "อังคารจรโยคตนุลัคน์ — กระตุ้นดวงเล็กน้อย เร่งรีบ",
+      "keywords": [
+        {"k":"กระตุ้น","src":"tals","pol":"mixed"}
+      ]
+    },
+    {
+      "id": "TR040",
+      "transit_planet": "MA",
+      "aspect": "TRI",
+      "natal_target": "TANU",
+      "polarity": "mixed",
+      "severity": 1,
+      "domain": "general",
+      "meaning": "อังคารจรตรีโกณตนุลัคน์ — ผลเล็กน้อย แทบไม่รู้สึก",
+      "keywords": [
+        {"k":"ผลเล็กน้อย","src":"tals","pol":"mixed"}
+      ]
+    }
+  ]
+}
