@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.41
-// Version 3.3.41 | 2026-05-27
+// HORATAD:SCRIPT:3.3.42
+// Version 3.3.42 | 2026-05-27
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
 // Changes: [V3.3.37] fix(quality): MAHACHAK_MAP อาทิตย์ 6→3 + swap อุจจาวิลาส/อุจจาภิมุข ใน script.js
 // Changes: [V3.3.36] feat(about): restore เกาะในฝัน BGM button on About page
@@ -22,7 +22,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.41';
+const APP_VERSION='3.3.42';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
