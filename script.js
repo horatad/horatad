@@ -1,5 +1,6 @@
-// HORATAD:SCRIPT:3.3.36
-// Version 3.3.36 | 2026-05-25
+// HORATAD:SCRIPT:3.3.37
+// Version 3.3.37 | 2026-05-27
+// Changes: [V3.3.37] fix(quality): MAHACHAK_MAP อาทิตย์ 6→3 + swap อุจจาวิลาส/อุจจาภิมุข ใน script.js
 // Changes: [V3.3.36] feat(about): restore เกาะในฝัน BGM button on About page
 // Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
 // Changes: [V3.3.22] feat(M6+_navHeader): localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (จร)
@@ -20,7 +21,7 @@
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.36';
+const APP_VERSION='3.3.37';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -84,7 +85,7 @@ const NK_NAMES=["อัศวินี","ภรณี","กฤตติกา","
 "มูละ","บุรพาษาฒ","อุตราษาฒ","ศรวณะ","ธนิษฐะ","ศตภิษก","บุรพภัทรบท","อุตรภัทรบท","เรวดี"];
 const KASET_MAP={0:3,1:6,2:4,3:2,4:1,5:4,6:6,7:3,8:5,9:7,10:8,11:5}; // กุมภ์→ราหู(8) corrected 2026-05-28: เจ้าเกษตร≠ตนุเศษ ราหูเป็นเจ้าเรือนได้ แต่ไม่ใช่ผลตนุเศษ
 const EXALT_MAP={1:0,2:1,3:9,4:5,5:3,6:11,7:6,8:7};
-const MAHACHAK_MAP={1:6,2:0,3:5,4:4,5:7,6:8,7:1,8:9};
+const MAHACHAK_MAP={1:3,2:0,3:5,4:4,5:7,6:8,7:1,8:9}; // อาทิตย์: 6(ตุล)→3(กรกฎ) corrected per user 2026-05-26
 const RACHA_MAP={1:2,2:5,3:1,4:4,5:0,6:3,7:7,8:6}; // verified 2026-05-28 จาก 100CH (ปีเตอร์): อา→มิ,จ→กัน,อัง→พฤ,พุ→สิ,พฤ→เม,ศุ→กร,เส→พิ,รา→ตุ
 const MEAN_SPEEDS={1:59,2:790,3:31,4:59,5:5,6:59,7:2,8:3};
 const HOUSE_SCORE={1:4,4:3,7:3,10:3,5:2,9:2,11:2,2:1,3:1,6:-2,8:-3,12:-3};
@@ -633,8 +634,8 @@ function getStandards(pos,i){
   if(i===0)return"";let s=Math.trunc(pos[i]/1800),res=[],ex=EXALT_MAP[i];
   if(KASET_MAP[s]===i)res.push("เกษตร");
   if(ex!==undefined&&ex===s)res.push("มหาอุจ");
-  if(ex!==undefined&&(ex+1)%12===s)res.push("อุจจาวิลาส");
-  if(ex!==undefined&&((ex-1+12)%12)===s)res.push("อุจจาภิมุข");
+  if(ex!==undefined&&((ex-1+12)%12)===s)res.push("อุจจาวิลาส");  // ราศีก่อนอุจ
+  if(ex!==undefined&&(ex+1)%12===s)res.push("อุจจาภิมุข");        // ราศีหลังอุจ
   if(KASET_MAP[(s+6)%12]===i)res.push("ประ");
   if(ex!==undefined&&(ex+6)%12===s)res.push("นิจ");
   let mc=MAHACHAK_MAP[i];if(mc!==undefined&&mc===s)res.push("มหาจักร");
