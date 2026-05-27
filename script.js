@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.46
-// Version 3.3.46 | 2026-05-27
+// HORATAD:SCRIPT:3.3.47
+// Version 3.3.47 | 2026-05-27
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
@@ -24,7 +24,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.46';
+const APP_VERSION='3.3.47';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -106,6 +106,8 @@ let _chart2=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
 // V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
 let _outerState=0;
+// D6: label cycle 0=ราศี 1=ภพ 2=ปิด — persisted, independent from transit _outerState
+let _labelMode=parseInt(localStorage.getItem('horatad_label_mode')||'0')%3;
 let _chartTypeState=0; // 0=ราศี 1=ตรียางค์ 2=นวางค์
 let _reportTransitShow=false; // V2.1 toggle transit section in report
 let _activeTab=1;
@@ -991,6 +993,27 @@ function cycleOuterDisplay(){
   _playBeep(700);
   _redraw();
 }
+
+// D6: label cycle chip — ราศี/ภพ/ปิด (independent from transit outer state)
+const _LABEL_MODE_ICONS=['🅰️','🏠','🚫'];
+const _LABEL_MODE_TIP=['ชื่อราศี','ชื่อภพ','ปิดป้าย'];
+function _applyLabelModeChip(){
+  const chip=document.getElementById('btn-label-cycle');
+  if(!chip)return;
+  chip.textContent=_LABEL_MODE_ICONS[_labelMode];
+  chip.title=_LABEL_MODE_TIP[_labelMode];
+  chip.className='label-cycle-chip'+((_labelMode>0)?' label-cycle-on':'');
+}
+window.cycleLabelMode=function(){
+  _labelMode=(_labelMode+1)%3;
+  localStorage.setItem('horatad_label_mode',String(_labelMode));
+  // only override _outerState when not in transit/outer planet mode (2/3)
+  if(_outerState!==2&&_outerState!==3){
+    _outerState=[0,1,4][_labelMode];
+  }
+  _applyLabelModeChip();
+  _redraw();
+};
 
 // ── M3: Transit cursor helpers ───────────────────────────
 // step hours per planet for sign-change iteration
@@ -3939,7 +3962,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     _renderEvents(e.target.value);
   });
 
-  // V3.3.46: auto-format HH:MM for text time inputs
+  // V3.3.47: auto-format HH:MM for text time inputs
   document.querySelectorAll('input.time-input').forEach(el=>{
     el.addEventListener('input',e=>{
       let v=e.target.value.replace(/[^\d]/g,'');
@@ -4042,6 +4065,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   calculateChart1();calculateChart2();calculateTransit();
   _viewMode=0;
   _applyViewMode();
+  // D6: apply saved label mode on startup
+  _outerState=[0,1,4][_labelMode];
+  _applyLabelModeChip();
   _redraw();
   _updateShareButton();
   _renderQuickMemory();

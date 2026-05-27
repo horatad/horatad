@@ -386,6 +386,11 @@ body.about-active .logo-h1{display:none}
 .chart-nav-info{flex:1;min-width:0;text-align:center;font-size:12px;color:#8b949e;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
 .chart-nav-gear{flex:0 0 auto;width:28px;height:28px;padding:0;background:#2d333b;color:#c9d1d9;border:none;border-radius:4px;cursor:pointer;font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center}
 .chart-nav-gear:hover{background:#444c56}
+/* D6: label cycle chip */
+.chart-label-row{display:flex;align-items:center;padding:4px 2px 2px;gap:4px}
+.label-cycle-chip{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:2px 10px;font-size:12px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;line-height:1.5;transition:background .15s}
+.label-cycle-chip:hover{background:#2d333b;border-color:#444}
+.label-cycle-chip.label-cycle-on{background:#1a3c6b;border-color:#4a9eff;color:#79c0ff}
 /* M2: T1/T2 toggle buttons */
 .chart-nav-t1,.chart-nav-t2{flex:0 0 auto;height:28px;padding:0 8px;background:#2d333b;color:#8b949e;border:1px solid #444;border-radius:4px;cursor:pointer;font-size:11px;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;line-height:1;white-space:nowrap}
 .chart-nav-t1:hover,.chart-nav-t2:hover{background:#3d444c}
