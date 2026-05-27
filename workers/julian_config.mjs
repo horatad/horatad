@@ -28,10 +28,10 @@ function astrothemeQuery(y1, y2) {
 }
 
 const ASTROTHEME_SERIES = [];
-for (let y = 1800; y < 2010; y += 5) ASTROTHEME_SERIES.push(astrothemeQuery(y, y + 5));
+for (let y = 1800; y < 2025; y += 5) ASTROTHEME_SERIES.push(astrothemeQuery(y, y + 5));
 
-// ── Era query generator — 1700-2100, 20-ปีต่อ chunk ─────────────────────────
-// ดึงบุคคลสำคัญ (sitelinks >= 5) ที่มีวันเดือนปีเกิดครบ (precision=day)
+// ── Era query generator — 1700-2100, 5-ปีต่อ chunk ──────────────────────────
+// ดึงบุคคลสำคัญ (sitelinks >= 3) ที่มีวันเดือนปีเกิดครบ (precision=day)
 // ไม่จำกัดอาชีพ — ครอบคลุมทุกสาขา ทุกประเทศ
 function eraQuery(y1, y2) {
   const from = `${y1}-01-01T00:00:00Z`;
@@ -43,7 +43,7 @@ function eraQuery(y1, y2) {
     tier:    2,
     sparql: `
       SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
-        ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+        ?person wikibase:sitelinks ?links. FILTER(?links >= 3)
         ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
         FILTER(?birthPrec >= 11)
         FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
@@ -63,7 +63,7 @@ for (let y = 1700; y < 2100; y += 5) ERA_SERIES.push(eraQuery(y, y + 5));
 export const CONFIG = {
 
   // ── Target ────────────────────────────────────────────────────
-  TARGET_RECORDS: 100000,   // เพดานสูงสุด (หยุดก่อนถ้า queries หมด)
+  TARGET_RECORDS: 200000,   // เพดานสูงสุด (หยุดก่อนถ้า queries หมด)
   MAX_PER_RUN: 500,         // เพดาน records ต่อ 1 query ใน run เดียว
 
   // ── Accuracy grades (ความเชื่อมั่นของแหล่งข้อมูลเวลาเกิด) ─────
@@ -300,6 +300,103 @@ export const CONFIG = {
           ?person wdt:P106 wd:Q937857.
           ?person wdt:P21 wd:Q6581097.
           ?person wikibase:sitelinks ?links. FILTER(?links > 20)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── อินเดีย ──────────────────────────────────────────────────
+    {
+      id: 'in_politicians',
+      label: 'นักการเมืองอินเดีย',
+      country: 'IN', tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P27 wd:Q668; wdt:P106 wd:Q82955.
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'in_entertainers',
+      label: 'ดารา/นักร้องอินเดีย (Bollywood)',
+      country: 'IN', tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P27 wd:Q668.
+          { ?person wdt:P106 wd:Q177220. } UNION { ?person wdt:P106 wd:Q33999. }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── ผู้นำอเมริกาใต้ ──────────────────────────────────────────
+    {
+      id: 'latam_leaders',
+      label: 'ผู้นำอเมริกาใต้',
+      country: null, tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          VALUES ?country { wd:Q155 wd:Q414 wd:Q298 wd:Q419 wd:Q733 wd:Q77 wd:Q736 wd:Q760 wd:Q241 wd:Q786 }
+          ?person wdt:P27 ?country; wdt:P106 wd:Q82955.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 8)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── ดนตรี / บันเทิงโลก ───────────────────────────────────────
+    {
+      id: 'global_musicians',
+      label: 'นักดนตรีชื่อดังระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P106 wd:Q177220.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 20)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL {
+            ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+            FILTER(?deathPrec >= 11)
+          }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'global_actors',
+      label: 'นักแสดงชื่อดังระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode WHERE {
+          ?person wdt:P106 wd:Q33999.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
           ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
           FILTER(?birthPrec >= 11)
           OPTIONAL {

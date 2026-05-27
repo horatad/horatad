@@ -3,7 +3,7 @@
  * julian_event_scraper.mjs
  * Scrape life events from Wikidata for ML training labels.
  *
- * Phase 1A: death | position_start | award_received
+ * Phase 1B: death | position_start | award_received | marriage | graduation
  *
  * Input:  data/julian_all.json (QIDs from wikidata: sources)
  * Output: data/julian_events.jsonl (append-only)
@@ -70,6 +70,14 @@ SELECT DISTINCT ?person ?event_type ?date WHERE {
     ?person p:P166 ?s.
     ?s pq:P585 ?date.
     BIND("award_received" AS ?event_type)
+  } UNION {
+    ?person p:P26 ?s.
+    { ?s pq:P580 ?date. } UNION { ?s pq:P585 ?date. }
+    BIND("marriage" AS ?event_type)
+  } UNION {
+    ?person p:P69 ?s.
+    ?s pq:P582 ?date.
+    BIND("graduation" AS ?event_type)
   }
 }
 LIMIT 5000`;
@@ -174,7 +182,10 @@ async function main() {
           event_jd:   ev.date.jd,
           event_type: ev.event_type,
           source:     `wikidata:${ev.qid}`,
-          confidence: ev.event_type === 'death' ? 0.98 : 0.90,
+          confidence: ev.event_type === 'death' ? 0.98
+                    : ev.event_type === 'graduation' ? 0.85
+                    : ev.event_type === 'marriage' ? 0.88
+                    : 0.90,
           scraped_at: now,
         });
       });
