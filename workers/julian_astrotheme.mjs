@@ -13,6 +13,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { createInterface } from 'readline';
 import { appendRaw } from './julian_raw_writer.mjs';
+import { deriveAccuracy } from './julian_evidence.mjs';
 
 const USER_AGENT  = 'JULIAN-bot/1.0 (horatad.com; empirical-astro-research)';
 const DELAY_MS    = 2500;   // polite gap — astrotheme อนุญาต crawl แต่ไม่ควรถี่
@@ -121,8 +122,7 @@ async function enrichOne(record) {
 
     console.log(`  ✓ ${record.name}: time=${parsed.time_utc ?? '-'} lat=${parsed.lat ?? '-'} lng=${parsed.lng ?? '-'}`);
 
-    // return enrichment record (COALESCE ใน import จะเติม NULL fields เท่านั้น)
-    return {
+    const enriched = {
       jd:              record.jd,
       name:            record.name,
       event_label:     record.event_label ?? null,
@@ -136,11 +136,13 @@ async function enrichOne(record) {
       relate_id:       record.relate_id ?? null,
       source:          record.source ?? `astrotheme:${path}`,
       source_type:     'internet',
-      accuracy:        parsed.time_utc ? 'C' : (record.accuracy ?? 'D'),
       validated_count: 0,
-      confidence:      parsed.time_utc ? 0.95 : 0.87,
+      confidence:      parsed.time_utc ? 0.97 : 0.87,
       notes:           null,
     };
+    // Accuracy derived from evidence — never hardcoded
+    const { grade } = deriveAccuracy(enriched);
+    return { ...enriched, accuracy: grade };
 
   } catch (e) {
     console.error(`  error: ${record.name} — ${e.message}`);
