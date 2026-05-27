@@ -123,18 +123,16 @@
 **เป้าหมาย:** 2 ตาราง (Master Key: JD→planets | Internet: JD→persons/events) → ส่งข้อมูลให้ BIBLE + HORATAD
 **Priority:** distinct birthdate (jd) สำคัญกว่า total count | birth time = optional (validate หน้างานด้วย accuracy A-F)
 
-### สถานะ (2026-05-25)
+### สถานะ (2026-05-27)
 - Schema: ✅ + `accuracy` field A/B/C/D/F | JD: ✅
-- **Records: 63,804 / 100,000 (63.8%)** — เพิ่มจาก workflow runs
-- Accuracy distribution: A=0 B=0 C=616 D=63,168 F=10 ⚠️ **รอ backfill ลด C → D ที่ควรเป็น**
-- Automation: ✅ 137 queries (15 category + 80 era 20-yr + 42 ASTROTHEME_SERIES) | cron ทุก 6 ชม.
-- Export: ✅ `data/julian_all.json` (repo, CORS-free) + GitHub Release ทุก run
-- Dedup: ✅ 4 layers (seen_qids + UNIQUE jd/name + UNIQUE source + COALESCE survivorship)
-- Astrotheme enrichment: ⚠️ time_utc ทำงาน (1.24% match) | lat/lng = 0 (parser ไม่ได้ extract)
-- Wikipedia TH enrichment: ✅ +112 records (เจอจังหวัด 98%, เวลา 10/112) — first Thai time!
-- Tier 1 Thai time_utc: 0 → **11 records** ✅
+- **Records: 66,912 / 100,000 (66.9%)** — workflow cron รันต่อเอง (+3,108 จากสัปดาห์ที่แล้ว)
+- Accuracy distribution: A=0 B=0 C=637 D=66,265 F=10
+- Automation: ✅ 137 queries | cron ทุก 6 ชม.
+- Export: ✅ `data/julian_all.json` (repo) + `data/julian_natal_stats.json` + `data/julian_positions_by_jd.json`
+- **🆕 Planet positions**: `data/julian_positions_by_jd.json` (900KB) — 28,174 unique JDs × 10 planets (SU-MR)
+- **🆕 Quality stats**: `data/julian_natal_stats.json` — aggregate counts per quality per planet → ใช้สำหรับ BIBLE triangulation
 - **Manual seed input tool**: `tools/julian_seed_input.html` + workflow merge step (รอ user เริ่มกรอก)
-- **🆕 Backfill workflow**: `.github/workflows/julian_backfill.yml` พร้อม manual trigger
+- **Backfill workflow**: `.github/workflows/julian_backfill.yml` พร้อม manual trigger
 
 ### Accuracy grades
 - **A** สูจิบัตร / official document — เชื่อถือได้สูงสุด (ยังไม่มี — รอ user เติมผ่าน tool)
