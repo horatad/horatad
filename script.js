@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.45
-// Version 3.3.45 | 2026-05-27
+// HORATAD:SCRIPT:3.3.46
+// Version 3.3.46 | 2026-05-27
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
@@ -24,7 +24,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.45';
+const APP_VERSION='3.3.46';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -128,6 +128,7 @@ let _memSortType='jd'; // 'jd'|'name'|'saved'
 let _memSortDir='desc';  // 'asc'|'desc'
 let _memScrollKey='';   // key of last selected item for scroll restore
 let _activeTank='private'; // 'private'|'qr'|'julian'
+let _memTagFilter=[]; // D1: active tag filter chips (empty=all)
 let _julianCache=null; // null=not loaded, array=loaded
 let _julianFiltered=[]; // filtered slice for display
 let _julianPage=0;
@@ -2090,6 +2091,7 @@ function _updateTankCounts(){
 
 window.switchTank=function(tank){
   _activeTank=tank;
+  _memTagFilter=[]; // D1: reset tag filter on tank switch
   ['private','qr','julian'].forEach(t=>{
     const btn=document.getElementById('tank-tab-'+t);
     if(btn)btn.classList.toggle('tank-tab-active',t===tank);
@@ -2105,8 +2107,37 @@ window.switchTank=function(tank){
   document.getElementById('julian-sub-row')?.classList.toggle('hidden',!isJulian);
   document.getElementById('julian-more-btn')?.classList.toggle('hidden',true);
   _updateTankCounts();
+  _buildPrivateTagRow(); // D1
   const f=document.getElementById('memory-search')?.value||'';
   _renderTank(f);
+};
+
+// D1: build tag filter chips for private tank
+function _buildPrivateTagRow(){
+  const row=document.getElementById('private-tag-filter');
+  if(!row)return;
+  const isPrivate=_activeTank==='private';
+  row.classList.toggle('hidden',!isPrivate);
+  if(!isPrivate)return;
+  const recs=_tankLoad(TANK_PRIVATE_KEY);
+  const tagSet=new Set();
+  for(const r of recs)for(const t of(r.tags||[]))tagSet.add(t);
+  if(!tagSet.size){row.innerHTML='';return;}
+  const tags=[...tagSet].sort((a,b)=>a.localeCompare(b,'th'));
+  const allActive=!_memTagFilter.length;
+  row.innerHTML=`<button class="priv-tag-chip${allActive?' active':''}" onclick="togglePrivateTagFilter('')">ทั้งหมด</button>`
+    +tags.map(t=>`<button class="priv-tag-chip${_memTagFilter.includes(t)?' active':''}" onclick="togglePrivateTagFilter('${_escHtml(t)}')">${_escHtml(t)}</button>`).join('');
+}
+
+window.togglePrivateTagFilter=function(tag){
+  if(!tag){_memTagFilter=[];}
+  else{
+    const idx=_memTagFilter.indexOf(tag);
+    if(idx>=0)_memTagFilter.splice(idx,1);
+    else _memTagFilter.push(tag);
+  }
+  _buildPrivateTagRow();
+  _renderTank(document.getElementById('memory-search')?.value||'');
 };
 
 function _renderTank(filter){
@@ -2119,6 +2150,11 @@ function _renderTank(filter){
   const items=[];
   _memCache.forEach((m,i)=>{
     if(f&&!(m.name||'').toLowerCase().includes(f)&&!(m.prov||'').toLowerCase().includes(f))return;
+    // D1: tag filter — OR logic (record must have at least one selected tag)
+    if(_activeTank==='private'&&_memTagFilter.length){
+      const mTags=m.tags||[];
+      if(!_memTagFilter.some(t=>mTags.includes(t)))return;
+    }
     const y_ce=_beToce(m.y_be,m.m);
     const tCell=m.noTime?'<span class="no-time-tag">ไม่ทราบเวลาเกิด</span>':_escHtml(m.t);
     const meta=`${_escHtml(m.d)}/${_escHtml(m.m)}/${_escHtml(m.y_be)} (${_escHtml(y_ce)}) · ${tCell}`;
@@ -2380,6 +2416,7 @@ window.searchAllTanks=function(query){
 function openMemory(section){
   _memSection=section;
   _editingMemKey=null;_editingMemSection=null;
+  _memTagFilter=[]; // D1: reset filter on open
   const s=document.getElementById('memory-search');
   if(s)s.value='';
   _updateSortBtns();
@@ -2393,6 +2430,7 @@ function openMemory(section){
   document.getElementById('mem-actions-private')?.classList.toggle('hidden',_activeTank!=='private');
   document.getElementById('mem-actions-qr')?.classList.toggle('hidden',_activeTank!=='qr');
   document.getElementById('mem-actions-julian')?.classList.toggle('hidden',_activeTank!=='julian');
+  _buildPrivateTagRow(); // D1
   _renderTank('');
   document.getElementById('memory-backdrop').classList.remove('hidden');
   document.getElementById('memory-modal').classList.remove('hidden');
@@ -3901,7 +3939,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     _renderEvents(e.target.value);
   });
 
-  // V3.3.45: auto-format HH:MM for text time inputs
+  // V3.3.46: auto-format HH:MM for text time inputs
   document.querySelectorAll('input.time-input').forEach(el=>{
     el.addEventListener('input',e=>{
       let v=e.target.value.replace(/[^\d]/g,'');
