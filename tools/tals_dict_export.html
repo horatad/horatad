@@ -103,7 +103,7 @@ tr:hover td { background: #e8eaf6; }
 
 <div id="tab-rules" class="tab-content">
   <div class="toolbar">
-    <input id="rules-search" type="text" placeholder="ค้นหา id / domain / meaning..." style="width:300px;padding:4px 8px;border:1px solid #ccc;border-radius:4px" oninput="filterRules(this.value)">
+    <input id="rules-search" type="text" placeholder="ค้นหา id / domain / keyword..." style="width:300px;padding:4px 8px;border:1px solid #ccc;border-radius:4px" oninput="filterRules(this.value)">
     <select id="rules-type-filter" onchange="filterRules(document.getElementById('rules-search').value)" style="padding:4px 8px">
       <option value="">ทุก type</option>
       <option>NATAL_ATOMIC</option><option>NATAL_COMBINATION</option>
@@ -406,7 +406,8 @@ function filterRules(q) {
     if (typeF && r.type !== typeF) return false;
     if (stF && r.source_type !== stF) return false;
     if (qLow) {
-      const hay = (r.id + ' ' + r.domain + ' ' + r.meaning + ' ' + r.c).toLowerCase();
+      const kwText = (r.keywords||[]).map(k=>k.k).join(' ');
+      const hay = (r.id + ' ' + r.domain + ' ' + kwText + ' ' + r.meaning + ' ' + r.c).toLowerCase();
       if (!hay.includes(qLow)) return false;
     }
     return true;
@@ -420,7 +421,7 @@ function _renderRulesTable(rules) {
   const stBadge = st => st === 'PRIMARY' ? '<span style="background:#2d6a2d;color:#fff;padding:1px 5px;border-radius:3px;font-size:10px">PRIMARY</span>' : '<span style="background:#ccc;color:#555;padding:1px 5px;border-radius:3px;font-size:10px">INFERRED</span>';
   let h = `<table><thead><tr>
     <th>id</th><th>type</th><th>tier</th><th>score</th><th>domain</th>
-    <th>pol</th><th>source</th><th>ch</th><th>title</th><th>meaning preview</th>
+    <th>pol</th><th>source</th><th>ch</th><th>title</th><th>keywords</th>
   </tr></thead><tbody>`;
   for (const r of rules) {
     h += `<tr>
@@ -433,7 +434,7 @@ function _renderRulesTable(rules) {
       <td>${stBadge(r.source_type)}</td>
       <td><small>${r.ch||''}</small></td>
       <td><small>${r.c||''}</small></td>
-      <td style="max-width:320px;font-size:11px;color:#333">${r.meaning}</td>
+      <td title="${r.meaning.replace(/"/g,'&quot;')}">${pills(r.keywords||[])}</td>
     </tr>`;
   }
   h += '</tbody></table>';
