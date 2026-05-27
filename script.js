@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.43
-// Version 3.3.43 | 2026-05-27
+// HORATAD:SCRIPT:3.3.44
+// Version 3.3.44 | 2026-05-27
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
@@ -24,7 +24,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.43';
+const APP_VERSION='3.3.44';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -627,8 +627,11 @@ function _beToce(y_be,m){
 // ── Gateway ───────────────────────────────────────────────
 // getHouse — imported from v3/engine.js
 function getMotion(vel,i){
-  if(i===0||i>=8)return"";let v=vel[i],mean=MEAN_SPEEDS[i]||0;
-  if(v>15000)return"พ";if(v<mean*0.8)return"ม";if(v>mean*1.2)return"ส";return"";
+  if(i===0||i===8||i===9)return""; // RA/KE เคลื่อนถอยเสมอ ไม่แสดง indicator
+  let v=vel[i],mean=MEAN_SPEEDS[i]||0;
+  if(v>15000)return"พ";
+  if(mean===0)return""; // MR(i=10) ไม่มี mean speed — แสดงเฉพาะถอยหลัง
+  if(v<mean*0.8)return"ม";if(v>mean*1.2)return"ส";return"";
 }
 // getStandards — imported from v3/standards.js
 function getStrength(pos,vel,i,ascSign){

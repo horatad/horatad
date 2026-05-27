@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.43 -->
-<!-- Version 3.3.43 | 2026-05-27 -->
+<!-- HORATAD:INDEX:3.3.44 -->
+<!-- Version 3.3.44 | 2026-05-27 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.43">
+<link rel="stylesheet" href="style.css?v=3.3.44">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -140,7 +140,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.43</span>
+  <span class="brand-ver">V 3.3.44</span>
 </h1>
 
 <!-- Tab nav -->
@@ -186,7 +186,7 @@ canvas{max-width:100%;height:auto}
           <div><label for="d1">วัน</label><input id="d1" type="number" min="1" max="31" inputmode="numeric"></div>
           <div><label for="m1">เดือน</label><input id="m1" type="number" min="1" max="12" inputmode="numeric"></div>
           <div><label for="y1">ปี</label><input id="y1" type="number" inputmode="numeric"></div>
-          <div><label for="t1">เวลา</label><input id="t1" type="time"></div>
+          <div><label for="t1">เวลา</label><input id="t1" type="time" lang="en-GB"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -218,7 +218,7 @@ canvas{max-width:100%;height:auto}
           <div><label for="d2">วัน</label><input id="d2" type="number" min="1" max="31" inputmode="numeric"></div>
           <div><label for="m2">เดือน</label><input id="m2" type="number" min="1" max="12" inputmode="numeric"></div>
           <div><label for="y2">ปี</label><input id="y2" type="number" inputmode="numeric"></div>
-          <div><label for="t2">เวลา</label><input id="t2" type="time"></div>
+          <div><label for="t2">เวลา</label><input id="t2" type="time" lang="en-GB"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -241,7 +241,7 @@ canvas{max-width:100%;height:auto}
           <div><label for="dt">วัน</label><input id="dt" type="number" min="1" max="31" inputmode="numeric"></div>
           <div><label for="mt">เดือน</label><input id="mt" type="number" min="1" max="12" inputmode="numeric"></div>
           <div><label for="yt">ปี</label><input id="yt" type="number" inputmode="numeric"></div>
-          <div><label for="tt">เวลา</label><input id="tt" type="time"></div>
+          <div><label for="tt">เวลา</label><input id="tt" type="time" lang="en-GB"></div>
         </div>
         <div class="prov-row">
           <div class="prov-wrap">
@@ -292,7 +292,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.43</div>
+        <div class="about-version">V 3.3.44</div>
         <div class="about-update">อัปเดต 27 พ.ค. 2569 · เพลงเกาะในฝัน auto-play · TALS naming</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -326,7 +326,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.43" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.44" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -438,7 +438,7 @@ canvas{max-width:100%;height:auto}
       <input type="number" id="ts-d" class="ts-num" min="1" max="31" placeholder="วัน">
       <input type="number" id="ts-m" class="ts-num" min="1" max="12" placeholder="ด">
       <input type="number" id="ts-y" class="ts-num ts-year" min="1" max="9999" placeholder="ปี">
-      <input type="time" id="ts-t" class="ts-time">
+      <input type="time" id="ts-t" class="ts-time" lang="en-GB">
       <button class="ts-reset" onclick="_tsReset()">วันนี้</button>
       <select id="ts-event" class="ts-event" onchange="_tsEventSelect(this.value)">
         <option value="">— เหตุการณ์ —</option>
@@ -764,7 +764,7 @@ canvas{max-width:100%;height:auto}
         <input id="ev-y" type="number"
           style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box"></div>
       <div style="flex:1.4"><label style="font-size:11px;color:#8b949e">เวลา</label>
-        <input id="ev-t" type="time"
+        <input id="ev-t" type="time" lang="en-GB"
           style="width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box"></div>
     </div>
     <div>
@@ -904,8 +904,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.43"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.43"></script>
+<script type="module" src="script.js?v=3.3.44"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.44"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -947,7 +947,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.43"></script>
+<script src="auth-pin.js?v=3.3.44"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
 <!-- V2.2.35: Add-tag modal -->
