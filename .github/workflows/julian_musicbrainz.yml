@@ -1,0 +1,82 @@
+name: JULIAN MusicBrainz Scraper
+
+# ดึงนักดนตรีจาก MusicBrainz (CC-BY 4.0) → เพิ่มใน julian_all.json
+# ไม่ใช้ Wikidata — ไม่กระทบ Wikidata rate limit
+# Rate limit: 1 req/sec — time-budget 1500s = ~1350 artists ต่อ run
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # ทุกวันจันทร์ 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  musicbrainz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Scrape MusicBrainz
+        id: scrape
+        run: |
+          OUTPUT=$(node workers/julian_musicbrainz.mjs --time-budget 1500 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "STATUS=partial"; then
+            echo "status=partial" >> $GITHUB_OUTPUT
+          else
+            echo "status=complete" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit
+        run: |
+          git config user.name  'JULIAN Bot'
+          git config user.email 'julian-bot@horatad.com'
+          [ -f data/julian_all.json ]              && git add data/julian_all.json
+          [ -f workers/julian_mb_checkpoint.json ] && git add workers/julian_mb_checkpoint.json
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            TOTAL=$(wc -c < data/julian_all.json | xargs node -e "
+              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
+              console.log(d.length);
+            " 2>/dev/null || echo "?")
+            STATUS="${{ steps.scrape.outputs.status }}"
+            git commit -m "JULIAN MusicBrainz: ${STATUS} — ${TOTAL} total records"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## MusicBrainz Scraper" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ steps.scrape.outputs.status || 'unknown' }}" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/julian_all.json ]; then
+            node -e "
+              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
+              const mb = d.filter(r => r.notes?.startsWith('musicbrainz:'));
+              console.log('- MusicBrainz records: ' + mb.length);
+              console.log('- Total records: ' + d.length);
+            " >> $GITHUB_STEP_SUMMARY || true
+          fi
+          if [ -f workers/julian_mb_checkpoint.json ]; then
+            node -e "
+              const cp = JSON.parse(require('fs').readFileSync('workers/julian_mb_checkpoint.json','utf8'));
+              console.log('- Checkpoint offset: ' + cp.offset);
+            " >> $GITHUB_STEP_SUMMARY || true
+          fi

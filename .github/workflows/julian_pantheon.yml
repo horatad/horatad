@@ -1,0 +1,71 @@
+name: JULIAN Pantheon Enrichment
+
+# เพิ่ม HPI score จาก Pantheon MIT dataset (CC-BY 4.0) ให้ julian_all.json
+# ไม่ใช้ Wikidata — รันได้ทันที ไม่กระทบ rate limit
+# รัน 1 ครั้ง (แล้ว disable ตัวเอง) หรือ manual trigger เพื่อ re-enrich
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  pantheon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Run Pantheon enrichment
+        id: pantheon
+        run: |
+          node workers/julian_pantheon.mjs
+          echo "status=complete" >> $GITHUB_OUTPUT
+
+      - name: Commit
+        if: steps.pantheon.outputs.status == 'complete'
+        run: |
+          git config user.name  'JULIAN Bot'
+          git config user.email 'julian-bot@horatad.com'
+          [ -f data/julian_all.json ] && git add data/julian_all.json
+          if git diff --cached --quiet; then
+            echo "Nothing to commit — no HPI matches found"
+          else
+            MATCHED=$(node -e "
+              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
+              console.log(d.filter(r => r.hpi != null).length);
+            ")
+            git commit -m "JULIAN Pantheon: เพิ่ม HPI score ${MATCHED} records"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Pantheon Enrichment" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/julian_all.json ]; then
+            node -e "
+              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
+              const withHpi = d.filter(r => r.hpi != null);
+              console.log('- Records with HPI: ' + withHpi.length);
+              if (withHpi.length > 0) {
+                const avg = withHpi.reduce((s,r) => s+r.hpi, 0) / withHpi.length;
+                console.log('- Average HPI: ' + avg.toFixed(1));
+              }
+            " >> $GITHUB_STEP_SUMMARY || true
+          fi

@@ -29,6 +29,37 @@ function astrothemeQuery(y1, y2) {
 const ASTROTHEME_SERIES = [];
 for (let y = 1800; y < 2025; y += 5) ASTROTHEME_SERIES.push(astrothemeQuery(y, y + 5));
 
+// ── Astro-Databank query generator — P760, same pattern as Astrotheme ─────────
+// Rodden Rating AA/A = birth time จากสูจิบัตร/ชีวประวัติ → ควร upgrade accuracy=B
+// ⚠️ ใช้ Wikidata SPARQL — trigger หลัง Wikidata rate limit reset เท่านั้น
+function astroDatabankQuery(y1, y2) {
+  const from = `${y1}-01-01T00:00:00Z`;
+  const to   = `${y2}-01-01T00:00:00Z`;
+  return {
+    id:      `astroDb_${y1}_${y2}`,
+    label:   `AstroDatabank ${y1}–${y2}`,
+    country: null,
+    tier:    1,
+    sparql: `
+      SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?astroDbId ?links WHERE {
+        ?person wdt:P760 ?astroDbId.
+        ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+        FILTER(?birthPrec >= 11)
+        FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
+        OPTIONAL {
+          ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec].
+          FILTER(?deathPrec >= 11)
+        }
+        OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+        OPTIONAL { ?person wikibase:sitelinks ?links. }
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en,th". }
+      } LIMIT 500`,
+  };
+}
+
+const ASTRODATABANK_SERIES = [];
+for (let y = 1800; y < 2025; y += 5) ASTRODATABANK_SERIES.push(astroDatabankQuery(y, y + 5));
+
 // ── Era query generator — 1700-2100, 5-ปีต่อ chunk ──────────────────────────
 // ดึงบุคคลสำคัญ (sitelinks >= 3) ที่มีวันเดือนปีเกิดครบ (precision=day)
 function eraQuery(y1, y2) {
@@ -463,8 +494,12 @@ export const CONFIG = {
         } LIMIT 500`,
     },
 
-    // ── Astrotheme series: P3447 — มี path ตรง → เวลาเกิดแม่นยำสูง ─────────
+    // ── Astrotheme series: P3447 — birth time จาก astrotheme.com ──────────
     ...ASTROTHEME_SERIES,
+
+    // ── Astro-Databank series: P760 — Rodden-rated birth times ─────────────
+    // ⚠️ trigger หลัง Wikidata rate limit reset เท่านั้น
+    ...ASTRODATABANK_SERIES,
 
     // ── Era series: บุคคลสำคัญ 1700-2100 (generate อัตโนมัติ) ────────────
     ...ERA_SERIES,
