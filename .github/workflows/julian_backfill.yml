@@ -49,7 +49,7 @@ jobs:
         with:
           repository: horatad/julian-data
           path: data
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.JULIAN_DATA_PAT }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -109,8 +109,10 @@ jobs:
           git add workers/julian_p3447_checkpoint.json || true
           if ! git diff --cached --quiet; then
             git commit -m "JULIAN backfill: checkpoint (${STATUS})"
+            git stash --include-untracked || true
             git pull --rebase origin main
             git push origin HEAD:main
+            git stash pop || true
           fi
 
       # ── Step 4: Disable schedule when completely done ────────────────────────

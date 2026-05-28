@@ -41,7 +41,7 @@ jobs:
         with:
           repository: horatad/julian-data
           path: data
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.JULIAN_DATA_PAT }}
 
       # ─── Setup Node ───────────────────────────────────────────
       - name: Setup Node.js
@@ -103,8 +103,10 @@ jobs:
           fi
           # push progress files → main repo
           git commit -m "JULIAN sync: progress files updated" || echo "Nothing to commit"
+          git stash --include-untracked || true
           git pull --rebase origin main
           git push origin HEAD:main
+          git stash pop || true
 
       # ─── Astrotheme enrichment — อ่าน data ที่ commit แล้ว ──────────────────
       # รันหลัง Commit progress → ได้ enrich records จาก batch นี้ทันที
@@ -341,8 +343,10 @@ jobs:
           git config user.email "julian-bot@horatad.com"
           git add v3/kb.json || true
           git commit -m "JULIAN empirical: auto-update kb.json empirical_p" || echo "No changes"
+          git stash --include-untracked || true
           git pull --rebase origin main
           git push || true
+          git stash pop || true
         env:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
@@ -358,8 +362,10 @@ jobs:
             git add workers/julian_stats.json
             if ! git diff --cached --quiet; then
               git commit -m "JULIAN stats: $(node -e "const s=JSON.parse(require('fs').readFileSync('workers/julian_stats.json','utf8')); console.log(s.total.toLocaleString()+' records ('+s.pct+'%)')")"
+              git stash --include-untracked || true
               git pull --rebase origin main
               git push origin HEAD:main
+              git stash pop || true
             fi
           else
             echo "data/julian_all.json not found — skipping stats"

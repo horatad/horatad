@@ -31,7 +31,7 @@ jobs:
         with:
           repository: horatad/julian-data
           path: data
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.JULIAN_DATA_PAT }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -64,8 +64,10 @@ jobs:
           [ -f workers/julian_mb_checkpoint.json ] && git add workers/julian_mb_checkpoint.json
           if ! git diff --cached --quiet; then
             git commit -m "JULIAN MusicBrainz: checkpoint (${STATUS})"
+            git stash --include-untracked || true
             git pull --rebase origin main
             git push origin HEAD:main
+            git stash pop || true
           fi
 
       - name: Summary
