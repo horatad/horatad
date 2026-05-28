@@ -388,3 +388,137 @@ jobs:
               if (s.delta_today !== null) console.log('- Delta today: +' + s.delta_today.toLocaleString());
             " >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "- Total: ${{ steps.scrape.outputs.total || '?' }}" >> $GITHUB_STEP_SUMMARY
           fi
+
+  # ─── Job 2: Accuracy Backfill (P3447 + Regrade) ──────────────────────────
+  backfill:
+    needs: [sync]
+    if: needs.sync.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout data repo
+        uses: actions/checkout@v5
+        with:
+          repository: horatad/julian-data
+          path: data
+          token: ${{ secrets.JULIAN_DATA_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: P3447 backfill
+        id: p3447
+        run: |
+          ARGS="--resume --time-budget 1800"
+          OUTPUT=$(node workers/julian_p3447_backfill.mjs $ARGS 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "STATUS=partial"; then
+            echo "status=partial" >> $GITHUB_OUTPUT
+          else
+            echo "status=complete" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Regrade accuracy
+        run: node workers/julian_regrade.mjs --verbose
+
+      - name: Commit changes
+        run: |
+          STATUS="${{ steps.p3447.outputs.status }}"
+          (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+            && git add julian_all.json \
+            && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS} + regrade") \
+            && git push) || echo "Data repo: nothing to push"
+          git config user.name  'JULIAN Bot'
+          git config user.email 'julian-bot@horatad.com'
+          git add workers/julian_p3447_checkpoint.json || true
+          if ! git diff --cached --quiet; then
+            git commit -m "JULIAN backfill: checkpoint (${STATUS})"
+            git stash --include-untracked || true
+            git pull --rebase origin main
+            git push origin HEAD:main
+            git stash pop || true
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Accuracy Backfill" >> $GITHUB_STEP_SUMMARY
+          echo "- P3447 status: ${{ steps.p3447.outputs.status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/julian_all.json ]; then
+            node -e "
+              const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));
+              const a = {A:0,B:0,C:0,D:0,F:0,'?':0};
+              d.forEach(r => { a[r.accuracy||'?'] = (a[r.accuracy||'?']||0)+1; });
+              const parts = Object.entries(a).filter(([,v])=>v>0).map(([k,v])=>k+'='+v.toLocaleString()).join(' ');
+              console.log('- Accuracy: ' + parts);
+            " >> $GITHUB_STEP_SUMMARY 2>/dev/null || true
+          fi
+
+  # ─── Job 3: Index Builder ─────────────────────────────────────────────────
+  build-index:
+    needs: [backfill]
+    if: needs.backfill.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      NODE_OPTIONS: --max-old-space-size=4096
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout data repo
+        uses: actions/checkout@v5
+        with:
+          repository: horatad/julian-data
+          path: data
+          token: ${{ secrets.JULIAN_DATA_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Build JULIAN index
+        run: node workers/julian_index_builder.mjs
+
+      - name: Commit index to data repo
+        run: |
+          cd data
+          git config user.name  'JULIAN Bot'
+          git config user.email 'julian-bot@horatad.com'
+          git add index/
+          RECORD_COUNT=$(node -e "try { \
+            const m = JSON.parse(require('fs').readFileSync('index/meta.json','utf8')); \
+            console.log(m.total + ' records'); \
+          } catch(e) { console.log('?'); }")
+          git diff --cached --quiet || git commit -m "JULIAN index: rebuild $(date -u +%Y-%m-%d) — ${RECORD_COUNT}"
+          git push
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Index Builder" >> $GITHUB_STEP_SUMMARY
+          if [ -f data/index/meta.json ]; then
+            node -e "
+              const m = JSON.parse(require('fs').readFileSync('data/index/meta.json','utf8'));
+              console.log('- Records: ' + m.total.toLocaleString() + ' (skipped: ' + (m.skipped||0) + ')');
+              console.log('- Year range: ' + m.year_range.min + ' – ' + m.year_range.max);
+              const splits = m.split_log || [];
+              if (splits.length > 0) console.log('- Split files: ' + splits.map(s=>s.key+'('+s.records+')').join(', '));
+            " >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "- meta.json ไม่พบ" >> $GITHUB_STEP_SUMMARY
+          fi
