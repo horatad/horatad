@@ -25,6 +25,7 @@ const TOP_N     = (() => { const i = process.argv.indexOf('--top'); return i >= 
 const ALL_FILE  = 'data/julian_all.json';
 const FAM_FILE  = 'data/julian_family.json';
 const SUCC_FILE = 'data/julian_succession.json';
+const TITLE_FILE = 'data/julian_title_lineage.json';   // P166+P585 sequenced (นางงาม/แชมป์รายปี)
 const OUT_FILE  = 'data/julian_genealogy_report.json';
 
 function qidOf(r) {
@@ -156,10 +157,14 @@ function addSuccEdge(pos, from, to) {
   if (!g.has(from)) g.set(from, new Set());
   g.get(from).add(to);
 }
-for (const [qid, rel] of Object.entries(succ)) {
-  if (!dbQIDs.has(qid)) continue;
-  for (const e of (rel.next || [])) if (e && dbQIDs.has(e.q)) addSuccEdge(e.pos, qid, e.q);
-  for (const e of (rel.prev || [])) if (e && dbQIDs.has(e.q)) addSuccEdge(e.pos, e.q, qid);
+// รวมทั้ง office succession (P39+P1365/P1366) และ title lineage (P166+P585)
+const title = existsSync(TITLE_FILE) ? JSON.parse(readFileSync(TITLE_FILE, 'utf8')) : {};
+for (const succSource of [succ, title]) {
+  for (const [qid, rel] of Object.entries(succSource)) {
+    if (!dbQIDs.has(qid)) continue;
+    for (const e of (rel.next || [])) if (e && dbQIDs.has(e.q)) addSuccEdge(e.pos, qid, e.q);
+    for (const e of (rel.prev || [])) if (e && dbQIDs.has(e.q)) addSuccEdge(e.pos, e.q, qid);
+  }
 }
 
 // longest path ต่อ 1 ตำแหน่ง (memoized + cycle guard)
