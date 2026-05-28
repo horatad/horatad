@@ -501,7 +501,9 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
     const parsed=JSON.parse(m?m[0]:txt); // throws ถ้าไม่ใช่ JSON
     if(!parsed.predictions||!Array.isArray(parsed.predictions)) return null;
     const valid=parsed.predictions.filter(p=>ruleIds.has(p.rule_id)&&p.text);
-    return valid.length ? valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n') : null;
+    if(!valid.length) return null;
+    if(typeof options.onPredictions==='function') options.onPredictions(valid);
+    return valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n');
   };
   try{ const r=_parsePredictions(raw); if(r) return r; }catch(_){}
 

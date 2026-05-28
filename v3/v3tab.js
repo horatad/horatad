@@ -1,4 +1,4 @@
-// Version 3.0.13 | 2026-05-28
+// Version 3.0.14 | 2026-05-28
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -93,6 +93,7 @@ let _vcRecog = null;   // SpeechRecognition instance
 let _vcPanelOpen = false;
 let _vcRulesCtx = '';     // formatted all-rules string (fallback)
 let _vcAllRules = [];     // raw rule objects for domain filtering
+let _predPool = [];       // [{rule_id,text,domain,polarity,tier,_isTransit,final_score}] — Typhoon-generated
 
 const _VC_DOMAIN_KEYWORDS = {
   'อาชีพ':         ['งาน', 'อาชีพ', 'การงาน', 'ทำงาน', 'หน้าที่', 'ธุรกิจ', 'เงินเดือน', 'ตำแหน่ง', 'เจ้านาย', 'บริษัท', 'เลื่อน', 'ลาออก'],
@@ -120,6 +121,18 @@ function _vcFormatRule(r, i) {
 }
 
 function _vcGetRulesForDomain(domain) {
+  // Prefer Typhoon-generated text (_predPool) over raw KB keywords
+  if (_predPool.length) {
+    const domFiltered = domain ? _predPool.filter(p => p.domain === domain) : [];
+    const src = domFiltered.length ? domFiltered : _predPool;
+    return src.map(p => {
+      const pol = p.polarity === '+' ? '[ดี]' : p.polarity === '-' ? '[ร้าย]' : '[กลาง]';
+      const dom = p.domain ? `[${p.domain}]` : '';
+      const trn = p._isTransit ? '[ดวงจร]' : '[ดวงเดิม]';
+      return `• [${p.rule_id}]${pol}${dom}${trn} ${p.text}`;
+    }).join('\n');
+  }
+  // Fallback: raw KB keywords
   if (!domain || !_vcAllRules.length) return _vcRulesCtx;
   const filtered = _vcAllRules.filter(r => r.domain === domain);
   if (!filtered.length) return _vcRulesCtx;
@@ -168,18 +181,25 @@ async function _vcBuildRulesCtx() {
 }
 
 function _vcSendGreeting() {
-  if (!_vcAllRules.length) return;
+  if (!_vcAllRules.length && !_predPool.length) return;
   const natal = typeof getNatal === 'function' ? getNatal() : null;
   const name = natal && natal.name ? natal.name : '';
   const asc = natal && natal.pos ? ZODIAC_TH[get_lagna(natal.pos)] : '';
 
-  // Local template — instant, no API call, grounded in real rules
-  const top = _vcAllRules[0];
   const nameStr = name ? `คุณ${name}` : 'คุณ';
   const lagnaStr = asc ? `ลัคนา${asc} ` : '';
-  let body = top
-    ? (top.domain ? `ดวง${lagnaStr}เด่นเรื่อง${top.domain} — ${top.meaning}` : `${lagnaStr}${top.meaning}`)
-    : `${lagnaStr}มีอะไรอยากถามไหมคะ`;
+  let body;
+  if (_predPool.length) {
+    // ใช้ Typhoon text ที่ผ่านการแปลแล้ว
+    const top = _predPool[0];
+    const domStr = top.domain ? `เรื่อง${top.domain} ` : '';
+    body = `ดวง${lagnaStr}${domStr}— ${top.text}`;
+  } else {
+    const top = _vcAllRules[0];
+    body = top
+      ? (top.domain ? `ดวง${lagnaStr}เด่นเรื่อง${top.domain} — ${top.meaning}` : `${lagnaStr}${top.meaning}`)
+      : `${lagnaStr}มีอะไรอยากถามไหมคะ`;
+  }
   const reply = `สวัสดีค่ะ ${nameStr} ฉันนก ${body} มีอะไรอยากถามเพิ่มไหมคะ?`;
 
   _vcHistory.push({ role: 'assistant', content: reply });
@@ -373,6 +393,30 @@ async function _loadKbTransit() {
   const data = await resp.json();
   _v3KbTransit = data.rules || [];
   return _v3KbTransit;
+}
+
+// ── _predPool builder — cross-ref Typhoon validPreds กับ matchedRules ────────
+// Sort: natal ก่อน → final_score สูงก่อน → tier ต่ำก่อน → ร้าย > ดี > กลาง
+function _buildPredPool(matchedRules, validPreds) {
+  const ruleMap = new Map(matchedRules.map(r => [_ruleId(r), r]));
+  return validPreds.map(p => {
+    const rule = ruleMap.get(p.rule_id) || {};
+    return {
+      rule_id:     p.rule_id,
+      text:        p.text.trim(),
+      domain:      rule.domain     || '',
+      polarity:    rule.polarity   || '0',
+      tier:        rule.tier       || 9,
+      _isTransit:  rule._isTransit || false,
+      final_score: rule.final_score || 0,
+    };
+  }).sort((a, b) => {
+    if (a._isTransit !== b._isTransit) return a._isTransit ? 1 : -1;
+    if ((b.final_score||0) !== (a.final_score||0)) return (b.final_score||0) - (a.final_score||0);
+    if (a.tier !== b.tier) return a.tier - b.tier;
+    const polOrder = { '-': 0, '+': 1, '0': 2 };
+    return (polOrder[a.polarity]??2) - (polOrder[b.polarity]??2);
+  });
 }
 
 // ── JULIAN plug-in: เพิ่ม empirical_p + final_score ให้ matched rules ──────
@@ -627,11 +671,18 @@ async function v3Typhoon() {
     matched = _augmentWithJulian(_sortResults([...allMatched, ...phase2]));
     ctx = _buildV24Context(natalState);
     _showRulesPanel(matched, null);
+    _predPool = []; // clear ก่อน — natal อาจเปลี่ยน
     const text = await send_to_typhoon(ctx, matched, {
-      onPromptReady: (sys, user) => _showInputPanel(sys, user)
+      onPromptReady: (sys, user) => _showInputPanel(sys, user),
+      onPredictions: (validPreds) => { _predPool = _buildPredPool(matched, validPreds); },
     });
     _showSpinner(false);
     _showResult(text, false, `🤖 Typhoon AI V24`);
+    // Auto-TTS: พูดคำพยากรณ์สำคัญ 3 อันดับแรกทันทีโดยไม่รอกดปุ่ม
+    if (_predPool.length && nokHasThaiVoice()) {
+      const topText = _predPool.slice(0, 3).map(p => p.text).join(' ');
+      nokSpeak(topText, { rate: _v3SpeakRate });
+    }
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
