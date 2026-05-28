@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.67
-// Version 3.3.67 | 2026-05-28
+// HORATAD:SCRIPT:3.3.68
+// Version 3.3.68 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -121,6 +121,7 @@ let _groupDetailUid=null;   // Phase 12: group ที่กำลัง view det
 let _natalPickerGroupUid=null; // Phase 12: group ที่กำลังเพิ่มสมาชิก
 let _customLng1=null,_customLng2=null,_customLngT=null;
 let _customTz1=null,_customTz2=null,_customTzT=null;
+let _dst1=false,_dst2=false,_dstT=false;
 let _transitDate=null;
 let _donateAmount=50;
 let _donateInitialized=false;
@@ -364,12 +365,23 @@ function closeAlert(){
 }
 
 // V2.2.33: clearForm(section) + _updateDbIndicator(section)
+function toggleNoTime(num){
+  const cb=document.getElementById('notime'+num);
+  const tEl=document.getElementById('t'+num);
+  if(!cb||!tEl)return;
+  if(cb.checked){tEl.value='';tEl.disabled=true;}
+  else{tEl.disabled=false;}
+}
 function clearForm(section){
   const s=String(section);
   const ids=[`name-${s}`,`d${s}`,`m${s}`,`y${s}`,`t${s}`,`prov${s}`];
   ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='prov'+s?'กรุงเทพมหานคร':'');});
   const g=document.getElementById('gender'+s);if(g)g.value='ชาย';
   if(s==='1'){_customLng1=null;_customTz1=null;}else if(s==='2'){_customLng2=null;_customTz2=null;}
+  // reset notime + dst checkboxes
+  const ntCb=document.getElementById('notime'+s);if(ntCb){ntCb.checked=false;}
+  const tEl=document.getElementById('t'+s);if(tEl)tEl.disabled=false;
+  const dstCb=document.getElementById('dst'+s);if(dstCb)dstCb.checked=false;
   _updateLngUI(s);
   _updateDbIndicator(s);
   if(typeof _chartTags!=='undefined'){_chartTags[s]=[];if(typeof _renderTagRow==='function')_renderTagRow(s);}
@@ -882,9 +894,10 @@ function buildReport(name,gender,d,m,y_be,t,prov,pos,vel,tpos,isView2){
     h+=`<tr><td style="font-weight:500;padding:0 3px 0 0;white-space:nowrap">${ST[i]}</td><td style="padding:0 6px 0 0;white-space:nowrap">${sign}</td><td style="font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 4px 0 0">${String(dg).padStart(2,'0')}°${String(mn2).padStart(2,'0')}'</td><td style="padding:0 4px 0 0;white-space:nowrap">${mh}</td><td style="padding:0 4px 0 0;white-space:nowrap">${R_NAMES[nk%9]}</td><td style="padding:0 4px 0 0;white-space:nowrap">${NK_NAMES[nk]}</td><td style="padding:0;white-space:nowrap">${sh}</td></tr>`;
   }
   h+=SEP+'</table>';
+  const noTimeReport=!t;
   const av=Math.trunc(pos[0]/1800),tv=Math.trunc(pos[tl_id]/1800),sv=Math.trunc(pos[ts_id]/1800);
   let h2='<table style="width:100%;margin:2px 0 0;border-collapse:collapse;line-height:1.3;font-size:inherit;border-spacing:0">';
-  h2+=`<tr><td ${CL}>ลัคนา ${Z_NAMES[av]}</td><td>${aspectNarrativeShort(pos,0)}</td></tr>`;
+  if(!noTimeReport)h2+=`<tr><td ${CL}>ลัคนา ${Z_NAMES[av]}</td><td>${aspectNarrativeShort(pos,0)}</td></tr>`;
   h2+=`<tr><td ${CL}>ตนุลัคน์ ${ST[tl_id]}</td><td>${aspectNarrativeShort(pos,tl_id)}</td></tr>`;
   h2+=`<tr><td ${CL}>ตนุเศษ ${ST[ts_id]}</td><td>${aspectNarrativeShort(pos,ts_id)}</td></tr>`;
   h2+=`<tr><td ${CL}>ดาวคู่</td><td>${analyzePairs(pos)}</td></tr>`;
@@ -894,7 +907,7 @@ function buildReport(name,gender,d,m,y_be,t,prov,pos,vel,tpos,isView2){
     const td_str=td2?`${td2.d}/${td2.m}/${td2.y_be}(${_beToce(td2.y_be,td2.m)})  ${td2.t}`:'—';
     // [15] "ดาวจรสัมพันธ์ ณ"
     h2+=`<tr><td colspan="2" style="color:#888;font-size:0.85em;padding-top:4px">ดาวจรสัมพันธ์ ณ ${td_str}</td></tr>`;
-    h2+=`<tr><td ${CL}>ลัคนา ${Z_NAMES[av]}</td><td>${aspectTransit(tpos,av)}</td></tr>`;
+    if(!noTimeReport)h2+=`<tr><td ${CL}>ลัคนา ${Z_NAMES[av]}</td><td>${aspectTransit(tpos,av)}</td></tr>`;
     h2+=`<tr><td ${CL}>ตนุลัคน์ ${ST[tl_id]}</td><td>${aspectTransit(tpos,tv)}</td></tr>`;
     h2+=`<tr><td ${CL}>ตนุเศษ ${ST[ts_id]}</td><td>${aspectTransit(tpos,sv)}</td></tr>`;
   }
@@ -1221,6 +1234,8 @@ function cycleMemory(dir){
   document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
   _customLng1=(typeof m.lng==='number')?m.lng:null;
   _customTz1=(typeof m.tz==='number')?m.tz:null;
+  const _nt1=document.getElementById('notime1');if(_nt1){_nt1.checked=!!m.noTime;}
+  const _t1=document.getElementById('t1');if(_t1)_t1.disabled=!!m.noTime;
   _updateLngUI('1');
   calculateChart1();
   _playBeep(700);
@@ -1294,9 +1309,10 @@ function drawChart(pos,vel,ts_id,tpos,natalPos,isV2){
   const eAscSign=Math.trunc((natalPos||pos)[0]/1800);
   // star colors
   function sc(i){if(i===0)return NATAL_COLOR_ASC;return NATAL_COLOR_STAR;}
-  // build model
+  // build model (skip Lagna i=0 when natal has no birth time)
+  const _noTimeDraw=!!(natal?.noTime);
   let model=Array.from({length:12},()=>[]);
-  for(let i=0;i<11;i++){let z=Math.trunc(ePos[i]/1800);if(z>=0&&z<12)model[z].push({ch:ST[i],col:sc(i),idx:i});}
+  for(let i=0;i<11;i++){if(i===0&&_noTimeDraw)continue;let z=Math.trunc(ePos[i]/1800);if(z>=0&&z<12)model[z].push({ch:ST[i],col:sc(i),idx:i});}
   // draw stars
   ctx.font='bold 72px Sarabun,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
   const cW=62;
@@ -1437,12 +1453,14 @@ function _calcChart(num){
   const tRaw=(document.getElementById('t'+num).value||'').trim();
   const noTime=!tRaw;
   let[hr,mn]=sanitizeTime(tRaw);
+  const dstOn=num==='1'?!!(document.getElementById('dst1')?.checked):!!(document.getElementById('dst2')?.checked);
+  if(!noTime&&dstOn)hr=(hr+1)%24;
   _setField('d'+num,d);_setField('m'+num,m);_setField('y'+num,y);
   if(noTime){_setField('t'+num,'');}else{_setField('t'+num,String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));}
   const provRaw=(document.getElementById('prov'+num).value||'').trim();
   const provVal=noTime?'':(provRaw||'กรุงเทพมหานคร');
   const customLng=num==='1'?_customLng1:_customLng2;
-  const lng=customLng!==null?customLng:(PROVINCES[provVal]||100.50);
+  const lng=customLng!==null?customLng:(provVal==='ไม่ทราบสถานที่เกิด'?105.0:(PROVINCES[provVal]||100.50));
   const customTz=num==='1'?_customTz1:_customTz2;
   const tz=typeof customTz==='number'?customTz:7;
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
@@ -1490,10 +1508,12 @@ function calculateTransit(){
   let m=sanitizeInt(document.getElementById('mt').value,1,12,1);
   let y=sanitizeInt(document.getElementById('yt').value,1,9999,_era==='BE'?2569:2026);
   let[hr,mn]=sanitizeTime(document.getElementById('tt').value);
+  const dstOnT=!!(document.getElementById('dstt')?.checked);
+  if(dstOnT)hr=(hr+1)%24;
   _setField('dt',d);_setField('mt',m);_setField('yt',y);
   _setField('tt',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
   const provVal=document.getElementById('provt').value||'กรุงเทพมหานคร';
-  const lng=_customLngT!==null?_customLngT:(PROVINCES[provVal]||100.50);
+  const lng=_customLngT!==null?_customLngT:(provVal==='ไม่ทราบสถานที่เกิด'?105.0:(PROVINCES[provVal]||100.50));
   const tz=typeof _customTzT==='number'?_customTzT:7;
   const y_ce=_era==='BE'?_beToce(y,m):y,y_be=_era==='BE'?y:y+543;
   const pos=get_data(d,m,y_ce,hr,mn,lng,tz);
@@ -1522,13 +1542,15 @@ function _updateLngUI(chartNum){
   const btnId='btn-cust'+chartNum;
   const provEl=document.getElementById(provId),btnEl=document.getElementById(btnId);
   if(!provEl||!btnEl)return;
-  if(custom!==null){
+  // "ไม่ทราบสถานที่เกิด" → province field stays visible (picker flow, not numpad)
+  const isUnknown=custom===105.0&&provEl.value==='ไม่ทราบสถานที่เกิด';
+  if(custom!==null&&!isUnknown){
     provEl.style.display='none';
     btnEl.textContent=custom.toFixed(2)+'°';
     btnEl.style.background='#1a6b3c';btnEl.style.minWidth='72px';
   }else{
     provEl.style.display='';
-    btnEl.textContent='สถานที่อื่น';
+    btnEl.textContent='เลือกสถานที่';
     btnEl.style.background='';btnEl.style.minWidth='';
   }
   _updateLmtBadge(chartNum);
@@ -1758,18 +1780,23 @@ function openLngPad(fieldId){
 // ── Province picker modal (แทน Nominatim) — ก-ฮ tabs + list จากข้อมูลใน code ──
 let _citySearchField=null,_provPickerAlpha='';
 function openCitySearch(fieldId){
-  const cn=fieldId==='lng1'?'1':fieldId==='lng2'?'2':'t';
-  const custom=cn==='1'?_customLng1:cn==='2'?_customLng2:_customLngT;
-  if(custom!==null){
-    if(cn==='1')_customLng1=null;else if(cn==='2')_customLng2=null;else _customLngT=null;
-    _updateLngUI(cn);return;
-  }
   _citySearchField=fieldId;
   _provPickerAlpha='';
   _renderProvPickerTabs();
   _renderProvPickerList('');
   document.getElementById('city-search-modal').classList.remove('hidden');
   document.getElementById('city-search-backdrop').classList.remove('hidden');
+}
+function selectUnknownLocation(){
+  if(!_citySearchField)return;
+  const cn=_citySearchField==='lng1'?'1':_citySearchField==='lng2'?'2':'t';
+  const provId=cn==='t'?'provt':'prov'+cn;
+  const provEl=document.getElementById(provId);
+  if(provEl)provEl.value='ไม่ทราบสถานที่เกิด';
+  if(cn==='1')_customLng1=105.0;else if(cn==='2')_customLng2=105.0;else _customLngT=105.0;
+  _updateLngUI(cn);
+  setTimeout(closeCitySearch,200);
+  _playBeep(700);
 }
 function closeCitySearch(){
   document.getElementById('city-search-modal').classList.add('hidden');
@@ -2558,6 +2585,8 @@ function _pickMemory(i){
     document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
     _customLng1=(typeof m.lng==='number')?m.lng:null;
     _customTz1=(typeof m.tz==='number')?m.tz:null;
+    const _nt1b=document.getElementById('notime1');if(_nt1b){_nt1b.checked=!!m.noTime;}
+    const _t1b=document.getElementById('t1');if(_t1b)_t1b.disabled=!!m.noTime;
     _updateLngUI('1');_applyInputColors('1','init');
   }else{
     _setField('name-2',m.name||'');
@@ -2566,6 +2595,8 @@ function _pickMemory(i){
     document.getElementById('prov2').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
     _customLng2=(typeof m.lng==='number')?m.lng:null;
     _customTz2=(typeof m.tz==='number')?m.tz:null;
+    const _nt2b=document.getElementById('notime2');if(_nt2b){_nt2b.checked=!!m.noTime;}
+    const _t2b=document.getElementById('t2');if(_t2b)_t2b.disabled=!!m.noTime;
     _updateLngUI('2');_applyInputColors('2','init');
   }
   closeMemory();
@@ -4206,8 +4237,8 @@ window.addEventListener('DOMContentLoaded',()=>{
       if(provEl)provEl.value=prov;
       if(cn==='1')_customLng1=null;else if(cn==='2')_customLng2=null;else _customLngT=null;
       _updateLngUI(cn);
-      closeCitySearch();
       _playBeep(700);
+      setTimeout(closeCitySearch,200);
     });
   }
 
@@ -4285,7 +4316,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 window.switchTab=switchTab;window.toggleEra=toggleEra;
 window.calculateBoth=calculateBoth;window.calculateTransit=calculateTransit;
 window.clearForm=clearForm;window.resetTransit=resetTransit;window.openLngPad=openLngPad;
-window.openCitySearch=openCitySearch;window.closeCitySearch=closeCitySearch;
+window.openCitySearch=openCitySearch;window.closeCitySearch=closeCitySearch;window.selectUnknownLocation=selectUnknownLocation;window.toggleNoTime=toggleNoTime;
 window.openMemory=openMemory;window.closeMemory=closeMemory;window.cycleMemory=cycleMemory;
 window.exportMemory=exportMemory;window.confirmClearMemory=confirmClearMemory;
 window.openEvents=openEvents;window.closeEvents=closeEvents;window.saveEvent=saveEvent;

@@ -114,10 +114,15 @@ input.time-input{min-width:0;padding:4px 2px}
 .city-search-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1f26;border:1px solid #30363d;border-radius:12px;padding:14px;z-index:800;width:min(94vw,360px);max-height:75vh;display:flex;flex-direction:column;gap:8px}
 .city-search-title{font-size:.92rem;font-weight:600;color:#c9d1d9}
 .prov-alpha-tabs{display:flex;flex-wrap:wrap;gap:4px}
-.prov-tab{padding:3px 7px;background:#21262d;color:#8b949e;border:1px solid #30363d;border-radius:5px;cursor:pointer;font-size:.82rem;font-family:inherit;white-space:nowrap;transition:background .12s}
+.prov-tab{padding:6px 10px;min-height:36px;background:#21262d;color:#8b949e;border:1px solid #30363d;border-radius:5px;cursor:pointer;font-size:.82rem;font-family:inherit;white-space:nowrap;transition:background .12s;touch-action:manipulation}
 .prov-tab:hover{background:#2d333b;color:#c9d1d9}
 .prov-tab.active{background:#1a6b3c;color:#fff;border-color:#1a6b3c}
-.city-results{overflow-y:auto;flex:1;max-height:44vh;border:1px solid #21262d;border-radius:6px}
+.city-results{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;max-height:44vh;border:1px solid #21262d;border-radius:6px}
+.prov-unknown-btn{width:100%;padding:10px 12px;background:#2d333b;color:#ffa657;border:1px solid #3d4450;border-radius:6px;cursor:pointer;font-size:.88rem;font-family:inherit;text-align:left;touch-action:manipulation;margin-bottom:4px}
+.prov-unknown-btn:active{background:#3d4450}
+.time-ext-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px}
+.notime-label,.dst-label{display:flex;align-items:center;gap:4px;font-size:.8rem;color:#8b949e;cursor:pointer;white-space:nowrap;user-select:none}
+.notime-label input[type=checkbox],.dst-label input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:#ba8345}
 .city-item{padding:9px 12px;cursor:pointer;border-bottom:1px solid #21262d;display:flex;justify-content:space-between;align-items:center}
 .city-item:hover,.city-item:active{background:#21262d}
 .city-name{font-size:.88rem;color:#c9d1d9}
