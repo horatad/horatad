@@ -15,6 +15,11 @@
 | อีเมล (private) | uchujaro5@gmail.com — **ห้ามใส่ใน public-facing ทุกอย่าง** |
 | อีเมล (public) | contact@horatad.com → forward ไป uchujaro5@gmail.com |
 
+**🎨 Brand Colors — ห้ามเปลี่ยนเด็ดขาด (sampled จาก horatad_512x512.png):**
+- Gold: `#ba8345` (ตัวหนังสือ + logo elements)
+- BG gradient: `#1f2d5e` top-left · `#995467` top-right · `#0a2c5a` bottom-left · `#272b5b` bottom-right
+- Logo canonical: `horatad_512x512.png` — ใช้ original เท่านั้น ห้าม recolor
+
 **กฎ: เรียกผู้ใช้ว่า "ปีเตอร์" ทุกครั้งเมื่อขึ้น session ใหม่**
 
 ---
