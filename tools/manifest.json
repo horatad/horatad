@@ -1,0 +1,19 @@
+{
+  "name": "โหราทาส Tools",
+  "short_name": "HT Tools",
+  "description": "เครื่องมือสำหรับทีมโหราทาส",
+  "start_url": "/tools/",
+  "scope": "/tools/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1f2d5e",
+  "theme_color": "#ba8345",
+  "icons": [
+    {
+      "src": "/horatad_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

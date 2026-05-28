@@ -4,137 +4,241 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>โหราทาส — Tools</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ba8345">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Segoe UI', sans-serif;
   background: linear-gradient(135deg, #1f2d5e 0%, #995467 50%, #272b5b 100%);
   min-height: 100vh;
-  display: flex;
+}
+
+/* PIN screen */
+#pinScreen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 20px;
+  position: fixed; inset: 0;
+  background: linear-gradient(135deg, #1f2d5e, #272b5b);
+  z-index: 999;
+}
+.pin-card {
+  background: #fff; border-radius: 20px; padding: 32px 28px;
+  max-width: 320px; width: 100%; text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.pin-logo { font-size: 48px; margin-bottom: 8px; }
+.pin-card h2 { color: #1f2d5e; font-size: 18px; margin-bottom: 4px; }
+.pin-card p  { color: #888; font-size: 13px; margin-bottom: 24px; }
+.pin-display {
+  font-size: 28px; letter-spacing: 12px; color: #1f2d5e;
+  height: 44px; line-height: 44px; margin-bottom: 20px;
+  min-width: 160px; display: inline-block;
+}
+.pin-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin-bottom: 12px;
+}
+.pin-btn {
+  padding: 16px; border: none; border-radius: 12px;
+  background: #f5f5f5; font-size: 20px; font-weight: 700;
+  color: #1f2d5e; cursor: pointer; transition: background .1s;
+}
+.pin-btn:active { background: #ba8345; color: #fff; }
+.pin-btn.del { background: #fff3e0; color: #ba8345; font-size: 16px; }
+.pin-error { color: #c62828; font-size: 13px; margin-top: 8px; min-height: 20px; }
+
+/* Main screen */
+#mainScreen {
+  display: none;
   flex-direction: column;
   align-items: center;
   padding: 48px 24px 40px;
+  min-height: 100vh;
+}
+.logo-area { text-align: center; margin-bottom: 36px; }
+.logo-area img { width: 64px; height: 64px; border-radius: 16px; margin-bottom: 12px; display: block; margin: 0 auto 12px; }
+.logo-area h1 { color: #ba8345; font-size: 22px; font-weight: 700; letter-spacing: .5px; }
+.logo-area p  { color: rgba(255,255,255,.5); font-size: 13px; margin-top: 4px; }
+
+.section-label {
+  color: rgba(255,255,255,.35); font-size: 11px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  width: 100%; max-width: 360px; margin: 24px 0 10px;
 }
 
-.logo-area {
-  text-align: center;
-  margin-bottom: 40px;
-}
-.logo-area img {
-  width: 64px; height: 64px; border-radius: 16px;
-  margin-bottom: 12px;
-}
-.logo-area h1 {
-  color: #ba8345;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: .5px;
-}
-.logo-area p {
-  color: rgba(255,255,255,.5);
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-/* Grid */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 100%;
-  max-width: 360px;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; width: 100%; max-width: 360px;
 }
-
 .tool-btn {
   background: rgba(255,255,255,.1);
   border: 1px solid rgba(255,255,255,.12);
-  border-radius: 18px;
-  padding: 20px 12px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  text-decoration: none;
+  border-radius: 18px; padding: 20px 12px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  cursor: pointer; text-decoration: none;
   transition: background .15s, transform .1s;
   -webkit-tap-highlight-color: transparent;
 }
-.tool-btn:active {
-  background: rgba(255,255,255,.2);
-  transform: scale(.94);
-}
-
+.tool-btn:active { background: rgba(255,255,255,.2); transform: scale(.94); }
 .tool-icon {
-  width: 52px; height: 52px;
-  border-radius: 14px;
+  width: 52px; height: 52px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px;
-  flex-shrink: 0;
+  font-size: 26px; flex-shrink: 0;
 }
 .icon-gold   { background: linear-gradient(135deg, #ba8345, #d4a35a); }
 .icon-blue   { background: linear-gradient(135deg, #1565c0, #1877f2); }
 .icon-teal   { background: linear-gradient(135deg, #00695c, #00897b); }
 .icon-purple { background: linear-gradient(135deg, #6a1b9a, #8e24aa); }
-.icon-dark   { background: linear-gradient(135deg, #263238, #37474f); }
-.icon-green  { background: linear-gradient(135deg, #2e7d32, #43a047); }
+.tool-name { color: #fff; font-size: 12px; font-weight: 600; text-align: center; line-height: 1.4; }
 
-.tool-name {
-  color: #fff;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  line-height: 1.4;
+.lock-btn {
+  margin-top: 36px; background: rgba(255,255,255,.08);
+  border: none; border-radius: 10px;
+  color: rgba(255,255,255,.45); font-size: 13px;
+  padding: 10px 20px; cursor: pointer;
 }
-.tool-badge {
-  font-size: 10px;
-  background: rgba(186,131,69,.3);
-  color: #ba8345;
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-weight: 600;
-}
-
-.section-label {
-  color: rgba(255,255,255,.35);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  width: 100%;
-  max-width: 360px;
-  margin: 28px 0 10px;
-}
+.lock-btn:active { background: rgba(255,255,255,.15); }
 </style>
 </head>
 <body>
 
-<div class="logo-area">
-  <img src="../horatad_512x512.png" alt="โหราทาส" onerror="this.style.display='none'">
-  <h1>โหราทาส Tools</h1>
-  <p>เครื่องมือภายในสำหรับทีม</p>
+<!-- PIN screen -->
+<div id="pinScreen">
+  <div class="pin-card">
+    <div class="pin-logo">🔭</div>
+    <h2>โหราทาส Tools</h2>
+    <p>ใส่ PIN เพื่อเข้าใช้งาน</p>
+    <div class="pin-display" id="pinDisplay">_ _ _ _ _ _</div>
+    <div class="pin-grid">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <button class="pin-btn del" onclick="pinPress('set')" id="btnSet">ตั้ง PIN</button>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn del" onclick="pinPress('del')">⌫</button>
+    </div>
+    <div class="pin-error" id="pinError"></div>
+  </div>
 </div>
 
-<div class="section-label">Content & Admin</div>
+<!-- Main screen -->
+<div id="mainScreen">
+  <div class="logo-area">
+    <img src="../horatad_512x512.png" alt="โหราทาส" onerror="this.style.display='none'">
+    <h1>โหราทาส Tools</h1>
+    <p>เครื่องมือสำหรับทีม</p>
+  </div>
 
-<div class="grid">
+  <div class="section-label">Content & Admin</div>
 
-  <a class="tool-btn" href="admin/julian_approval.html">
-    <div class="tool-icon icon-gold">🔭</div>
-    <div class="tool-name">JULIAN<br>Admin</div>
-  </a>
+  <div class="grid">
+    <a class="tool-btn" href="admin/julian_approval.html">
+      <div class="tool-icon icon-gold">🔭</div>
+      <div class="tool-name">JULIAN<br>Admin</div>
+    </a>
+    <a class="tool-btn" href="fb_post_helper.html">
+      <div class="tool-icon icon-blue">📱</div>
+      <div class="tool-name">FB Post<br>Helper</div>
+    </a>
+    <a class="tool-btn" href="admin_dashboard.html">
+      <div class="tool-icon icon-teal">📊</div>
+      <div class="tool-name">Admin<br>Dashboard</div>
+    </a>
+  </div>
 
-  <a class="tool-btn" href="fb_post_helper.html">
-    <div class="tool-icon icon-blue">📱</div>
-    <div class="tool-name">FB Post<br>Helper</div>
-  </a>
-
-  <a class="tool-btn" href="admin_dashboard.html">
-    <div class="tool-icon icon-teal">📊</div>
-    <div class="tool-name">Admin<br>Dashboard</div>
-  </a>
-
+  <button class="lock-btn" onclick="lockApp()">🔒 ล็อค</button>
 </div>
 
-<!-- เพิ่ม tool ใหม่ได้ที่นี่ -->
+<script>
+const PIN_KEY  = 'horatad_tools_pin_hash';
+const AUTH_KEY = 'horatad_tools_unlocked';
+const AUTH_TTL = 8 * 60 * 60 * 1000; // 8 ชั่วโมง
+let pinInput = '';
 
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function pinPress(v) {
+  const errEl = document.getElementById('pinError');
+  errEl.textContent = '';
+
+  if (v === 'del') { pinInput = pinInput.slice(0, -1); updatePinDisplay(); return; }
+
+  if (v === 'set') {
+    if (pinInput.length < 4) { errEl.textContent = 'PIN ต้องมีอย่างน้อย 4 ตัว'; return; }
+    sha256(pinInput).then(h => {
+      localStorage.setItem(PIN_KEY, h);
+      unlockApp();
+    });
+    return;
+  }
+
+  if (pinInput.length >= 6) return;
+  pinInput += v;
+  updatePinDisplay();
+  if (pinInput.length === 6) checkPin();
+}
+
+function updatePinDisplay() {
+  document.getElementById('pinDisplay').textContent =
+    '●'.repeat(pinInput.length) + '_'.repeat(Math.max(0, 6 - pinInput.length));
+}
+
+async function checkPin() {
+  const stored = localStorage.getItem(PIN_KEY);
+  if (!stored) {
+    document.getElementById('pinError').textContent = 'ยังไม่มี PIN — ใส่แล้วกด "ตั้ง PIN"';
+    return;
+  }
+  const h = await sha256(pinInput);
+  if (h === stored) { unlockApp(); }
+  else {
+    document.getElementById('pinError').textContent = 'PIN ไม่ถูกต้อง';
+    pinInput = ''; updatePinDisplay();
+  }
+}
+
+function unlockApp() {
+  localStorage.setItem(AUTH_KEY, Date.now().toString());
+  document.getElementById('pinScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = 'flex';
+}
+
+function lockApp() {
+  localStorage.removeItem(AUTH_KEY);
+  location.reload();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // ถ้า session ยังใช้ได้ → ข้าม PIN ไปเลย
+  const ts = parseInt(localStorage.getItem(AUTH_KEY) || '0');
+  if (Date.now() - ts < AUTH_TTL) { unlockApp(); return; }
+
+  // แสดง PIN screen
+  const stored = localStorage.getItem(PIN_KEY);
+  if (!stored) {
+    document.getElementById('pinError').textContent = 'ยังไม่มี PIN — ใส่ตัวเลข 4-6 หลัก แล้วกด "ตั้ง PIN"';
+    document.getElementById('btnSet').style.background = '#ba8345';
+    document.getElementById('btnSet').style.color = '#fff';
+  }
+});
+
+// Register service worker สำหรับ PWA install
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('../sw.js').catch(() => {});
+}
+</script>
 </body>
 </html>

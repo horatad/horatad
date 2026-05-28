@@ -12,37 +12,6 @@ body {
   min-height: 100vh;
   padding: 20px 16px 40px;
 }
-/* PIN screen */
-#pinScreen {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 20px; position: fixed;
-  inset: 0; background: linear-gradient(135deg, #1f2d5e, #272b5b); z-index: 999;
-}
-.pin-card {
-  background: #fff; border-radius: 20px; padding: 32px 28px;
-  max-width: 320px; width: 100%; text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-}
-.pin-logo { font-size: 40px; margin-bottom: 8px; }
-.pin-card h2 { color: #1f2d5e; font-size: 18px; margin-bottom: 4px; }
-.pin-card p  { color: #888; font-size: 13px; margin-bottom: 24px; }
-.pin-display {
-  font-size: 28px; letter-spacing: 12px; color: #1f2d5e;
-  height: 44px; line-height: 44px; margin-bottom: 20px;
-  min-width: 160px; display: inline-block;
-}
-.pin-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  margin-bottom: 12px;
-}
-.pin-btn {
-  padding: 16px; border: none; border-radius: 12px;
-  background: #f5f5f5; font-size: 20px; font-weight: 700;
-  color: #1f2d5e; cursor: pointer; transition: background .1s;
-}
-.pin-btn:active { background: #ba8345; color: #fff; }
-.pin-btn.del { background: #fff3e0; color: #ba8345; font-size: 16px; }
-.pin-error { color: #c62828; font-size: 13px; margin-top: 8px; min-height: 20px; }
 h1 { color: #ba8345; font-size: 20px; margin-bottom: 4px; }
 .sub { color: #aaa; font-size: 13px; margin-bottom: 20px; }
 
@@ -218,31 +187,6 @@ input[type=password], input[type=text] {
 </head>
 <body>
 
-<!-- PIN screen -->
-<div id="pinScreen">
-  <div class="pin-card">
-    <div class="pin-logo">🔭</div>
-    <h2>JULIAN Admin</h2>
-    <p>ใส่ PIN เพื่อเข้าใช้งาน</p>
-    <div class="pin-display" id="pinDisplay">_ _ _ _ _ _</div>
-    <div class="pin-grid">
-      <button class="pin-btn" onclick="pinPress('1')">1</button>
-      <button class="pin-btn" onclick="pinPress('2')">2</button>
-      <button class="pin-btn" onclick="pinPress('3')">3</button>
-      <button class="pin-btn" onclick="pinPress('4')">4</button>
-      <button class="pin-btn" onclick="pinPress('5')">5</button>
-      <button class="pin-btn" onclick="pinPress('6')">6</button>
-      <button class="pin-btn" onclick="pinPress('7')">7</button>
-      <button class="pin-btn" onclick="pinPress('8')">8</button>
-      <button class="pin-btn" onclick="pinPress('9')">9</button>
-      <button class="pin-btn del" onclick="pinPress('set')" id="btnSet">ตั้ง PIN</button>
-      <button class="pin-btn" onclick="pinPress('0')">0</button>
-      <button class="pin-btn del" onclick="pinPress('del')">⌫</button>
-    </div>
-    <div class="pin-error" id="pinError"></div>
-  </div>
-</div>
-
 <!-- Setup screen -->
 <div id="setupScreen" style="display:none">
   <h2>ตั้งค่าครั้งแรก</h2>
@@ -332,74 +276,19 @@ input[type=password], input[type=text] {
 <div id="toast" class="toast"></div>
 
 <script>
-// --- PIN ---
-const PIN_KEY = 'julian_admin_pin_hash';
-let pinInput = '';
+// Auth จาก Launcher (tools/index.html) — PIN อยู่ที่นั่น
+const AUTH_KEY = 'horatad_tools_unlocked';
+const AUTH_TTL = 8 * 60 * 60 * 1000;
 
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
-
-function pinPress(v) {
-  const errEl = document.getElementById('pinError');
-  errEl.textContent = '';
-
-  if (v === 'del') { pinInput = pinInput.slice(0,-1); updatePinDisplay(); return; }
-
-  if (v === 'set') {
-    if (pinInput.length < 4) { errEl.textContent = 'PIN ต้องมีอย่างน้อย 4 ตัว'; return; }
-    sha256(pinInput).then(h => {
-      localStorage.setItem(PIN_KEY, h);
-      showToast('ตั้ง PIN แล้ว ✅');
-      unlockApp();
-    });
+window.addEventListener('DOMContentLoaded', () => {
+  const ts = parseInt(localStorage.getItem(AUTH_KEY) || '0');
+  if (Date.now() - ts > AUTH_TTL) {
+    window.location.replace('../index.html');
     return;
   }
-
-  if (pinInput.length >= 6) return;
-  pinInput += v;
-  updatePinDisplay();
-
-  if (pinInput.length === 6) checkPin();
-}
-
-function updatePinDisplay() {
-  const d = document.getElementById('pinDisplay');
-  d.textContent = '●'.repeat(pinInput.length) + '_'.repeat(Math.max(0, 6 - pinInput.length));
-}
-
-async function checkPin() {
-  const stored = localStorage.getItem(PIN_KEY);
-  if (!stored) {
-    document.getElementById('btnSet').style.background = '#ba8345';
-    document.getElementById('btnSet').style.color = '#fff';
-    document.getElementById('pinError').textContent = 'ยังไม่มี PIN — กด "ตั้ง PIN" เพื่อบันทึก';
-    return;
-  }
-  const h = await sha256(pinInput);
-  if (h === stored) { unlockApp(); }
-  else {
-    document.getElementById('pinError').textContent = 'PIN ไม่ถูกต้อง';
-    pinInput = ''; updatePinDisplay();
-  }
-}
-
-function unlockApp() {
-  document.getElementById('pinScreen').style.display = 'none';
   pat = getPat();
   if (!pat) { document.getElementById('setupScreen').style.display = 'block'; }
   else { showMain(); }
-}
-
-// Init PIN
-window.addEventListener('DOMContentLoaded', () => {
-  const stored = localStorage.getItem(PIN_KEY);
-  if (!stored) {
-    document.getElementById('pinError').textContent = 'ยังไม่มี PIN — ใส่ตัวเลข 4-6 หลัก แล้วกด "ตั้ง PIN"';
-    document.getElementById('btnSet').style.background = '#ba8345';
-    document.getElementById('btnSet').style.color = '#fff';
-  }
 });
 
 const REPO = 'horatad/horatad';
