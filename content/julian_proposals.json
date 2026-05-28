@@ -51,7 +51,7 @@
     "thai": "เสาร์โจรกับเกตุนาตาล",
     "topic": "กรรม การปล่อยวาง",
     "hint": "ยังไม่มีข้อมูล — รัน full scan",
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-05-28"
   },
   {
@@ -62,7 +62,7 @@
     "thai": "พฤหัสโจรกับเสาร์นาตาล",
     "topic": "โชคพลิกผัน การฟื้นตัว",
     "hint": "ยังไม่มีข้อมูล — รัน full scan",
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-05-28"
   },
   {
@@ -73,7 +73,7 @@
     "thai": "พฤหัสโจรกับมฤตยูนาตาล",
     "topic": "ความตาย การเปลี่ยนแปลงใหญ่",
     "hint": "ยังไม่มีข้อมูล — รัน full scan",
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-05-28"
   },
   {
