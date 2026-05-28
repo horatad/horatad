@@ -103,7 +103,11 @@ async function _cloudSpeak(text, opts = {}) {
       body: JSON.stringify({ text: clean }),
       signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
     });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    if (!resp.ok) {
+      const errBody = await resp.json().catch(() => null);
+      console.warn('[TTS] error', resp.status, errBody?.detail || errBody?.error || '');
+      throw new Error('HTTP ' + resp.status);
+    }
     const { audioContent, error } = await resp.json();
     if (error || !audioContent) throw new Error(error || 'no audio');
 

@@ -449,6 +449,7 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   const body=JSON.stringify({
     model:TYPHOON_MODEL,
     max_tokens:MAX_TOKENS,
+    response_format:{type:'json_object'},
     messages:[
       {role:'system',content:systemPrompt},
       {role:'user',content:userPrompt},
