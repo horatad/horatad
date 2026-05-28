@@ -210,6 +210,75 @@ function buildFromPolarityGroup(polarity, rows) {
   };
 }
 
+// =============================================================================
+// ⛔ FB POLICY GUARD — อ่านก่อนแก้ไขโค้ดส่วนนี้
+//
+// กฎเหล็ก (ละเมิด = เสี่ยงถูก Shadowban / Reach ลด / Page ถูก restrict):
+//   1. ห้ามทำนายบุคคล ("คุณจะ...", "ท่านจะ...")
+//   2. ห้าม claim absolute ("พิสูจน์แล้ว", "ทุกคนที่...")
+//   3. ห้าม Engagement Bait ("Tag เพื่อน", "Share เพื่อโชค", "Like ถ้า...")
+//   4. ห้ามโพสต์ death ด้านเดียว — ต้องมี soft (award) คู่เสมอ
+//   5. ต้องมี n + p-value ทุกครั้ง
+//   6. ต้องจบด้วย disclaimer: "สถิติประชากร ≠ ชะตากรรมบุคคล"
+//   7. ต้องมี credit TALS (#TALS)
+//
+// checkFBPolicy() = gate ก่อน publish — throw error ถ้า violations พบ
+// buildFBCaption() = ใส่ disclaimer + credit อัตโนมัติ ห้ามลบ
+// =============================================================================
+
+const FB_BANNED_PHRASES = [
+  /คุณจะ/,
+  /ท่านจะ/,
+  /คุณเสี่ยง/,
+  /พิสูจน์แล้ว/,
+  /แน่นอนว่า/,
+  /ทุกคนที่/,
+  /tag\s*เพื่อน/i,
+  /แท็ก\s*เพื่อน/,
+  /share\s*เพื่อโชค/i,
+  /แชร์\s*เพื่อโชค/,
+  /like\s*ถ้า/i,
+  /กด\s*ไลค์\s*ถ้า/,
+];
+
+const FB_REQUIRED = {
+  disclaimer:  /สถิติประชากร\s*[≠!=]\s*ชะตากรรมบุคคล/,
+  credit_tals: /#TALS/,
+  has_n:       /\bn\s*[=≈]\s*[\d,]+/,
+  has_p:       /p\s*[<≈=]\s*0\.\d/,
+};
+
+// ตรวจ policy violations — return { ok, errors[], warnings[] }
+export function checkFBPolicy(body, finding = {}) {
+  const errors   = [];
+  const warnings = [];
+
+  for (const re of FB_BANNED_PHRASES) {
+    if (re.test(body)) errors.push(`ห้ามใช้วลีนี้: "${re.source}"`);
+  }
+
+  if (!FB_REQUIRED.disclaimer.test(body))
+    errors.push('ขาด disclaimer: "สถิติประชากร ≠ ชะตากรรมบุคคล"');
+  if (!FB_REQUIRED.credit_tals.test(body))
+    errors.push('ขาด credit: #TALS');
+  if (!FB_REQUIRED.has_n.test(body))
+    errors.push('ขาด n= (จำนวนตัวอย่าง)');
+  if (!FB_REQUIRED.has_p.test(body))
+    errors.push('ขาด p-value');
+
+  // ถ้ามี death event ต้องมี award คู่ด้วย
+  const hasDeathEvent = /การเสียชีวิต|death/.test(body);
+  const hasAwardEvent = /รางวัล|award|ความสำเร็จ/.test(body);
+  if (hasDeathEvent && !hasAwardEvent)
+    warnings.push('โพสต์ death ด้านเดียว — แนะนำรวม soft (award) คู่เพื่อ balance และลดความเสี่ยง flag');
+
+  const hashtagCount = (body.match(/#\w/g) || []).length;
+  if (hashtagCount > 5)
+    warnings.push(`hashtag มากเกินไป (${hashtagCount}) — แนะนำไม่เกิน 5`);
+
+  return { ok: errors.length === 0, errors, warnings };
+}
+
 // --- FB Caption Builder (ใช้ vocab ทุกครั้ง — ห้าม hardcode Thai ใหม่) ---
 //
 // เรียกเมื่อ proposal status=approved → สร้าง body สำหรับ content/inbox/
@@ -218,22 +287,16 @@ function buildFromPolarityGroup(polarity, rows) {
 //   - มุมดาว   → aspectLabel(code)         เช่น YOK → "โยค"
 //   - ตัวเลข   → research_abbrev           เช่น "Lift 1.16×"
 //   - ห้ามใส่ภาษาอังกฤษ raw ใน body (เว้นแต่เป็น abbrev ที่ตกลงกันแล้ว: Lift, p, FDR, n)
+//   - disclaimer + credit ถูก append อัตโนมัติ — ห้ามลบ
 //
 export function buildFBCaption(proposal) {
-  const { transit, natal, finding = {}, thai } = proposal;
+  const { transit, natal, finding = {} } = proposal;
   const tLabel  = vocabLabel(transit, transit);
   const nLabel  = vocabLabel(natal, natal);
   const pair    = `${tLabel}จรผ่าน${nLabel}นาตาล`;
 
-  const liftStr = finding.lift != null
-    ? (finding.lift > 1
-        ? `สูงกว่าปกติ ${finding.lift.toFixed(2)} เท่า`
-        : `ต่ำกว่าปกติ ${finding.lift.toFixed(2)} เท่า`)
-    : '';
-
-  const nStr    = finding.n_max || finding.n
-    ? `(ข้อมูล ${(finding.n_max || finding.n).toLocaleString()} เหตุการณ์)`
-    : '';
+  const nVal    = finding.n_max || finding.n;
+  const nStr    = nVal ? `(n=${nVal.toLocaleString()})` : '';
 
   const pStr    = finding.p_adj != null
     ? `p ${finding.p_adj < 0.001 ? '< 0.001' : finding.p_adj.toFixed(4)}`
@@ -241,24 +304,42 @@ export function buildFBCaption(proposal) {
 
   const events  = finding.events || {};
   const eventLines = Object.entries(events).map(([e, d]) => {
-    const dir = (d.lift_min + d.lift_max) / 2 >= 1 ? '🔺' : '🔻';
+    const avg = (d.lift_min + d.lift_max) / 2;
+    const dir = avg >= 1 ? '🔺' : '🔻';
     const lr  = d.lift_min === d.lift_max
       ? d.lift_min.toFixed(2)
       : `${d.lift_min.toFixed(2)}–${d.lift_max.toFixed(2)}`;
-    return `  ${dir} ${eventThai(e)}: Lift ${lr}×`;
+    const nPart = d.n_max ? ` n=${d.n_max.toLocaleString()}` : '';
+    return `  ${dir} ${eventThai(e)}: Lift ${lr}×${nPart}`;
   });
+
+  // ถ้าไม่มี events breakdown ให้ใช้ single lift line
+  const singleLiftLine = (eventLines.length === 0 && finding.lift != null)
+    ? [`📊 สถิติพบว่าช่วงนี้ในกลุ่มตัวอย่าง มีเหตุการณ์สำคัญ${finding.lift >= 1 ? 'สูง' : 'ต่ำ'}กว่าค่าเฉลี่ย ${finding.lift.toFixed(2)} เท่า ${pStr} ${nStr}`.trim()]
+    : [];
 
   const body = [
     `🔭 โหราทาส วิจัย: ${pair}`,
+    `ระบบ TALS (ยืนยง นาวาสมุทร)`,
     '',
-    `จากฐานข้อมูลบุคคลสำคัญ ${nStr || ''}`,
-    ...(liftStr ? [`📊 โอกาส${eventThai(finding.event_type || '')} ${liftStr} ${pStr}`] : []),
-    ...(eventLines.length ? ['', ...eventLines] : []),
+    `จากฐานข้อมูลบุคคลสำคัญ ${nStr}`,
+    ...(eventLines.length ? ['', ...eventLines, '', `${pStr} · ผ่านการตรวจสอบข้ามยุค + ข้ามประเทศ ✅`] : []),
+    ...singleLiftLine,
     '',
-    `✅ ผ่านการตรวจสอบข้ามยุค + ข้ามประเทศ`,
+    `⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล`,
     '',
     `#โหราทาส #TALS #โหราศาสตร์ไทย #AstrologyResearch`,
   ].join('\n').trim();
+
+  // ตรวจ policy ก่อน return — log warnings, throw ถ้า errors
+  const check = checkFBPolicy(body, finding);
+  if (check.warnings.length) {
+    check.warnings.forEach(w => console.warn(`⚠️  FB Policy Warning: ${w}`));
+  }
+  if (!check.ok) {
+    const msg = `❌ FB Policy Violations:\n${check.errors.map(e => '  • ' + e).join('\n')}`;
+    throw new Error(msg);
+  }
 
   return body;
 }

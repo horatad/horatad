@@ -180,6 +180,58 @@ Cron (ทุก 6h):
 
 ---
 
+## 11. ⛔ กฎเหล็ก FB Content Policy — อ่านก่อนเขียน proposal ทุกครั้ง
+
+> **ละเมิดกฎข้อใดข้อหนึ่ง = ห้ามโพสต์เด็ดขาด**
+> (เสี่ยงถูก Shadowban / Reach ลด / Account ถูก restrict)
+
+### 🔴 ห้ามทำ (Hard Ban — อาจถูกลบโพสต์หรือ ban page)
+
+| กฎ | ตัวอย่างที่ผิด | สาเหตุ |
+|---|---|---|
+| **ห้ามทำนายบุคคล** | "ช่วงนี้คุณเสี่ยงเสียชีวิต" | Harmful personal prediction |
+| **ห้ามใช้ "คุณจะ / ท่านจะ"** | "คุณจะได้รับรางวัล" | FB flag: fortune telling |
+| **ห้าม claim absolute** | "พิสูจน์แล้วว่า...", "ทุกคนที่..." | Misinformation policy |
+| **ห้าม Engagement Bait** | "Tag เพื่อนที่เป็นราศีนี้", "Share เพื่อโชค", "Like ถ้า..." | Engagement bait = reach ลดทันที |
+| **ห้ามโพสต์ death ด้านเดียว** | caption เฉพาะ hard_death ไม่มี soft_award | Morbid content flag |
+| **ห้ามอ้างสถิติโดยไม่มี n และ p** | "มีโอกาสสูงกว่าปกติ" (ไม่บอก n) | Unverified statistical claim |
+
+### 🟡 ระวัง (Soft Ban — ลด Reach โดยไม่แจ้ง)
+
+| กฎ | เหตุผล |
+|---|---|
+| ห้ามใส่ลิงก์ภายนอกทุกโพสต์ | FB กด reach โพสต์ที่พาคนออก platform |
+| ห้ามโพสต์เกิน 2 ครั้ง/วัน | Spam signal |
+| ห้าม copy-paste caption ซ้ำ | Duplicate content suppression |
+| ห้ามใช้ hashtag เกิน 5 อัน | FB ไม่ช่วย reach — ดูเป็น spam |
+
+### ✅ ต้องมีในทุก caption (Mandatory Elements)
+
+1. **Framing เป็นงานวิจัยสถิติ** — ขึ้นต้นด้วย "🔭 โหราทาส วิจัย:" หรือ "📊 สถิติพบว่า:"
+2. **n + p-value** — ต้องแสดงทุกครั้ง เช่น `(n=2,823, p<0.001)`
+3. **Disclaimer** — ต้องจบด้วย: `⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล`
+4. **Credit TALS** — ทุก public post ต้องมี: `ระบบ TALS (ยืนยง นาวาสมุทร)` หรือ `#TALS`
+5. **ทั้ง 2 ขั้ว** — ถ้า post เรื่อง death ต้องรวม award ด้วย (hard + soft pair)
+
+### ✅ กรอบภาษาที่ปลอดภัย
+
+```
+❌ ผิด:  "ช่วงนี้คุณเสี่ยงเสียชีวิตสูงขึ้น"
+✅ ถูก:  "สถิติพบว่าช่วงนี้ในกลุ่มประชากรตัวอย่าง มีเหตุการณ์สำคัญสูงกว่าค่าเฉลี่ย 1.16 เท่า"
+
+❌ ผิด:  "พิสูจน์แล้วว่าดาวเสาร์ทำให้เสียชีวิต"
+✅ ถูก:  "งานวิจัยพบสหสัมพันธ์ทางสถิติ — ไม่ใช่การพิสูจน์ความเป็นเหตุเป็นผล"
+
+❌ ผิด:  "Tag เพื่อนที่เกิดราศีนี้"
+✅ ถูก:  "คุณเคยสังเกตเหตุการณ์ในช่วงนี้ไหม? แชร์ความคิดเห็นใน comment"
+```
+
+### 🤖 Code Enforcement
+ฟังก์ชัน `checkFBPolicy(body)` ใน `workers/julian_proposal_gen.mjs` ตรวจ violations อัตโนมัติ
+และ `buildFBCaption()` auto-append disclaimer + เตือน warning ถ้าโพสต์ death ไม่มี award คู่
+
+---
+
 ## 10. Vocabulary Standard — กฎถาวรสำหรับการเขียน FB / Research
 
 > **อ่านก่อนเขียน FB post ทุกครั้ง** — ไฟล์นี้เป็น source of truth คำศัพท์
