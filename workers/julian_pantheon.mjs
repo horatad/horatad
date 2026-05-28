@@ -19,8 +19,17 @@ import { readFileSync, writeFileSync } from 'fs';
 const DRY_RUN = process.argv.includes('--dry-run');
 
 const PANTHEON_URLS = [
-  'https://raw.githubusercontent.com/cid-harvard/pantheon-dataset/main/data/person.csv',
-  'https://pantheon.world/api/v2/person/?returns=csv&hpi_min=0&hpi_max=100',
+  // Pantheon 2.0 bzip2 downloads (pantheon.world data page)
+  'https://pantheon.world/data/2025/person.csv.bz2',
+  'https://pantheon.world/data/2024/person.csv.bz2',
+  'https://pantheon.world/data/2020/person.csv.bz2',
+  // Plain CSV endpoints (various API versions)
+  'https://pantheon.world/api/person/?limit=20000&format=csv',
+  'https://pantheon.world/api/v1/person/?returns=csv',
+  'https://pantheon.world/api/v2/person/?format=csv&limit=20000',
+  // Harvard Dataverse direct file access (Pantheon 2.0 dataset)
+  'https://dataverse.harvard.edu/api/access/datafile/2585040',
+  'https://dataverse.harvard.edu/api/access/datafile/2585041',
 ];
 const USER_AGENT = 'JULIAN-bot/1.0 (horatad.com; pantheon-enrichment)';
 const INPUT_FILE = 'data/julian_all.json';
@@ -145,4 +154,12 @@ function jdToYear(jd) {
   return Math.floor(2000 + daysSince2000 / 365.25);
 }
 
-main().catch(e => { console.error('Fatal:', e.message); process.exit(1); });
+main().catch(e => {
+  console.error('Fatal:', e.message);
+  if (e.message.includes('All Pantheon URLs failed')) {
+    console.log('⚠️ Pantheon enrichment skipped — no data source available');
+    console.log('ℹ️  Update PANTHEON_URLS in workers/julian_pantheon.mjs when a working URL is found');
+    process.exit(0); // non-fatal: workflow continues without HPI enrichment
+  }
+  process.exit(1);
+});

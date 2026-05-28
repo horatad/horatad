@@ -41,7 +41,13 @@ jobs:
         id: pantheon
         run: |
           node workers/julian_pantheon.mjs
-          echo "status=complete" >> $GITHUB_OUTPUT
+          EXIT=$?
+          if [ $EXIT -eq 0 ]; then
+            echo "status=complete" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit $EXIT
+          fi
 
       - name: Commit
         if: steps.pantheon.outputs.status == 'complete'
