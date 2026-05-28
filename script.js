@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.82
-// Version 3.3.82 | 2026-05-29
+// HORATAD:SCRIPT:3.3.83
+// Version 3.3.83 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.82';
+const APP_VERSION='3.3.83';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -521,8 +521,9 @@ function _recentChipsMax(){
   return Math.min(8,Math.max(3,Math.floor((window.innerWidth-24)/78)));
 }
 function _addToRecentBuffer(section,rec){
-  // rec = {name,gender,d,m,y_be,t,prov,lng,tz,noTime}
   if(!rec||!rec.name)return;
+  if(_suppressRecentBuffer)return;
+  if(_SKIP_NAMES_RECENT.includes(rec.name.trim()))return;
   const s=String(section);
   const key=_tankKey(rec);
   const buf=_recentPersonBuffer[s];
@@ -538,10 +539,18 @@ function _renderRecentPersonChips(section){
   if(!el)return;
   el.innerHTML='';
   const s=String(section);
-  const activeKey=_activePersonKey[s]||null;
+  // Bug 6: compute active key from current form (ไม่ใช้ _activePersonKey ที่อาจ stale)
+  const _fn=(document.getElementById('name-'+s)||{}).value||'';
+  const _fd=(document.getElementById('d'+s)||{}).value||'';
+  const _fm=(document.getElementById('m'+s)||{}).value||'';
+  const _fy=parseInt((document.getElementById('y'+s)||{}).value||'0',10);
+  const _fy_be=_era==='BE'?_fy:_fy+543;
+  const _ft=(document.getElementById('t'+s)||{}).value||'';
+  const _fp=(document.getElementById('prov'+s)||{}).value||'';
+  const formKey=`${_fn}|${_fd}/${_fm}/${_fy_be}|${_ft}|${_fp}`;
   (_recentPersonBuffer[s]||[]).forEach(entry=>{
     const chip=document.createElement('span');
-    chip.className='tag-chip tag-person-chip'+(entry.key===activeKey?' tag-active':'');
+    chip.className='tag-chip tag-person-chip'+(entry.key===formKey?' tag-active':'');
     chip.textContent=entry.rec.name||'—';
     chip.title=`${entry.rec.d||''}/${entry.rec.m||''}/${entry.rec.y_be||''} ${entry.rec.t||''}`;
     chip.addEventListener('click',()=>_quickLoadPerson(entry.rec,s));
@@ -574,6 +583,9 @@ function _quickLoadPerson(m,section){
     const _t2b=document.getElementById('t2');if(_t2b)_t2b.disabled=!!m.noTime;
     _updateLngUI('2');_applyInputColors('2','init');
   }
+  // Bug 5: sync group tags ให้ตรงกับ person ที่โหลดมา
+  _loadTagsForCurrentChart(section);
+  _renderTagRow(section);
   _renderRecentPersonChips(section);
   _showToast(`โหลด ${m.name||''} แล้ว`);
 }
@@ -599,10 +611,11 @@ function _saveTagsToMemory(section){
   const d=(document.getElementById('d'+s)||{}).value||'';
   const m=(document.getElementById('m'+s)||{}).value||'';
   const y=(document.getElementById('y'+s)||{}).value||'';
+  const y_be=_era==='BE'?parseInt(y,10):parseInt(y,10)+543;
   const t=(document.getElementById('t'+s)||{}).value||'';
   const p=(document.getElementById('prov'+s)||{}).value||'';
-  if(!name||!d||!m||!y||!t||!p)return;
-  const key=`${name}|${d}/${m}/${y}|${t}|${p}`;
+  if(!name||!d||!m||!y)return;
+  const key=`${name}|${d}/${m}/${y_be}|${t}|${p}`;
   const mem=_tankLoad(TANK_PRIVATE_KEY);
   const i=mem.findIndex(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
   if(i<0)return;
@@ -653,10 +666,13 @@ function _loadTagsForCurrentChart(section){
   const d=(document.getElementById('d'+s)||{}).value||'';
   const m=(document.getElementById('m'+s)||{}).value||'';
   const y=(document.getElementById('y'+s)||{}).value||'';
+  // Bug 1: normalize ปีจากฟอร์ม → y_be เสมอ (form อาจเป็น CE ถ้า era=CE)
+  const y_be=_era==='BE'?parseInt(y,10):parseInt(y,10)+543;
   const t=(document.getElementById('t'+s)||{}).value||'';
   const p=(document.getElementById('prov'+s)||{}).value||'';
-  if(!name||!d||!m||!y||!t||!p){_chartTags[s]=[];return;}
-  const key=`${name}|${d}/${m}/${y}|${t}|${p}`;
+  // Bug 2: ไม่ตรวจ !t||!p — noTime person มี t='' p='' ได้และควรมี group ได้
+  if(!name||!d||!m||!y){_chartTags[s]=[];return;}
+  const key=`${name}|${d}/${m}/${y_be}|${t}|${p}`;
   const mem=_tankLoad(TANK_PRIVATE_KEY);
   const rec=mem.find(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
   _chartTags[s]=(rec&&Array.isArray(rec.groups))?rec.groups.slice():[];
@@ -1897,6 +1913,8 @@ function openTimePicker(fieldId){
 function closeTimePicker(){
   document.getElementById('time-picker-modal').classList.add('hidden');
   document.getElementById('time-picker-backdrop').classList.add('hidden');
+  // Bug 6: refresh recent chips ถ้า field เป็น section 1 หรือ 2
+  if(_timePickerField){const _s=_timePickerField.slice(-1);if(_s==='1'||_s==='2')_renderRecentPersonChips(_s);}
   _timePickerField=null;
 }
 function _renderTimePicker(){
@@ -1935,6 +1953,8 @@ function openColPicker(fieldId,type){
   document.getElementById('col-picker-backdrop').classList.remove('hidden');
 }
 function closeColPicker(){
+  // Bug 6: refresh recent chips ถ้า field เป็น section 1 หรือ 2
+  if(_colPickerField){const _s=_colPickerField.slice(-1);if(_s==='1'||_s==='2')_renderRecentPersonChips(_s);}
   document.getElementById('col-picker-modal').classList.add('hidden');
   document.getElementById('col-picker-backdrop').classList.add('hidden');
   _colPickerField=null;_colPickerType=null;
@@ -2415,6 +2435,8 @@ let _memSection='1';
 let _memCache=[];
 let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.79: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
 let _activePersonKey={'1':null,'2':null}; // track currently active per section
+let _suppressRecentBuffer=false;          // V3.3.83: ป้องกัน header quick-chip เพิ่ม buffer
+const _SKIP_NAMES_RECENT=['ดวงที่ 2','ไม่ระบุ',''];
 // V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
 let _editingMemKey=null;
@@ -4220,10 +4242,10 @@ function _quickLoad(i){
   _customLng1=(typeof m.lng==='number')?m.lng:null;
   _customTz1=(typeof m.tz==='number')?m.tz:null;
   _updateLngUI('1');
+  // Bug 3: header quick-chip ไม่ควรสะสม recent-chips buffer — ใช้ flag ป้องกัน
+  _suppressRecentBuffer=true;
   calculateBoth();
-  // V3.3.80: header quick-chips = shortcut เท่านั้น — ไม่สะสมใน recent-chips buffer
-  _recentPersonBuffer['1']=[];_activePersonKey['1']=null;_renderRecentPersonChips('1');
-  _recentPersonBuffer['2']=[];_activePersonKey['2']=null;_renderRecentPersonChips('2');
+  _suppressRecentBuffer=false;
 }
 async function installPWA(){
   if(!_deferredInstallPrompt)return;
@@ -4397,6 +4419,9 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // V3.3.80: d/m/y inputs ใช้ col-picker แล้ว — ไม่ต้องติด numpad listener
   // (readonly + onclick="openColPicker" ใน HTML จัดการแทน)
+  // Bug 6: name input เปลี่ยน → refresh recent chips ทันที (active state ไม่ stale)
+  const el_n1=document.getElementById('name-1');if(el_n1)el_n1.addEventListener('input',()=>_renderRecentPersonChips('1'));
+  const el_n2=document.getElementById('name-2');if(el_n2)el_n2.addEventListener('input',()=>_renderRecentPersonChips('2'));
 
   // V2.1.9: sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
   ['btn-era'].forEach(id=>{
