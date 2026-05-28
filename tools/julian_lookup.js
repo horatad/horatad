@@ -422,6 +422,28 @@ class JulianLookup {
   }
 
   /**
+   * ค้นหา mini record จาก QID ใน cache ที่โหลดไว้แล้ว
+   *
+   * ค้นจาก planet_sign files ที่ cache อยู่ (mini record: {q,n,j,y,a,i,c,s,g})
+   * ใช้สำหรับ resolve succession/genealogy QIDs → name + year + image
+   * หมายเหตุ: ถ้า planet_sign ยังไม่ถูก prefetch → อาจ return null
+   *
+   * @param {string} qid
+   * @returns {{ q, n, j, y, a, i, c, s, g }|null} mini record หรือ null ถ้าไม่พบ
+   */
+  getMiniRecordByQid(qid) {
+    if (!qid) return null;
+    for (const [key, data] of this._cache.entries()) {
+      if (!key.startsWith('planet_sign/')) continue;
+      const records = Array.isArray(data?.records) ? data.records : [];
+      for (const rec of records) {
+        if (rec && rec.q === qid) return rec;
+      }
+    }
+    return null;
+  }
+
+  /**
    * สถิติ cache ปัจจุบัน
    * @returns {{ cacheSize: number, filesLoaded: number, recordsLoaded: number }}
    */
