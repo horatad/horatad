@@ -5,7 +5,13 @@
     "th": "โอกาสเกิดสูงกว่าปกติ X เท่า",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "lift ratio",
+      "relative risk (approx.)",
+      "rate ratio",
+      "อัตราส่วนความเสี่ยงสัมพัทธ์"
+    ]
   },
   {
     "id": "v_init_002",
@@ -13,7 +19,13 @@
     "th": "ความน่าเชื่อถือทางสถิติ",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "ค่า p",
+      "p value",
+      "significance level",
+      "probability value"
+    ]
   },
   {
     "id": "v_init_003",
@@ -21,7 +33,12 @@
     "th": "อัตราการค้นพบที่คลาดเคลื่อน",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "false discovery rate",
+      "Benjamini-Hochberg",
+      "q-value"
+    ]
   },
   {
     "id": "v_init_004",
@@ -29,7 +46,13 @@
     "th": "ดาวจร",
     "context": "astronomy",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "จร",
+      "ดาวโคจร",
+      "Transiting",
+      "Transits"
+    ]
   },
   {
     "id": "v_init_005",
@@ -37,39 +60,77 @@
     "th": "เจ้าชะตา",
     "context": "astronomy",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "นาตาล",
+      "ดาวนาตาล",
+      "ดาวเกิด",
+      "birth position"
+    ]
   },
   {
     "id": "v_init_006",
     "en": "Conjunction",
-    "th": "ร่วมราศี",
-    "context": "astronomy",
+    "th": "กุม",
+    "context": "aspect",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "tals_code": "KUM",
+    "aliases": [
+      "กุมกัน",
+      "ร่วมราศี",
+      "Conjunct",
+      "0°",
+      "same sign"
+    ],
+    "note": "TALS KUM — ดาวจรอยู่ราศีเดียวกับจุดพื้น (strength 1.0)"
   },
   {
     "id": "v_init_007",
     "en": "Opposition",
-    "th": "ตรงข้าม (180°)",
-    "context": "astronomy",
+    "th": "เล็ง",
+    "context": "aspect",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "tals_code": "LENG",
+    "aliases": [
+      "ตรงข้าม",
+      "Opposite",
+      "180°",
+      "7th sign"
+    ],
+    "note": "TALS LENG — ห่าง 6 ราศี (strength 0.8)"
   },
   {
     "id": "v_init_008",
     "en": "Trine",
-    "th": "ตรีโกณ (120°)",
-    "context": "astronomy",
+    "th": "โยค",
+    "context": "aspect",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "tals_code": "YOK",
+    "aliases": [
+      "ตรีโกณ (Western)",
+      "Trine",
+      "120°",
+      "ภพ 5/9"
+    ],
+    "note": "TALS YOK — ภพ 5 หรือ 9 (120°). ⚠️ ตรีโกณ ใน TALS = 60° ไม่ใช่ 120°"
   },
   {
     "id": "v_init_009",
     "en": "Square",
-    "th": "จตุโกณ (90°)",
-    "context": "astronomy",
+    "th": "(ไม่มีใน TALS)",
+    "context": "aspect_western",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "จตุโกณ",
+      "Square",
+      "90°",
+      "4th/10th sign"
+    ],
+    "note": "TALS ไม่มีมุม 90° — ใช้เฉพาะบริบท Western astrology และ JULIAN full_scan"
   },
   {
     "id": "v_init_010",
@@ -77,7 +138,12 @@
     "th": "มุมดาว",
     "context": "astronomy",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "มุม",
+      "planetary aspect",
+      "มุมระหว่างดาว"
+    ]
   },
   {
     "id": "v_init_011",
@@ -85,7 +151,12 @@
     "th": "จำนวนกลุ่มตัวอย่าง",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "n",
+      "ขนาดตัวอย่าง",
+      "sample count"
+    ]
   },
   {
     "id": "v_init_012",
@@ -93,7 +164,12 @@
     "th": "ค่าพื้นฐานทั่วไป",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "ค่าฐาน",
+      "baseline rate",
+      "base rate"
+    ]
   },
   {
     "id": "v_init_013",
@@ -117,7 +193,12 @@
     "th": "องศาความคลาดเคลื่อน",
     "context": "astronomy",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "orb of aspect",
+      "degree tolerance",
+      "ค่าคลาดเคลื่อน"
+    ]
   },
   {
     "id": "v_init_016",
@@ -125,7 +206,12 @@
     "th": "หน่วยวันจูเลียน (ใช้คำนวณตำแหน่งดาว)",
     "context": "astronomy",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "JD",
+      "Julian date",
+      "เลขวันดาราศาสตร์"
+    ]
   },
   {
     "id": "v_init_017",
@@ -165,7 +251,13 @@
     "th": "ดาวอาทิตย์",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "อาทิตย์",
+      "สุริยา",
+      "The Sun",
+      "☀️"
+    ]
   },
   {
     "id": "v_planet_MO",
@@ -173,7 +265,13 @@
     "th": "ดาวจันทร์",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "จันทร์",
+      "พระจันทร์",
+      "The Moon",
+      "🌙"
+    ]
   },
   {
     "id": "v_planet_MA",
@@ -181,7 +279,12 @@
     "th": "ดาวอังคาร",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "อังคาร",
+      "The Mars",
+      "♂"
+    ]
   },
   {
     "id": "v_planet_ME",
@@ -189,7 +292,12 @@
     "th": "ดาวพุธ",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "พุธ",
+      "Mercury",
+      "☿"
+    ]
   },
   {
     "id": "v_planet_JU",
@@ -197,7 +305,13 @@
     "th": "ดาวพฤหัสบดี",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "พฤหัส",
+      "พฤหัสบดี",
+      "Jupiter",
+      "♃"
+    ]
   },
   {
     "id": "v_planet_VE",
@@ -205,7 +319,12 @@
     "th": "ดาวศุกร์",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "ศุกร์",
+      "Venus",
+      "♀"
+    ]
   },
   {
     "id": "v_planet_SA",
@@ -213,7 +332,12 @@
     "th": "ดาวเสาร์",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "เสาร์",
+      "Saturn",
+      "♄"
+    ]
   },
   {
     "id": "v_planet_RA",
@@ -221,7 +345,13 @@
     "th": "ดาวราหู",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "ราหู",
+      "Rahu",
+      "North Node",
+      "จุดมังกรหัว"
+    ]
   },
   {
     "id": "v_planet_KE",
@@ -229,7 +359,13 @@
     "th": "ดาวเกตุ",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "เกตุ",
+      "Ketu",
+      "South Node",
+      "จุดมังกรหาง"
+    ]
   },
   {
     "id": "v_planet_MR",
@@ -237,7 +373,14 @@
     "th": "ดาวมฤตยู",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "มฤตยู",
+      "Uranus",
+      "Mrityu",
+      "♅"
+    ],
+    "note": "ดาวยูเรนัส (Western) — เพิ่มในโหราศาสตร์ไทยสมัย ร.4. ⚠️ อย่าสับสนกับ Mrityunjaya ซึ่งเป็นคุณนามพระศิวะ"
   },
   {
     "id": "v_planet_LA",
@@ -245,7 +388,14 @@
     "th": "ลัคนา",
     "context": "planet",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "ตนุ",
+      "ลัคน์",
+      "Lagna",
+      "ASC",
+      "Rising sign"
+    ]
   },
   {
     "id": "v_event_death",
@@ -290,18 +440,32 @@
   {
     "id": "v_aspect_sextile",
     "en": "Sextile",
-    "th": "ฉัฏฐ์ (60°)",
-    "context": "astronomy",
+    "th": "ตรีโกณ",
+    "context": "aspect",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "tals_code": "TRI",
+    "aliases": [
+      "ฉัฏฐ์",
+      "Sextile",
+      "60°",
+      "ภพ 3/11"
+    ],
+    "note": "TALS TRI — ภพ 3 หรือ 11 (60°). ⚠️ ตรีโกณใน TALS = 60° ≠ Trine (120°) ของ Western"
   },
   {
     "id": "v_aspect_quincunx",
     "en": "Quincunx",
     "th": "กึ่งตรีโกณ (150°)",
-    "context": "astronomy",
+    "context": "aspect_western",
     "status": "draft",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "กึ่งตรีโกณ",
+      "Inconjunct",
+      "150°"
+    ],
+    "note": "ไม่มีใน TALS — ใช้เฉพาะบริบท Western astrology"
   },
   {
     "id": "v_stat_ci",
@@ -309,7 +473,12 @@
     "th": "ช่วงความเชื่อมั่น",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "CI",
+      "confidence range",
+      "interval estimate"
+    ]
   },
   {
     "id": "v_stat_sd",
@@ -333,7 +502,12 @@
     "th": "สมมติฐานว่าง (ไม่มีความสัมพันธ์)",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "H0",
+      "null hypothesis",
+      "สมมติฐานว่าง"
+    ]
   },
   {
     "id": "v_stat_effect",
@@ -485,6 +659,11 @@
     "th": "คู่ดาว (ดาวจร × เจ้าชะตา)",
     "context": "research",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "aliases": [
+      "planet pair",
+      "คู่มุมดาว",
+      "T×N pair"
+    ]
   }
 ]

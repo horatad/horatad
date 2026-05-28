@@ -161,6 +161,23 @@ input[type=password], input[type=text] {
 .vocab-card.draft    { border-left-color: #ba8345; }
 .vocab-card.approved { border-left-color: #2e7d32; }
 .vocab-card.rejected { border-left-color: #c62828; opacity:.6; }
+.vocab-aliases { display:flex; flex-wrap:wrap; gap:4px; margin:6px 0 4px; }
+.vocab-alias-pill {
+  font-size:11px; background:#f0f4ff; color:#444; border-radius:20px;
+  padding:2px 8px; border:1px solid #dde;
+}
+.vocab-note {
+  font-size:11px; color:#b45309; background:#fffbeb; border-left:3px solid #f59e0b;
+  padding:6px 10px; border-radius:0 6px 6px 0; margin:6px 0;
+}
+.vocab-aliases-input {
+  width:100%; font-size:12px; padding:5px 8px; border:1px solid #ddd;
+  border-radius:6px; color:#555; margin-bottom:4px; font-family:inherit;
+}
+.tals-badge {
+  font-size:10px; font-weight:700; color:#1f2d5e; background:#dbeafe;
+  padding:2px 7px; border-radius:10px; letter-spacing:.5px;
+}
 
 .vocab-en { font-size: 16px; font-weight: 700; color: #1f2d5e; }
 .vocab-th {
@@ -272,9 +289,10 @@ input[type=password], input[type=text] {
   <div id="tabVocabPane" style="display:none">
     <div class="section-title">เพิ่มคำใหม่</div>
     <div class="vocab-add">
-      <input type="text" id="vEnInput"  placeholder="English term เช่น Lift, p-value, Conjunction">
-      <input type="text" id="vThInput"  placeholder="คำไทยที่ต้องการใช้">
-      <input type="text" id="vCtxInput" placeholder="บริบท เช่น statistical, astronomy, general (ไม่บังคับ)">
+      <input type="text" id="vEnInput"  placeholder="English term เช่น Lift, Conjunction, p-value">
+      <input type="text" id="vThInput"  placeholder="คำไทย TALS มาตรฐาน เช่น กุม, โยค">
+      <input type="text" id="vAlInput"  placeholder="ดัชนีคำคล้าย (คั่นด้วย ,) เช่น ร่วมราศี, 0°, Conjunct">
+      <input type="text" id="vCtxInput" placeholder="บริบท: statistical | aspect | planet | astronomy | general">
       <button class="btn-main btn-gold" onclick="addVocab()" style="margin-bottom:0">+ เพิ่มคำ</button>
     </div>
 
@@ -660,20 +678,24 @@ async function _pushVocab(retry = 0) {
 function addVocab() {
   const en  = document.getElementById('vEnInput').value.trim();
   const th  = document.getElementById('vThInput').value.trim();
+  const al  = document.getElementById('vAlInput').value.trim();
   const ctx = document.getElementById('vCtxInput').value.trim();
   if (!en || !th) { showToast('กรุณาใส่ทั้ง English และ Thai'); return; }
   if (vocabList.find(v => v.en.toLowerCase() === en.toLowerCase())) {
     showToast('คำนี้มีอยู่แล้ว'); return;
   }
-  vocabList.push({
+  const entry = {
     id: `v_${Date.now()}`,
     en, th, context: ctx || '',
     status: 'draft',
     created_at: new Date().toISOString().slice(0, 10),
-  });
+  };
+  if (al) entry.aliases = al.split(',').map(s => s.trim()).filter(Boolean);
+  vocabList.push(entry);
   saveVocab();
   renderVocab();
   document.getElementById('vEnInput').value  = '';
+  document.getElementById('vAlInput').value  = '';
   document.getElementById('vThInput').value  = '';
   document.getElementById('vCtxInput').value = '';
   showToast('เพิ่มคำแล้ว ✅');
@@ -684,9 +706,13 @@ function saveVocabItem(id) {
   if (i < 0) return;
   const newEn = document.getElementById(`ven_${id}`)?.value.trim();
   const newTh = document.getElementById(`vth_${id}`).value.trim();
+  const newAl = document.getElementById(`val_${id}`)?.value.trim();
   if (!newTh) { showToast('กรุณาใส่คำไทย'); return; }
   if (newEn) vocabList[i].en = newEn;
   vocabList[i].th = newTh;
+  if (newAl !== undefined) {
+    vocabList[i].aliases = newAl ? newAl.split(',').map(s => s.trim()).filter(Boolean) : [];
+  }
   saveVocab();
   // visual feedback — border เขียวสักครู่
   const card = document.getElementById(`vcard_${id}`);
@@ -729,15 +755,23 @@ function renderVocab() {
   const drafts   = vocabList.filter(v => v.status !== 'approved');
   const approved = vocabList.filter(v => v.status === 'approved');
 
-  const mkCard = (v) => `
+  const mkCard = (v) => {
+    const aliasesVal = (v.aliases||[]).join(', ').replace(/"/g,'&quot;');
+    return `
   <div class="vocab-card ${v.status}" id="vcard_${v.id}">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <span style="font-size:11px;color:#999">English</span>
-      ${v.context ? `<span style="font-size:11px;color:#ba8345;background:#fff3e0;padding:2px 8px;border-radius:10px">${v.context}</span>` : ''}
+      <div style="display:flex;gap:4px;align-items:center">
+        ${v.tals_code ? `<span class="tals-badge">TALS:${v.tals_code}</span>` : ''}
+        ${v.context ? `<span style="font-size:11px;color:#ba8345;background:#fff3e0;padding:2px 8px;border-radius:10px">${v.context}</span>` : ''}
+      </div>
     </div>
     <input class="vocab-en-input" id="ven_${v.id}" value="${v.en.replace(/"/g,'&quot;')}">
-    <div style="font-size:11px;color:#999;margin-bottom:2px">Thai</div>
+    <div style="font-size:11px;color:#999;margin-bottom:2px">Thai (TALS มาตรฐาน)</div>
     <textarea class="vocab-th" id="vth_${v.id}" rows="2">${v.th}</textarea>
+    ${v.note ? `<div class="vocab-note">${v.note}</div>` : ''}
+    <div style="font-size:11px;color:#999;margin:4px 0 2px">ดัชนีคำคล้าย <span style="color:#aaa">(คั่นด้วย ,)</span></div>
+    <input class="vocab-aliases-input" id="val_${v.id}" value="${aliasesVal}" placeholder="เช่น กุมกัน, ร่วมราศี, 0°, Conjunct">
     <div class="vocab-actions">
       <button class="btn-sm btn-save-sm"    onclick="saveVocabItem('${v.id}')">💾 บันทึก</button>
       ${v.status !== 'approved' ? `<button class="btn-sm btn-approve-sm" onclick="approveVocab('${v.id}')">✅ อนุมัติ</button>` : ''}
@@ -745,6 +779,7 @@ function renderVocab() {
       <button class="btn-sm btn-delete-sm"  onclick="deleteVocab('${v.id}')">🗑</button>
     </div>
   </div>`;
+  };
 
   document.getElementById('vocabDraftList').innerHTML    = drafts.length
     ? drafts.map(mkCard).join('')
