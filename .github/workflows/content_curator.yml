@@ -1,0 +1,45 @@
+name: Content Curator — คัดเนื้อหา Facebook
+
+on:
+  schedule:
+    - cron: '0 1 * * *'   # ทุกวัน 08:00 ICT (01:00 UTC)
+  workflow_dispatch:        # trigger ด้วยมือได้
+
+jobs:
+  curate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check inbox
+        id: check
+        run: |
+          COUNT=$(ls content/inbox/*.json 2>/dev/null | wc -l)
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          echo "inbox มี $COUNT items"
+
+      - name: Curate top content
+        if: steps.check.outputs.count > 0
+        run: node workers/content_curator.mjs
+
+      - name: Commit scheduled post
+        if: steps.check.outputs.count > 0
+        run: |
+          git config user.name  "horatad-bot"
+          git config user.email "contact@horatad.com"
+          git add content/
+          git diff --staged --quiet || git commit -m "curator: schedule top content $(date +%Y-%m-%d)"
+          git push
+
+      - name: No content
+        if: steps.check.outputs.count == 0
+        run: echo "inbox ว่าง — ไม่มีอะไรต้อง schedule วันนี้"
