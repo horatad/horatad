@@ -158,5 +158,333 @@
     "context": "ในการทดลอง หรือการทำวิจัย",
     "status": "approved",
     "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_SU",
+    "en": "Sun (SU)",
+    "th": "ดาวอาทิตย์",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_MO",
+    "en": "Moon (MO)",
+    "th": "ดาวจันทร์",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_MA",
+    "en": "Mars (MA)",
+    "th": "ดาวอังคาร",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_ME",
+    "en": "Mercury (ME)",
+    "th": "ดาวพุธ",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_JU",
+    "en": "Jupiter (JU)",
+    "th": "ดาวพฤหัสบดี",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_VE",
+    "en": "Venus (VE)",
+    "th": "ดาวศุกร์",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_SA",
+    "en": "Saturn (SA)",
+    "th": "ดาวเสาร์",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_RA",
+    "en": "Rahu (RA)",
+    "th": "ดาวราหู",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_KE",
+    "en": "Ketu (KE)",
+    "th": "ดาวเกตุ",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_MR",
+    "en": "Mrityunjaya (MR)",
+    "th": "ดาวมฤตยู",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_planet_LA",
+    "en": "Ascendant / Lagna (LA)",
+    "th": "ลัคนา",
+    "context": "planet",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_event_death",
+    "en": "Death (event)",
+    "th": "การเสียชีวิต",
+    "context": "event",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_event_award",
+    "en": "Award (event)",
+    "th": "รางวัล / ความสำเร็จ",
+    "context": "event",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_event_elected",
+    "en": "Elected (event)",
+    "th": "ได้รับเลือกตั้ง",
+    "context": "event",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_event_scandal",
+    "en": "Scandal (event)",
+    "th": "เรื่องอื้อฉาว",
+    "context": "event",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_event_birth",
+    "en": "Birth (event)",
+    "th": "การเกิด",
+    "context": "event",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_aspect_sextile",
+    "en": "Sextile",
+    "th": "ฉัฏฐ์ (60°)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_aspect_quincunx",
+    "en": "Quincunx",
+    "th": "กึ่งตรีโกณ (150°)",
+    "context": "astronomy",
+    "status": "draft",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_ci",
+    "en": "Confidence interval (CI)",
+    "th": "ช่วงความเชื่อมั่น",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_sd",
+    "en": "Standard deviation (SD)",
+    "th": "ส่วนเบี่ยงเบนมาตรฐาน",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_sig",
+    "en": "Statistical significance",
+    "th": "นัยสำคัญทางสถิติ",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_h0",
+    "en": "Null hypothesis (H₀)",
+    "th": "สมมติฐานว่าง (ไม่มีความสัมพันธ์)",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_effect",
+    "en": "Effect size",
+    "th": "ขนาดของผลกระทบ",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_corr",
+    "en": "Correlation",
+    "th": "สหสัมพันธ์",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_prob",
+    "en": "Probability",
+    "th": "ความน่าจะเป็น",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_freq",
+    "en": "Frequency",
+    "th": "ความถี่",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_expected",
+    "en": "Expected value",
+    "th": "ค่าที่คาดหวัง (ถ้าไม่มีความสัมพันธ์)",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_observed",
+    "en": "Observed value",
+    "th": "ค่าที่พบจริงในข้อมูล",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_outlier",
+    "en": "Outlier",
+    "th": "ค่าผิดปกติ / ค่าสุดโต่ง",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_stat_percentile",
+    "en": "Percentile",
+    "th": "เปอร์เซ็นต์ไทล์",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_astro_sign",
+    "en": "Zodiac sign",
+    "th": "ราศี",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_astro_house",
+    "en": "House",
+    "th": "ภพ (เรือน)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_astro_retro",
+    "en": "Retrograde",
+    "th": "ย้อนทาง (พักร)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_astro_degree",
+    "en": "Degree (°)",
+    "th": "องศา",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_astro_ingress",
+    "en": "Ingress",
+    "th": "ดาวย้ายเข้าราศี",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_astro_natal_chart",
+    "en": "Natal chart",
+    "th": "ดวงชะตา",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_research_notable",
+    "en": "Notable person",
+    "th": "บุคคลสำคัญ",
+    "context": "research",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_research_politician",
+    "en": "Politician",
+    "th": "นักการเมือง",
+    "context": "research",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_research_celebrity",
+    "en": "Celebrity",
+    "th": "คนดัง / เซเลบ",
+    "context": "research",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_research_athlete",
+    "en": "Athlete",
+    "th": "นักกีฬา",
+    "context": "research",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_research_pair",
+    "en": "Planet pair (transit × natal)",
+    "th": "คู่ดาว (ดาวจร × เจ้าชะตา)",
+    "context": "research",
+    "status": "approved",
+    "created_at": "2026-05-28"
   }
 ]
