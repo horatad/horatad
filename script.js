@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.77
-// Version 3.3.77 | 2026-05-29
+// HORATAD:SCRIPT:3.3.78
+// Version 3.3.78 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.77';
+const APP_VERSION='3.3.78';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -492,11 +492,14 @@ function _renderTagRow(section){
     row.appendChild(addBtn);
     return;
   }
-  // V3.3.77: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
+  // V3.3.78: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
   row.style.display='none';
 }
-// V3.3.77: recent person chips — runtime buffer only (not from history)
-const _RECENT_CHIPS_MAX=5;
+// V3.3.78: recent person chips — runtime buffer, auto-width max
+function _recentChipsMax(){
+  // ~72px per chip (padding 4+11+11+4 + text ~42px avg) + 6px gap, clamp 3–8
+  return Math.min(8,Math.max(3,Math.floor((window.innerWidth-24)/78)));
+}
 function _addToRecentBuffer(section,rec){
   // rec = {name,gender,d,m,y_be,t,prov,lng,tz,noTime}
   if(!rec||!rec.name)return;
@@ -504,9 +507,10 @@ function _addToRecentBuffer(section,rec){
   const key=_tankKey(rec);
   const buf=_recentPersonBuffer[s];
   const idx=buf.findIndex(e=>e.key===key);
-  if(idx>=0)buf.splice(idx,1); // ย้ายขึ้นหน้าถ้ามีอยู่แล้ว
+  if(idx>=0)buf.splice(idx,1); // move-to-front ถ้ามีอยู่แล้ว
   buf.unshift({key,rec});
-  if(buf.length>_RECENT_CHIPS_MAX)buf.pop();
+  const max=_recentChipsMax();
+  if(buf.length>max)buf.pop();
   _activePersonKey[s]=key;
 }
 function _renderRecentPersonChips(section){
@@ -2342,7 +2346,7 @@ function _addMemory(entry,replaceKey){
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
-let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.77: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
+let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.78: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
 let _activePersonKey={'1':null,'2':null}; // track currently active per section
 // V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
@@ -4385,7 +4389,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   _loadTagsForCurrentChart('2');
   _renderTagRow('1');
   _renderTagRow('2');
-  // V3.3.77: recent person chips
+  // V3.3.78: recent person chips
   _renderRecentPersonChips('1');
   _renderRecentPersonChips('2');
 
