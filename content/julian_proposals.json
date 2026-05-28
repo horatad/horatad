@@ -1,0 +1,112 @@
+[
+  {
+    "id": "julian_SU_JU_1779986634322",
+    "pair": "SU×JU",
+    "transit": "SU",
+    "natal": "JU",
+    "thai": "อาทิตย์โจรกับพฤหัสนาตาล",
+    "topic": "โชค ความสำเร็จ การเงิน",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_SU_SA_1779986634332",
+    "pair": "SU×SA",
+    "transit": "SU",
+    "natal": "SA",
+    "thai": "อาทิตย์โจรกับเสาร์นาตาล",
+    "topic": "อุปสรรค วินัย ความล้มเหลว",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_SU_KE_1779986634332",
+    "pair": "SU×KE",
+    "transit": "SU",
+    "natal": "KE",
+    "thai": "อาทิตย์โจรกับเกตุนาตาล",
+    "topic": "จิตวิญญาณ การสูญเสีย",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_SA_JU_1779986634332",
+    "pair": "SA×JU",
+    "transit": "SA",
+    "natal": "JU",
+    "thai": "เสาร์โจรกับพฤหัสนาตาล",
+    "topic": "บทเรียนชีวิต การเติบโต",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_SA_KE_1779986634332",
+    "pair": "SA×KE",
+    "transit": "SA",
+    "natal": "KE",
+    "thai": "เสาร์โจรกับเกตุนาตาล",
+    "topic": "กรรม การปล่อยวาง",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_JU_SA_1779986634332",
+    "pair": "JU×SA",
+    "transit": "JU",
+    "natal": "SA",
+    "thai": "พฤหัสโจรกับเสาร์นาตาล",
+    "topic": "โชคพลิกผัน การฟื้นตัว",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_JU_MR_1779986634332",
+    "pair": "JU×MR",
+    "transit": "JU",
+    "natal": "MR",
+    "thai": "พฤหัสโจรกับมฤตยูนาตาล",
+    "topic": "ความตาย การเปลี่ยนแปลงใหญ่",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_MO_SA_1779986634332",
+    "pair": "MO×SA",
+    "transit": "MO",
+    "natal": "SA",
+    "thai": "จันทร์โจรกับเสาร์นาตาล",
+    "topic": "อารมณ์ ความเศร้า",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_MO_MR_1779986634332",
+    "pair": "MO×MR",
+    "transit": "MO",
+    "natal": "MR",
+    "thai": "จันทร์โจรกับมฤตยูนาตาล",
+    "topic": "อุบัติเหตุ ความรุนแรง",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_RA_MR_1779986634333",
+    "pair": "RA×MR",
+    "transit": "RA",
+    "natal": "MR",
+    "thai": "ราหูโจรกับมฤตยูนาตาล",
+    "topic": "ความตายกะทันหัน โชคร้าย",
+    "hint": "ยังไม่มีข้อมูล — รัน full scan",
+    "status": "pending",
+    "created_at": "2026-05-28"
+  }
+]

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JULIAN Content Approval</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1f2d5e, #272b5b);
+  min-height: 100vh;
+  padding: 20px 16px 40px;
+}
+h1 { color: #ba8345; font-size: 20px; margin-bottom: 4px; }
+.sub { color: #aaa; font-size: 13px; margin-bottom: 20px; }
+
+/* Setup screen */
+#setupScreen {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 480px;
+  margin: 40px auto;
+}
+#setupScreen h2 { color: #1f2d5e; margin-bottom: 12px; }
+#setupScreen p  { color: #555; font-size: 14px; margin-bottom: 16px; line-height: 1.6; }
+input[type=password], input[type=text] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* Main */
+#mainScreen { max-width: 520px; margin: 0 auto; }
+.stats {
+  display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 10px 16px;
+  color: #fff;
+  font-size: 13px;
+  flex: 1; min-width: 80px; text-align: center;
+}
+.stat b { display: block; font-size: 22px; color: #ba8345; }
+
+/* Cards */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 14px;
+  border-left: 4px solid #ddd;
+}
+.card.pending   { border-left-color: #ba8345; }
+.card.approved  { border-left-color: #2e7d32; opacity: .7; }
+.card.done      { border-left-color: #1565c0; opacity: .6; }
+.card.skipped   { border-left-color: #999; opacity: .5; }
+.card.processing { border-left-color: #f57c00; }
+
+.pair-badge {
+  display: inline-block;
+  background: #1f2d5e;
+  color: #ba8345;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+.card h3 { font-size: 15px; color: #222; margin-bottom: 4px; }
+.card .topic { font-size: 13px; color: #888; margin-bottom: 8px; }
+.card .hint {
+  font-size: 12px;
+  background: #f8f9fa;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: #555;
+  margin-bottom: 12px;
+}
+.card .caption-preview {
+  font-size: 13px;
+  background: #fff8e1;
+  border-left: 3px solid #ba8345;
+  padding: 10px;
+  border-radius: 0 6px 6px 0;
+  color: #333;
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+  display: none;
+}
+.card .caption-preview.show { display: block; }
+
+.card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-approve { background: #2e7d32; color: #fff; }
+.btn-skip    { background: #f0f0f0; color: #555; }
+.btn-preview { background: #e3f2fd; color: #1565c0; }
+.btn-inbox   { background: #1565c0; color: #fff; }
+.btn-main    { width: 100%; padding: 14px; border: none; border-radius: 10px;
+               font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+.btn-gold    { background: #ba8345; color: #fff; }
+.btn-blue    { background: #1877f2; color: #fff; }
+.btn-gray    { background: #f0f0f0; color: #555; font-size: 13px; }
+
+.status-chip {
+  font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+}
+.chip-pending    { background: #fff3e0; color: #e65100; }
+.chip-approved   { background: #e8f5e9; color: #2e7d32; }
+.chip-done       { background: #e3f2fd; color: #1565c0; }
+.chip-skipped    { background: #f5f5f5; color: #999; }
+.chip-processing { background: #fff8e1; color: #f57c00; }
+
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #222; color: #fff;
+  padding: 10px 22px; border-radius: 8px;
+  font-size: 14px; opacity: 0;
+  transition: opacity .3s, transform .3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.section-title {
+  color: #ccc; font-size: 12px; text-transform: uppercase;
+  letter-spacing: 1px; margin: 20px 0 8px;
+}
+
+.empty { color: #aaa; text-align: center; padding: 32px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- Setup screen -->
+<div id="setupScreen" style="display:none">
+  <h2>ตั้งค่าครั้งแรก</h2>
+  <p>ใส่ GitHub Personal Access Token (PAT) เพื่อให้ tool นี้บันทึกโพสต์ที่อนุมัติลง inbox อัตโนมัติ<br><br>
+  สร้าง PAT: GitHub → Settings → Developer settings → Personal access tokens → Fine-grained → เลือก repo horatad/horatad → Contents: Read and Write</p>
+  <input type="password" id="patInput" placeholder="github_pat_xxxxxxxxxxxx">
+  <button class="btn-main btn-gold" onclick="savePat()">บันทึก Token</button>
+  <button class="btn-main btn-gray" onclick="skipSetup()">ข้าม (ดูอย่างเดียว)</button>
+</div>
+
+<!-- Main screen -->
+<div id="mainScreen" style="display:none">
+  <h1>JULIAN Content Approval</h1>
+  <div class="sub">เลือกหัวข้อที่จะให้ JULIAN วิเคราะห์ → อนุมัติ → เก็บลง inbox อัตโนมัติ</div>
+
+  <div class="stats" id="statsBar"></div>
+
+  <div id="pendingSection">
+    <div class="section-title">รออนุมัติ</div>
+    <div id="pendingList"></div>
+  </div>
+
+  <div id="approvedSection">
+    <div class="section-title">อนุมัติแล้ว — รอ JULIAN ประมวลผล</div>
+    <div class="sub" style="color:#aaa;font-size:12px;margin-bottom:8px">
+      เปิด session JULIAN แล้วพิมพ์: "ประมวลผล approved proposals และสร้าง FB content"
+    </div>
+    <div id="approvedList"></div>
+  </div>
+
+  <div id="doneSection">
+    <div class="section-title">เสร็จแล้ว — อยู่ใน inbox</div>
+    <div id="doneList"></div>
+  </div>
+
+  <div style="margin-top:24px">
+    <button class="btn-main btn-gray" onclick="clearPat()">🔑 เปลี่ยน Token</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const REPO = 'horatad/horatad';
+const PROPOSALS_PATH = 'content/julian_proposals.json';
+const INBOX_PATH = 'content/inbox';
+
+let proposals = [];
+let pat = '';
+
+function getPat()  { return localStorage.getItem('julian_approval_pat') || ''; }
+function savePat() {
+  const v = document.getElementById('patInput').value.trim();
+  if (!v) { showToast('กรุณาใส่ Token'); return; }
+  localStorage.setItem('julian_approval_pat', v);
+  pat = v;
+  showToast('บันทึก Token แล้ว ✅');
+  setTimeout(showMain, 500);
+}
+function skipSetup() { showMain(); }
+function clearPat()  { localStorage.removeItem('julian_approval_pat'); location.reload(); }
+
+function buildCaption(p) {
+  return `🔭 วิเคราะห์ ${p.thai}
+
+ทดสอบกับข้อมูลบุคคลสำคัญ 50,000+ คนทั่วโลก
+ค้นหา pattern: ${p.topic}
+
+${p.hint}
+
+ผลการวิเคราะห์เต็มรูปแบบจะแสดงเมื่อ JULIAN ประมวลผลเสร็จ
+
+#โหราศาสตร์ไทย #TALS #โหราทาส #HoratadAI`;
+}
+
+function chipHtml(status) {
+  const map = {
+    pending:    ['chip-pending',    'รออนุมัติ'],
+    approved:   ['chip-approved',   'อนุมัติแล้ว'],
+    done:       ['chip-done',       '✅ ใน inbox'],
+    skipped:    ['chip-skipped',    'ข้าม'],
+    processing: ['chip-processing', '⏳ กำลังทำ'],
+  };
+  const [cls, label] = map[status] || map.pending;
+  return `<span class="status-chip ${cls}">${label}</span>`;
+}
+
+function renderCard(p) {
+  const caption = buildCaption(p);
+  const isDone    = p.status === 'done';
+  const isSkipped = p.status === 'skipped';
+  const isApproved= p.status === 'approved';
+  const isPending = p.status === 'pending';
+
+  return `
+  <div class="card ${p.status}" id="card_${p.id}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span class="pair-badge">${p.pair}</span>
+      ${chipHtml(p.status)}
+    </div>
+    <h3>${p.thai}</h3>
+    <div class="topic">${p.topic}</div>
+    <div class="hint">${p.hint}</div>
+    <div class="caption-preview" id="preview_${p.id}">${caption}</div>
+    <div class="card-actions">
+      ${isPending ? `
+        <button class="btn btn-approve" onclick="approve('${p.id}')">✅ อนุมัติ</button>
+        <button class="btn btn-skip"    onclick="skip('${p.id}')">ข้าม</button>
+      ` : ''}
+      ${isApproved ? `
+        <button class="btn btn-inbox" onclick="moveToInbox('${p.id}')">📥 ส่ง inbox เลย</button>
+      ` : ''}
+      <button class="btn btn-preview" onclick="togglePreview('${p.id}')">👁 ดู caption</button>
+    </div>
+  </div>`;
+}
+
+function renderAll() {
+  const pending  = proposals.filter(p => p.status === 'pending');
+  const approved = proposals.filter(p => p.status === 'approved' || p.status === 'processing');
+  const done     = proposals.filter(p => p.status === 'done');
+
+  document.getElementById('pendingList').innerHTML  = pending.length  ? pending.map(renderCard).join('')  : '<div class="empty">ไม่มีหัวข้อรอนุมัติ</div>';
+  document.getElementById('approvedList').innerHTML = approved.length ? approved.map(renderCard).join('') : '<div class="empty">ยังไม่มีที่อนุมัติ</div>';
+  document.getElementById('doneList').innerHTML     = done.length     ? done.map(renderCard).join('')     : '<div class="empty">ยังไม่มีที่เสร็จ</div>';
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><b>${pending.length}</b>รออนุมัติ</div>
+    <div class="stat"><b>${approved.length}</b>อนุมัติแล้ว</div>
+    <div class="stat"><b>${done.length}</b>ใน inbox</div>
+    <div class="stat"><b>${proposals.filter(p=>p.status==='skipped').length}</b>ข้าม</div>
+  `;
+}
+
+function togglePreview(id) {
+  document.getElementById(`preview_${id}`)?.classList.toggle('show');
+}
+
+function getIdx(id) { return proposals.findIndex(p => p.id === id); }
+
+function approve(id) {
+  const i = getIdx(id);
+  if (i < 0) return;
+  proposals[i].status = 'approved';
+  saveProposals();
+  renderAll();
+  showToast('อนุมัติแล้ว ✅');
+}
+
+function skip(id) {
+  const i = getIdx(id);
+  if (i < 0) return;
+  proposals[i].status = 'skipped';
+  saveProposals();
+  renderAll();
+  showToast('ข้ามแล้ว');
+}
+
+async function moveToInbox(id) {
+  const i = getIdx(id);
+  if (i < 0) return;
+  const p = proposals[i];
+  const caption = buildCaption(p);
+
+  const post = {
+    title: `JULIAN: ${p.thai}`,
+    body: caption,
+    category: 'finding',
+    source: 'julian',
+    tags: ['โหราศาสตร์ไทย', 'TALS', 'วิจัย', p.pair],
+    date_added: new Date().toISOString().slice(0, 10),
+    priority_score: 9,
+    status: 'inbox',
+    meta: { julian_pair: p.pair, julian_proposal_id: p.id }
+  };
+
+  const filename = `${Date.now()}_julian_${p.pair.replace('×','_')}.json`;
+
+  if (pat) {
+    const ok = await pushToGitHub(filename, JSON.stringify(post, null, 2));
+    if (ok) {
+      proposals[i].status = 'done';
+      saveProposals();
+      renderAll();
+      showToast(`บันทึกลง inbox แล้ว ✅ — ${filename}`);
+      return;
+    }
+  }
+
+  // fallback: download
+  const blob = new Blob([JSON.stringify(post, null, 2)], {type: 'application/json'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  proposals[i].status = 'done';
+  saveProposals();
+  renderAll();
+  showToast('ดาวน์โหลดไฟล์แล้ว — อัปโหลดขึ้น content/inbox/ ใน GitHub');
+}
+
+async function pushToGitHub(filename, content) {
+  const path = `${INBOX_PATH}/${filename}`;
+  const url  = `https://api.github.com/repos/${REPO}/contents/${path}`;
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${pat}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: `julian: add content proposal ${filename}`,
+      content: encoded,
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    showToast('GitHub error: ' + res.status);
+    console.error(err);
+    return false;
+  }
+  return true;
+}
+
+function saveProposals() {
+  localStorage.setItem('julian_proposals_cache', JSON.stringify(proposals));
+  // ถ้ามี PAT → push กลับ GitHub ด้วย
+  if (pat) pushProposalsToGitHub();
+}
+
+async function pushProposalsToGitHub() {
+  const url = `https://api.github.com/repos/${REPO}/contents/${PROPOSALS_PATH}`;
+  // ดึง SHA ปัจจุบันก่อน
+  const getRes = await fetch(url, { headers: { Authorization: `token ${pat}` } });
+  const sha = getRes.ok ? (await getRes.json()).sha : undefined;
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(proposals, null, 2))));
+  await fetch(url, {
+    method: 'PUT',
+    headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'julian: update proposals status',
+      content: encoded,
+      ...(sha ? { sha } : {}),
+    }),
+  });
+}
+
+async function loadProposals() {
+  // ลอง GitHub ก่อน
+  const apiUrl = `https://api.github.com/repos/${REPO}/contents/${PROPOSALS_PATH}?ref=main&t=${Date.now()}`;
+  const headers = pat ? { Authorization: `token ${pat}` } : {};
+  try {
+    const res  = await fetch(apiUrl, { headers });
+    if (res.ok) {
+      const data    = await res.json();
+      const decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+      proposals = JSON.parse(decoded);
+      localStorage.setItem('julian_proposals_cache', JSON.stringify(proposals));
+      return;
+    }
+  } catch {}
+
+  // fallback: localStorage cache
+  const cache = localStorage.getItem('julian_proposals_cache');
+  if (cache) { proposals = JSON.parse(cache); return; }
+
+  // ไม่มีไฟล์เลย
+  proposals = [];
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+async function showMain() {
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display  = 'block';
+  await loadProposals();
+  renderAll();
+}
+
+// Init
+pat = getPat();
+if (!pat) {
+  document.getElementById('setupScreen').style.display = 'block';
+} else {
+  showMain();
+}
+</script>
+</body>
+</html>
