@@ -132,6 +132,16 @@ input.time-input{min-width:0;padding:4px 2px}
 .city-lng{font-size:.73rem;color:#58a6ff;flex-shrink:0;margin-left:6px}
 .city-loading{padding:12px;text-align:center;color:#8b949e;font-size:.83rem}
 .city-close-btn{margin-top:2px;padding:7px;background:#21262d;color:#8b949e;border:1px solid #30363d;border-radius:6px;cursor:pointer;font-size:.85rem;font-family:inherit}
+/* Time picker modal (V3.3.73) */
+.time-picker-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1f26;border:1px solid #30363d;border-radius:12px;padding:14px;z-index:1000;width:min(94vw,360px);max-height:80vh;display:flex;flex-direction:column;gap:10px}
+.time-picker-preview{font-size:26px;font-weight:700;color:#c9d1d9;text-align:center;letter-spacing:.1em;padding:2px 0;font-variant-numeric:tabular-nums}
+.time-picker-label{font-size:11px;color:#8b949e;font-weight:500;letter-spacing:.04em;margin-bottom:2px}
+.time-picker-grid{display:flex;flex-wrap:wrap;gap:4px;max-height:128px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.time-btn{width:36px;height:30px;border:1px solid #30363d;background:#0d1117;color:#c9d1d9;border-radius:4px;cursor:pointer;font-size:12px;font-family:'Sarabun','Noto Sans Thai',sans-serif;touch-action:manipulation;flex-shrink:0}
+.time-btn:hover{background:#21262d}
+.time-btn.active{background:#5b3fa0;border-color:#7b5fc0;color:#fff;font-weight:700}
+input.time-input{cursor:pointer}
+input.time-input:disabled{cursor:default}
 
 /* Action buttons */
 .btn-row-section{display:flex;gap:6px;margin-top:8px}

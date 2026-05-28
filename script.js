@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.72
-// Version 3.3.72 | 2026-05-28
+// HORATAD:SCRIPT:3.3.73
+// Version 3.3.73 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -1812,6 +1812,45 @@ function openLngPad(fieldId){
   document.getElementById('numpad-backdrop').classList.remove('hidden');
 }
 // ── City search via Nominatim (OpenStreetMap) — สำหรับหา longitude สถานที่นอกไทย ──
+// ── Time picker modal (V3.3.73) — H 00-23, M 00-59 grids ──
+let _timePickerField=null,_timePickerH=0,_timePickerM=0;
+function openTimePicker(fieldId){
+  const el=document.getElementById(fieldId);
+  if(!el||el.disabled)return;
+  _timePickerField=fieldId;
+  const parts=(el.value||'').split(':');
+  _timePickerH=Math.min(23,Math.max(0,parseInt(parts[0],10)||0));
+  _timePickerM=Math.min(59,Math.max(0,parseInt(parts[1],10)||0));
+  _renderTimePicker();
+  document.getElementById('time-picker-modal').classList.remove('hidden');
+  document.getElementById('time-picker-backdrop').classList.remove('hidden');
+}
+function closeTimePicker(){
+  document.getElementById('time-picker-modal').classList.add('hidden');
+  document.getElementById('time-picker-backdrop').classList.add('hidden');
+  _timePickerField=null;
+}
+function _renderTimePicker(){
+  _buildTimeBtns('time-picker-hours',24,'h',_timePickerH);
+  _buildTimeBtns('time-picker-minutes',60,'m',_timePickerM);
+  const prev=document.getElementById('time-picker-preview');
+  if(prev)prev.textContent=String(_timePickerH).padStart(2,'0')+':'+String(_timePickerM).padStart(2,'0');
+}
+function _buildTimeBtns(containerId,count,attr,selected){
+  const el=document.getElementById(containerId);
+  if(!el)return;
+  el.innerHTML='';
+  let activeBtn=null;
+  for(let i=0;i<count;i++){
+    const btn=document.createElement('button');
+    btn.className='time-btn'+(i===selected?' active':'');
+    btn.textContent=String(i).padStart(2,'0');
+    btn.dataset[attr]=i;
+    el.appendChild(btn);
+    if(i===selected)activeBtn=btn;
+  }
+  if(activeBtn)requestAnimationFrame(()=>activeBtn.scrollIntoView({block:'nearest',behavior:'instant'}));
+}
 // ── Province picker modal (แทน Nominatim) — ก-ฮ tabs + list จากข้อมูลใน code ──
 let _citySearchField=null,_provPickerAlpha='',_foreignLetterFilter='';
 function openCitySearch(fieldId){
@@ -4302,6 +4341,30 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // V3.3.59: LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
+  // V3.3.73: Time picker event delegation
+  const _tpH=document.getElementById('time-picker-hours');
+  if(_tpH){
+    _tpH.addEventListener('click',e=>{
+      const btn=e.target.closest('.time-btn');
+      if(!btn)return;
+      _timePickerH=parseInt(btn.dataset.h,10);
+      _renderTimePicker();
+    });
+  }
+  const _tpM=document.getElementById('time-picker-minutes');
+  if(_tpM){
+    _tpM.addEventListener('click',e=>{
+      const btn=e.target.closest('.time-btn');
+      if(!btn)return;
+      _timePickerM=parseInt(btn.dataset.m,10);
+      if(_timePickerField){
+        const el=document.getElementById(_timePickerField);
+        if(el)el.value=String(_timePickerH).padStart(2,'0')+':'+String(_timePickerM).padStart(2,'0');
+      }
+      _playBeep(700);
+      setTimeout(closeTimePicker,200);
+    });
+  }
   const _csTabs=document.getElementById('city-search-tabs');
   if(_csTabs){
     _csTabs.addEventListener('click',e=>{
@@ -4423,6 +4486,7 @@ window.switchTab=switchTab;window.toggleEra=toggleEra;
 window.calculateBoth=calculateBoth;window.calculateTransit=calculateTransit;
 window.clearForm=clearForm;window.resetTransit=resetTransit;window.openLngPad=openLngPad;
 window.openCitySearch=openCitySearch;window.closeCitySearch=closeCitySearch;window.selectUnknownLocation=selectUnknownLocation;window.toggleNoTime=toggleNoTime;
+window.openTimePicker=openTimePicker;window.closeTimePicker=closeTimePicker;
 window.openMemory=openMemory;window.closeMemory=closeMemory;window.cycleMemory=cycleMemory;
 window.exportMemory=exportMemory;window.confirmClearMemory=confirmClearMemory;
 window.openEvents=openEvents;window.closeEvents=closeEvents;window.saveEvent=saveEvent;

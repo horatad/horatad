@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.72 -->
-<!-- Version 3.3.72 | 2026-05-28 -->
+<!-- HORATAD:INDEX:3.3.73 -->
+<!-- Version 3.3.73 | 2026-05-28 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.72">
+<link rel="stylesheet" href="style.css?v=3.3.73">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -143,7 +143,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.72</span>
+  <span class="brand-ver">V 3.3.73</span>
 </h1>
 
 <!-- Tab nav -->
@@ -189,7 +189,7 @@ canvas{max-width:100%;height:auto}
           <div><label for="d1">วัน</label><input id="d1" type="number" min="1" max="31" inputmode="numeric"></div>
           <div><label for="m1">เดือน</label><input id="m1" type="number" min="1" max="12" inputmode="numeric"></div>
           <div><label for="y1">ปี</label><input id="y1" type="number" inputmode="numeric"></div>
-          <div><label for="t1">เวลา</label><input id="t1" type="text" class="time-input" inputmode="numeric" placeholder="HH:MM" maxlength="5" autocomplete="off"></div>
+          <div><label for="t1">เวลา</label><input id="t1" type="text" class="time-input" placeholder="--:--" readonly onclick="openTimePicker('t1')"></div>
         </div>
         <div class="time-ext-row">
           <label class="notime-label"><input type="checkbox" id="notime1" onchange="toggleNoTime('1')"> ไม่ทราบเวลาเกิด</label>
@@ -226,7 +226,7 @@ canvas{max-width:100%;height:auto}
           <div><label for="d2">วัน</label><input id="d2" type="number" min="1" max="31" inputmode="numeric"></div>
           <div><label for="m2">เดือน</label><input id="m2" type="number" min="1" max="12" inputmode="numeric"></div>
           <div><label for="y2">ปี</label><input id="y2" type="number" inputmode="numeric"></div>
-          <div><label for="t2">เวลา</label><input id="t2" type="text" class="time-input" inputmode="numeric" placeholder="HH:MM" maxlength="5" autocomplete="off"></div>
+          <div><label for="t2">เวลา</label><input id="t2" type="text" class="time-input" placeholder="--:--" readonly onclick="openTimePicker('t2')"></div>
         </div>
         <div class="time-ext-row">
           <label class="notime-label"><input type="checkbox" id="notime2" onchange="toggleNoTime('2')"> ไม่ทราบเวลาเกิด</label>
@@ -254,7 +254,7 @@ canvas{max-width:100%;height:auto}
           <div><label for="dt">วัน</label><input id="dt" type="number" min="1" max="31" inputmode="numeric"></div>
           <div><label for="mt">เดือน</label><input id="mt" type="number" min="1" max="12" inputmode="numeric"></div>
           <div><label for="yt">ปี</label><input id="yt" type="number" inputmode="numeric"></div>
-          <div><label for="tt">เวลา</label><input id="tt" type="text" class="time-input" inputmode="numeric" placeholder="HH:MM" maxlength="5" autocomplete="off"></div>
+          <div><label for="tt">เวลา</label><input id="tt" type="text" class="time-input" placeholder="--:--" readonly onclick="openTimePicker('tt')"></div>
         </div>
         <div class="time-ext-row">
           <label class="dst-label"><input type="checkbox" id="dstt"> DST −1ชม.</label>
@@ -309,7 +309,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.72</div>
+        <div class="about-version">V 3.3.73</div>
         <div class="about-update">อัปเดต 28 พ.ค. 2569 · แก้ปุ่มพยากรณ์ + นำเข้าไฟล์</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -343,7 +343,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.72" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.73" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -923,8 +923,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.72"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.72"></script>
+<script type="module" src="script.js?v=3.3.73"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.73"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -961,10 +961,24 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.72"></script>
+<script src="auth-pin.js?v=3.3.73"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
-<!-- V3.3.72: Province picker modal — ก-ฮ tabs, ไม่มี text input (ไม่มี keyboard บัง) -->
+<!-- V3.3.73: Time picker modal — H 00-23, M 00-59 grids, no keyboard -->
+<div id="time-picker-backdrop" class="memory-backdrop hidden" onclick="closeTimePicker()"></div>
+<div id="time-picker-modal" class="time-picker-modal hidden">
+  <div class="time-picker-preview" id="time-picker-preview">--:--</div>
+  <div>
+    <div class="time-picker-label">ชั่วโมง (H)</div>
+    <div class="time-picker-grid" id="time-picker-hours"></div>
+  </div>
+  <div>
+    <div class="time-picker-label">นาที (M)</div>
+    <div class="time-picker-grid" id="time-picker-minutes"></div>
+  </div>
+  <button class="city-close-btn" onclick="closeTimePicker()">ยกเลิก</button>
+</div>
+<!-- V3.3.73: Province picker modal — ก-ฮ tabs, ไม่มี text input (ไม่มี keyboard บัง) -->
 <div id="city-search-backdrop" class="memory-backdrop hidden" onclick="closeCitySearch()"></div>
 <div id="city-search-modal" class="city-search-modal hidden">
   <div class="city-search-title">เลือกจังหวัด</div>
