@@ -170,8 +170,50 @@ input[type=password], input[type=text] {
   color: #ccc; font-size: 12px; text-transform: uppercase;
   letter-spacing: 1px; margin: 20px 0 8px;
 }
-
 .empty { color: #aaa; text-align: center; padding: 32px; font-size: 14px; }
+
+/* Tabs */
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  background: rgba(255,255,255,.08); border-radius: 12px; padding: 4px;
+}
+.tab-btn {
+  flex: 1; padding: 10px; border: none; border-radius: 9px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  background: transparent; color: #aaa; transition: all .15s;
+}
+.tab-btn.active { background: #fff; color: #1f2d5e; }
+
+/* Vocab */
+.vocab-card {
+  background: #fff; border-radius: 12px; padding: 16px;
+  margin-bottom: 10px; border-left: 4px solid #ddd;
+}
+.vocab-card.draft    { border-left-color: #ba8345; }
+.vocab-card.approved { border-left-color: #2e7d32; }
+.vocab-card.rejected { border-left-color: #c62828; opacity:.6; }
+
+.vocab-en { font-size: 16px; font-weight: 700; color: #1f2d5e; }
+.vocab-th {
+  font-size: 15px; color: #333; margin: 6px 0;
+  border: 1px solid #e0e0e0; border-radius: 6px;
+  padding: 8px 10px; width: 100%; font-family: inherit;
+}
+.vocab-ctx { font-size: 12px; color: #999; margin-bottom: 8px; }
+.vocab-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.btn-sm { padding: 6px 12px; border: none; border-radius: 6px;
+          font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-approve-sm { background: #e8f5e9; color: #2e7d32; }
+.btn-reject-sm  { background: #ffebee; color: #c62828; }
+.btn-save-sm    { background: #ba8345; color: #fff; }
+
+.vocab-add {
+  background: rgba(255,255,255,.08); border-radius: 12px;
+  padding: 16px; margin-bottom: 16px;
+}
+.vocab-add input {
+  background: #fff; color: #222; margin-bottom: 8px;
+}
 </style>
 </head>
 <body>
@@ -213,9 +255,16 @@ input[type=password], input[type=text] {
 
 <!-- Main screen -->
 <div id="mainScreen" style="display:none">
-  <h1>JULIAN Content Approval</h1>
-  <div class="sub">เลือกหัวข้อที่จะให้ JULIAN วิเคราะห์ → อนุมัติ → เก็บลง inbox อัตโนมัติ</div>
+  <h1>JULIAN Admin</h1>
+  <div class="sub" id="mainSub"></div>
 
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('content')" id="tabContent">📋 Content</button>
+    <button class="tab-btn"        onclick="switchTab('vocab')"   id="tabVocab">📖 Vocabulary</button>
+  </div>
+
+  <!-- TAB: Content Approval -->
+  <div id="tabContentPane">
   <div class="stats" id="statsBar"></div>
 
   <div id="pendingSection">
@@ -258,6 +307,26 @@ input[type=password], input[type=text] {
   <div style="margin-top:24px">
     <button class="btn-main btn-gray" onclick="clearPat()">🔑 เปลี่ยน Token</button>
   </div>
+  </div><!-- end tabContentPane -->
+
+  <!-- TAB: Vocabulary -->
+  <div id="tabVocabPane" style="display:none">
+    <div class="section-title">เพิ่มคำใหม่</div>
+    <div class="vocab-add">
+      <input type="text" id="vEnInput"  placeholder="English term เช่น Lift, p-value, Conjunction">
+      <input type="text" id="vThInput"  placeholder="คำไทยที่ต้องการใช้">
+      <input type="text" id="vCtxInput" placeholder="บริบท เช่น statistical, astronomy, general (ไม่บังคับ)">
+      <button class="btn-main btn-gold" onclick="addVocab()" style="margin-bottom:0">+ เพิ่มคำ</button>
+    </div>
+
+    <div class="section-title">รอรีวิว</div>
+    <div id="vocabDraftList"></div>
+
+    <div class="section-title">อนุมัติแล้ว — ใช้เป็นมาตรฐาน</div>
+    <div id="vocabApprovedList"></div>
+  </div>
+
+</div><!-- end mainScreen -->
 </div>
 
 <div id="toast" class="toast"></div>
@@ -602,10 +671,137 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
+// --- Tab switching ---
+function switchTab(name) {
+  document.getElementById('tabContentPane').style.display = name === 'content' ? 'block' : 'none';
+  document.getElementById('tabVocabPane').style.display   = name === 'vocab'   ? 'block' : 'none';
+  document.getElementById('tabContent').classList.toggle('active', name === 'content');
+  document.getElementById('tabVocab').classList.toggle('active',   name === 'vocab');
+  if (name === 'vocab' && vocabList.length === 0) loadVocab().then(renderVocab);
+  else if (name === 'vocab') renderVocab();
+}
+
+// --- Vocabulary ---
+const VOCAB_PATH = 'content/vocab_standard.json';
+let vocabList = [];
+
+async function loadVocab() {
+  const apiUrl = `https://api.github.com/repos/${REPO}/contents/${VOCAB_PATH}?ref=main&t=${Date.now()}`;
+  const headers = pat ? { Authorization: `token ${pat}` } : {};
+  try {
+    const res = await fetch(apiUrl, { headers });
+    if (res.ok) {
+      const data    = await res.json();
+      const decoded = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+      vocabList = JSON.parse(decoded);
+      localStorage.setItem('julian_vocab_cache', JSON.stringify(vocabList));
+      return;
+    }
+  } catch {}
+  const cache = localStorage.getItem('julian_vocab_cache');
+  if (cache) { try { vocabList = JSON.parse(cache); return; } catch {} }
+  vocabList = [];
+}
+
+async function saveVocab() {
+  localStorage.setItem('julian_vocab_cache', JSON.stringify(vocabList));
+  if (!pat) { showToast('ไม่มี Token — บันทึกเฉพาะ local'); return; }
+  const url    = `https://api.github.com/repos/${REPO}/contents/${VOCAB_PATH}`;
+  const getRes = await fetch(url, { headers: { Authorization: `token ${pat}` } });
+  const sha    = getRes.ok ? (await getRes.json()).sha : undefined;
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(vocabList, null, 2))));
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'julian: update vocab_standard',
+      content: encoded,
+      ...(sha ? { sha } : {}),
+    }),
+  });
+  if (!res.ok) { showToast('GitHub error: ' + res.status); console.error(await res.text()); }
+}
+
+function addVocab() {
+  const en  = document.getElementById('vEnInput').value.trim();
+  const th  = document.getElementById('vThInput').value.trim();
+  const ctx = document.getElementById('vCtxInput').value.trim();
+  if (!en || !th) { showToast('กรุณาใส่ทั้ง English และ Thai'); return; }
+  if (vocabList.find(v => v.en.toLowerCase() === en.toLowerCase())) {
+    showToast('คำนี้มีอยู่แล้ว'); return;
+  }
+  vocabList.push({
+    id: `v_${Date.now()}`,
+    en, th, context: ctx || '',
+    status: 'draft',
+    created_at: new Date().toISOString().slice(0, 10),
+  });
+  saveVocab();
+  renderVocab();
+  document.getElementById('vEnInput').value  = '';
+  document.getElementById('vThInput').value  = '';
+  document.getElementById('vCtxInput').value = '';
+  showToast('เพิ่มคำแล้ว ✅');
+}
+
+function saveVocabTh(id) {
+  const i = vocabList.findIndex(v => v.id === id);
+  if (i < 0) return;
+  const newTh = document.getElementById(`vth_${id}`).value.trim();
+  if (!newTh) { showToast('กรุณาใส่คำไทย'); return; }
+  vocabList[i].th = newTh;
+  saveVocab();
+  showToast('บันทึกแล้ว ✅');
+}
+
+function approveVocab(id) {
+  const i = vocabList.findIndex(v => v.id === id);
+  if (i < 0) return;
+  vocabList[i].status = 'approved';
+  saveVocab();
+  renderVocab();
+  showToast('อนุมัติคำแล้ว ✅');
+}
+
+function rejectVocab(id) {
+  const i = vocabList.findIndex(v => v.id === id);
+  if (i < 0) return;
+  vocabList[i].status = 'rejected';
+  saveVocab();
+  renderVocab();
+  showToast('ปฏิเสธคำแล้ว');
+}
+
+function renderVocab() {
+  const drafts   = vocabList.filter(v => v.status !== 'approved');
+  const approved = vocabList.filter(v => v.status === 'approved');
+
+  const mkCard = (v) => `
+  <div class="vocab-card ${v.status}" id="vcard_${v.id}">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span class="vocab-en">${v.en}</span>
+      ${v.context ? `<span style="font-size:11px;color:#ba8345;background:#fff3e0;padding:2px 8px;border-radius:10px">${v.context}</span>` : ''}
+    </div>
+    <textarea class="vocab-th" id="vth_${v.id}" rows="2">${v.th}</textarea>
+    <div class="vocab-actions">
+      <button class="btn-sm btn-save-sm"    onclick="saveVocabTh('${v.id}')">💾 บันทึก</button>
+      ${v.status !== 'approved' ? `<button class="btn-sm btn-approve-sm" onclick="approveVocab('${v.id}')">✅ อนุมัติ</button>` : ''}
+      ${v.status === 'approved' ? `<button class="btn-sm btn-reject-sm"  onclick="rejectVocab('${v.id}')">↩ ยกเลิก</button>` : `<button class="btn-sm btn-reject-sm" onclick="rejectVocab('${v.id}')">✕ ปฏิเสธ</button>`}
+    </div>
+  </div>`;
+
+  document.getElementById('vocabDraftList').innerHTML    = drafts.length
+    ? drafts.map(mkCard).join('')
+    : '<div class="empty">ไม่มีคำรอรีวิว</div>';
+  document.getElementById('vocabApprovedList').innerHTML = approved.length
+    ? approved.map(mkCard).join('')
+    : '<div class="empty">ยังไม่มีคำที่อนุมัติแล้ว</div>';
+}
+
 async function showMain() {
   document.getElementById('setupScreen').style.display = 'none';
   document.getElementById('mainScreen').style.display  = 'block';
-  await loadProposals();
+  await Promise.all([loadProposals(), loadVocab()]);
   renderAll();
 }
 

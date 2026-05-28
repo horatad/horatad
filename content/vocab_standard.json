@@ -1,0 +1,146 @@
+[
+  {
+    "id": "v_init_001",
+    "en": "Lift",
+    "th": "โอกาสสูงกว่าปกติ X เท่า",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_002",
+    "en": "p-value",
+    "th": "ความน่าเชื่อถือทางสถิติ",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_003",
+    "en": "FDR (False Discovery Rate)",
+    "th": "อัตราการค้นพบที่คลาดเคลื่อน",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_004",
+    "en": "Transit",
+    "th": "ดาวโจร",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_005",
+    "en": "Natal",
+    "th": "เจ้าพื้นดวง",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_006",
+    "en": "Conjunction",
+    "th": "ร่วมราศี",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_007",
+    "en": "Opposition",
+    "th": "ตรงข้าม (180°)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_008",
+    "en": "Trine",
+    "th": "ตรีโกณ (120°)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_009",
+    "en": "Square",
+    "th": "จตุโกณ (90°)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_010",
+    "en": "Aspect",
+    "th": "มุมดาว",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_011",
+    "en": "Sample size (n)",
+    "th": "จำนวนกลุ่มตัวอย่าง",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_012",
+    "en": "Baseline",
+    "th": "ค่าพื้นฐานทั่วไป",
+    "context": "statistical",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_013",
+    "en": "Dataset",
+    "th": "ชุดข้อมูล",
+    "context": "general",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_014",
+    "en": "Event type",
+    "th": "ประเภทเหตุการณ์",
+    "context": "general",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_015",
+    "en": "Orb",
+    "th": "ขอบเขตมุมยืดหยุ่น (องศา)",
+    "context": "astronomy",
+    "status": "draft",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_016",
+    "en": "Julian Day (JD)",
+    "th": "หน่วยวันจูเลียน (ใช้คำนวณตำแหน่งดาว)",
+    "context": "astronomy",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_017",
+    "en": "Wikidata QID",
+    "th": "รหัสระบุตัวตนใน Wikidata",
+    "context": "general",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_init_018",
+    "en": "SPARQL",
+    "th": "ภาษาค้นหาข้อมูล Wikidata",
+    "context": "general",
+    "status": "approved",
+    "created_at": "2026-05-28"
+  }
+]
