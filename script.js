@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.74
-// Version 3.3.74 | 2026-05-29
+// HORATAD:SCRIPT:3.3.75
+// Version 3.3.75 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.74';
+const APP_VERSION='3.3.75';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -512,6 +512,48 @@ function _renderTagRow(section){
   addBtn.textContent='+ เพิ่ม';
   addBtn.addEventListener('click',()=>_openAddTagModal(section));
   row.appendChild(addBtn);
+}
+// V3.3.75: recent person chips — แสดงชื่อที่ผูกดวงล่าสุดด้านล่างฟอร์ม
+function _renderRecentPersonChips(section){
+  const el=document.getElementById('recent-chips-'+section);
+  if(!el)return;
+  const recs=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,7);
+  el.innerHTML='';
+  recs.forEach(m=>{
+    const chip=document.createElement('span');
+    chip.className='tag-chip tag-person-chip';
+    chip.textContent=m.name||'—';
+    chip.title=`${m.d||''}/${m.m||''}/${m.y_be||''} ${m.t||''}`;
+    chip.addEventListener('click',()=>_quickLoadPerson(m,String(section)));
+    el.appendChild(chip);
+  });
+}
+function _quickLoadPerson(m,section){
+  if(!m)return;
+  const y_use=_era==='BE'?m.y_be:m.y_be-543;
+  _editingMemKey=null;_editingMemSection=null;
+  if(section==='1'){
+    _setField('name-1',m.name||'');
+    document.getElementById('gender1').value=m.gender||'ชาย';
+    _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
+    document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
+    _customLng1=(typeof m.lng==='number')?m.lng:null;
+    _customTz1=(typeof m.tz==='number')?m.tz:null;
+    const _nt1b=document.getElementById('notime1');if(_nt1b){_nt1b.checked=!!m.noTime;}
+    const _t1b=document.getElementById('t1');if(_t1b)_t1b.disabled=!!m.noTime;
+    _updateLngUI('1');_applyInputColors('1','init');
+  }else{
+    _setField('name-2',m.name||'');
+    document.getElementById('gender2').value=m.gender||'ชาย';
+    _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.noTime?'':m.t);
+    document.getElementById('prov2').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
+    _customLng2=(typeof m.lng==='number')?m.lng:null;
+    _customTz2=(typeof m.tz==='number')?m.tz:null;
+    const _nt2b=document.getElementById('notime2');if(_nt2b){_nt2b.checked=!!m.noTime;}
+    const _t2b=document.getElementById('t2');if(_t2b)_t2b.disabled=!!m.noTime;
+    _updateLngUI('2');_applyInputColors('2','init');
+  }
+  _showToast(`โหลด ${m.name||''}  สำเร็จ`);
 }
 function _eventSlotLoadByUid(uid){
   if(!uid)return;
@@ -1622,6 +1664,7 @@ function calculateBoth(){
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
   if(typeof _loadTagsForCurrentChart==='function'){_loadTagsForCurrentChart('1');_loadTagsForCurrentChart('2');_renderTagRow('1');_renderTagRow('2');}
+  _renderRecentPersonChips('1');_renderRecentPersonChips('2');
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
@@ -4340,6 +4383,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   _loadTagsForCurrentChart('2');
   _renderTagRow('1');
   _renderTagRow('2');
+  // V3.3.75: recent person chips
+  _renderRecentPersonChips('1');
+  _renderRecentPersonChips('2');
 
   // V3.3.59: LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
