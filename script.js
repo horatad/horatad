@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.78
-// Version 3.3.78 | 2026-05-29
+// HORATAD:SCRIPT:3.3.79
+// Version 3.3.79 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.78';
+const APP_VERSION='3.3.79';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -492,10 +492,10 @@ function _renderTagRow(section){
     row.appendChild(addBtn);
     return;
   }
-  // V3.3.78: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
+  // V3.3.79: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
   row.style.display='none';
 }
-// V3.3.78: recent person chips — runtime buffer, auto-width max
+// V3.3.79: recent person chips — runtime buffer, auto-width max
 function _recentChipsMax(){
   // ~72px per chip (padding 4+11+11+4 + text ~42px avg) + 6px gap, clamp 3–8
   return Math.min(8,Math.max(3,Math.floor((window.innerWidth-24)/78)));
@@ -1862,6 +1862,7 @@ function openLngPad(fieldId){
 // ── City search via Nominatim (OpenStreetMap) — สำหรับหา longitude สถานที่นอกไทย ──
 // ── Time picker modal (V3.3.74) — H 00-23, M 00-59 grids ──
 let _timePickerField=null,_timePickerH=0,_timePickerM=0;
+let _colPickerField=null,_colPickerType=null,_cpD=1,_cpM=1,_cpY=2560;
 function openTimePicker(fieldId){
   const el=document.getElementById(fieldId);
   if(!el||el.disabled)return;
@@ -1899,6 +1900,52 @@ function _buildTimeCol(id,vals,sel,col){
     b.dataset.col=col;b.dataset.val=v;
     el.appendChild(b);
   });
+}
+// ── Column picker — day / month / year ──────────────────────────────────────
+function openColPicker(fieldId,type){
+  const el=document.getElementById(fieldId);
+  if(!el)return;
+  _colPickerField=fieldId;_colPickerType=type;
+  const n=parseInt(el.value||'0',10)||0;
+  if(type==='day')  _cpD=Math.min(31,Math.max(1,n||1));
+  else if(type==='month') _cpM=Math.min(12,Math.max(1,n||1));
+  else if(type==='year')  _cpY=Math.min(2799,Math.max(2400,n||2560));
+  _renderColPicker();
+  document.getElementById('col-picker-modal').classList.remove('hidden');
+  document.getElementById('col-picker-backdrop').classList.remove('hidden');
+}
+function closeColPicker(){
+  document.getElementById('col-picker-modal').classList.add('hidden');
+  document.getElementById('col-picker-backdrop').classList.add('hidden');
+  _colPickerField=null;_colPickerType=null;
+}
+function _renderColPicker(){
+  const container=document.getElementById('col-picker-cols');
+  const prev=document.getElementById('col-picker-preview');
+  if(!container)return;
+  container.innerHTML='';
+  if(_colPickerType==='day'){
+    const dT=Math.floor(_cpD/10),dU=_cpD%10;
+    const dUVals=dT===0?Array.from({length:9},(_,i)=>i+1):dT===3?[0,1]:Array.from({length:10},(_,i)=>i);
+    container.innerHTML='<div class="tp-col-group"><div class="tp-col-lbl">วัน</div><div class="tp-col-row"><div class="tp-col" id="cp-c0"></div><div class="tp-col" id="cp-c1"></div></div></div>';
+    _buildTimeCol('cp-c0',[0,1,2,3],dT,'d10');
+    _buildTimeCol('cp-c1',dUVals,dU,'d1');
+    if(prev)prev.textContent=String(_cpD).padStart(2,'0');
+  }else if(_colPickerType==='month'){
+    const mT=Math.floor(_cpM/10),mU=_cpM%10;
+    const mUVals=mT===0?Array.from({length:9},(_,i)=>i+1):[0,1,2];
+    container.innerHTML='<div class="tp-col-group"><div class="tp-col-lbl">เดือน</div><div class="tp-col-row"><div class="tp-col" id="cp-c0"></div><div class="tp-col" id="cp-c1"></div></div></div>';
+    _buildTimeCol('cp-c0',[0,1],mT,'m10');
+    _buildTimeCol('cp-c1',mUVals,mU,'m1');
+    if(prev)prev.textContent=String(_cpM).padStart(2,'0');
+  }else if(_colPickerType==='year'){
+    const y100=Math.floor(_cpY/100)%10,y10=Math.floor(_cpY/10)%10,y1=_cpY%10;
+    container.innerHTML='<div class="tp-col-group"><div class="tp-col-lbl">ปี (พ.ศ.)</div><div class="tp-col-row"><div class="cp-fixed-digit">2</div><div class="tp-col" id="cp-c0"></div><div class="tp-col" id="cp-c1"></div><div class="tp-col" id="cp-c2"></div></div></div>';
+    _buildTimeCol('cp-c0',[4,5,6,7],y100,'y100');
+    _buildTimeCol('cp-c1',Array.from({length:10},(_,i)=>i),y10,'y10');
+    _buildTimeCol('cp-c2',Array.from({length:10},(_,i)=>i),y1,'y1');
+    if(prev)prev.textContent=String(_cpY);
+  }
 }
 // ── Province picker modal (แทน Nominatim) — ก-ฮ tabs + list จากข้อมูลใน code ──
 let _citySearchField=null,_provPickerAlpha='',_foreignLetterFilter='';
@@ -2346,7 +2393,7 @@ function _addMemory(entry,replaceKey){
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
-let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.78: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
+let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.79: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
 let _activePersonKey={'1':null,'2':null}; // track currently active per section
 // V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
@@ -4389,7 +4436,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   _loadTagsForCurrentChart('2');
   _renderTagRow('1');
   _renderTagRow('2');
-  // V3.3.78: recent person chips
+  // V3.3.79: recent person chips
   _renderRecentPersonChips('1');
   _renderRecentPersonChips('2');
 
@@ -4418,6 +4465,40 @@ window.addEventListener('DOMContentLoaded',()=>{
         if(_timePickerField){const el=document.getElementById(_timePickerField);if(el)el.value=String(_timePickerH).padStart(2,'0')+':'+String(_timePickerM).padStart(2,'0');}
         _playBeep(700);
         setTimeout(closeTimePicker,200);
+      }
+    });
+  }
+  // V3.3.79: Column picker event delegation (day/month/year)
+  const _cpCols=document.getElementById('col-picker-cols');
+  if(_cpCols){
+    _cpCols.addEventListener('click',e=>{
+      const btn=e.target.closest('.tp-digit');
+      if(!btn)return;
+      const col=btn.dataset.col,val=parseInt(btn.dataset.val,10);
+      let autoClose=false;
+      if(_colPickerType==='day'){
+        if(col==='d10'){
+          _cpD=val*10+(_cpD%10);
+          if(val===0&&_cpD%10===0)_cpD=1;   // 00 → 01
+          if(val===3&&_cpD%10>1)_cpD=31;    // 3x>31 → 31
+        }else if(col==='d1'){_cpD=Math.floor(_cpD/10)*10+val;autoClose=true;}
+      }else if(_colPickerType==='month'){
+        if(col==='m10'){
+          _cpM=val*10+(_cpM%10);
+          if(val===0&&_cpM%10===0)_cpM=1;   // 00 → 01
+          if(val===1&&_cpM%10>2)_cpM=12;    // 1x>12 → 12
+        }else if(col==='m1'){_cpM=Math.floor(_cpM/10)*10+val;autoClose=true;}
+      }else if(_colPickerType==='year'){
+        const y1000=Math.floor(_cpY/1000),y100o=Math.floor(_cpY/100)%10,y10o=Math.floor(_cpY/10)%10;
+        if(col==='y100')      _cpY=y1000*1000+val*100+y10o*10+(_cpY%10);
+        else if(col==='y10')  _cpY=y1000*1000+y100o*100+val*10+(_cpY%10);
+        else if(col==='y1'){  _cpY=y1000*1000+y100o*100+y10o*10+val;autoClose=true;}
+      }
+      _renderColPicker();
+      if(autoClose){
+        if(_colPickerField){const el=document.getElementById(_colPickerField);if(el)el.value=_colPickerType==='year'?_cpY:_colPickerType==='day'?_cpD:_cpM;}
+        _playBeep(700);
+        setTimeout(closeColPicker,200);
       }
     });
   }
@@ -4543,6 +4624,7 @@ window.calculateBoth=calculateBoth;window.calculateTransit=calculateTransit;
 window.clearForm=clearForm;window.resetTransit=resetTransit;window.openLngPad=openLngPad;
 window.openCitySearch=openCitySearch;window.closeCitySearch=closeCitySearch;window.selectUnknownLocation=selectUnknownLocation;window.toggleNoTime=toggleNoTime;
 window.openTimePicker=openTimePicker;window.closeTimePicker=closeTimePicker;
+window.openColPicker=openColPicker;window.closeColPicker=closeColPicker;
 window.openMemory=openMemory;window.closeMemory=closeMemory;window.cycleMemory=cycleMemory;
 window.exportMemory=exportMemory;window.confirmClearMemory=confirmClearMemory;
 window.openEvents=openEvents;window.closeEvents=closeEvents;window.saveEvent=saveEvent;

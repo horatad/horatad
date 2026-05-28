@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.78 -->
-<!-- Version 3.3.78 | 2026-05-29 -->
+<!-- HORATAD:INDEX:3.3.79 -->
+<!-- Version 3.3.79 | 2026-05-29 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.78">
+<link rel="stylesheet" href="style.css?v=3.3.79">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -143,7 +143,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.78</span>
+  <span class="brand-ver">V 3.3.79</span>
 </h1>
 
 <!-- Tab nav -->
@@ -186,9 +186,9 @@ canvas{max-width:100%;height:auto}
           </select>
         </div>
         <div class="form-row-dmy">
-          <div><label for="d1">วัน</label><input id="d1" type="number" min="1" max="31" inputmode="numeric"></div>
-          <div><label for="m1">เดือน</label><input id="m1" type="number" min="1" max="12" inputmode="numeric"></div>
-          <div><label for="y1">ปี</label><input id="y1" type="number" inputmode="numeric"></div>
+          <div><label for="d1">วัน</label><input id="d1" type="text" class="dmy-input" placeholder="วัน" readonly onclick="openColPicker('d1','day')"></div>
+          <div><label for="m1">เดือน</label><input id="m1" type="text" class="dmy-input" placeholder="ด" readonly onclick="openColPicker('m1','month')"></div>
+          <div><label for="y1">ปี</label><input id="y1" type="text" class="dmy-input" placeholder="ปี" readonly onclick="openColPicker('y1','year')"></div>
           <div><label for="t1">เวลา</label><input id="t1" type="text" class="time-input" placeholder="--:--" readonly onclick="openTimePicker('t1')"></div>
         </div>
         <div class="time-ext-row">
@@ -224,9 +224,9 @@ canvas{max-width:100%;height:auto}
           </select>
         </div>
         <div class="form-row-dmy">
-          <div><label for="d2">วัน</label><input id="d2" type="number" min="1" max="31" inputmode="numeric"></div>
-          <div><label for="m2">เดือน</label><input id="m2" type="number" min="1" max="12" inputmode="numeric"></div>
-          <div><label for="y2">ปี</label><input id="y2" type="number" inputmode="numeric"></div>
+          <div><label for="d2">วัน</label><input id="d2" type="text" class="dmy-input" placeholder="วัน" readonly onclick="openColPicker('d2','day')"></div>
+          <div><label for="m2">เดือน</label><input id="m2" type="text" class="dmy-input" placeholder="ด" readonly onclick="openColPicker('m2','month')"></div>
+          <div><label for="y2">ปี</label><input id="y2" type="text" class="dmy-input" placeholder="ปี" readonly onclick="openColPicker('y2','year')"></div>
           <div><label for="t2">เวลา</label><input id="t2" type="text" class="time-input" placeholder="--:--" readonly onclick="openTimePicker('t2')"></div>
         </div>
         <div class="time-ext-row">
@@ -253,9 +253,9 @@ canvas{max-width:100%;height:auto}
           <button class="btn-mem" onclick="openEvents()" title="เหตุการณ์ที่บันทึก">🔍</button>
         </div>
         <div class="form-row-dmy">
-          <div><label for="dt">วัน</label><input id="dt" type="number" min="1" max="31" inputmode="numeric"></div>
-          <div><label for="mt">เดือน</label><input id="mt" type="number" min="1" max="12" inputmode="numeric"></div>
-          <div><label for="yt">ปี</label><input id="yt" type="number" inputmode="numeric"></div>
+          <div><label for="dt">วัน</label><input id="dt" type="text" class="dmy-input" placeholder="วัน" readonly onclick="openColPicker('dt','day')"></div>
+          <div><label for="mt">เดือน</label><input id="mt" type="text" class="dmy-input" placeholder="ด" readonly onclick="openColPicker('mt','month')"></div>
+          <div><label for="yt">ปี</label><input id="yt" type="text" class="dmy-input" placeholder="ปี" readonly onclick="openColPicker('yt','year')"></div>
           <div><label for="tt">เวลา</label><input id="tt" type="text" class="time-input" placeholder="--:--" readonly onclick="openTimePicker('tt')"></div>
         </div>
         <div class="time-ext-row">
@@ -311,7 +311,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.78</div>
+        <div class="about-version">V 3.3.79</div>
         <div class="about-update">อัปเดต 28 พ.ค. 2569 · แก้ปุ่มพยากรณ์ + นำเข้าไฟล์</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -345,7 +345,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.78" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.79" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -925,8 +925,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.78"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.78"></script>
+<script type="module" src="script.js?v=3.3.79"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.79"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -963,10 +963,17 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.78"></script>
+<script src="auth-pin.js?v=3.3.79"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
-<!-- V3.3.78: Time picker — 4-column digit picker (H×10, H×1 : M×10, M×1) -->
+<!-- V3.3.79: Column picker modal (day/month/year) — columns built by JS -->
+<div id="col-picker-backdrop" class="memory-backdrop hidden" onclick="closeColPicker()"></div>
+<div id="col-picker-modal" class="time-picker-modal hidden">
+  <div class="time-picker-preview" id="col-picker-preview">--</div>
+  <div class="tp-col-picker" id="col-picker-cols"></div>
+  <button class="city-close-btn" onclick="closeColPicker()">ยกเลิก</button>
+</div>
+<!-- V3.3.79: Time picker — 4-column digit picker (H×10, H×1 : M×10, M×1) -->
 <div id="time-picker-backdrop" class="memory-backdrop hidden" onclick="closeTimePicker()"></div>
 <div id="time-picker-modal" class="time-picker-modal hidden">
   <div class="time-picker-preview" id="time-picker-preview">--:--</div>
@@ -989,7 +996,7 @@ canvas{max-width:100%;height:auto}
   </div>
   <button class="city-close-btn" onclick="closeTimePicker()">ยกเลิก</button>
 </div>
-<!-- V3.3.78: Province picker modal — ก-ฮ tabs, ไม่มี text input (ไม่มี keyboard บัง) -->
+<!-- V3.3.79: Province picker modal — ก-ฮ tabs, ไม่มี text input (ไม่มี keyboard บัง) -->
 <div id="city-search-backdrop" class="memory-backdrop hidden" onclick="closeCitySearch()"></div>
 <div id="city-search-modal" class="city-search-modal hidden">
   <div class="city-search-title">เลือกจังหวัด</div>

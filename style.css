@@ -149,6 +149,9 @@ input.time-input{min-width:0;padding:4px 2px}
 .tp-digit.active{background:#5b3fa0;border-color:#7b5fc0;color:#fff;font-weight:700}
 input.time-input{cursor:pointer}
 input.time-input:disabled{cursor:default}
+input.dmy-input{cursor:pointer;min-width:0;padding:4px 2px}
+input.dmy-input:disabled{cursor:default}
+.cp-fixed-digit{display:flex;align-items:center;justify-content:center;width:36px;font-size:22px;font-weight:700;color:#ba8345;padding-top:4px}
 
 /* Action buttons */
 .btn-row-section{display:flex;gap:6px;margin-top:8px}
