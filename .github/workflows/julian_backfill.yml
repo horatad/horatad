@@ -19,15 +19,6 @@ on:
   schedule:
     - cron: '0 */6 * * *'    # recovery: รันต่อถ้า P3447 backfill ยังมี checkpoint ค้าง
   workflow_dispatch:
-    inputs:
-      p3447_limit:
-        description: 'P3447 backfill: query กี่ records (0 = ข้าม, blank = ทั้งหมด)'
-        type: string
-        default: ''
-      regrade_only:
-        description: 'regrade อย่างเดียว (ไม่ query Wikidata P3447)'
-        type: boolean
-        default: false
 
 permissions:
   contents: write
