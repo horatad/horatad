@@ -500,13 +500,19 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   const _parsePredictions=(txt)=>{
     const m=txt.match(/\{[\s\S]*\}/);
     const parsed=JSON.parse(m?m[0]:txt); // throws ถ้าไม่ใช่ JSON
-    if(!parsed.predictions||!Array.isArray(parsed.predictions)) return null;
+    if(!parsed.predictions||!Array.isArray(parsed.predictions)){
+      console.warn('[Typhoon] parsed keys:', Object.keys(parsed));
+      return null;
+    }
     const valid=parsed.predictions.filter(p=>ruleIds.has(p.rule_id)&&p.text);
-    if(!valid.length) return null;
+    if(!valid.length){
+      console.warn('[Typhoon] ruleIds sample:',[...ruleIds].slice(0,5),'| pred IDs:',parsed.predictions.slice(0,5).map(p=>p.rule_id));
+      return null;
+    }
     if(typeof options.onPredictions==='function') options.onPredictions(valid);
     return valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n');
   };
-  try{ const r=_parsePredictions(raw); if(r) return r; }catch(_){}
+  try{ const r=_parsePredictions(raw); if(r) return r; }catch(e){ console.warn('[Typhoon] parse threw:',e.message,raw.slice(0,200)); }
   console.warn('[Typhoon] raw1 (first 300):', raw.slice(0,300));
 
   // retry 1 ครั้ง — Typhoon ไม่ follow JSON format → ลองอีกครั้งก่อน fallback
