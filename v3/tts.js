@@ -1,10 +1,14 @@
-// Version 3.3.14 | 2026-05-22
+// Version 3.3.15 | 2026-05-28
 // v3/tts.js — Text-to-Speech via Web Speech API (mobile-first)
 // Project: NOK (Voice Narration) — Phase 1 MVP
 // ใช้ browser SpeechSynthesis (ฟรี, offline, ไม่มี API key)
 // iOS Safari: ต้อง trigger ใน user gesture | Android Chrome: ใช้ Google TH
+// Cloud TTS fallback: Windows Chrome/Opera (ไม่มี Thai SAPI voice)
 
-const _state = { speaking: false, utterance: null };
+const _state = { speaking: false, utterance: null, cloudAudio: null };
+
+// ── Cloud TTS config ──────────────────────────────────────────
+const _CLOUD_TTS_URL = 'https://horatad-ai.uchujaro5.workers.dev/tts';
 
 // ── Strip markdown/emoji/bullets ก่อนพูด ─────────────────────
 // TTS อ่าน emoji เป็นชื่อภาษาอังกฤษ ("white check mark") → ต้องลบทิ้ง
@@ -75,13 +79,57 @@ export function isSpeaking() {
 export function stop() {
   _state.speaking = false;
   _state.utterance = null;
+  if (_state.cloudAudio) {
+    _state.cloudAudio.pause();
+    _state.cloudAudio.src = '';
+    _state.cloudAudio = null;
+  }
   if (isSupported()) {
     try { window.speechSynthesis.cancel(); } catch (_) {}
   }
 }
 
+// Cloud TTS via CF Worker (fallback สำหรับ Windows Chrome/Opera)
+// Returns Promise<boolean> — แต่ caller ไม่ต้อง await
+async function _cloudSpeak(text, opts = {}) {
+  const onState = opts.onState || (() => {});
+  const clean = _stripForTTS(text);
+  if (!clean) { onState('error', 'empty'); return false; }
+
+  try {
+    const resp = await fetch(_CLOUD_TTS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: clean }),
+      signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const { audioContent, error } = await resp.json();
+    if (error || !audioContent) throw new Error(error || 'no audio');
+
+    const audio = new Audio('data:audio/mp3;base64,' + audioContent);
+    if (opts.rate) audio.playbackRate = Math.min(Math.max(opts.rate, 0.5), 2.0);
+    _state.cloudAudio = audio;
+    _state.speaking = true;
+    onState('start');
+    audio.onended = () => { _state.speaking = false; _state.cloudAudio = null; onState('end'); };
+    audio.onerror = () => { _state.speaking = false; _state.cloudAudio = null; onState('error', 'cloud-audio'); };
+    await audio.play();
+    return true;
+  } catch (_err) {
+    _state.speaking = false;
+    onState('error', 'no-thai-voice'); // trigger TTS guide ถ้า cloud ก็ fail
+    return false;
+  }
+}
+
+export function canSpeak() {
+  return hasThaiVoice() || true; // true เพราะ cloud fallback พยายามเสมอ
+}
+
 // speak(text, { onState, rate })
 //   onState(event, detail?) — 'start' | 'end' | 'error'
+//   ถ้าไม่มี Thai voice (เช่น Windows Chrome) → auto-fallback ไป Cloud TTS
 export function speak(text, opts = {}) {
   const onState = opts.onState || (() => {});
   const rate = opts.rate || 1.0;
@@ -90,7 +138,11 @@ export function speak(text, opts = {}) {
   const clean = _stripForTTS(text);
   if (!clean) { onState('error', 'empty'); return false; }
   const voice = _getThaiVoice();
-  if (!voice) { onState('error', 'no-thai-voice'); return false; }
+  if (!voice) {
+    // Cloud TTS fallback — async, fire-and-forget, callbacks ยิงตาม lifecycle
+    _cloudSpeak(text, opts);
+    return true; // "attempt started"
+  }
 
   stop();
 

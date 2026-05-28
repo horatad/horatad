@@ -10,7 +10,7 @@ import { get_lagna, buildNatalState, ZODIAC_TH } from './engine.js';
 import { matchRulesV24, matchTransitRules } from './matcher.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
 import { match_rules, send_to_typhoon, send_chat, _ruleId } from './typhoon.js';
-import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
+import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, canSpeak as nokCanSpeak, preload as nokPreload } from './tts.js';
 import { getEmpiricalP } from './julian_adapter.js';
 
 // ── M8: แปลง compose_local_prediction() output → display text ──────────────
@@ -731,24 +731,55 @@ async function v3Typhoon() {
     matched = _augmentWithJulian(_sortResults([...allMatched, ...phase2]));
     ctx = _buildV24Context(natalState);
     _showRulesPanel(matched, null);
-    _predPool = []; // clear ก่อน — natal อาจเปลี่ยน
-    const text = await send_to_typhoon(ctx, matched, {
+    _predPool = [];
+
+    // 80/20: sort by importance, split primary/background
+    const TYPHOON_PRIMARY = 60, TYPHOON_BG = 60;
+    const sorted = [...matched].sort((a, b) => {
+      if (a._isTransit !== b._isTransit) return a._isTransit ? 1 : -1;
+      return (a.tier || 9) - (b.tier || 9);
+    });
+    const primaryRules = sorted.slice(0, TYPHOON_PRIMARY);
+    const bgRules = sorted.slice(TYPHOON_PRIMARY, TYPHOON_PRIMARY + TYPHOON_BG);
+
+    const text = await send_to_typhoon(ctx, primaryRules, {
       onPromptReady: (sys, user) => _showInputPanel(sys, user),
       onPredictions: (validPreds) => { _predPool = _buildPredPool(matched, validPreds); },
     });
     _showSpinner(false);
-    _showResult(text, false, `🤖 Typhoon AI V24`);
-    // Auto-TTS: พูดคำพยากรณ์สำคัญ 3 อันดับแรกทันทีโดยไม่รอกดปุ่ม
-    if (_predPool.length && nokHasThaiVoice()) {
+    _showResult(text, false, `🤖 Typhoon AI V24 (${primaryRules.length}/${matched.length} กฎ)`);
+
+    // Auto-TTS top 3 ทันที
+    if (_predPool.length && nokCanSpeak()) {
       const topText = _predPool.slice(0, 3).map(p => p.text).join(' ');
       nokSpeak(topText, { rate: _v3SpeakRate });
+    }
+
+    // Background: ส่งกฎที่เหลือให้ Typhoon ขณะ TTS กำลังเล่น — เงียบๆ
+    if (bgRules.length) {
+      send_to_typhoon(ctx, bgRules, {
+        onPredictions: (validPreds) => {
+          const bgPool = _buildPredPool(matched, validPreds);
+          const seen = new Set(_predPool.map(p => p.rule_id));
+          const newEntries = bgPool.filter(p => !seen.has(p.rule_id));
+          if (newEntries.length) {
+            _predPool = [..._predPool, ...newEntries].sort((a, b) => {
+              if (a._isTransit !== b._isTransit) return a._isTransit ? 1 : -1;
+              if ((b.final_score||0) !== (a.final_score||0)) return (b.final_score||0)-(a.final_score||0);
+              if (a.tier !== b.tier) return a.tier - b.tier;
+              const po = {'-':0,'+':1,'0':2};
+              return (po[a.polarity]??2)-(po[b.polarity]??2);
+            });
+          }
+        },
+      }).catch(() => {}); // silent fail — background is best-effort
     }
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
     if (matched) {
       _showResult(_renderV24(matched), true, '⚠️ Typhoon ไม่ตอบ — ใช้กฎ BIBLE ดิบ');
-      _showToastV3('Typhoon ไม่ตอบ — ใช้กฎดิบแทน');
+      _showToastV3('Typhoon: ' + (err.message || 'ไม่ตอบ'));
     } else {
       _showToastV3('เกิดข้อผิดพลาด: ' + err.message);
     }
@@ -776,14 +807,14 @@ function v3Speak() {
     return;
   }
 
-  if (!nokHasThaiVoice()) {
-    _showTTSGuide();
-    return;
-  }
-
   nokSpeak(text, {
     rate: _v3SpeakRate,
     onState: (event, detail) => {
+      if (event === 'error' && detail === 'no-thai-voice') {
+        _showTTSGuide();
+        if (btn) { btn.textContent = '🔊 ฟังคำพยากรณ์'; btn.classList.remove('speaking'); }
+        return;
+      }
       if (!btn) return;
       if (event === 'start') {
         btn.textContent = '⏸ หยุด';
