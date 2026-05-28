@@ -1,32 +1,32 @@
 {
-  "generated": "2026-05-28T05:37:08.147Z",
-  "total": 98437,
+  "generated": "2026-05-28T09:58:49.879Z",
+  "total": 117099,
   "target": 500000,
-  "pct": 19.7,
-  "delta_today": 31525,
+  "pct": 23.4,
+  "delta_today": 50187,
   "by_source": {
-    "wikidata": 98437,
+    "wikidata": 73978,
     "astrotheme": 0,
-    "musicbrainz": 0,
+    "musicbrainz": 43121,
     "astrodatabank": 0
   },
   "by_accuracy": {
     "A": 0,
     "B": 0,
-    "C": 616,
-    "D": 97771,
+    "C": 607,
+    "D": 116442,
     "F": 50,
     "?": 0
   },
   "by_tier": {
-    "1": 6522,
-    "2": 91915,
+    "1": 4409,
+    "2": 112690,
     "3": 0
   },
   "with_hpi": 0,
-  "with_importance": 30896,
-  "with_sitelinks": 30896,
-  "avg_importance": 0.429,
+  "with_importance": 50534,
+  "with_sitelinks": 7413,
+  "avg_importance": 0.335,
   "history": [
     {
       "date": "2026-05-21",
@@ -100,11 +100,11 @@
     },
     {
       "date": "2026-05-28",
-      "total": 98437,
+      "total": 117099,
       "by_source": {
-        "wikidata": 98437,
+        "wikidata": 73978,
         "astrotheme": 0,
-        "musicbrainz": 0,
+        "musicbrainz": 43121,
         "astrodatabank": 0
       }
     }
