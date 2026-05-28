@@ -508,14 +508,14 @@ function _showTTSGuide() {
       <p class="tts-guide-note">Samsung: ตั้งค่า → การจัดการทั่วไป → ภาษา → การอ่านออกเสียง</p>`;
   } else if (isWindows) {
     html = `
-      <p class="tts-guide-desc">เพิ่มเสียงภาษาไทยผ่าน Windows Settings ใน 3 ขั้นตอน</p>
+      <p class="tts-guide-desc">Windows 11 ไม่มีเสียงภาษาไทยในตัว — Chrome/Opera ใช้เสียงระบบ Windows จึงไม่รองรับ</p>
       <ol class="tts-guide-steps">
-        <li>กด <strong>Start</strong> → พิมพ์ค้นหา <strong>"Speech settings"</strong> → เปิด</li>
-        <li>เลื่อนหา "Manage voices" → <strong>Add voices</strong> → ค้นหา <strong>Thai</strong></li>
+        <li>เปิดแอปนี้ด้วย <strong>Microsoft Edge</strong> แทน<br>
+            <span style="font-size:.75rem;color:#586069">(Edge มีเสียงไทย Microsoft Niwat/Achara/Premwadee ในตัว)</span></li>
+        <li>ถ้าใช้ Edge อยู่แล้ว: ลองปิด-เปิด Edge ใหม่ 1 ครั้ง</li>
         <li>กลับมาที่แอปแล้วกดปุ่ม ✓ ตรวจสอบอีกครั้ง</li>
       </ol>
-      <p class="tts-guide-note">⚠️ Chrome/Opera ไม่อนุญาตลิงค์ตรงไปที่ตั้งค่า — ต้องเปิด Settings เอง</p>
-      <p class="tts-guide-note">ทางเลือก: ใช้ Microsoft Edge (มีเสียงไทยในตัว)</p>`;
+      <p class="tts-guide-note">⚠️ Chrome และ Opera บน Windows ไม่รองรับเสียงไทย — ต้องใช้ Edge</p>`;
   } else if (isMac) {
     html = `
       <p class="tts-guide-desc">เพิ่มเสียงภาษาไทยผ่าน macOS System Settings</p>
