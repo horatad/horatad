@@ -1,7 +1,8 @@
-// HORATAD:SCRIPT:3.3.48
-// Version 3.3.48 | 2026-05-27
+// HORATAD:SCRIPT:3.3.50
+// Version 3.3.50 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
+// Changes: [V3.3.50] feat: Transit Phase 2 (matchTransitRules + kb_transit.json) · MAX_RULES 120 · interpretation BIBLE schema
 // Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
 // Changes: [V3.3.37] fix(quality): MAHACHAK_MAP อาทิตย์ 6→3 + swap อุจจาวิลาส/อุจจาภิมุข ใน script.js
 // Changes: [V3.3.36] feat(about): restore เกาะในฝัน BGM button on About page
@@ -24,7 +25,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.49';
+const APP_VERSION='3.3.50';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;

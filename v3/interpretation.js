@@ -401,7 +401,9 @@ export function compose_local_prediction(matched_rules, natal_payload=null, opts
         out.push({
           rule_id:rid,
           text:pred.text,
-          keywords:_extractKeywords(pred.text),
+          keywords:Array.isArray(pred.keywords)
+            ?pred.keywords.map(k=>typeof k==='object'?k.k:k).filter(Boolean)
+            :_extractKeywords(pred.text),
           polarity:pred.polarity||_classifyRulePolarity(r),
           domain:pred.domain||dom,
           chapter:ch,
@@ -412,14 +414,18 @@ export function compose_local_prediction(matched_rules, natal_payload=null, opts
       return;
     }
 
-    // V2.3 fallback: rule.p blob
-    if(r.p){
+    // BIBLE schema (r.meaning + r.keywords[]) | V2.3 fallback (r.p)
+    if(r.meaning||r.p){
+      const text=r.meaning||r.p;
+      const kws=Array.isArray(r.keywords)
+        ?r.keywords.map(k=>typeof k==='object'?k.k:k).filter(Boolean)
+        :_extractKeywords(text);
       out.push({
         rule_id:rid,
-        text:r.p,
-        keywords:_extractKeywords(r.p),
-        polarity:_classifyRulePolarity(r),
-        domain:dom,
+        text,
+        keywords:kws,
+        polarity:r.polarity||_classifyRulePolarity(r),
+        domain:r.domain||dom,
         chapter:ch,
         source:'local',
       });

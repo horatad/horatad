@@ -29,7 +29,7 @@ import {
 const TYPHOON_WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
 const TYPHOON_MODEL = 'typhoon-v2.5-30b-a3b-instruct';
 const MAX_TOKENS = 1200;
-const MAX_RULES = 28;
+const MAX_RULES = 120;
 const MIN_MANIFESTATION = 0.10; // ตาม tb_predictions threshold
 
 // ── Rule matching (V3 — manifestation-aware) ──────────────────────────────

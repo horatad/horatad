@@ -1,4 +1,4 @@
-// Version 3.0.12 | 2026-05-25
+// Version 3.0.13 | 2026-05-28
 // v3/v3tab.js — V3 Tab Bridge (V2 ↔ V3 integration)
 // สองปุ่ม: 1) ดูกฎ local  2) Typhoon AI
 // V3.0.4 (sync app V2.2.39):
@@ -7,7 +7,7 @@
 //   - KB_PATH ใส่ ?v=APP_VERSION ให้ตรงกับ SW CORE_ASSETS key → offline ทำงาน
 
 import { get_lagna, buildNatalState, ZODIAC_TH } from './engine.js';
-import { matchRulesV24 } from './matcher.js';
+import { matchRulesV24, matchTransitRules } from './matcher.js';
 import { build_natal_payload, compose_local_prediction } from './interpretation.js';
 import { match_rules, send_to_typhoon, send_chat, _ruleId } from './typhoon.js';
 import { speak as nokSpeak, stop as nokStop, isSpeaking as nokIsSpeaking, hasThaiVoice as nokHasThaiVoice, preload as nokPreload } from './tts.js';
@@ -58,10 +58,12 @@ function _renderV24(matched) {
 // ── Config ────────────────────────────────────────────────
 const KB_PATH = './v3/kb.json?v=' + (window.APP_VERSION || '0');
 const KB_PATH_V24 = './v3/kb_tals.json?v=' + (window.APP_VERSION || '0');
+const KB_PATH_TRANSIT = './v3/kb_transit.json?v=' + (window.APP_VERSION || '0');
 
 // ── State ─────────────────────────────────────────────────
 let _v3KbRules = null;
 let _v3KbRulesV24 = null;
+let _v3KbTransit = null;
 let _v3Running = false;
 let _v3Mode = 'natal'; // 'natal' | 'transit' | 'both'
 
@@ -365,6 +367,15 @@ async function _loadKbV24() {
   return _v3KbRulesV24;
 }
 
+async function _loadKbTransit() {
+  if (_v3KbTransit) return _v3KbTransit;
+  const resp = await fetch(KB_PATH_TRANSIT);
+  if (!resp.ok) throw new Error('kb_transit.json โหลดไม่ได้: HTTP ' + resp.status);
+  const data = await resp.json();
+  _v3KbTransit = data.rules || [];
+  return _v3KbTransit;
+}
+
 // ── JULIAN plug-in: เพิ่ม empirical_p + final_score ให้ matched rules ──────
 // JULIAN session จะ implement getEmpiricalP() จริง — ตอนนี้ return null (no-op)
 function _augmentWithJulian(matched) {
@@ -578,7 +589,7 @@ async function v3Local() {
   _showSpinner(true);
 
   try {
-    const v24Rules = await _loadKbV24();
+    const [v24Rules, kbTransit] = await Promise.all([_loadKbV24(), _loadKbTransit()]);
     const pos = natal.pos;
     const natalState = buildNatalState(pos);
     const transit = typeof getTransit === 'function' ? getTransit() : null;
@@ -589,7 +600,8 @@ async function v3Local() {
     }
     const allMatched = matchRulesV24(natalState, v24Rules, transitState)
       .map(r => ({...r, _isTransit: r.type === 'TRANSIT_NATAL'}));
-    const matched = _filterByMode(allMatched);
+    const phase2 = transitPos ? matchTransitRules(natal.pos, transitPos, kbTransit) : [];
+    const matched = _filterByMode([...allMatched, ...phase2]);
     _showSpinner(false);
     _showRulesPanel(matched, null);
     _setInputPanelLocal();
@@ -620,7 +632,7 @@ async function v3Typhoon() {
   // V24 pipeline: matched ต้องอยู่นอก try เพื่อให้ fallback เข้าถึงได้
   let matched = null, ctx = null;
   try {
-    const v24Rules = await _loadKbV24();
+    const [v24Rules, kbTransit] = await Promise.all([_loadKbV24(), _loadKbTransit()]);
     const pos = natal.pos;
     const natalState = buildNatalState(pos);
     const transit = typeof getTransit === 'function' ? getTransit() : null;
@@ -631,7 +643,8 @@ async function v3Typhoon() {
     }
     const allMatched = matchRulesV24(natalState, v24Rules, transitState)
       .map(r => ({ ...r, _isTransit: r.type === 'TRANSIT_NATAL' }));
-    matched = _augmentWithJulian(_filterByMode(allMatched));
+    const phase2 = transitPos ? matchTransitRules(natal.pos, transitPos, kbTransit) : [];
+    matched = _augmentWithJulian(_filterByMode([...allMatched, ...phase2]));
     ctx = _buildV24Context(natalState);
     _showRulesPanel(matched, null);
     const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';

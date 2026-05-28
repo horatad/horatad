@@ -6,6 +6,46 @@
 //         transitState ← buildNatalState(transitPos)  optional
 // Output: matched[]   ← rules ที่ fire — ส่งต่อไป predict / _augmentWithJulian
 
+import { get_tanu_lagna } from './engine.js';
+
+// planet index ของ 5 ดาวจรหนัก: MR(10), SA(7), MA(3), RA(8), JU(5)
+const TRANSIT_PLANET_IDX = {MR:10, SA:7, MA:3, RA:8, JU:5};
+
+/**
+ * getAspect(tSign, targetSign) → 'KUM'|'LENG'|'YOK'|'TRI'|null
+ * KUM=0, LENG=6, YOK=4|8, TRI=2|10
+ */
+export function getAspect(tSign, targetSign){
+  const diff=((tSign-targetSign)+12)%12;
+  if(diff===0)return'KUM';
+  if(diff===6)return'LENG';
+  if(diff===4||diff===8)return'YOK';
+  if(diff===2||diff===10)return'TRI';
+  return null;
+}
+
+/**
+ * matchTransitRules(natalPos, transitPos, kbTransit) → matched rules[]
+ * Phase 2: kb_transit.json — จรกุม/เล็ง/โยค/ตรีโกณ ลัคนา หรือ ตนุลัคนา
+ */
+export function matchTransitRules(natalPos, transitPos, kbTransit){
+  const lagnaSign=Math.trunc(natalPos[0]/1800);
+  const tanuIdx=get_tanu_lagna(lagnaSign);
+  const tanuSign=Math.trunc(natalPos[tanuIdx]/1800);
+  const matched=[];
+  for(const rule of kbTransit){
+    const pIdx=TRANSIT_PLANET_IDX[rule.transit_planet];
+    if(pIdx===undefined)continue;
+    const tSign=Math.trunc(transitPos[pIdx]/1800);
+    const targetSign=rule.natal_target==='LA'?lagnaSign:tanuSign;
+    const asp=getAspect(tSign,targetSign);
+    if(asp!==null&&asp===rule.aspect){
+      matched.push({...rule,_isTransit:true});
+    }
+  }
+  return matched;
+}
+
 /**
  * matchRulesV24(natalState, rules, transitState?) → matched rules[]
  * natalState: from buildNatalState(natalPos)
