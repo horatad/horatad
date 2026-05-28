@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.81
-// Version 3.3.81 | 2026-05-29
+// HORATAD:SCRIPT:3.3.82
+// Version 3.3.82 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.81';
+const APP_VERSION='3.3.82';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2768,6 +2768,9 @@ window.confirmClearTank=function(tank){
     _tankSave(tank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
+    // clear orphaned tags — record หายจาก tank แล้ว ไม่มี record รองรับ
+    if(tank!=='qr'){_chartTags={'1':[],'2':[]};_renderTagRow('1');_renderTagRow('2');}
+    else{['1','2'].forEach(s=>{_loadTagsForCurrentChart(s);_renderTagRow(s);});}
   });
 };
 
@@ -2859,6 +2862,8 @@ function _confirmDeleteMemory(i){
     _tankSave(tankKey,arr);
     _updateTankCounts();
     _renderTank(document.getElementById('memory-search')?.value||'');
+    // clear orphaned tags ถ้า record ที่ลบตรงกับ form ปัจจุบัน
+    ['1','2'].forEach(s=>{_loadTagsForCurrentChart(s);_renderTagRow(s);});
   });
 }
 function confirmClearMemory(){
@@ -2866,6 +2871,7 @@ function confirmClearMemory(){
     _tankSave(TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
+    _chartTags={'1':[],'2':[]};_renderTagRow('1');_renderTagRow('2');
   });
 }
 function exportMemory(){
