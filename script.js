@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.75
-// Version 3.3.75 | 2026-05-29
+// HORATAD:SCRIPT:3.3.76
+// Version 3.3.76 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.75';
+const APP_VERSION='3.3.76';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -465,8 +465,9 @@ function _renderTagRow(section){
   const row=document.getElementById('tag-row-'+section);
   if(!row)return;
   row.innerHTML='';
-  // Phase 3: transit mode → tag-row-1 แสดง linked event chips
+  // Phase 3: transit mode → tag-row-1 แสดง linked event chips (เฉพาะกรณีนี้เท่านั้น)
   if(section==='1'&&_reportTransitShow){
+    row.style.display='';
     const evs=natal?.uid?_dbEvents(natal.uid):[];
     if(evs.length){
       evs.forEach(s=>{
@@ -491,37 +492,21 @@ function _renderTagRow(section){
     row.appendChild(addBtn);
     return;
   }
-  // ปกติ: category tags
-  const tags=_allTags();
-  const active=_chartTags[section]||[];
-  const isCustom=name=>!DEFAULT_TAGS.includes(name);
-  tags.forEach(name=>{
-    const chip=document.createElement('span');
-    chip.className='tag-chip'+(active.includes(name)?' tag-active':'');
-    if(isCustom(name)){
-      chip.innerHTML=`<span>${_escHtml(name)}</span><button class="tag-chip-del" title="ลบ tag" onclick="event.stopPropagation();_deleteCustomTag('${_escHtml(name)}')">✕</button>`;
-      chip.querySelector('span').addEventListener('click',()=>_toggleTag(section,name));
-    }else{
-      chip.textContent=name;
-      chip.addEventListener('click',()=>_toggleTag(section,name));
-    }
-    row.appendChild(chip);
-  });
-  const addBtn=document.createElement('span');
-  addBtn.className='tag-chip-add';
-  addBtn.textContent='+ เพิ่ม';
-  addBtn.addEventListener('click',()=>_openAddTagModal(section));
-  row.appendChild(addBtn);
+  // V3.3.76: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
+  row.style.display='none';
 }
-// V3.3.75: recent person chips — แสดงชื่อที่ผูกดวงล่าสุดด้านล่างฟอร์ม
+// V3.3.76: recent person chips — circular buffer 5 slots, active = มวง
+const _RECENT_CHIPS_MAX=5;
 function _renderRecentPersonChips(section){
   const el=document.getElementById('recent-chips-'+section);
   if(!el)return;
-  const recs=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,7);
+  const recs=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,_RECENT_CHIPS_MAX);
   el.innerHTML='';
+  const activeKey=_activePersonKey[String(section)]||null;
   recs.forEach(m=>{
     const chip=document.createElement('span');
-    chip.className='tag-chip tag-person-chip';
+    const isActive=activeKey&&_tankKey(m)===activeKey;
+    chip.className='tag-chip tag-person-chip'+(isActive?' tag-active':'');
     chip.textContent=m.name||'—';
     chip.title=`${m.d||''}/${m.m||''}/${m.y_be||''} ${m.t||''}`;
     chip.addEventListener('click',()=>_quickLoadPerson(m,String(section)));
@@ -532,6 +517,7 @@ function _quickLoadPerson(m,section){
   if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   _editingMemKey=null;_editingMemSection=null;
+  _activePersonKey[String(section)]=_tankKey(m);
   if(section==='1'){
     _setField('name-1',m.name||'');
     document.getElementById('gender1').value=m.gender||'ชาย';
@@ -553,7 +539,8 @@ function _quickLoadPerson(m,section){
     const _t2b=document.getElementById('t2');if(_t2b)_t2b.disabled=!!m.noTime;
     _updateLngUI('2');_applyInputColors('2','init');
   }
-  _showToast(`โหลด ${m.name||''}  สำเร็จ`);
+  _renderRecentPersonChips(section);
+  _showToast(`โหลด ${m.name||''} แล้ว`);
 }
 function _eventSlotLoadByUid(uid){
   if(!uid)return;
@@ -1661,6 +1648,8 @@ function calculateBoth(){
   if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
   if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
   _editingMemKey=null;_editingMemSection=null;
+  if(natal)_activePersonKey['1']=_tankKey({name:natal.name,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov});
+  if(_chart2)_activePersonKey['2']=_tankKey({name:_chart2.name,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov});
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
   if(typeof _loadTagsForCurrentChart==='function'){_loadTagsForCurrentChart('1');_loadTagsForCurrentChart('2');_renderTagRow('1');_renderTagRow('2');}
@@ -2342,6 +2331,7 @@ function _addMemory(entry,replaceKey){
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
+let _activePersonKey={'1':null,'2':null}; // V3.3.76: track active person per section
 // V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
 let _editingMemKey=null;
@@ -4383,7 +4373,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   _loadTagsForCurrentChart('2');
   _renderTagRow('1');
   _renderTagRow('2');
-  // V3.3.75: recent person chips
+  // V3.3.76: recent person chips
   _renderRecentPersonChips('1');
   _renderRecentPersonChips('2');
 
