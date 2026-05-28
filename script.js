@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.69
-// Version 3.3.69 | 2026-05-28
+// HORATAD:SCRIPT:3.3.70
+// Version 3.3.70 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -75,6 +75,39 @@ const PROVINCES_LAT={
 "สุรินทร์":14.88,"หนองคาย":17.88,"หนองบัวลำภู":17.21,"อ่างทอง":14.59,
 "อุดรธานี":17.41,"อุทัยธานี":15.38,"อุตรดิตถ์":17.62,"อุบลราชธานี":15.25,"อำนาจเจริญ":15.87
 };
+const FOREIGN_CITIES={
+  // เอเชียตะวันออก
+  'โตเกียว (ญี่ปุ่น)':139.69,'โอซาก้า (ญี่ปุ่น)':135.50,'โซล (เกาหลีใต้)':126.98,
+  'ปักกิ่ง (จีน)':116.41,'เซี่ยงไฮ้ (จีน)':121.47,'กว่างโจว (จีน)':113.26,
+  'ฮ่องกง':114.16,'ไทเป (ไต้หวัน)':121.56,
+  // เอเชียตะวันออกเฉียงใต้
+  'สิงคโปร์':103.82,'กัวลาลัมเปอร์ (มาเลเซีย)':101.69,
+  'จาการ์ตา (อินโดนีเซีย)':106.85,'มะนิลา (ฟิลิปปินส์)':120.98,
+  'ย่างกุ้ง (เมียนมา)':96.17,'ฮานอย (เวียดนาม)':105.85,'โฮจิมินห์ (เวียดนาม)':106.66,
+  'พนมเปญ (กัมพูชา)':104.92,'เวียงจันทน์ (ลาว)':102.60,
+  // เอเชียใต้ & ตะวันออกกลาง
+  'นิวเดลี (อินเดีย)':77.21,'มุมไบ (อินเดีย)':72.88,
+  'การาจี (ปากีสถาน)':67.01,'ดูไบ (UAE)':55.30,'ริยาด (ซาอุ)':46.72,
+  // ยุโรป
+  'ลอนดอน (สหราชอาณาจักร)':-0.13,'ปารีส (ฝรั่งเศส)':2.35,'เบอร์ลิน (เยอรมนี)':13.41,
+  'อัมสเตอร์ดัม (เนเธอร์แลนด์)':4.90,'บรัสเซลส์ (เบลเยียม)':4.35,
+  'ซูริก (สวิตเซอร์แลนด์)':8.55,'มิลาน (อิตาลี)':9.19,'โรม (อิตาลี)':12.49,
+  'มาดริด (สเปน)':-3.70,'สตอกโฮล์ม (สวีเดน)':18.07,'วอร์ซอ (โปแลนด์)':21.01,
+  'เฮลซิงกิ (ฟินแลนด์)':24.94,'เอเธนส์ (กรีซ)':23.73,'มอสโก (รัสเซีย)':37.62,
+  // อเมริกาเหนือ
+  'นิวยอร์ก (สหรัฐ)':-74.01,'ลอสแองเจลิส (สหรัฐ)':-118.24,'ชิคาโก (สหรัฐ)':-87.63,
+  'ฮิวสตัน (สหรัฐ)':-95.37,'ซีแอตเทิล (สหรัฐ)':-122.33,
+  'โตรอนโต (แคนาดา)':-79.38,'แวนคูเวอร์ (แคนาดา)':-123.12,
+  'เม็กซิโกซิตี้ (เม็กซิโก)':-99.13,
+  // อเมริกาใต้ & อื่น
+  'เซาเปาลู (บราซิล)':-46.63,'บัวโนสไอเรส (อาร์เจนตินา)':-58.38,
+  // โอเชียเนีย
+  'ซิดนีย์ (ออสเตรเลีย)':151.21,'เมลเบิร์น (ออสเตรเลีย)':144.97,
+  'เพิร์ท (ออสเตรเลีย)':115.86,'โอ๊คแลนด์ (นิวซีแลนด์)':174.76,
+  // แอฟริกา
+  'ไคโร (อียิปต์)':31.24,'โจฮันเนสเบิร์ก (แอฟริกาใต้)':28.05,
+};
+const _FOREIGN_ALPHA='__FOREIGN__';
 // V2.2.23: Julian Day จาก d/m/y_BE — ตรงกับ engine.py get_j
 function _calcJD(d,m,y_be){
   const y=y_be-543;
@@ -1542,9 +1575,9 @@ function _updateLngUI(chartNum){
   const btnId='btn-cust'+chartNum;
   const provEl=document.getElementById(provId),btnEl=document.getElementById(btnId);
   if(!provEl||!btnEl)return;
-  // "ไม่ทราบสถานที่เกิด" → province field stays visible (picker flow, not numpad)
-  const isUnknown=custom===105.0&&provEl.value==='ไม่ทราบสถานที่เกิด';
-  if(custom!==null&&!isUnknown){
+  // named location from picker (ไม่ทราบ / ต่างประเทศ): keep prov field visible
+  const namedPickerLoc=custom!==null&&provEl.value!==''&&!PROVINCES[provEl.value];
+  if(custom!==null&&!namedPickerLoc){
     provEl.style.display='none';
     btnEl.textContent=custom.toFixed(2)+'°';
     btnEl.style.background='#1a6b3c';btnEl.style.minWidth='72px';
@@ -1564,7 +1597,10 @@ function _updateLmtBadge(chartNum){
   const lng=custom!==null?custom:(PROVINCES[provVal]||null);
   if(!lng){badge.textContent='';return;}
   const min=Math.round((lng-105)*4);
-  badge.textContent=`⏱ LMT ${min>=0?'+':''}${min} นาที จากเวลาที่กรอก`;
+  let lmtStr;
+  if(Math.abs(min)<60){lmtStr=`${min>=0?'+':''}${min} นาที`;}
+  else{const h=Math.trunc(min/60),m=Math.abs(min%60);lmtStr=`${h>=0?'+':''}${h}h${m>0?' '+m+'m':''}`;}
+  badge.textContent=`⏱ LMT ${lmtStr} จากเวลาที่กรอก`;
   badge.style.color=Math.abs(min)>=15?'#c9a227':'#8b949e';
 }
 // ── Smart calculate ────────────────────────────────────────
@@ -1818,12 +1854,28 @@ function _renderProvPickerTabs(){
     btn.dataset.alpha=c;btn.textContent=c;
     el.appendChild(btn);
   }
+  const foreign=document.createElement('button');
+  foreign.className='prov-tab prov-tab-foreign'+(_provPickerAlpha===_FOREIGN_ALPHA?' active':'');
+  foreign.dataset.alpha=_FOREIGN_ALPHA;foreign.textContent='🌏 ต่างประเทศ';
+  el.appendChild(foreign);
 }
 function _renderProvPickerList(alpha){
   const listEl=document.getElementById('city-search-results');
   if(!listEl)return;
-  const provs=Object.keys(PROVINCES).filter(p=>!alpha||p[0]===alpha).sort();
   listEl.innerHTML='';
+  if(alpha===_FOREIGN_ALPHA){
+    for(const[city,lng] of Object.entries(FOREIGN_CITIES)){
+      const div=document.createElement('div');
+      div.className='city-item';
+      div.dataset.lng=lng;div.dataset.prov=city;div.dataset.foreign='true';
+      const nameEl=document.createElement('span');nameEl.className='city-name';nameEl.textContent=city;
+      const lngEl=document.createElement('span');lngEl.className='city-lng';lngEl.textContent=(lng>=0?'+':'')+lng.toFixed(2)+'°';
+      div.append(nameEl,lngEl);
+      listEl.appendChild(div);
+    }
+    return;
+  }
+  const provs=Object.keys(PROVINCES).filter(p=>!alpha||p[0]===alpha).sort();
   for(const p of provs){
     const lng=PROVINCES[p];
     const div=document.createElement('div');
@@ -4231,11 +4283,17 @@ window.addEventListener('DOMContentLoaded',()=>{
       const item=e.target.closest('.city-item');
       if(!item||!_citySearchField)return;
       const prov=item.dataset.prov||'';
+      const isForeign=item.dataset.foreign==='true';
       const cn=_citySearchField==='lng1'?'1':_citySearchField==='lng2'?'2':'t';
       const provId=cn==='t'?'provt':'prov'+cn;
       const provEl=document.getElementById(provId);
       if(provEl)provEl.value=prov;
-      if(cn==='1')_customLng1=null;else if(cn==='2')_customLng2=null;else _customLngT=null;
+      if(isForeign){
+        const lng=parseFloat(item.dataset.lng)||0;
+        if(cn==='1')_customLng1=lng;else if(cn==='2')_customLng2=lng;else _customLngT=lng;
+      }else{
+        if(cn==='1')_customLng1=null;else if(cn==='2')_customLng2=null;else _customLngT=null;
+      }
       _updateLngUI(cn);
       _playBeep(700);
       setTimeout(closeCitySearch,200);
