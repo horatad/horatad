@@ -318,17 +318,20 @@ function main() {
     }
   }
 
+  // ── Build dbQIDs set — shared by genealogy + succession ─────────────────────
+  const FAMILY_FILE_PATH = FAMILY_FILE;
+  const SUCCESSION_FILE  = 'data/julian_succession.json';
+  const dbQIDs = new Set(
+    records
+      .map(r => r.qid || (r.source?.startsWith('wikidata:') ? r.source.slice(9) : null))
+      .filter(Boolean)
+  );
+
   // ── Write genealogy.json — cross-referenced family map ───────────────────────
   // เฉพาะ relations ที่ทั้งคู่อยู่ใน DB (ลด noise + ลดขนาดไฟล์)
-  const FAMILY_FILE_PATH = FAMILY_FILE;
   let geneCount = 0;
   if (existsSync(FAMILY_FILE_PATH)) {
     process.stderr.write(`Building genealogy.json...\n`);
-    const dbQIDs = new Set(
-      records
-        .map(r => r.qid || (r.source?.startsWith('wikidata:') ? r.source.slice(9) : null))
-        .filter(Boolean)
-    );
     const rawFamily = JSON.parse(readFileSync(FAMILY_FILE_PATH, 'utf8'));
     const genealogy = {};
     for (const [qid, rel] of Object.entries(rawFamily)) {
@@ -349,6 +352,30 @@ function main() {
     process.stderr.write(`genealogy.json: ${geneCount} persons with in-DB family links\n`);
   } else {
     process.stderr.write(`genealogy.json: skipped (${FAMILY_FILE_PATH} not found)\n`);
+  }
+
+  // ── Write succession.json — cross-referenced succession map ─────────────────
+  // เฉพาะ prev/next ที่ทั้งคู่อยู่ใน DB (ลดขนาดไฟล์)
+  let succCount = 0;
+  if (existsSync(SUCCESSION_FILE)) {
+    process.stderr.write(`Building succession.json...\n`);
+    const rawSucc = JSON.parse(readFileSync(SUCCESSION_FILE, 'utf8'));
+    const succession = {};
+    for (const [qid, rel] of Object.entries(rawSucc)) {
+      const prev = (rel.prev || []).filter(e => dbQIDs.has(e.q));
+      const next = (rel.next || []).filter(e => dbQIDs.has(e.q));
+      if (prev.length || next.length) {
+        succession[qid] = {};
+        if (prev.length) succession[qid].prev = prev;
+        if (next.length) succession[qid].next = next;
+        succCount++;
+      }
+    }
+    const succResult = writeFile('succession.json', succession);
+    writtenFiles.push(succResult);
+    process.stderr.write(`succession.json: ${succCount} persons with in-DB succession links\n`);
+  } else {
+    process.stderr.write(`succession.json: skipped (${SUCCESSION_FILE} not found)\n`);
   }
 
   // ── Write images.json — QID→filename สำหรับ notable persons ─────────────────
@@ -386,6 +413,7 @@ function main() {
     split_log         : splitLog,
     images_count      : imgCount,
     genealogy_count   : geneCount,
+    succession_count  : succCount,
     file_types        : {
       planet_sign : 'planet_sign/{PLANET}/{SIGN}.json — mini records sorted by importance',
       by_year     : 'by_year/{YYYY}.json — full records ≥1900',
@@ -393,6 +421,7 @@ function main() {
       by_50yr     : 'by_50yr/{NNNN}-{NNNN}.json — full records <1700',
       images      : 'images.json — { QID: filename } สำหรับ notable persons (sitelinks≥20 หรือ importance≥0.4)',
       genealogy   : 'genealogy.json — { QID: {p,m,sp,ch,si} } เฉพาะ QIDs ที่อยู่ใน DB',
+      succession  : 'succession.json — { QID: {prev:[{q,pos}], next:[{q,pos}]} } เฉพาะ QIDs ที่อยู่ใน DB',
     },
   };
 

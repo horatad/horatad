@@ -449,20 +449,32 @@ jobs:
             echo "status=complete" >> $GITHUB_OUTPUT
           fi
 
+      - name: Succession backfill
+        id: succession
+        run: |
+          OUTPUT=$(node workers/julian_succession_backfill.mjs --resume --time-budget 600 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "STATUS=partial"; then
+            echo "status=partial" >> $GITHUB_OUTPUT
+          else
+            echo "status=complete" >> $GITHUB_OUTPUT
+          fi
+
       - name: Commit changes
         run: |
           STATUS="${{ steps.p3447.outputs.status }}"
           GENE_STATUS="${{ steps.genealogy.outputs.status }}"
+          SUCC_STATUS="${{ steps.succession.outputs.status }}"
           (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
-            && git add julian_all.json julian_family.json \
-            && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS} + regrade + genealogy ${GENE_STATUS}") \
+            && git add julian_all.json julian_family.json julian_succession.json \
+            && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS} + genealogy ${GENE_STATUS} + succession ${SUCC_STATUS}") \
             && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
-          git add workers/julian_p3447_checkpoint.json workers/julian_genealogy_checkpoint.json || true
+          git add workers/julian_p3447_checkpoint.json workers/julian_genealogy_checkpoint.json workers/julian_succession_checkpoint.json || true
           if ! git diff --cached --quiet; then
-            git commit -m "JULIAN backfill: checkpoints (P3447=${STATUS} gene=${GENE_STATUS})"
+            git commit -m "JULIAN backfill: checkpoints (P3447=${STATUS} gene=${GENE_STATUS} succ=${SUCC_STATUS})"
             git stash --include-untracked || true
             git pull --rebase origin main
             git push origin HEAD:main
@@ -474,6 +486,8 @@ jobs:
         run: |
           echo "## Accuracy Backfill" >> $GITHUB_STEP_SUMMARY
           echo "- P3447 status: ${{ steps.p3447.outputs.status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Genealogy status: ${{ steps.genealogy.outputs.status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Succession status: ${{ steps.succession.outputs.status || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           if [ -f data/julian_all.json ]; then
             node -e "
               const d = JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));

@@ -327,7 +327,7 @@ class JulianLookup {
     const cacheKey = '__genealogy__';
     if (this._cache.has(cacheKey)) return this._cache.get(cacheKey);
     try {
-      const map = await this._fetchJson(`${this._base}/genealogy.json`);
+      const map = await this._fetchJSON(`${this._base}/genealogy.json`);
       this._cache.set(cacheKey, map);
       this._filesLoaded++;
       return map;
@@ -362,10 +362,49 @@ class JulianLookup {
   async loadImageIndex() {
     const cacheKey = '__images__';
     if (this._cache.has(cacheKey)) return this._cache.get(cacheKey);
-    const map = await this._fetchJson(`${this._base}/images.json`);
+    const map = await this._fetchJSON(`${this._base}/images.json`);
     this._cache.set(cacheKey, map);
     this._filesLoaded++;
     return map;
+  }
+
+  /**
+   * โหลด succession.json (lazy, cached)
+   * { QID: { prev:[{q,pos}], next:[{q,pos}] } }
+   * prev = คนที่ QID นี้เข้ามาแทน, next = คนที่เข้ามาแทน QID นี้
+   * pos = QID ของตำแหน่ง (เช่น Q11696 = President of the United States)
+   * เฉพาะ QIDs ที่อยู่ใน DB เท่านั้น
+   * @returns {Promise<object>} successionMap
+   */
+  async loadSuccessionIndex() {
+    const cacheKey = '__succession__';
+    if (this._cache.has(cacheKey)) return this._cache.get(cacheKey);
+    try {
+      const map = await this._fetchJSON(`${this._base}/succession.json`);
+      this._cache.set(cacheKey, map);
+      this._filesLoaded++;
+      return map;
+    } catch (e) {
+      this._cache.set(cacheKey, {});
+      return {};
+    }
+  }
+
+  /**
+   * ดึงข้อมูล succession ของ QID
+   * @param {string} qid
+   * @returns {Promise<{prev: Array<{q:string,pos:string}>, next: Array<{q:string,pos:string}>}>}
+   *   prev = QIDs ที่บุคคลนี้เข้ามาแทน (P1365)
+   *   next = QIDs ที่เข้ามาแทนบุคคลนี้ (P1366)
+   *   pos  = QID ของตำแหน่ง (นายกฯ, นางงาม, แชมป์มวย, ฯลฯ)
+   */
+  async getSuccession(qid) {
+    const map = await this.loadSuccessionIndex();
+    const rel = map[qid] ?? {};
+    return {
+      prev: rel.prev ?? [],
+      next: rel.next ?? [],
+    };
   }
 
   /**
