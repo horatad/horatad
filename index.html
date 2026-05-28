@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.51 -->
-<!-- Version 3.3.51 | 2026-05-28 -->
+<!-- HORATAD:INDEX:3.3.52 -->
+<!-- Version 3.3.52 | 2026-05-28 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.51">
+<link rel="stylesheet" href="style.css?v=3.3.52">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -90,9 +90,6 @@ canvas{max-width:100%;height:auto}
 .v3-rule-transit{font-size:.65rem;padding:1px 5px;border-radius:3px;background:#1e3a5f;color:#93c5fd;flex-shrink:0;}
 .v3-prompt-box{font-family:monospace;font-size:.72rem;white-space:pre-wrap;color:#94a3b8;line-height:1.5;max-height:200px;overflow-y:auto;}
 .v3-prompt-section{color:#b8860b;font-weight:700;margin-top:.5rem;}
-.v3-mode-toggle{display:flex;gap:4px;padding:8px 0 4px;}
-.v3-mode-btn{flex:1;padding:5px 4px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#64748b;font-size:.75rem;cursor:pointer;}
-.v3-mode-btn.on{background:#1e3a5f;border-color:#3b82f6;color:#93c5fd;font-weight:600;}
 /* Voice Chat panel */
 .v3-vc-wrap{margin-top:.75rem;}
 #v3-vc-toggle{width:100%;background:#131320;border:1px solid #2d2d4e;color:#8b949e;padding:.55rem 1rem;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:'Sarabun',sans-serif;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:background .15s;}
@@ -145,7 +142,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.51</span>
+  <span class="brand-ver">V 3.3.52</span>
 </h1>
 
 <!-- Tab nav -->
@@ -297,8 +294,8 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.51</div>
-        <div class="about-update">อัปเดต 28 พ.ค. 2569 · Transit Phase 2 · MAX_RULES 120 · interpretation fix</div>
+        <div class="about-version">V 3.3.52</div>
+        <div class="about-update">อัปเดต 28 พ.ค. 2569 · ลบปุ่มกรองดวง · เรียง natal→จร อัตโนมัติ</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
       <div class="about-tagline">เครื่องผูกดวงโหราศาสตร์ไทยแนวตรรกะ (TALS)</div>
@@ -331,7 +328,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.51" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.52" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -828,13 +825,6 @@ canvas{max-width:100%;height:auto}
     กรุณาผูกดวงที่แท็บ "กรอกข้อมูล" ก่อน แล้วกลับมาพยากรณ์ที่นี่
   </div>
 
-  <!-- mode toggle -->
-  <div class="v3-mode-toggle">
-    <button id="v3-m-natal"   class="v3-mode-btn on" onclick="v3SetMode('natal')">🏠 ดวงเดิม</button>
-    <button id="v3-m-transit" class="v3-mode-btn"    onclick="v3SetMode('transit')">🌐 ดวงจร</button>
-    <button id="v3-m-both"    class="v3-mode-btn"    onclick="v3SetMode('both')">⚡ ทั้งคู่</button>
-  </div>
-
   <!-- predict buttons -->
   <div style="display:flex;gap:.6rem;margin-bottom:1rem;">
     <button id="v3-btn-local" class="v3-btn-predict" style="flex:1;background:#1a6b3c;font-size:.9rem;" onclick="v3Local()">
@@ -918,8 +908,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.51"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.51"></script>
+<script type="module" src="script.js?v=3.3.52"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.52"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -961,7 +951,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.51"></script>
+<script src="auth-pin.js?v=3.3.52"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
 <!-- V2.2.35: Add-tag modal -->

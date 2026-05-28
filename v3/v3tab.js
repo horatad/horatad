@@ -65,7 +65,6 @@ let _v3KbRules = null;
 let _v3KbRulesV24 = null;
 let _v3KbTransit = null;
 let _v3Running = false;
-let _v3Mode = 'natal'; // 'natal' | 'transit' | 'both'
 
 // ── Speech rate ────────────────────────────────────────────
 const _RATE_STEPS = [1.0, 1.25, 1.5, 1.75];
@@ -516,26 +515,14 @@ function _setInputPanelLocal() {
   if (box) box.textContent = '— โหมดกฎท้องถิ่น ไม่ส่ง Typhoon —';
 }
 
-// กรอง matched rules ตาม mode
-function _filterByMode(matched) {
-  if (_v3Mode === 'natal')   return matched.filter(r => !r._isTransit);
-  if (_v3Mode === 'transit') return matched.filter(r =>  r._isTransit);
-  return matched; // 'both'
+// เรียงลำดับ: natal ก่อน → transit ทีหลัง
+function _sortResults(matched) {
+  return [...matched.filter(r => !r._isTransit), ...matched.filter(r => r._isTransit)];
 }
 
 function _hasNatal() {
   const n = typeof getNatal === 'function' ? getNatal() : null;
   return !!(n && n.pos);
-}
-
-function v3SetMode(mode) {
-  _v3Mode = mode;
-  ['natal','transit','both'].forEach(m => {
-    const b = _el('v3-m-' + m);
-    if (b) b.classList.toggle('on', m === mode);
-  });
-  if (_hasNatal()) v3Local();
-  else _clearResult();
 }
 
 // transit label สำหรับ toast/badge
@@ -595,18 +582,14 @@ async function v3Local() {
     const transit = typeof getTransit === 'function' ? getTransit() : null;
     const transitPos = transit?.pos || null;
     const transitState = transitPos ? buildNatalState(transitPos, null, natalState.ascSign) : null;
-    if (_v3Mode !== 'natal' && !transitPos) {
-      _showToastV3('ไม่มีข้อมูลดาวจร — กรุณาตั้งวันดาวจรที่แท็บ "วันนี้" ก่อน');
-    }
     const allMatched = matchRulesV24(natalState, v24Rules, transitState)
       .map(r => ({...r, _isTransit: r.type === 'TRANSIT_NATAL'}));
     const phase2 = transitPos ? matchTransitRules(natal.pos, transitPos, kbTransit) : [];
-    const matched = _filterByMode([...allMatched, ...phase2]);
+    const matched = _sortResults([...allMatched, ...phase2]);
     _showSpinner(false);
     _showRulesPanel(matched, null);
     _setInputPanelLocal();
-    const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';
-    _showResult(_renderV24(matched), false, `📋 กฎท้องถิ่น V24 (${matched.length} กฎ) ${modeLabel}`);
+    _showResult(_renderV24(matched), false, `📋 กฎท้องถิ่น V24 (${matched.length} กฎ)`);
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] local error:', err);
@@ -638,21 +621,17 @@ async function v3Typhoon() {
     const transit = typeof getTransit === 'function' ? getTransit() : null;
     const transitPos = transit?.pos || null;
     const transitState = transitPos ? buildNatalState(transitPos, null, natalState.ascSign) : null;
-    if (_v3Mode !== 'natal' && !transitPos) {
-      _showToastV3('ไม่มีข้อมูลดาวจร — กรุณาตั้งวันดาวจรที่แท็บ "วันนี้" ก่อน');
-    }
     const allMatched = matchRulesV24(natalState, v24Rules, transitState)
       .map(r => ({ ...r, _isTransit: r.type === 'TRANSIT_NATAL' }));
     const phase2 = transitPos ? matchTransitRules(natal.pos, transitPos, kbTransit) : [];
-    matched = _augmentWithJulian(_filterByMode([...allMatched, ...phase2]));
+    matched = _augmentWithJulian(_sortResults([...allMatched, ...phase2]));
     ctx = _buildV24Context(natalState);
     _showRulesPanel(matched, null);
-    const modeLabel = _v3Mode === 'transit' ? '🌐 ดวงจร' : _v3Mode === 'both' ? '⚡ ทั้งคู่' : '🏠 ดวงเดิม';
     const text = await send_to_typhoon(ctx, matched, {
       onPromptReady: (sys, user) => _showInputPanel(sys, user)
     });
     _showSpinner(false);
-    _showResult(text, false, `🤖 Typhoon AI V24 ${modeLabel}`);
+    _showResult(text, false, `🤖 Typhoon AI V24`);
   } catch (err) {
     _showSpinner(false);
     console.warn('[v3tab] typhoon error:', err);
@@ -747,7 +726,6 @@ window.v3Typhoon = v3Typhoon;
 window.v3Copy = v3Copy;
 window.v3Speak = v3Speak;
 window.v3TogglePanel = v3TogglePanel;
-window.v3SetMode = v3SetMode;
 // voice chat (already assigned as window.* above)
 // window.v3MicToggle, window.v3VcClear, window.v3VcTogglePanel
 
