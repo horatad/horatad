@@ -64,6 +64,48 @@ const avg_importance  = imp_vals.length
   ? Math.round(imp_vals.reduce((s,v) => s+v, 0) / imp_vals.length * 1000) / 1000
   : null;
 
+// ── genealogy + succession (research asset อันดับ 1) ───────────────────────
+// in-DB links = ความเชื่อมโยงที่ "ทั้งสองฝั่งอยู่ใน DB" → ใช้ทำ relational astrology ได้จริง
+// (raw = ดึงมาทั้งหมด, in_db = นับเฉพาะที่ปลายทางก็อยู่ใน DB — เหมือน index_builder)
+const dbQIDs = new Set(
+  records
+    .map(r => r.qid || (r.source?.startsWith('wikidata:') ? r.source.slice(9) : null))
+    .filter(Boolean)
+);
+
+function statFamily(file) {
+  if (!existsSync(file)) return { status: 'missing', raw_persons: 0, in_db_persons: 0, in_db_links: 0, by_relation: { father: 0, mother: 0, spouse: 0, child: 0, sibling: 0 } };
+  const raw = JSON.parse(readFileSync(file, 'utf8'));
+  const by_relation = { father: 0, mother: 0, spouse: 0, child: 0, sibling: 0 };
+  let in_db_persons = 0, in_db_links = 0;
+  for (const rel of Object.values(raw)) {
+    let personHas = 0;
+    if (rel.p && dbQIDs.has(rel.p)) { by_relation.father++; personHas++; }
+    if (rel.m && dbQIDs.has(rel.m)) { by_relation.mother++; personHas++; }
+    for (const q of (rel.sp || [])) if (dbQIDs.has(q)) { by_relation.spouse++;  personHas++; }
+    for (const q of (rel.ch || [])) if (dbQIDs.has(q)) { by_relation.child++;   personHas++; }
+    for (const q of (rel.si || [])) if (dbQIDs.has(q)) { by_relation.sibling++; personHas++; }
+    if (personHas) { in_db_persons++; in_db_links += personHas; }
+  }
+  return { status: 'ok', raw_persons: Object.keys(raw).length, in_db_persons, in_db_links, by_relation };
+}
+
+function statSuccession(file) {
+  if (!existsSync(file)) return { status: 'missing', raw_persons: 0, in_db_persons: 0, in_db_links: 0 };
+  const raw = JSON.parse(readFileSync(file, 'utf8'));
+  let in_db_persons = 0, in_db_links = 0;
+  for (const rel of Object.values(raw)) {
+    let personHas = 0;
+    for (const e of (rel.prev || [])) if (dbQIDs.has(e.q)) { personHas++; }
+    for (const e of (rel.next || [])) if (dbQIDs.has(e.q)) { personHas++; }
+    if (personHas) { in_db_persons++; in_db_links += personHas; }
+  }
+  return { status: 'ok', raw_persons: Object.keys(raw).length, in_db_persons, in_db_links };
+}
+
+const genealogy  = statFamily('data/julian_family.json');
+const succession = statSuccession('data/julian_succession.json');
+
 // ── history: preserve existing + append today ──────────────
 let history = [];
 if (existsSync(OUT_FILE)) {
@@ -91,6 +133,9 @@ const delta_today = prev ? total - prev.total : null;
 // ── output ─────────────────────────────────────────────────
 const stats = {
   generated: new Date().toISOString(),
+  // genealogy + succession = research asset อันดับ 1 (รายงานก่อน record count เสมอ)
+  genealogy,
+  succession,
   total,
   target: TARGET,
   pct: Math.round(total / TARGET * 1000) / 10,
@@ -106,9 +151,15 @@ const stats = {
 };
 
 writeFileSync(OUT_FILE, JSON.stringify(stats, null, 2));
+
+// genealogy/succession รายงานก่อนเสมอ (research asset อันดับ 1)
+const g = genealogy, s = succession;
+console.log(`🧬 Genealogy : ${g.in_db_links.toLocaleString()} in-DB links · ${g.in_db_persons.toLocaleString()} persons (raw ${g.raw_persons.toLocaleString()})${g.status === 'missing' ? ' ⚠️ data/julian_family.json ไม่พบ' : ''}`);
+console.log(`👑 Succession: ${s.in_db_links.toLocaleString()} in-DB links · ${s.in_db_persons.toLocaleString()} persons (raw ${s.raw_persons.toLocaleString()})${s.status === 'missing' ? ' ⚠️ data/julian_succession.json ไม่พบ' : ''}`);
 console.log(`✅ julian_stats.json updated: ${total.toLocaleString()} records (${stats.pct}% of target)`);
 
 if (VERBOSE) {
+  if (g.status === 'ok') console.log('\nGenealogy by relation (in-DB):', JSON.stringify(g.by_relation));
   console.log('\nBy source:');
   Object.entries(by_source).forEach(([k,v]) => v > 0 && console.log(`  ${k}: ${v.toLocaleString()}`));
   console.log('\nBy accuracy:', JSON.stringify(by_accuracy));
