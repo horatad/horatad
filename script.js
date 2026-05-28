@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.79';
+const APP_VERSION='3.3.80';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -4195,6 +4195,9 @@ function _quickLoad(i){
   _customTz1=(typeof m.tz==='number')?m.tz:null;
   _updateLngUI('1');
   calculateBoth();
+  // V3.3.80: header quick-chips = shortcut เท่านั้น — ไม่สะสมใน recent-chips buffer
+  _recentPersonBuffer['1']=[];_activePersonKey['1']=null;_renderRecentPersonChips('1');
+  _recentPersonBuffer['2']=[];_activePersonKey['2']=null;_renderRecentPersonChips('2');
 }
 async function installPWA(){
   if(!_deferredInstallPrompt)return;
@@ -4366,13 +4369,8 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(el){el.addEventListener('input',_scheduleSave);el.addEventListener('change',_scheduleSave);}
   });
 
-  // attach numpad to numeric inputs only (time fields use native type=time)
-  ['d1','m1','y1','d2','m2','y2','dt','mt','yt'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    el.setAttribute('readonly','readonly');el.style.cursor='pointer';
-    el.addEventListener('click',()=>_numpadOpen(id));
-    el.addEventListener('focus',()=>_numpadOpen(id));
-  });
+  // V3.3.80: d/m/y inputs ใช้ col-picker แล้ว — ไม่ต้องติด numpad listener
+  // (readonly + onclick="openColPicker" ใน HTML จัดการแทน)
 
   // V2.1.9: sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
   ['btn-era'].forEach(id=>{
