@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.80
-// Version 3.3.79 | 2026-05-29
+// HORATAD:SCRIPT:3.3.81
+// Version 3.3.81 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.80';
+const APP_VERSION='3.3.81';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -492,8 +492,28 @@ function _renderTagRow(section){
     row.appendChild(addBtn);
     return;
   }
-  // V3.3.79: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
-  row.style.display='none';
+  // group assignment row — แสดง all tags เป็น toggles + "+" เพิ่ม custom
+  row.style.display='';
+  const tags=_allTags();
+  const active=_chartTags[section]||[];
+  const isCustom=name=>!DEFAULT_TAGS.includes(name);
+  tags.forEach(name=>{
+    const chip=document.createElement('span');
+    chip.className='tag-chip'+(active.includes(name)?' tag-active':'');
+    if(isCustom(name)){
+      chip.innerHTML=`<span>${_escHtml(name)}</span><button class="tag-chip-del" title="ลบ tag" onclick="event.stopPropagation();_deleteCustomTag('${_escHtml(name)}')">✕</button>`;
+      chip.querySelector('span').addEventListener('click',()=>_toggleTag(section,name));
+    }else{
+      chip.textContent=name;
+      chip.addEventListener('click',()=>_toggleTag(section,name));
+    }
+    row.appendChild(chip);
+  });
+  const addBtn=document.createElement('span');
+  addBtn.className='tag-chip-add';
+  addBtn.textContent='+ เพิ่ม';
+  addBtn.addEventListener('click',()=>_openAddTagModal(section));
+  row.appendChild(addBtn);
 }
 // V3.3.79: recent person chips — runtime buffer, auto-width max
 function _recentChipsMax(){
@@ -4644,7 +4664,7 @@ window._closeSompongPopup=_closeSompongPopup;window._toggleSompongInput=_toggleS
 window._tsCalc=_tsCalc;window._tsReset=_tsReset;window._sompongNew=_sompongNew;
 window._confirmYes=_confirmYes;window.closeConfirm=closeConfirm;
 window._numpadConfirm=_numpadConfirm;window._numpadKey=_numpadKey;
-window._submitAddTag=_submitAddTag;
+window._submitAddTag=_submitAddTag;window._deleteCustomTag=_deleteCustomTag;
 window.cycleOuterDisplay=cycleOuterDisplay;window.toggleOuterView=toggleOuterView;
 window.cycleCompareMode=cycleCompareMode;window.toggleChartType=toggleChartType;
 window.cycleEventSort=cycleEventSort;window.toggleReportTransit=toggleReportTransit;
