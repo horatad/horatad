@@ -28,7 +28,9 @@ import {
 // ── Config ────────────────────────────────────────────────────────────────
 const TYPHOON_WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
 const TYPHOON_MODEL = 'typhoon-v2.5-30b-a3b-instruct';
-const MAX_TOKENS = 2800;
+const MAX_TOKENS_PER_RULE = 160; // ~100 tokens/prediction + 60 overhead JSON key
+const MAX_TOKENS_BASE = 400;     // JSON wrapper + system overhead
+const MAX_TOKENS_CAP = 4096;     // Typhoon context cap
 const MAX_RULES = 120;
 const MIN_MANIFESTATION = 0.10; // ตาม tb_predictions threshold
 
@@ -446,9 +448,10 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   // แจ้ง caller ให้ดู prompt ก่อน call API
   if(typeof options.onPromptReady==='function') options.onPromptReady(systemPrompt,userPrompt);
 
+  const maxTokens=Math.min(MAX_TOKENS_CAP, matchedRules.length * MAX_TOKENS_PER_RULE + MAX_TOKENS_BASE);
   const body=JSON.stringify({
     model:TYPHOON_MODEL,
-    max_tokens:MAX_TOKENS,
+    max_tokens:maxTokens,
     response_format:{type:'json_object'},
     messages:[
       {role:'system',content:systemPrompt},
