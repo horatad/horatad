@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.71
-// Version 3.3.71 | 2026-05-28
+// HORATAD:SCRIPT:3.3.72
+// Version 3.3.72 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -1486,7 +1486,7 @@ function _calcChart(num){
   const noTime=!tRaw;
   let[hr,mn]=sanitizeTime(tRaw);
   const dstOn=num==='1'?!!(document.getElementById('dst1')?.checked):!!(document.getElementById('dst2')?.checked);
-  if(!noTime&&dstOn)hr=(hr+1)%24;
+  if(!noTime&&dstOn)hr=(hr+23)%24;
   _setField('d'+num,d);_setField('m'+num,m);_setField('y'+num,y);
   if(noTime){_setField('t'+num,'');}else{_setField('t'+num,String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));}
   const provRaw=(document.getElementById('prov'+num).value||'').trim();
@@ -1541,7 +1541,7 @@ function calculateTransit(){
   let y=sanitizeInt(document.getElementById('yt').value,1,9999,_era==='BE'?2569:2026);
   let[hr,mn]=sanitizeTime(document.getElementById('tt').value);
   const dstOnT=!!(document.getElementById('dstt')?.checked);
-  if(dstOnT)hr=(hr+1)%24;
+  if(dstOnT)hr=(hr+23)%24;
   _setField('dt',d);_setField('mt',m);_setField('yt',y);
   _setField('tt',String(hr).padStart(2,'0')+':'+String(mn).padStart(2,'0'));
   const provVal=document.getElementById('provt').value||'กรุงเทพมหานคร';
