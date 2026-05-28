@@ -964,17 +964,26 @@ canvas{max-width:100%;height:auto}
 <script src="auth-pin.js?v=3.3.74"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
-<!-- V3.3.74: Time picker modal — H 00-23, M 00-59 grids, no keyboard -->
+<!-- V3.3.74: Time picker — 4-column digit picker (H×10, H×1 : M×10, M×1) -->
 <div id="time-picker-backdrop" class="memory-backdrop hidden" onclick="closeTimePicker()"></div>
 <div id="time-picker-modal" class="time-picker-modal hidden">
   <div class="time-picker-preview" id="time-picker-preview">--:--</div>
-  <div>
-    <div class="time-picker-label">ชั่วโมง (H)</div>
-    <div class="time-picker-grid" id="time-picker-hours"></div>
-  </div>
-  <div>
-    <div class="time-picker-label">นาที (M)</div>
-    <div class="time-picker-grid" id="time-picker-minutes"></div>
+  <div class="tp-col-picker" id="tp-col-picker">
+    <div class="tp-col-group">
+      <div class="tp-col-lbl">ชั่วโมง</div>
+      <div class="tp-col-row">
+        <div class="tp-col" id="tp-col-h10"></div>
+        <div class="tp-col" id="tp-col-h1"></div>
+      </div>
+    </div>
+    <div class="tp-col-sep">:</div>
+    <div class="tp-col-group">
+      <div class="tp-col-lbl">นาที</div>
+      <div class="tp-col-row">
+        <div class="tp-col" id="tp-col-m10"></div>
+        <div class="tp-col" id="tp-col-m1"></div>
+      </div>
+    </div>
   </div>
   <button class="city-close-btn" onclick="closeTimePicker()">ยกเลิก</button>
 </div>

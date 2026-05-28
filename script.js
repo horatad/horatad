@@ -2,6 +2,7 @@
 // Version 3.3.74 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
+// Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
 // Changes: [V3.3.52] fix(v3tab): ลบปุ่ม ดวงเดิม/ดวงจร/ทั้งคู่ · เรียง natal→transit อัตโนมัติ
 // Changes: [V3.3.51] feat: Transit Phase 2 (matchTransitRules + kb_transit.json) · MAX_RULES 120 · interpretation BIBLE schema
@@ -27,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.67';
+const APP_VERSION='3.3.74';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1831,25 +1832,26 @@ function closeTimePicker(){
   _timePickerField=null;
 }
 function _renderTimePicker(){
-  _buildTimeBtns('time-picker-hours',24,'h',_timePickerH);
-  _buildTimeBtns('time-picker-minutes',60,'m',_timePickerM);
+  const hT=Math.floor(_timePickerH/10),hU=_timePickerH%10;
+  const mT=Math.floor(_timePickerM/10),mU=_timePickerM%10;
+  _buildTimeCol('tp-col-h10',[0,1,2],hT,'h10');
+  _buildTimeCol('tp-col-h1',Array.from({length:hT===2?4:10},(_,i)=>i),hU,'h1');
+  _buildTimeCol('tp-col-m10',[0,1,2,3,4,5],mT,'m10');
+  _buildTimeCol('tp-col-m1',Array.from({length:10},(_,i)=>i),mU,'m1');
   const prev=document.getElementById('time-picker-preview');
   if(prev)prev.textContent=String(_timePickerH).padStart(2,'0')+':'+String(_timePickerM).padStart(2,'0');
 }
-function _buildTimeBtns(containerId,count,attr,selected){
-  const el=document.getElementById(containerId);
+function _buildTimeCol(id,vals,sel,col){
+  const el=document.getElementById(id);
   if(!el)return;
   el.innerHTML='';
-  let activeBtn=null;
-  for(let i=0;i<count;i++){
-    const btn=document.createElement('button');
-    btn.className='time-btn'+(i===selected?' active':'');
-    btn.textContent=String(i).padStart(2,'0');
-    btn.dataset[attr]=i;
-    el.appendChild(btn);
-    if(i===selected)activeBtn=btn;
-  }
-  if(activeBtn)requestAnimationFrame(()=>activeBtn.scrollIntoView({block:'nearest',behavior:'instant'}));
+  vals.forEach(v=>{
+    const b=document.createElement('button');
+    b.className='tp-digit'+(v===sel?' active':'');
+    b.textContent=v;
+    b.dataset.col=col;b.dataset.val=v;
+    el.appendChild(b);
+  });
 }
 // ── Province picker modal (แทน Nominatim) — ก-ฮ tabs + list จากข้อมูลใน code ──
 let _citySearchField=null,_provPickerAlpha='',_foreignLetterFilter='';
@@ -4341,28 +4343,30 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // V3.3.59: LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
-  // V3.3.74: Time picker event delegation
-  const _tpH=document.getElementById('time-picker-hours');
-  if(_tpH){
-    _tpH.addEventListener('click',e=>{
-      const btn=e.target.closest('.time-btn');
+  // V3.3.74: Time picker column event delegation
+  const _tpPicker=document.getElementById('tp-col-picker');
+  if(_tpPicker){
+    _tpPicker.addEventListener('click',e=>{
+      const btn=e.target.closest('.tp-digit');
       if(!btn)return;
-      _timePickerH=parseInt(btn.dataset.h,10);
-      _renderTimePicker();
-    });
-  }
-  const _tpM=document.getElementById('time-picker-minutes');
-  if(_tpM){
-    _tpM.addEventListener('click',e=>{
-      const btn=e.target.closest('.time-btn');
-      if(!btn)return;
-      _timePickerM=parseInt(btn.dataset.m,10);
-      if(_timePickerField){
-        const el=document.getElementById(_timePickerField);
-        if(el)el.value=String(_timePickerH).padStart(2,'0')+':'+String(_timePickerM).padStart(2,'0');
+      const col=btn.dataset.col,val=parseInt(btn.dataset.val,10);
+      if(col==='h10'){
+        _timePickerH=val*10+(_timePickerH%10);
+        if(val===2&&_timePickerH%10>3)_timePickerH=val*10;
+        _renderTimePicker();
+      }else if(col==='h1'){
+        _timePickerH=Math.floor(_timePickerH/10)*10+val;
+        _renderTimePicker();
+      }else if(col==='m10'){
+        _timePickerM=val*10+(_timePickerM%10);
+        _renderTimePicker();
+      }else if(col==='m1'){
+        _timePickerM=Math.floor(_timePickerM/10)*10+val;
+        _renderTimePicker();
+        if(_timePickerField){const el=document.getElementById(_timePickerField);if(el)el.value=String(_timePickerH).padStart(2,'0')+':'+String(_timePickerM).padStart(2,'0');}
+        _playBeep(700);
+        setTimeout(closeTimePicker,200);
       }
-      _playBeep(700);
-      setTimeout(closeTimePicker,200);
     });
   }
   const _csTabs=document.getElementById('city-search-tabs');
