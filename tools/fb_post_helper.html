@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FB Post Helper — โหราทาส AI</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1f2d5e, #272b5b);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .logo { font-size: 13px; color: #888; margin-bottom: 4px; }
+  h1 { font-size: 20px; color: #1f2d5e; margin-bottom: 20px; }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  .status-ready  { background: #e8f5e9; color: #2e7d32; }
+  .status-posted { background: #e3f2fd; color: #1565c0; }
+  .status-empty  { background: #fff3e0; color: #e65100; }
+
+  .post-box {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #222;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 16px;
+    min-height: 80px;
+  }
+  .post-box.empty { color: #aaa; font-style: italic; text-align: center; padding: 32px; }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: opacity .15s, transform .1s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-copy   { background: #ba8345; color: #fff; }
+  .btn-done   { background: #1877f2; color: #fff; }
+  .btn-next   { background: #f0f0f0; color: #555; font-size: 14px; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #222;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity .3s, transform .3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .meta { font-size: 12px; color: #999; margin-top: 12px; border-top: 1px solid #eee; padding-top: 12px; }
+  .meta a { color: #ba8345; text-decoration: none; }
+
+  .step-hint {
+    background: #fff8e1;
+    border-left: 4px solid #ba8345;
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .step-hint.show { display: block; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">โหราทาส AI · FB Post Helper</div>
+  <h1>โพสต์วันนี้</h1>
+
+  <div id="badge" class="status-badge status-empty">กำลังโหลด...</div>
+
+  <div id="postBox" class="post-box empty">กำลังดึงข้อมูล...</div>
+
+  <div id="hint" class="step-hint">
+    ✅ Copy แล้ว — เปิด Meta Business Suite → New post → วางข้อความ → Next → Post
+  </div>
+
+  <button id="btnCopy" class="btn btn-copy" disabled onclick="doCopy()">📋 Copy caption + link</button>
+  <button id="btnDone" class="btn btn-done" disabled onclick="markPosted()">✅ โพสต์แล้ว</button>
+  <button id="btnNext" class="btn btn-next" onclick="loadNext()" style="display:none">ดูโพสต์ถัดไป →</button>
+
+  <div id="meta" class="meta"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const REPO   = 'horatad/horatad';
+const BRANCH = 'main';
+const SCHED_PATH = 'content/scheduled';
+const POSTED_KEY = 'fb_posted_ids';
+
+let posts = [];   // [{filename, data}]
+let idx   = 0;
+
+function getPosted() {
+  try { return JSON.parse(localStorage.getItem(POSTED_KEY) || '[]'); } catch { return []; }
+}
+function savePosted(arr) {
+  localStorage.setItem(POSTED_KEY, JSON.stringify(arr));
+}
+
+async function fetchScheduled() {
+  const url = `https://api.github.com/repos/${REPO}/contents/${SCHED_PATH}?ref=${BRANCH}&t=${Date.now()}`;
+  const res  = await fetch(url, { headers: { Accept: 'application/vnd.github.v3+json' } });
+  if (!res.ok) return [];
+  const files = await res.json();
+  return files.filter(f => f.name.endsWith('.json') && !f.name.startsWith('.'));
+}
+
+async function fetchFile(downloadUrl) {
+  const res = await fetch(downloadUrl + '?t=' + Date.now());
+  return res.json();
+}
+
+function buildText(data) {
+  const lines = [];
+  if (data.body) {
+    lines.push(data.body);
+  } else {
+    lines.push(data.title || '');
+    if (data.meta?.youtube_url) lines.push('\n' + data.meta.youtube_url);
+    const tags = (data.tags || []).map(t => '#' + t.replace(/\s+/g, '')).join(' ');
+    if (tags) lines.push('\n' + tags);
+  }
+  return lines.join('\n').trim();
+}
+
+function render() {
+  const badge   = document.getElementById('badge');
+  const postBox = document.getElementById('postBox');
+  const meta    = document.getElementById('meta');
+  const btnCopy = document.getElementById('btnCopy');
+  const btnDone = document.getElementById('btnDone');
+  const btnNext = document.getElementById('btnNext');
+
+  if (posts.length === 0) {
+    badge.className   = 'status-badge status-empty';
+    badge.textContent = 'ไม่มีโพสต์ในคิว';
+    postBox.className = 'post-box empty';
+    postBox.textContent = 'ยังไม่มีโพสต์ที่ถูก schedule\nรัน Content Curator workflow ก่อนครับ';
+    btnCopy.disabled = true;
+    btnDone.disabled = true;
+    btnNext.style.display = 'none';
+    meta.innerHTML = '';
+    return;
+  }
+
+  const item    = posts[idx];
+  const posted  = getPosted();
+  const isDone  = posted.includes(item.filename);
+  const text    = buildText(item.data);
+
+  postBox.className   = 'post-box';
+  postBox.textContent = text;
+
+  if (isDone) {
+    badge.className   = 'status-badge status-posted';
+    badge.textContent = '✅ โพสต์แล้ว';
+    btnCopy.disabled  = false;
+    btnDone.disabled  = true;
+  } else {
+    badge.className   = 'status-badge status-ready';
+    badge.textContent = '⏳ รอโพสต์';
+    btnCopy.disabled  = false;
+    btnDone.disabled  = false;
+  }
+
+  btnNext.style.display = posts.length > 1 ? 'block' : 'none';
+  btnNext.textContent   = `ดูโพสต์ถัดไป (${idx + 1}/${posts.length}) →`;
+
+  const d = item.data;
+  const ytId = d.meta?.youtube_video_id;
+  meta.innerHTML = [
+    d.title ? `<b>${d.title}</b>` : '',
+    d.date_added ? `วันที่: ${d.date_added}` : '',
+    ytId ? `<a href="https://www.youtube.com/watch?v=${ytId}" target="_blank">เปิด YouTube ▶️</a>` : '',
+  ].filter(Boolean).join(' · ');
+}
+
+function doCopy() {
+  const item = posts[idx];
+  if (!item) return;
+  const text = buildText(item.data);
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('hint').classList.add('show');
+    showToast('Copy แล้ว! วางใน MBS ได้เลยครับ');
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    document.getElementById('hint').classList.add('show');
+    showToast('Copy แล้ว!');
+  });
+}
+
+function markPosted() {
+  const item   = posts[idx];
+  if (!item) return;
+  const posted = getPosted();
+  if (!posted.includes(item.filename)) posted.push(item.filename);
+  savePosted(posted);
+  showToast('บันทึกแล้ว ✅');
+  render();
+}
+
+function loadNext() {
+  idx = (idx + 1) % posts.length;
+  document.getElementById('hint').classList.remove('show');
+  render();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// init
+(async () => {
+  try {
+    const files = await fetchScheduled();
+    for (const f of files) {
+      const data = await fetchFile(f.download_url);
+      posts.push({ filename: f.name, data });
+    }
+    render();
+  } catch (e) {
+    document.getElementById('postBox').textContent = 'โหลดไม่ได้: ' + e.message;
+  }
+})();
+</script>
+</body>
+</html>
