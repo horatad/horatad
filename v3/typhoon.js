@@ -353,11 +353,11 @@ export function match_rules(pos, ascSign, kbRules, transitPos=null, natalPayload
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-// สร้าง rule ID อ้างอิง kb.json index — R001..R342
+// สร้าง rule ID — ใช้ r.id (V24 format) → r._kbIdx (legacy kb.json) → R???
 export function _ruleId(r){
-  return r._kbIdx!=null
-    ?'R'+String(r._kbIdx+1).padStart(3,'0')
-    :'R???';
+  if(r.id)return r.id;
+  if(r._kbIdx!=null)return'R'+String(r._kbIdx+1).padStart(3,'0');
+  return'R???';
 }
 
 // ── Prompt builder ─────────────────────────────────────────────────────────
