@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.55 -->
-<!-- Version 3.3.55 | 2026-05-28 -->
+<!-- HORATAD:INDEX:3.3.56 -->
+<!-- Version 3.3.56 | 2026-05-28 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.55">
+<link rel="stylesheet" href="style.css?v=3.3.56">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -65,7 +65,8 @@ canvas{max-width:100%;height:auto}
 .v3-speak-btn.speaking:hover{background:#ef4444;border-color:#ef4444;}
 /* TTS guide modal */
 .tts-guide-steps{margin:0 0 10px;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.8;}
-.tts-guide-note{margin:0;font-size:11px;color:#586069;line-height:1.6;}
+.tts-guide-desc{margin:0 0 10px;font-size:13px;color:#8b949e;line-height:1.5;}
+.tts-guide-note{margin:6px 0 0;font-size:11px;color:#586069;line-height:1.6;}
 /* V3 3-panel layout */
 .v3-panels{display:flex;flex-direction:column;gap:.6rem;margin-bottom:.5rem;}
 .v3-panel{border:1px solid #2d2d4e;border-radius:8px;overflow:hidden;}
@@ -142,7 +143,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.55</span>
+  <span class="brand-ver">V 3.3.56</span>
 </h1>
 
 <!-- Tab nav -->
@@ -294,7 +295,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.55</div>
+        <div class="about-version">V 3.3.56</div>
         <div class="about-update">อัปเดต 28 พ.ค. 2569 · แก้ปุ่มพยากรณ์ + นำเข้าไฟล์</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -328,7 +329,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.55" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.56" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -908,21 +909,16 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.55"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.55"></script>
+<script type="module" src="script.js?v=3.3.56"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.56"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
 <div id="v3-tts-guide" class="memory-modal hidden">
   <div class="memory-title">🔊 เปิดเสียงภาษาไทย</div>
-  <p style="font-family:'Sarabun','Noto Sans Thai',sans-serif;font-size:13px;color:#8b949e;margin:0 0 10px">เครื่องนี้ยังไม่มีชุดเสียงภาษาไทย ติดตั้งได้ใน 2 ขั้นตอน</p>
-  <ol class="tts-guide-steps">
-    <li>ตั้งค่า → การช่วยเหลือ → <strong>การอ่านออกเสียง (TTS)</strong></li>
-    <li>กด ⚙ ข้าง "เครื่องมือ TTS" → ติดตั้งข้อมูลเสียง → เลือก <strong>ภาษาไทย</strong></li>
-    <li>กลับมาที่แอปแล้วกดปุ่ม 🔊 อีกครั้ง</li>
-  </ol>
-  <p class="tts-guide-note">Samsung: ตั้งค่า → การจัดการทั่วไป → ภาษา → การอ่านออกเสียง</p>
-  <button onclick="closeTTSGuide()" class="memory-close" style="margin-top:12px">ปิด</button>
+  <div id="v3-tts-guide-content"></div>
+  <button onclick="window.v3RecheckVoice()" class="memory-close" style="margin-top:12px;background:#21262d;color:#c9d1d9;border:1px solid #30363d">ตรวจสอบอีกครั้ง ✓</button>
+  <button onclick="closeTTSGuide()" class="memory-close" style="margin-top:6px">ปิด</button>
 </div>
 
 <!-- V3 Dev Access Popup -->
@@ -951,7 +947,7 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.55"></script>
+<script src="auth-pin.js?v=3.3.56"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
 
 <!-- V2.2.35: Add-tag modal -->

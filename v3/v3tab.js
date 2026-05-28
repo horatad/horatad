@@ -486,8 +486,68 @@ function _refreshSpeakBtn() {
 function _showTTSGuide() {
   const bd = document.getElementById('v3-tts-guide-backdrop');
   const md = document.getElementById('v3-tts-guide');
+  if (!md) return;
+
+  // Detect platform
+  const ua = navigator.userAgent;
+  const pl = (typeof navigator.platform === 'string' ? navigator.platform : '');
+  const isAndroid = /Android/i.test(ua);
+  const isIOS = /iPhone|iPad/i.test(ua);
+  const isWindows = !isAndroid && !isIOS && (/Win/i.test(pl) || /Windows NT/i.test(ua));
+  const isMac = !isAndroid && !isIOS && /Mac/i.test(pl) && !/Windows/i.test(ua);
+
+  let html = '';
+  if (isAndroid) {
+    html = `
+      <p class="tts-guide-desc">เครื่องนี้ยังไม่มีชุดเสียงภาษาไทย ติดตั้งได้ใน 3 ขั้นตอน</p>
+      <ol class="tts-guide-steps">
+        <li>ตั้งค่า → การช่วยเหลือ → <strong>การอ่านออกเสียง (TTS)</strong></li>
+        <li>กด ⚙ ข้าง "เครื่องมือ TTS" → ติดตั้งข้อมูลเสียง → เลือก <strong>ภาษาไทย</strong></li>
+        <li>กลับมาที่แอปแล้วกดปุ่ม 🔊 อีกครั้ง</li>
+      </ol>
+      <p class="tts-guide-note">Samsung: ตั้งค่า → การจัดการทั่วไป → ภาษา → การอ่านออกเสียง</p>`;
+  } else if (isWindows) {
+    html = `
+      <p class="tts-guide-desc">เพิ่มเสียงภาษาไทยผ่าน Windows Settings ใน 3 ขั้นตอน</p>
+      <ol class="tts-guide-steps">
+        <li>กด <strong>Start</strong> → พิมพ์ค้นหา <strong>"Speech settings"</strong> → เปิด</li>
+        <li>เลื่อนหา "Manage voices" → <strong>Add voices</strong> → ค้นหา <strong>Thai</strong></li>
+        <li>กลับมาที่แอปแล้วกดปุ่ม ✓ ตรวจสอบอีกครั้ง</li>
+      </ol>
+      <p class="tts-guide-note">⚠️ Chrome/Opera ไม่อนุญาตลิงค์ตรงไปที่ตั้งค่า — ต้องเปิด Settings เอง</p>
+      <p class="tts-guide-note">ทางเลือก: ใช้ Microsoft Edge (มีเสียงไทยในตัว)</p>`;
+  } else if (isMac) {
+    html = `
+      <p class="tts-guide-desc">เพิ่มเสียงภาษาไทยผ่าน macOS System Settings</p>
+      <ol class="tts-guide-steps">
+        <li>เปิด <strong>System Settings</strong> → Accessibility → <strong>Spoken Content</strong></li>
+        <li>คลิก "Manage Voices..." → ค้นหา <strong>Thai</strong> → กด ดาวน์โหลด</li>
+        <li>กลับมาที่แอปแล้วกดปุ่ม ✓ ตรวจสอบอีกครั้ง</li>
+      </ol>
+      <p class="tts-guide-note">⚠️ Chrome/Opera ไม่อนุญาตลิงค์ตรงไปที่ตั้งค่า — ต้องเปิด System Settings เอง</p>
+      <p class="tts-guide-note">ทางเลือก: ใช้ Microsoft Edge (มีเสียงไทยในตัว)</p>`;
+  } else if (isIOS) {
+    html = `
+      <p class="tts-guide-desc">iOS: เสียงภาษาไทยสำหรับ Safari</p>
+      <ol class="tts-guide-steps">
+        <li>Settings → Accessibility → <strong>Spoken Content</strong></li>
+        <li>Voices → เพิ่ม <strong>Thai</strong></li>
+        <li>กลับมาที่แอปแล้วกดปุ่ม ✓ ตรวจสอบอีกครั้ง</li>
+      </ol>`;
+  } else {
+    html = `
+      <p class="tts-guide-desc">เบราว์เซอร์นี้ยังไม่มีชุดเสียงภาษาไทย</p>
+      <ol class="tts-guide-steps">
+        <li>ลองใช้ <strong>Microsoft Edge</strong> (มีเสียงไทยในตัว)</li>
+        <li>หรือติดตั้งเสียงภาษาไทยผ่านระบบปฏิบัติการของคุณ</li>
+        <li>กลับมาที่แอปแล้วกดปุ่ม ✓ ตรวจสอบอีกครั้ง</li>
+      </ol>`;
+  }
+
+  const content = document.getElementById('v3-tts-guide-content');
+  if (content) content.innerHTML = html;
   if (bd) bd.classList.remove('hidden');
-  if (md) md.classList.remove('hidden');
+  md.classList.remove('hidden');
 }
 
 window.closeTTSGuide = function() {
