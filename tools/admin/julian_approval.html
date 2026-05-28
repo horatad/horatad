@@ -169,9 +169,14 @@ input[type=password], input[type=text] {
   padding: 8px 10px; width: 100%; font-family: inherit;
 }
 .vocab-ctx { font-size: 12px; color: #999; margin-bottom: 8px; }
-.vocab-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-.btn-sm { padding: 6px 12px; border: none; border-radius: 6px;
-          font-size: 12px; font-weight: 600; cursor: pointer; }
+.btn-delete-sm { background: #ffebee; color: #c62828; margin-left: auto; }
+.vocab-en-input {
+  font-size: 15px; font-weight: 700; color: #1f2d5e;
+  border: 1px solid #e0e0e0; border-radius: 6px;
+  padding: 6px 10px; width: 100%; font-family: inherit;
+  margin-bottom: 6px;
+}
+.vocab-card.saved { border-left-color: #2e7d32 !important; transition: border-left-color .3s; }
 .btn-approve-sm { background: #e8f5e9; color: #2e7d32; }
 .btn-reject-sm  { background: #ffebee; color: #c62828; }
 .btn-save-sm    { background: #ba8345; color: #fff; }
@@ -674,14 +679,32 @@ function addVocab() {
   showToast('เพิ่มคำแล้ว ✅');
 }
 
-function saveVocabTh(id) {
+function saveVocabItem(id) {
   const i = vocabList.findIndex(v => v.id === id);
   if (i < 0) return;
+  const newEn = document.getElementById(`ven_${id}`)?.value.trim();
   const newTh = document.getElementById(`vth_${id}`).value.trim();
   if (!newTh) { showToast('กรุณาใส่คำไทย'); return; }
+  if (newEn) vocabList[i].en = newEn;
   vocabList[i].th = newTh;
   saveVocab();
+  // visual feedback — border เขียวสักครู่
+  const card = document.getElementById(`vcard_${id}`);
+  if (card) {
+    card.classList.add('saved');
+    setTimeout(() => card.classList.remove('saved'), 1500);
+  }
   showToast('บันทึกแล้ว ✅');
+}
+
+function saveVocabTh(id) { saveVocabItem(id); }
+
+function deleteVocab(id) {
+  if (!confirm('ลบคำนี้ออกจาก vocab ถาวรไหม?')) return;
+  vocabList = vocabList.filter(v => v.id !== id);
+  saveVocab();
+  renderVocab();
+  showToast('ลบแล้ว');
 }
 
 function approveVocab(id) {
@@ -708,15 +731,18 @@ function renderVocab() {
 
   const mkCard = (v) => `
   <div class="vocab-card ${v.status}" id="vcard_${v.id}">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-      <span class="vocab-en">${v.en}</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:11px;color:#999">English</span>
       ${v.context ? `<span style="font-size:11px;color:#ba8345;background:#fff3e0;padding:2px 8px;border-radius:10px">${v.context}</span>` : ''}
     </div>
+    <input class="vocab-en-input" id="ven_${v.id}" value="${v.en.replace(/"/g,'&quot;')}">
+    <div style="font-size:11px;color:#999;margin-bottom:2px">Thai</div>
     <textarea class="vocab-th" id="vth_${v.id}" rows="2">${v.th}</textarea>
     <div class="vocab-actions">
-      <button class="btn-sm btn-save-sm"    onclick="saveVocabTh('${v.id}')">💾 บันทึก</button>
+      <button class="btn-sm btn-save-sm"    onclick="saveVocabItem('${v.id}')">💾 บันทึก</button>
       ${v.status !== 'approved' ? `<button class="btn-sm btn-approve-sm" onclick="approveVocab('${v.id}')">✅ อนุมัติ</button>` : ''}
       ${v.status === 'approved' ? `<button class="btn-sm btn-reject-sm"  onclick="rejectVocab('${v.id}')">↩ ยกเลิก</button>` : `<button class="btn-sm btn-reject-sm" onclick="rejectVocab('${v.id}')">✕ ปฏิเสธ</button>`}
+      <button class="btn-sm btn-delete-sm"  onclick="deleteVocab('${v.id}')">🗑</button>
     </div>
   </div>`;
 
