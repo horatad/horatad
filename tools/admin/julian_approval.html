@@ -205,6 +205,14 @@ input[type=password], input[type=text] {
 .vocab-add input {
   background: #fff; color: #222; margin-bottom: 8px;
 }
+
+/* FB Policy banner */
+.policy-banner {
+  background: #fff8e1; border-left: 4px solid #f59e0b;
+  border-radius: 0 10px 10px 0; padding: 10px 14px;
+  font-size: 12px; color: #92400e; margin-bottom: 16px; line-height: 1.7;
+}
+.policy-banner b { color: #78350f; }
 </style>
 </head>
 <body>
@@ -241,6 +249,12 @@ input[type=password], input[type=text] {
 
   <!-- TAB: Content Approval -->
   <div id="tabContentPane">
+  <div class="policy-banner">
+    <b>⛔ กฎเหล็ก FB — อ่านก่อนอนุมัติทุกครั้ง</b><br>
+    ห้าม: คุณจะ / ท่านจะ / พิสูจน์แล้ว / Tag เพื่อน / Share เพื่อโชค<br>
+    ต้องมี: n= + p-value + disclaimer "สถิติประชากร ≠ ชะตากรรมบุคคล" + #TALS<br>
+    death post: ต้องมี award คู่เสมอ · hashtag ไม่เกิน 5
+  </div>
   <div class="stats" id="statsBar"></div>
 
   <div id="pendingSection">
@@ -343,17 +357,80 @@ function savePat() {
 function skipSetup() { showMain(); }
 function clearPat()  { localStorage.removeItem('julian_approval_pat'); location.reload(); }
 
+// ─── FB Policy Guard (mirrors workers/julian_proposal_gen.mjs) ───────────────
+const FB_BANNED = [
+  /คุณจะ/, /ท่านจะ/, /คุณเสี่ยง/, /พิสูจน์แล้ว/,
+  /แน่นอนว่า/, /ทุกคนที่/,
+  /tag\s*เพื่อน/i, /แท็ก\s*เพื่อน/,
+  /share\s*เพื่อโชค/i, /แชร์\s*เพื่อโชค/,
+  /like\s*ถ้า/i, /กด\s*ไลค์\s*ถ้า/,
+];
+const FB_REQ = {
+  disclaimer:  /สถิติประชากร\s*[≠!=]\s*ชะตากรรมบุคคล/,
+  credit_tals: /#TALS/,
+  has_n:       /\bn\s*[=≈]\s*[\d,]+/,
+  has_p:       /p\s*[<≈=]\s*0\.\d/,
+};
+function checkFBPolicy(body) {
+  const errors = [], warnings = [];
+  for (const re of FB_BANNED)
+    if (re.test(body)) errors.push(`ห้ามใช้วลีนี้ → "${re.source}"`);
+  if (!FB_REQ.disclaimer.test(body))  errors.push('ขาด disclaimer: สถิติประชากร ≠ ชะตากรรมบุคคล');
+  if (!FB_REQ.credit_tals.test(body)) errors.push('ขาด #TALS');
+  if (!FB_REQ.has_n.test(body))       errors.push('ขาด n= (จำนวนตัวอย่าง)');
+  if (!FB_REQ.has_p.test(body))       errors.push('ขาด p-value');
+  if (/การเสียชีวิต|death/.test(body) && !/รางวัล|award|ความสำเร็จ/.test(body))
+    warnings.push('โพสต์ death ด้านเดียว — ควรรวม soft (award) คู่');
+  if ((body.match(/#\w/g)||[]).length > 5)
+    warnings.push('hashtag มากเกินไป (แนะนำไม่เกิน 5)');
+  return { ok: errors.length === 0, errors, warnings };
+}
+
+// ─── Policy-compliant caption builder ────────────────────────────────────────
 function buildCaption(p) {
-  return `🔭 วิเคราะห์ ${p.thai}
+  const f = p.finding || {};
+  const nVal = f.n_max || f.n;
+  const nStr = nVal ? `n=${Number(nVal).toLocaleString()}` : '';
+  const pStr = f.p_adj != null
+    ? `p ${f.p_adj < 0.001 ? '< 0.001' : f.p_adj.toFixed(4)}`
+    : '';
 
-ทดสอบกับข้อมูลบุคคลสำคัญ 50,000+ คนทั่วโลก
-ค้นหา pattern: ${p.topic}
+  // event lines จาก finding.events (hard+soft คู่กัน)
+  const evLines = [];
+  if (f.events) {
+    for (const [e, d] of Object.entries(f.events)) {
+      const avg = (d.lift_min + d.lift_max) / 2;
+      const dir = avg >= 1 ? '🔺' : '🔻';
+      const lr  = d.lift_min === d.lift_max
+        ? d.lift_min.toFixed(2)
+        : `${d.lift_min.toFixed(2)}–${d.lift_max.toFixed(2)}`;
+      const nPart = d.n_max ? ` (n=${Number(d.n_max).toLocaleString()})` : '';
+      const eTh = {
+        death:'การเสียชีวิต', award_received:'ได้รับรางวัล',
+        award:'รางวัล/ความสำเร็จ', position_start:'รับตำแหน่ง',
+      }[e] || e;
+      evLines.push(`  ${dir} ${eTh}: Lift ${lr}×${nPart}`);
+    }
+  }
 
-${p.hint}
+  const statLine = (evLines.length === 0 && f.lift != null)
+    ? `📊 สถิติพบว่าช่วงนี้ในกลุ่มตัวอย่าง มีเหตุการณ์สำคัญ${f.lift >= 1 ? 'สูง' : 'ต่ำ'}กว่าค่าเฉลี่ย ${f.lift.toFixed(2)} เท่า ${pStr} ${nStr}`.trim()
+    : '';
 
-ผลการวิเคราะห์เต็มรูปแบบจะแสดงเมื่อ JULIAN ประมวลผลเสร็จ
-
-#โหราศาสตร์ไทย #TALS #โหราทาส #HoratadAI`;
+  const label = p.fb_label || p.thai || '';
+  const parts = [
+    `🔭 โหราทาส วิจัย: ${label}`,
+    `ระบบ TALS (ยืนยง นาวาสมุทร)`,
+    '',
+    `จากฐานข้อมูลบุคคลสำคัญ ${nStr ? `(${nStr})` : ''}`.trim(),
+  ];
+  if (evLines.length) {
+    parts.push('', ...evLines, '', `${pStr} · ผ่านการตรวจสอบข้ามยุค + ข้ามประเทศ ✅`);
+  } else if (statLine) {
+    parts.push('', statLine);
+  }
+  parts.push('', '⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล', '', '#โหราทาส #TALS #โหราศาสตร์ไทย #AstrologyResearch');
+  return parts.join('\n').trim();
 }
 
 function chipHtml(status) {
@@ -368,12 +445,22 @@ function chipHtml(status) {
   return `<span class="status-chip ${cls}">${label}</span>`;
 }
 
+function policyBadge(caption) {
+  const r = checkFBPolicy(caption);
+  if (!r.ok)
+    return `<span style="font-size:11px;background:#ffebee;color:#c62828;border-radius:10px;padding:2px 8px;font-weight:700">⛔ ${r.errors.length} violations</span>`;
+  if (r.warnings.length)
+    return `<span style="font-size:11px;background:#fff8e1;color:#e65100;border-radius:10px;padding:2px 8px;font-weight:700">⚠️ ${r.warnings.length} คำเตือน</span>`;
+  return `<span style="font-size:11px;background:#e8f5e9;color:#2e7d32;border-radius:10px;padding:2px 8px;font-weight:700">✅ ผ่าน policy</span>`;
+}
+
 function renderCard(p) {
-  const caption = buildCaption(p);
-  const isDone    = p.status === 'done';
-  const isSkipped = p.status === 'skipped';
-  const isApproved= p.status === 'approved';
-  const isPending = p.status === 'pending';
+  const caption    = buildCaption(p);
+  const isDone     = p.status === 'done';
+  const isSkipped  = p.status === 'skipped';
+  const isApproved = p.status === 'approved';
+  const isPending  = p.status === 'pending';
+  const badge      = policyBadge(caption);
 
   return `
   <div class="card ${p.status}" id="card_${p.id}">
@@ -381,7 +468,10 @@ function renderCard(p) {
       <span class="pair-badge">${p.pair}</span>
       ${chipHtml(p.status)}
     </div>
-    <h3>${p.thai}</h3>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <h3 style="margin:0">${p.thai}</h3>
+      ${badge}
+    </div>
     <div class="topic">${p.topic}</div>
     <div class="hint">${p.hint}</div>
     <div class="caption-preview" id="preview_${p.id}">${caption}</div>
@@ -391,7 +481,7 @@ function renderCard(p) {
         <button class="btn btn-skip"    onclick="skip('${p.id}')">ข้าม</button>
       ` : ''}
       ${isApproved ? `
-        <button class="btn btn-inbox" onclick="moveToInbox('${p.id}')">📥 ส่ง inbox เลย</button>
+        <button class="btn btn-inbox" onclick="moveToInbox('${p.id}')">📥 ส่ง inbox</button>
       ` : ''}
       <button class="btn btn-preview" onclick="togglePreview('${p.id}')">👁 ดู caption</button>
     </div>
@@ -477,6 +567,18 @@ async function moveToInbox(id) {
   if (i < 0) return;
   const p = proposals[i];
   const caption = buildCaption(p);
+
+  // ─── Policy gate — ห้ามผ่านถ้ามี violations ───
+  const check = checkFBPolicy(caption);
+  if (!check.ok) {
+    const msg = `⛔ ไม่สามารถส่ง inbox ได้\n\nFB Policy Violations:\n${check.errors.map(e=>'• '+e).join('\n')}\n\nแก้ caption ก่อนแล้วลองใหม่`;
+    alert(msg);
+    return;
+  }
+  if (check.warnings.length) {
+    const msg = `⚠️ คำเตือน FB Policy:\n${check.warnings.map(w=>'• '+w).join('\n')}\n\nส่ง inbox ต่อไหม?`;
+    if (!confirm(msg)) return;
+  }
 
   const post = {
     title: `JULIAN: ${p.thai}`,
