@@ -37,8 +37,9 @@ const PLANET_SIGN_TOP_N = 3000;
 // ขนาดไฟล์ที่ยอมรับก่อน split (bytes)
 const SPLIT_THRESHOLD = 600_000;
 
-const INPUT_FILE  = 'data/julian_all.json';
-const OUTPUT_DIR  = 'data/index';
+const INPUT_FILE   = 'data/julian_all.json';
+const FAMILY_FILE  = 'data/julian_family.json';
+const OUTPUT_DIR   = 'data/index';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -317,6 +318,39 @@ function main() {
     }
   }
 
+  // ── Write genealogy.json — cross-referenced family map ───────────────────────
+  // เฉพาะ relations ที่ทั้งคู่อยู่ใน DB (ลด noise + ลดขนาดไฟล์)
+  const FAMILY_FILE_PATH = FAMILY_FILE;
+  let geneCount = 0;
+  if (existsSync(FAMILY_FILE_PATH)) {
+    process.stderr.write(`Building genealogy.json...\n`);
+    const dbQIDs = new Set(
+      records
+        .map(r => r.qid || (r.source?.startsWith('wikidata:') ? r.source.slice(9) : null))
+        .filter(Boolean)
+    );
+    const rawFamily = JSON.parse(readFileSync(FAMILY_FILE_PATH, 'utf8'));
+    const genealogy = {};
+    for (const [qid, rel] of Object.entries(rawFamily)) {
+      const entry = {};
+      if (rel.p  && dbQIDs.has(rel.p))  entry.p  = rel.p;
+      if (rel.m  && dbQIDs.has(rel.m))  entry.m  = rel.m;
+      const sp = (rel.sp || []).filter(q => dbQIDs.has(q));
+      const ch = (rel.ch || []).filter(q => dbQIDs.has(q));
+      const si = (rel.si || []).filter(q => dbQIDs.has(q));
+      if (sp.length) entry.sp = sp;
+      if (ch.length) entry.ch = ch;
+      if (si.length) entry.si = si;
+      const hasAny = entry.p || entry.m || entry.sp || entry.ch || entry.si;
+      if (hasAny) { genealogy[qid] = entry; geneCount++; }
+    }
+    const geneResult = writeFile('genealogy.json', genealogy);
+    writtenFiles.push(geneResult);
+    process.stderr.write(`genealogy.json: ${geneCount} persons with in-DB family links\n`);
+  } else {
+    process.stderr.write(`genealogy.json: skipped (${FAMILY_FILE_PATH} not found)\n`);
+  }
+
   // ── Write images.json — QID→filename สำหรับ notable persons ─────────────────
   // threshold: sitelinks >= 20 หรือ importance >= 0.4 (คาดประมาณ 5-15K records)
   process.stderr.write(`Building images.json...\n`);
@@ -351,12 +385,14 @@ function main() {
     planet_sign_top_n : PLANET_SIGN_TOP_N,
     split_log         : splitLog,
     images_count      : imgCount,
+    genealogy_count   : geneCount,
     file_types        : {
       planet_sign : 'planet_sign/{PLANET}/{SIGN}.json — mini records sorted by importance',
       by_year     : 'by_year/{YYYY}.json — full records ≥1900',
       by_decade   : 'by_decade/{NNNN}s.json — full records 1700-1899',
       by_50yr     : 'by_50yr/{NNNN}-{NNNN}.json — full records <1700',
       images      : 'images.json — { QID: filename } สำหรับ notable persons (sitelinks≥20 หรือ importance≥0.4)',
+      genealogy   : 'genealogy.json — { QID: {p,m,sp,ch,si} } เฉพาะ QIDs ที่อยู่ใน DB',
     },
   };
 

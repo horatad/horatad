@@ -438,19 +438,31 @@ jobs:
       - name: Regrade accuracy
         run: node workers/julian_regrade.mjs --verbose
 
+      - name: Genealogy backfill
+        id: genealogy
+        run: |
+          OUTPUT=$(node workers/julian_genealogy_backfill.mjs --resume --time-budget 600 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "STATUS=partial"; then
+            echo "status=partial" >> $GITHUB_OUTPUT
+          else
+            echo "status=complete" >> $GITHUB_OUTPUT
+          fi
+
       - name: Commit changes
         run: |
           STATUS="${{ steps.p3447.outputs.status }}"
+          GENE_STATUS="${{ steps.genealogy.outputs.status }}"
           (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
-            && git add julian_all.json \
-            && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS} + regrade") \
+            && git add julian_all.json julian_family.json \
+            && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS} + regrade + genealogy ${GENE_STATUS}") \
             && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
-          git add workers/julian_p3447_checkpoint.json || true
+          git add workers/julian_p3447_checkpoint.json workers/julian_genealogy_checkpoint.json || true
           if ! git diff --cached --quiet; then
-            git commit -m "JULIAN backfill: checkpoint (${STATUS})"
+            git commit -m "JULIAN backfill: checkpoints (P3447=${STATUS} gene=${GENE_STATUS})"
             git stash --include-untracked || true
             git pull --rebase origin main
             git push origin HEAD:main

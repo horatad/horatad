@@ -318,6 +318,44 @@ class JulianLookup {
   }
 
   /**
+   * โหลด genealogy.json (lazy, cached) — { QID: {p,m,sp,ch,si} }
+   * p=father, m=mother, sp=[spouses], ch=[children], si=[siblings]
+   * เฉพาะ QIDs ที่อยู่ใน DB เท่านั้น
+   * @returns {Promise<object>} genealogyMap
+   */
+  async loadGenealogyIndex() {
+    const cacheKey = '__genealogy__';
+    if (this._cache.has(cacheKey)) return this._cache.get(cacheKey);
+    try {
+      const map = await this._fetchJson(`${this._base}/genealogy.json`);
+      this._cache.set(cacheKey, map);
+      this._filesLoaded++;
+      return map;
+    } catch (e) {
+      // genealogy อาจยังไม่มี — return empty silently
+      this._cache.set(cacheKey, {});
+      return {};
+    }
+  }
+
+  /**
+   * ดึงข้อมูล family ของ QID — QIDs ที่ไม่อยู่ใน DB จะไม่แสดง
+   * @param {string} qid
+   * @returns {Promise<{father:string|null, mother:string|null, spouses:string[], children:string[], siblings:string[]}>}
+   */
+  async getFamily(qid) {
+    const map = await this.loadGenealogyIndex();
+    const rel = map[qid] ?? {};
+    return {
+      father  : rel.p  ?? null,
+      mother  : rel.m  ?? null,
+      spouses : rel.sp ?? [],
+      children: rel.ch ?? [],
+      siblings: rel.si ?? [],
+    };
+  }
+
+  /**
    * โหลด images.json (lazy, cached) — { QID: filename }
    * @returns {Promise<object>} imageMap
    */
