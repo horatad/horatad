@@ -347,6 +347,24 @@ jobs:
           CLOUDFLARE_API_TOKEN:  ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
 
+      # ─── Generate stats snapshot → commit ไป main repo ─────────
+      - name: Generate stats
+        if: always()
+        run: |
+          if [ -f data/julian_all.json ]; then
+            node workers/julian_stats.mjs
+            git config user.name  'JULIAN Bot'
+            git config user.email 'julian-bot@horatad.com'
+            git add workers/julian_stats.json
+            if ! git diff --cached --quiet; then
+              git commit -m "JULIAN stats: $(node -e "const s=JSON.parse(require('fs').readFileSync('workers/julian_stats.json','utf8')); console.log(s.total.toLocaleString()+' records ('+s.pct+'%)')")"
+              git pull --rebase origin main
+              git push origin HEAD:main
+            fi
+          else
+            echo "data/julian_all.json not found — skipping stats"
+          fi
+
       # ─── Summary ─────────────────────────────────────────────
       - name: Summary
         if: always()
@@ -354,5 +372,13 @@ jobs:
           echo "## JULIAN Sync Summary" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ steps.scrape.outputs.status }}" >> $GITHUB_STEP_SUMMARY
           echo "- Records this run: ${{ steps.scrape.outputs.record_count || 0 }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Total: ${{ steps.scrape.outputs.total || '?' }}/100000" >> $GITHUB_STEP_SUMMARY
-          echo "- Storage: data/julian_all.json (repo) + GitHub Release julian-data" >> $GITHUB_STEP_SUMMARY
+          if [ -f workers/julian_stats.json ]; then
+            node -e "
+              const s = JSON.parse(require('fs').readFileSync('workers/julian_stats.json','utf8'));
+              console.log('- Total: ' + s.total.toLocaleString() + ' / ' + s.target.toLocaleString() + ' (' + s.pct + '%)');
+              const src = s.by_source;
+              const parts = Object.entries(src).filter(([,v])=>v>0).map(([k,v])=>k+': '+v.toLocaleString()).join(' | ');
+              console.log('- By source: ' + parts);
+              if (s.delta_today !== null) console.log('- Delta today: +' + s.delta_today.toLocaleString());
+            " >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "- Total: ${{ steps.scrape.outputs.total || '?' }}" >> $GITHUB_STEP_SUMMARY
+          fi

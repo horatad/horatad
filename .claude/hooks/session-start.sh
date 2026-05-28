@@ -72,6 +72,43 @@ if [ -f "$SCOPE_FILE" ]; then
     echo "   ❌ ห้ามแก้ไฟล์ project อื่น"
     echo "   ⚠ Claude: ถ้า scope เปลี่ยน ให้รัน: echo 'NEW_PROJECT' > .claude/hooks/session_scope"
 
+    # JULIAN: แสดง data stats ทุก session
+    if [ "$SCOPE" = "JULIAN" ]; then
+      STATS_FILE="workers/julian_stats.json"
+      if [ -f "$STATS_FILE" ]; then
+        node -e "
+          const s = JSON.parse(require('fs').readFileSync('$STATS_FILE','utf8'));
+          const fmt = n => n.toLocaleString('en');
+          const src = s.by_source;
+          const srcParts = Object.entries(src).filter(([,v])=>v>0)
+            .map(([k,v])=>k+': '+fmt(v)).join(' · ');
+          const acc = s.by_accuracy;
+          const accParts = Object.entries(acc).filter(([,v])=>v>0)
+            .map(([k,v])=>k+'='+fmt(v)).join(' ');
+          const hist = s.history || [];
+          const delta7 = hist.length>=2 ? s.total - hist[Math.max(0,hist.length-8)].total : null;
+          const delta1 = s.delta_today;
+          console.log('');
+          console.log('📊 JULIAN data: ' + fmt(s.total) + ' / ' + fmt(s.target) + ' (' + s.pct + '% of target)');
+          if (delta1 !== null) console.log('   วันนี้: ' + (delta1>=0?'+':'')+fmt(delta1) + (delta7!==null?' | 7 วัน: +'+ fmt(delta7) : ''));
+          console.log('   แหล่งข้อมูล: ' + srcParts);
+          console.log('   Accuracy: ' + accParts);
+          if (s.with_hpi > 0) console.log('   HPI (Pantheon): ' + fmt(s.with_hpi) + ' records');
+          console.log('   อัปเดตล่าสุด: ' + s.generated.slice(0,16).replace('T',' ') + ' UTC');
+          if (hist.length >= 2) {
+            const recent = hist.slice(-7);
+            const maxV = Math.max(...recent.map(h=>h.total));
+            const bars = ['▁','▂','▃','▄','▅','▆','▇','█'];
+            const spark = recent.map(h => bars[Math.min(7,Math.floor(h.total/maxV*7))]).join('');
+            console.log('   7 วันล่าสุด: ' + spark + '  (' + recent[0].date + ' → ' + recent[recent.length-1].date + ')');
+          }
+        " 2>/dev/null || echo "   (ไม่สามารถอ่าน julian_stats.json)"
+      else
+        echo ""
+        echo "📊 JULIAN data: (ยังไม่มี workers/julian_stats.json)"
+      fi
+    fi
+
     # BIBLE: embed foundational rules + last 3 LOG entries DIRECTLY (Claude reads without tool calls)
     if [ "$SCOPE" = "BIBLE" ]; then
       INDEX_FILE="handoffs/bible_memory/INDEX.md"

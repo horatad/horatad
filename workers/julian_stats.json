@@ -1,0 +1,40 @@
+{
+  "generated": "2026-05-28T00:18:00Z",
+  "total": 67542,
+  "target": 500000,
+  "pct": 13.5,
+  "delta_today": null,
+  "by_source": {
+    "wikidata": 67542,
+    "astrotheme": 0,
+    "musicbrainz": 0,
+    "astrodatabank": 0
+  },
+  "by_accuracy": {
+    "A": 0,
+    "B": 0,
+    "C": 0,
+    "D": 0,
+    "F": 0,
+    "?": 67542
+  },
+  "by_tier": {
+    "1": 0,
+    "2": 0,
+    "3": 67542
+  },
+  "with_hpi": 0,
+  "with_importance": 0,
+  "with_sitelinks": 0,
+  "avg_importance": null,
+  "history": [
+    { "date": "2026-05-21", "total": 436,   "by_source": { "wikidata": 436,   "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-22", "total": 8300,  "by_source": { "wikidata": 8300,  "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-23", "total": 21000, "by_source": { "wikidata": 21000, "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-24", "total": 38000, "by_source": { "wikidata": 38000, "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-25", "total": 52000, "by_source": { "wikidata": 52000, "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-26", "total": 60000, "by_source": { "wikidata": 60000, "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-27", "total": 66912, "by_source": { "wikidata": 66912, "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } },
+    { "date": "2026-05-28", "total": 67542, "by_source": { "wikidata": 67542, "astrotheme": 0, "musicbrainz": 0, "astrodatabank": 0 } }
+  ]
+}
