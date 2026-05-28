@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.59
-// Version 3.3.59 | 2026-05-28
+// HORATAD:SCRIPT:3.3.60
+// Version 3.3.60 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -27,7 +27,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.59';
+const APP_VERSION='3.3.60';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -1755,7 +1755,8 @@ function openLngPad(fieldId){
   document.getElementById('numpad-backdrop').classList.remove('hidden');
 }
 // ── City search via Nominatim (OpenStreetMap) — สำหรับหา longitude สถานที่นอกไทย ──
-let _citySearchField=null,_citySearchTimer=null;
+// ── Province picker modal (แทน Nominatim) — ก-ฮ tabs + list จากข้อมูลใน code ──
+let _citySearchField=null,_provPickerAlpha='';
 function openCitySearch(fieldId){
   const cn=fieldId==='lng1'?'1':fieldId==='lng2'?'2':'t';
   const custom=cn==='1'?_customLng1:cn==='2'?_customLng2:_customLngT;
@@ -1764,9 +1765,9 @@ function openCitySearch(fieldId){
     _updateLngUI(cn);return;
   }
   _citySearchField=fieldId;
-  const qEl=document.getElementById('city-search-query');
-  if(qEl){qEl.value='';setTimeout(()=>qEl.focus(),100);}
-  document.getElementById('city-search-results').innerHTML='';
+  _provPickerAlpha='';
+  _renderProvPickerTabs();
+  _renderProvPickerList('');
   document.getElementById('city-search-modal').classList.remove('hidden');
   document.getElementById('city-search-backdrop').classList.remove('hidden');
 }
@@ -1774,49 +1775,38 @@ function closeCitySearch(){
   document.getElementById('city-search-modal').classList.add('hidden');
   document.getElementById('city-search-backdrop').classList.add('hidden');
   _citySearchField=null;
-  if(_citySearchTimer){clearTimeout(_citySearchTimer);_citySearchTimer=null;}
 }
-function _citySearchInput(q){
-  if(_citySearchTimer)clearTimeout(_citySearchTimer);
-  if(!q||q.trim().length<2){document.getElementById('city-search-results').innerHTML='';return;}
-  _citySearchTimer=setTimeout(()=>_citySearchFetch(q.trim()),500);
-}
-async function _citySearchFetch(q){
-  const listEl=document.getElementById('city-search-results');
-  if(!listEl)return;
-  listEl.innerHTML='<div class="city-loading">กำลังค้นหา…</div>';
-  try{
-    const url=`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=6&accept-language=th,en`;
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
-    const data=await resp.json();
-    listEl.innerHTML='';
-    if(!data.length){listEl.innerHTML='<div class="city-loading">ไม่พบสถานที่</div>';return;}
-    for(const r of data){
-      const lng=parseFloat(r.lon);
-      if(isNaN(lng))continue;
-      const mainName=(r.name||(r.display_name||'').split(',')[0]).trim();
-      const detail=(r.display_name||'').split(',').slice(1,3).join(',').trim();
-      const div=document.createElement('div');
-      div.className='city-item';
-      div.dataset.lng=lng;
-      const nameEl=document.createElement('span');nameEl.className='city-name';nameEl.textContent=mainName;
-      const detailEl=document.createElement('span');detailEl.className='city-detail';detailEl.textContent=detail;
-      const lngEl=document.createElement('span');lngEl.className='city-lng';lngEl.textContent=lng.toFixed(2)+'°';
-      div.append(nameEl,detailEl,lngEl);
-      listEl.appendChild(div);
-    }
-  }catch(_e){
-    listEl.innerHTML='<div class="city-loading">เชื่อมต่อไม่ได้ — ลองใหม่</div>';
+function _renderProvPickerTabs(){
+  const el=document.getElementById('city-search-tabs');
+  if(!el)return;
+  const initials=[...new Set(Object.keys(PROVINCES).map(p=>p[0]))].sort();
+  el.innerHTML='';
+  const all=document.createElement('button');
+  all.className='prov-tab'+(!_provPickerAlpha?' active':'');
+  all.dataset.alpha='';all.textContent='ทั้งหมด';
+  el.appendChild(all);
+  for(const c of initials){
+    const btn=document.createElement('button');
+    btn.className='prov-tab'+(_provPickerAlpha===c?' active':'');
+    btn.dataset.alpha=c;btn.textContent=c;
+    el.appendChild(btn);
   }
 }
-function _citySearchSelect(lng,name){
-  if(!_citySearchField)return;
-  const cn=_citySearchField==='lng1'?'1':_citySearchField==='lng2'?'2':'t';
-  if(cn==='1')_customLng1=lng;else if(cn==='2')_customLng2=lng;else _customLngT=lng;
-  _updateLngUI(cn);
-  closeCitySearch();
-  _showToast('📍 '+name);
+function _renderProvPickerList(alpha){
+  const listEl=document.getElementById('city-search-results');
+  if(!listEl)return;
+  const provs=Object.keys(PROVINCES).filter(p=>!alpha||p[0]===alpha).sort();
+  listEl.innerHTML='';
+  for(const p of provs){
+    const lng=PROVINCES[p];
+    const div=document.createElement('div');
+    div.className='city-item';
+    div.dataset.lng=lng;div.dataset.prov=p;
+    const nameEl=document.createElement('span');nameEl.className='city-name';nameEl.textContent=p;
+    const lngEl=document.createElement('span');lngEl.className='city-lng';lngEl.textContent=lng.toFixed(2)+'°';
+    div.append(nameEl,lngEl);
+    listEl.appendChild(div);
+  }
 }
 function _numpadOpen(id){
   _numpadField=document.getElementById(id);if(!_numpadField)return;
@@ -4192,16 +4182,32 @@ window.addEventListener('DOMContentLoaded',()=>{
   _renderTagRow('1');
   _renderTagRow('2');
 
-  // V3.3.59: LMT badge init + city search event delegation
+  // V3.3.59: LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
+  const _csTabs=document.getElementById('city-search-tabs');
+  if(_csTabs){
+    _csTabs.addEventListener('click',e=>{
+      const btn=e.target.closest('.prov-tab');
+      if(!btn)return;
+      _provPickerAlpha=btn.dataset.alpha||'';
+      _renderProvPickerTabs();
+      _renderProvPickerList(_provPickerAlpha);
+    });
+  }
   const _csResults=document.getElementById('city-search-results');
   if(_csResults){
     _csResults.addEventListener('click',e=>{
       const item=e.target.closest('.city-item');
-      if(!item)return;
-      const lng=parseFloat(item.dataset.lng);
-      const name=(item.querySelector('.city-name')||{}).textContent||'';
-      _citySearchSelect(lng,name);
+      if(!item||!_citySearchField)return;
+      const prov=item.dataset.prov||'';
+      const cn=_citySearchField==='lng1'?'1':_citySearchField==='lng2'?'2':'t';
+      const provId=cn==='t'?'provt':'prov'+cn;
+      const provEl=document.getElementById(provId);
+      if(provEl)provEl.value=prov;
+      if(cn==='1')_customLng1=null;else if(cn==='2')_customLng2=null;else _customLngT=null;
+      _updateLngUI(cn);
+      closeCitySearch();
+      _playBeep(700);
     });
   }
 
@@ -4279,7 +4285,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 window.switchTab=switchTab;window.toggleEra=toggleEra;
 window.calculateBoth=calculateBoth;window.calculateTransit=calculateTransit;
 window.clearForm=clearForm;window.resetTransit=resetTransit;window.openLngPad=openLngPad;
-window.openCitySearch=openCitySearch;window.closeCitySearch=closeCitySearch;window._citySearchInput=_citySearchInput;window._citySearchSelect=_citySearchSelect;
+window.openCitySearch=openCitySearch;window.closeCitySearch=closeCitySearch;
 window.openMemory=openMemory;window.closeMemory=closeMemory;window.cycleMemory=cycleMemory;
 window.exportMemory=exportMemory;window.confirmClearMemory=confirmClearMemory;
 window.openEvents=openEvents;window.closeEvents=closeEvents;window.saveEvent=saveEvent;
