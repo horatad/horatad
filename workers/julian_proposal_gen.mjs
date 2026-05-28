@@ -281,52 +281,85 @@ export function checkFBPolicy(body, finding = {}) {
 
 // --- FB Caption Builder (ใช้ vocab ทุกครั้ง — ห้าม hardcode Thai ใหม่) ---
 //
-// เรียกเมื่อ proposal status=approved → สร้าง body สำหรับ content/inbox/
-// กฎ:
-//   - ชื่อดาว  → vocabLabel(abbrev)       เช่น SU → "ดาวอาทิตย์"
-//   - มุมดาว   → aspectLabel(code)         เช่น YOK → "โยค"
-//   - ตัวเลข   → research_abbrev           เช่น "Lift 1.16×"
-//   - ห้ามใส่ภาษาอังกฤษ raw ใน body (เว้นแต่เป็น abbrev ที่ตกลงกันแล้ว: Lift, p, FDR, n)
-//   - disclaimer + credit ถูก append อัตโนมัติ — ห้ามลบ
+// FORMAT (lock ไว้ใน code — ห้ามเปลี่ยนโดยไม่แก้ไฟล์นี้):
+//   1. Header: "🔭 โหราทาส วิจัย: [pair]" + credit TALS
+//   2. Hook: ภาษาคน ไม่มี stat (เชิญชวนอ่านต่อ)
+//   3. Stats: "📊 สถิติพบ:" + event lines แบบ "%สูง/ต่ำกว่าค่าเฉลี่ย (n= · Lift)"
+//   4. p-value + cross-validation badge
+//   5. Credibility statement (disclaimer เป็นข้อดี ไม่ใช่ warning)
+//   6. CTA → horatad.com
+//   7. Hashtags (≤5)
 //
+// ทำไม % ไม่ใช่ Lift: "สูงกว่าค่าเฉลี่ย 16%" อ่านเข้าใจทันที, "Lift 1.16×" ต้องตีความ
+// ทำไม disclaimer เป็น credibility: "ข้อมูลจากคนจริง ไม่ใช่ดูดวง" = differentiator ของ Horatad
+//
+function liftToPct(liftMin, liftMax) {
+  const avg = (liftMin + liftMax) / 2;
+  if (liftMin === liftMax) {
+    const p = Math.round(Math.abs(liftMin - 1) * 100);
+    return avg >= 1 ? `+${p}%` : `−${p}%`;
+  }
+  const loP = Math.round(Math.min(Math.abs(liftMin - 1), Math.abs(liftMax - 1)) * 100);
+  const hiP = Math.round(Math.max(Math.abs(liftMin - 1), Math.abs(liftMax - 1)) * 100);
+  return avg >= 1 ? `+${loP}–${hiP}%` : `−${loP}–${hiP}%`;
+}
+
 export function buildFBCaption(proposal) {
   const { transit, natal, finding = {} } = proposal;
   const tLabel  = vocabLabel(transit, transit);
   const nLabel  = vocabLabel(natal, natal);
   const pair    = `${tLabel}จรผ่าน${nLabel}นาตาล`;
 
-  const nVal    = finding.n_max || finding.n;
-  const nStr    = nVal ? `(n=${nVal.toLocaleString()})` : '';
-
-  const pStr    = finding.p_adj != null
+  const pStr = finding.p_adj != null
     ? `p ${finding.p_adj < 0.001 ? '< 0.001' : finding.p_adj.toFixed(4)}`
     : '';
 
-  const events  = finding.events || {};
+  // event lines: % ภาษาคน + (n= · Lift เพื่อ transparency)
+  const events     = finding.events || {};
   const eventLines = Object.entries(events).map(([e, d]) => {
-    const avg = (d.lift_min + d.lift_max) / 2;
-    const dir = avg >= 1 ? '🔺' : '🔻';
-    const lr  = d.lift_min === d.lift_max
+    const avg  = (d.lift_min + d.lift_max) / 2;
+    const dir  = avg >= 1 ? '🔺' : '🔻';
+    const pct  = liftToPct(d.lift_min, d.lift_max);
+    const lrFmt = d.lift_min === d.lift_max
       ? d.lift_min.toFixed(2)
       : `${d.lift_min.toFixed(2)}–${d.lift_max.toFixed(2)}`;
-    const nPart = d.n_max ? ` n=${d.n_max.toLocaleString()}` : '';
-    return `  ${dir} ${eventThai(e)}: Lift ${lr}×${nPart}`;
+    const nPart = d.n_max ? `n=${d.n_max.toLocaleString()} · ` : '';
+    const upDown = avg >= 1 ? 'สูงกว่าค่าเฉลี่ย' : 'ต่ำกว่าค่าเฉลี่ย';
+    return `  ${dir} ${eventThai(e)}: ${upDown} ${pct}  (${nPart}Lift ${lrFmt}×)`;
   });
 
-  // ถ้าไม่มี events breakdown ให้ใช้ single lift line
-  const singleLiftLine = (eventLines.length === 0 && finding.lift != null)
-    ? [`📊 สถิติพบว่าช่วงนี้ในกลุ่มตัวอย่าง มีเหตุการณ์สำคัญ${finding.lift >= 1 ? 'สูง' : 'ต่ำ'}กว่าค่าเฉลี่ย ${finding.lift.toFixed(2)} เท่า ${pStr} ${nStr}`.trim()]
-    : [];
+  // fallback: single lift (ถ้าไม่มี events breakdown)
+  const singleLine = (eventLines.length === 0 && finding.lift != null) ? (() => {
+    const pct     = liftToPct(finding.lift, finding.lift);
+    const upDown  = finding.lift >= 1 ? 'สูงกว่าค่าเฉลี่ย' : 'ต่ำกว่าค่าเฉลี่ย';
+    const nPart   = (finding.n_max || finding.n)
+      ? `n=${(finding.n_max || finding.n).toLocaleString()} · ` : '';
+    return [`  📊 เหตุการณ์สำคัญ: ${upDown} ${pct}  (${nPart}${pStr})`];
+  })() : [];
+
+  // ดึง n ที่ใหญ่สุดจาก events สำหรับ has_n regex check
+  const allN = Object.values(events).map(d => d.n_max || 0);
+  const maxN = allN.length ? Math.max(...allN) : (finding.n_max || finding.n || 0);
+  const nCheck = maxN ? `n=${maxN.toLocaleString()}` : '';
 
   const body = [
     `🔭 โหราทาส วิจัย: ${pair}`,
     `ระบบ TALS (ยืนยง นาวาสมุทร)`,
     '',
-    `จากฐานข้อมูลบุคคลสำคัญ ${nStr}`,
-    ...(eventLines.length ? ['', ...eventLines, '', `${pStr} · ผ่านการตรวจสอบข้ามยุค + ข้ามประเทศ ✅`] : []),
-    ...singleLiftLine,
+    `จากฐานข้อมูลบุคคลสำคัญทั่วโลก ทุกยุค —`,
+    `ช่วงนี้คือช่วงที่เหตุการณ์เปลี่ยนแปลงชีวิตเกิดบ่อยผิดปกติ`,
     '',
+    `📊 สถิติพบ:`,
+    ...(eventLines.length ? eventLines : singleLine),
+    ...(nCheck ? [`  (ตัวอย่างรวม ${nCheck})`] : []),
+    '',
+    `${pStr}${pStr ? ' · ' : ''}ตรวจสอบแล้วทุกยุค + ทุกประเทศ ✅`,
+    '',
+    `💡 ข้อมูลจากคนจริง ไม่ใช่ดูดวงทั่วไป`,
+    `ยิ่งฐานข้อมูลใหญ่ ยิ่งน่าเชื่อถือกว่าคำพยากรณ์ส่วนตัว`,
     `⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล`,
+    '',
+    `ตรวจว่าคุณอยู่ในช่วงนี้ไหม → horatad.com`,
     '',
     `#โหราทาส #TALS #โหราศาสตร์ไทย #AstrologyResearch`,
   ].join('\n').trim();

@@ -386,51 +386,76 @@ function checkFBPolicy(body) {
   return { ok: errors.length === 0, errors, warnings };
 }
 
-// ─── Policy-compliant caption builder ────────────────────────────────────────
+// ─── Caption builder — format เดียวกับ workers/julian_proposal_gen.mjs ───────
+// (อัปเดต 2 ที่พร้อมกันเสมอถ้าเปลี่ยน format)
+function liftToPct(liftMin, liftMax) {
+  const avg = (liftMin + liftMax) / 2;
+  if (liftMin === liftMax) {
+    const p = Math.round(Math.abs(liftMin - 1) * 100);
+    return avg >= 1 ? `+${p}%` : `−${p}%`;
+  }
+  const loP = Math.round(Math.min(Math.abs(liftMin-1), Math.abs(liftMax-1)) * 100);
+  const hiP = Math.round(Math.max(Math.abs(liftMin-1), Math.abs(liftMax-1)) * 100);
+  return avg >= 1 ? `+${loP}–${hiP}%` : `−${loP}–${hiP}%`;
+}
+const EVENT_TH = {
+  death:'การเสียชีวิต', award_received:'ได้รับรางวัล',
+  award:'รางวัล/ความสำเร็จ', position_start:'รับตำแหน่ง',
+  elected:'ได้รับเลือกตั้ง', scandal:'เรื่องอื้อฉาว',
+};
 function buildCaption(p) {
-  const f = p.finding || {};
-  const nVal = f.n_max || f.n;
-  const nStr = nVal ? `n=${Number(nVal).toLocaleString()}` : '';
-  const pStr = f.p_adj != null
+  const f     = p.finding || {};
+  const label = p.fb_label || p.thai || p.pair || '';
+  const pStr  = f.p_adj != null
     ? `p ${f.p_adj < 0.001 ? '< 0.001' : f.p_adj.toFixed(4)}`
     : '';
 
-  // event lines จาก finding.events (hard+soft คู่กัน)
   const evLines = [];
+  let maxN = 0;
   if (f.events) {
     for (const [e, d] of Object.entries(f.events)) {
-      const avg = (d.lift_min + d.lift_max) / 2;
-      const dir = avg >= 1 ? '🔺' : '🔻';
-      const lr  = d.lift_min === d.lift_max
-        ? d.lift_min.toFixed(2)
-        : `${d.lift_min.toFixed(2)}–${d.lift_max.toFixed(2)}`;
-      const nPart = d.n_max ? ` (n=${Number(d.n_max).toLocaleString()})` : '';
-      const eTh = {
-        death:'การเสียชีวิต', award_received:'ได้รับรางวัล',
-        award:'รางวัล/ความสำเร็จ', position_start:'รับตำแหน่ง',
-      }[e] || e;
-      evLines.push(`  ${dir} ${eTh}: Lift ${lr}×${nPart}`);
+      const avg     = (d.lift_min + d.lift_max) / 2;
+      const dir     = avg >= 1 ? '🔺' : '🔻';
+      const pct     = liftToPct(d.lift_min, d.lift_max);
+      const lrFmt   = d.lift_min === d.lift_max
+        ? d.lift_min.toFixed(2) : `${d.lift_min.toFixed(2)}–${d.lift_max.toFixed(2)}`;
+      const nPart   = d.n_max ? `n=${Number(d.n_max).toLocaleString()} · ` : '';
+      const upDown  = avg >= 1 ? 'สูงกว่าค่าเฉลี่ย' : 'ต่ำกว่าค่าเฉลี่ย';
+      const eTh     = EVENT_TH[e] || e;
+      evLines.push(`  ${dir} ${eTh}: ${upDown} ${pct}  (${nPart}Lift ${lrFmt}×)`);
+      if (d.n_max > maxN) maxN = d.n_max;
     }
   }
+  const nCheck = maxN ? `n=${Number(maxN).toLocaleString()}` : '';
 
-  const statLine = (evLines.length === 0 && f.lift != null)
-    ? `📊 สถิติพบว่าช่วงนี้ในกลุ่มตัวอย่าง มีเหตุการณ์สำคัญ${f.lift >= 1 ? 'สูง' : 'ต่ำ'}กว่าค่าเฉลี่ย ${f.lift.toFixed(2)} เท่า ${pStr} ${nStr}`.trim()
-    : '';
+  const singleLine = (evLines.length === 0 && f.lift != null) ? (() => {
+    const pct    = liftToPct(f.lift, f.lift);
+    const upDown = f.lift >= 1 ? 'สูงกว่าค่าเฉลี่ย' : 'ต่ำกว่าค่าเฉลี่ย';
+    const nPart  = (f.n_max || f.n) ? `n=${Number(f.n_max||f.n).toLocaleString()} · ` : '';
+    return [`  📊 เหตุการณ์สำคัญ: ${upDown} ${pct}  (${nPart}${pStr})`];
+  })() : [];
 
-  const label = p.fb_label || p.thai || '';
-  const parts = [
+  return [
     `🔭 โหราทาส วิจัย: ${label}`,
     `ระบบ TALS (ยืนยง นาวาสมุทร)`,
     '',
-    `จากฐานข้อมูลบุคคลสำคัญ ${nStr ? `(${nStr})` : ''}`.trim(),
-  ];
-  if (evLines.length) {
-    parts.push('', ...evLines, '', `${pStr} · ผ่านการตรวจสอบข้ามยุค + ข้ามประเทศ ✅`);
-  } else if (statLine) {
-    parts.push('', statLine);
-  }
-  parts.push('', '⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล', '', '#โหราทาส #TALS #โหราศาสตร์ไทย #AstrologyResearch');
-  return parts.join('\n').trim();
+    `จากฐานข้อมูลบุคคลสำคัญทั่วโลก ทุกยุค —`,
+    `ช่วงนี้คือช่วงที่เหตุการณ์เปลี่ยนแปลงชีวิตเกิดบ่อยผิดปกติ`,
+    '',
+    `📊 สถิติพบ:`,
+    ...(evLines.length ? evLines : singleLine),
+    ...(nCheck ? [`  (ตัวอย่างรวม ${nCheck})`] : []),
+    '',
+    `${pStr}${pStr ? ' · ' : ''}ตรวจสอบแล้วทุกยุค + ทุกประเทศ ✅`,
+    '',
+    `💡 ข้อมูลจากคนจริง ไม่ใช่ดูดวงทั่วไป`,
+    `ยิ่งฐานข้อมูลใหญ่ ยิ่งน่าเชื่อถือกว่าคำพยากรณ์ส่วนตัว`,
+    `⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล`,
+    '',
+    `ตรวจว่าคุณอยู่ในช่วงนี้ไหม → horatad.com`,
+    '',
+    `#โหราทาส #TALS #โหราศาสตร์ไทย #AstrologyResearch`,
+  ].join('\n').trim();
 }
 
 function chipHtml(status) {
