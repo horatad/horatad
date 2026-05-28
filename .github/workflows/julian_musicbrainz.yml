@@ -53,21 +53,30 @@ jobs:
         run: |
           STATUS="${{ steps.scrape.outputs.status }}"
           TOTAL=$(node -e "try{const d=JSON.parse(require('fs').readFileSync('data/julian_all.json','utf8'));console.log(d.length)}catch(e){console.log('?')}" 2>/dev/null || echo "?")
-          # ── push data → data repo ─────────────────────────────
-          (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
+          # ── push data → data repo (pull first to handle concurrent pushes) ──
+          (cd data \
+            && git config user.name 'JULIAN Bot' \
+            && git config user.email 'julian-bot@horatad.com' \
             && git add julian_all.json \
             && (git diff --cached --quiet || git commit -m "JULIAN MusicBrainz: ${STATUS} — ${TOTAL} total") \
-            && git push) || echo "Data repo: nothing to push"
+            && (git pull --rebase origin main || git rebase --abort || true) \
+            && git push \
+          ) || echo "Data repo: nothing to push"
           # ── push checkpoint → main repo ───────────────────────
-          git config user.name  'JULIAN Bot'
-          git config user.email 'julian-bot@horatad.com'
-          [ -f workers/julian_mb_checkpoint.json ] && git add workers/julian_mb_checkpoint.json
-          if ! git diff --cached --quiet; then
-            git commit -m "JULIAN MusicBrainz: checkpoint (${STATUS})"
-            git stash --include-untracked || true
-            git pull --rebase origin main
-            git push origin HEAD:main
-            git stash pop || true
+          # fetch+reset: ไม่ rebase → ไม่มี add/add conflict (latest checkpoint wins)
+          CHECKPOINT="workers/julian_mb_checkpoint.json"
+          if [ -f "$CHECKPOINT" ]; then
+            git config user.name  'JULIAN Bot'
+            git config user.email 'julian-bot@horatad.com'
+            cp "$CHECKPOINT" /tmp/mb_cp_bak.json
+            git fetch origin main
+            git reset --hard origin/main
+            cp /tmp/mb_cp_bak.json "$CHECKPOINT"
+            git add "$CHECKPOINT"
+            if ! git diff --cached --quiet; then
+              git commit -m "JULIAN MusicBrainz: checkpoint (${STATUS})"
+              git push origin HEAD:main
+            fi
           fi
 
       - name: Summary

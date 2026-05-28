@@ -99,6 +99,7 @@ jobs:
             (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
               && git add julian_all.json \
               && (git diff --cached --quiet || git commit -m "JULIAN sync: +${{ steps.scrape.outputs.record_count }} records (total ${{ steps.scrape.outputs.total }})") \
+              && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           fi
           # push progress files → main repo
@@ -159,6 +160,7 @@ jobs:
             (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
               && git add julian_all.json \
               && (git diff --cached --quiet || git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Astrotheme") \
+              && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           fi
 
@@ -214,6 +216,7 @@ jobs:
             (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
               && git add julian_all.json \
               && (git diff --cached --quiet || git commit -m "JULIAN enrich: +${ENRICHED_COUNT} time_utc from Wikipedia TH") \
+              && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           fi
 
@@ -267,6 +270,7 @@ jobs:
             (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
               && git add julian_all.json \
               && (git diff --cached --quiet || git commit -m "JULIAN enrich: +${ENRICHED_COUNT} lat/lng from Wikidata P19+P625") \
+              && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           fi
 
@@ -288,6 +292,7 @@ jobs:
             (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
               && git add julian_all.json \
               && (git diff --cached --quiet || git commit -m "JULIAN regrade: accuracy updated from evidence rules") \
+              && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           fi
 
@@ -306,6 +311,7 @@ jobs:
             (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
               && git add julian_all.json \
               && (git diff --cached --quiet || git commit -m "JULIAN seed: merge manual records") \
+              && (git pull --rebase origin main || git rebase --abort || true) \
               && git push) || echo "Data repo: nothing to push"
           fi
 
@@ -438,7 +444,8 @@ jobs:
           (cd data && git config user.name 'JULIAN Bot' && git config user.email 'julian-bot@horatad.com' \
             && git add julian_all.json \
             && (git diff --cached --quiet || git commit -m "JULIAN backfill: P3447 ${STATUS} + regrade") \
-            && git push) || echo "Data repo: nothing to push"
+            && (git pull --rebase origin main || git rebase --abort || true) \
+              && git push) || echo "Data repo: nothing to push"
           git config user.name  'JULIAN Bot'
           git config user.email 'julian-bot@horatad.com'
           git add workers/julian_p3447_checkpoint.json || true
