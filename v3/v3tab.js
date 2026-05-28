@@ -468,19 +468,13 @@ function _clearResult() {
   }
 }
 
-// NOK: enable ปุ่ม ฟัง ตามความพร้อมของ Thai voice บนเครื่อง
+// NOK: enable ปุ่ม ฟัง — canSpeak() = true เสมอ (Cloud TTS fallback พร้อมใช้)
 function _refreshSpeakBtn() {
   const btn = _el('v3-speak-btn');
   if (!btn) return;
-  if (nokHasThaiVoice()) {
-    btn.disabled = false;
-    btn.classList.remove('no-voice');
-    btn.title = '';
-  } else {
-    btn.disabled = false;
-    btn.classList.add('no-voice');
-    btn.title = 'แตะเพื่อดูวิธีเปิดเสียงภาษาไทย';
-  }
+  btn.disabled = false;
+  btn.classList.remove('no-voice');
+  btn.title = '';
 }
 
 function _showTTSGuide() {
@@ -508,14 +502,14 @@ function _showTTSGuide() {
       <p class="tts-guide-note">Samsung: ตั้งค่า → การจัดการทั่วไป → ภาษา → การอ่านออกเสียง</p>`;
   } else if (isWindows) {
     html = `
-      <p class="tts-guide-desc">Windows 11 ไม่มีเสียงภาษาไทยในตัว — Chrome/Opera ใช้เสียงระบบ Windows จึงไม่รองรับ</p>
+      <p class="tts-guide-desc">เสียงระบบ Cloud ขัดข้องชั่วคราว — ลองใหม่อีกครั้ง หรือเปลี่ยนเบราว์เซอร์</p>
       <ol class="tts-guide-steps">
-        <li>เปิดแอปนี้ด้วย <strong>Microsoft Edge</strong> แทน<br>
-            <span style="font-size:.75rem;color:#586069">(Edge มีเสียงไทย Microsoft Niwat/Achara/Premwadee ในตัว)</span></li>
-        <li>ถ้าใช้ Edge อยู่แล้ว: ลองปิด-เปิด Edge ใหม่ 1 ครั้ง</li>
-        <li>กลับมาที่แอปแล้วกดปุ่ม ✓ ตรวจสอบอีกครั้ง</li>
+        <li>กดปุ่ม 🔊 อีกครั้ง (Cloud TTS จะลองใหม่อัตโนมัติ)</li>
+        <li>ถ้ายังไม่ได้ยิน: ลองเปิดแอปด้วย <strong>Microsoft Edge</strong><br>
+            <span style="font-size:.75rem;color:#586069">(Edge มีเสียงไทย Microsoft Niwat/Achara/Premwadee ในตัว — ไม่ต้องใช้ Cloud)</span></li>
+        <li>ตรวจสอบว่าไม่ได้กดปิดเสียง (mute) ใน Windows</li>
       </ol>
-      <p class="tts-guide-note">⚠️ Chrome และ Opera บน Windows ไม่รองรับเสียงไทย — ต้องใช้ Edge</p>`;
+      <p class="tts-guide-note">ℹ️ Chrome/Opera บน Windows ใช้ Cloud TTS อัตโนมัติ — ต้องมีอินเทอร์เน็ต</p>`;
   } else if (isMac) {
     html = `
       <p class="tts-guide-desc">เพิ่มเสียงภาษาไทยผ่าน macOS System Settings</p>
