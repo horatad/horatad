@@ -72,7 +72,7 @@ function eraQuery(y1, y2) {
     tier:    2,
     sparql: `
       SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
-        ?person wikibase:sitelinks ?links. FILTER(?links >= 3)
+        ?person wikibase:sitelinks ?links. FILTER(?links >= 2)
         ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
         FILTER(?birthPrec >= 11)
         FILTER(?birth >= "${from}"^^xsd:dateTime && ?birth < "${to}"^^xsd:dateTime)
@@ -87,7 +87,7 @@ function eraQuery(y1, y2) {
 }
 
 const ERA_SERIES = [];
-for (let y = 1700; y < 2100; y += 5) ERA_SERIES.push(eraQuery(y, y + 5));
+for (let y = 1400; y < 2100; y += 5) ERA_SERIES.push(eraQuery(y, y + 5));
 
 export const CONFIG = {
 
@@ -492,6 +492,371 @@ export const CONFIG = {
           OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
           SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
         } LIMIT 500`,
+    },
+
+    // ── ยุโรป ──────────────────────────────────────────────────────────────
+    {
+      id: 'de_politicians',
+      label: 'นักการเมืองเยอรมัน',
+      country: 'DE', tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P27 wd:Q183; wdt:P106 wd:Q82955.
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          OPTIONAL { ?person wikibase:sitelinks ?links. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,de". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'fr_politicians',
+      label: 'นักการเมืองฝรั่งเศส',
+      country: 'FR', tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P27 wd:Q142; wdt:P106 wd:Q82955.
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          OPTIONAL { ?person wikibase:sitelinks ?links. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,fr". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'ru_politicians',
+      label: 'นักการเมืองรัสเซีย/โซเวียต',
+      country: 'RU', tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          { ?person wdt:P27 wd:Q159. } UNION { ?person wdt:P27 wd:Q15180. }
+          ?person wdt:P106 wd:Q82955.
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          OPTIONAL { ?person wikibase:sitelinks ?links. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,ru". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'eu_celebrities',
+      label: 'คนดังยุโรป (IT/ES/PL/NL)',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          VALUES ?country { wd:Q38 wd:Q29 wd:Q36 wd:Q55 wd:Q31 wd:Q40 wd:Q35 wd:Q34 }
+          ?person wdt:P27 ?country.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── เอเชีย (เพิ่มเติม) ────────────────────────────────────────────────
+    {
+      id: 'cn_politicians',
+      label: 'นักการเมืองจีน',
+      country: 'CN', tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P27 wd:Q29520; wdt:P106 wd:Q82955.
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          OPTIONAL { ?person wikibase:sitelinks ?links. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,zh". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'cn_entertainers',
+      label: 'ดารา/นักร้องจีน',
+      country: 'CN', tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P27 wd:Q29520.
+          { ?person wdt:P106 wd:Q177220. } UNION { ?person wdt:P106 wd:Q33999. }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 8)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,zh". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'kr_entertainers',
+      label: 'K-pop / K-drama',
+      country: 'KR', tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P27 wd:Q884.
+          { ?person wdt:P106 wd:Q177220. } UNION { ?person wdt:P106 wd:Q33999. }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en,ko". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'mid_east_leaders',
+      label: 'ผู้นำตะวันออกกลาง',
+      country: null, tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          VALUES ?country { wd:Q79 wd:Q794 wd:Q796 wd:Q801 wd:Q810 wd:Q683 wd:Q878 wd:Q763 wd:Q842 wd:Q819 }
+          ?person wdt:P27 ?country; wdt:P106 wd:Q82955.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'african_leaders',
+      label: 'ผู้นำแอฟริกา',
+      country: null, tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          VALUES ?country { wd:Q258 wd:Q114 wd:Q117 wd:Q1016 wd:Q115 wd:Q965 wd:Q1029 wd:Q1030 wd:Q1032 }
+          ?person wdt:P27 ?country; wdt:P106 wd:Q82955.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── กีฬา (เพิ่มเติม) ───────────────────────────────────────────────────
+    {
+      id: 'tennis_players',
+      label: 'นักเทนนิสอาชีพ',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q10833314.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'cricket_players',
+      label: 'นักคริกเก็ตนานาชาติ',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q12299841.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 3)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'f1_drivers',
+      label: 'นักแข่ง Formula 1',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q10843402.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 3)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'basketball_players',
+      label: 'นักบาสเกตบอล (NBA/WNBA)',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q3665646.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'golf_players',
+      label: 'นักกอล์ฟอาชีพ',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q13141064.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'boxing_champions',
+      label: 'แชมป์โลกมวยสากล',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q11338576.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'baseball_players',
+      label: 'นักเบสบอล (MLB)',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q10843517.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 5)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── ศิลปะ / วรรณกรรม ──────────────────────────────────────────────────
+    {
+      id: 'global_authors',
+      label: 'นักเขียนชื่อดังระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q36180.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'global_directors',
+      label: 'ผู้กำกับภาพยนตร์ชื่อดัง',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q2526255.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 10)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'global_composers',
+      label: 'นักแต่งเพลงชื่อดัง',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q36834.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 10)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'global_painters',
+      label: 'จิตรกร/ศิลปินทัศนศิลป์',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q1028181.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 10)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── ธุรกิจ / เทคโนโลยี ────────────────────────────────────────────────
+    {
+      id: 'global_business',
+      label: 'ผู้ประกอบการ/CEO ระดับโลก',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          { ?person wdt:P106 wd:Q131524. } UNION { ?person wdt:P106 wd:Q484876. }
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 15)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+
+    // ── ปรัชญา / ศาสนา ────────────────────────────────────────────────────
+    {
+      id: 'global_philosophers',
+      label: 'นักปรัชญาชื่อดัง',
+      country: null, tier: 2,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          ?person wdt:P106 wd:Q4964182.
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 10)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 500`,
+    },
+    {
+      id: 'religious_leaders',
+      label: 'ผู้นำศาสนา (Pope/Dalai Lama/etc)',
+      country: null, tier: 1,
+      sparql: `
+        SELECT DISTINCT ?person ?personLabel ?birth ?death ?countryCode ?links WHERE {
+          { ?person wdt:P39 wd:Q19546. }   # Pope
+          UNION { ?person wdt:P39 wd:Q193628. } # Dalai Lama
+          UNION { ?person wdt:P106 wd:Q42603. FILTER NOT EXISTS { ?person wdt:P570 _:x. } } # living clergy, notable
+          ?person wikibase:sitelinks ?links. FILTER(?links >= 10)
+          ?person p:P569/psv:P569 [wikibase:timeValue ?birth; wikibase:timePrecision ?birthPrec].
+          FILTER(?birthPrec >= 11)
+          OPTIONAL { ?person p:P570/psv:P570 [wikibase:timeValue ?death; wikibase:timePrecision ?deathPrec]. FILTER(?deathPrec >= 11) }
+          OPTIONAL { ?person wdt:P27/wdt:P297 ?countryCode. }
+          SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        } LIMIT 300`,
     },
 
     // ── Astrotheme series: P3447 — birth time จาก astrotheme.com ──────────
