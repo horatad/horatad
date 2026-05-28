@@ -7,7 +7,7 @@
     "thai": "อาทิตย์โจรกับพฤหัสนาตาล",
     "topic": "โชค ความสำเร็จ การเงิน",
     "hint": "ยังไม่มีข้อมูล — รัน full scan",
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-05-28"
   },
   {
@@ -18,7 +18,7 @@
     "thai": "อาทิตย์โจรกับเสาร์นาตาล",
     "topic": "อุปสรรค วินัย ความล้มเหลว",
     "hint": "ยังไม่มีข้อมูล — รัน full scan",
-    "status": "pending",
+    "status": "skipped",
     "created_at": "2026-05-28"
   },
   {
