@@ -142,5 +142,13 @@
     "context": "general",
     "status": "approved",
     "created_at": "2026-05-28"
+  },
+  {
+    "id": "v_1779993551439",
+    "en": "้hypothesis",
+    "th": "สมมติฐาน",
+    "context": "ในการทดลอง หรือการทำวิจัย",
+    "status": "draft",
+    "created_at": "2026-05-28"
   }
 ]
