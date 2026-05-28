@@ -1,4 +1,4 @@
-/* HORATAD:STYLE:3.3.58 */
+/* HORATAD:STYLE:3.3.59 */
 /* Horatad V2.2.35 | style.css */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:15px;background:#f4f4f4;color:#222;padding:0.75rem;line-height:1.5}
@@ -109,6 +109,20 @@ input.time-input{min-width:0;padding:4px 2px}
 .prov-empty{padding:10px;text-align:center;color:#999;font-size:12px}
 .btn-custom-lng{margin-top:0;height:28px;min-width:80px;padding:0 8px;font-size:11px;background:#555;color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
 .btn-custom-lng:hover{background:#777}
+.lmt-badge{font-size:.7rem;color:#8b949e;min-height:.85rem;margin-top:2px;padding:0 2px;letter-spacing:.01em}
+/* City search modal */
+.city-search-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1f26;border:1px solid #30363d;border-radius:12px;padding:14px;z-index:800;width:min(92vw,340px);max-height:72vh;display:flex;flex-direction:column;gap:8px}
+.city-search-title{font-size:.92rem;font-weight:600;color:#c9d1d9}
+.city-search-input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:7px 10px;font-size:.88rem;font-family:inherit;box-sizing:border-box}
+.city-search-input:focus{outline:none;border-color:#58a6ff}
+.city-results{overflow-y:auto;flex:1;max-height:42vh;border-radius:6px}
+.city-item{padding:8px 10px;cursor:pointer;border-bottom:1px solid #21262d;display:flex;flex-direction:column;gap:1px}
+.city-item:hover,.city-item:active{background:#21262d}
+.city-name{font-size:.87rem;color:#c9d1d9}
+.city-detail{font-size:.73rem;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.city-lng{font-size:.73rem;color:#58a6ff}
+.city-loading{padding:12px;text-align:center;color:#8b949e;font-size:.83rem}
+.city-close-btn{margin-top:2px;padding:7px;background:#21262d;color:#8b949e;border:1px solid #30363d;border-radius:6px;cursor:pointer;font-size:.85rem;font-family:inherit}
 
 /* Action buttons */
 .btn-row-section{display:flex;gap:6px;margin-top:8px}

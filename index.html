@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.58 -->
-<!-- Version 3.3.58 | 2026-05-28 -->
+<!-- HORATAD:INDEX:3.3.59 -->
+<!-- Version 3.3.59 | 2026-05-28 -->
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.58">
+<link rel="stylesheet" href="style.css?v=3.3.59">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -143,7 +143,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.58</span>
+  <span class="brand-ver">V 3.3.59</span>
 </h1>
 
 <!-- Tab nav -->
@@ -196,8 +196,9 @@ canvas{max-width:100%;height:auto}
             <input id="prov1" value="กรุงเทพมหานคร" class="prov-input" placeholder="จังหวัด">
             <div class="prov-list" id="prov-list-1"></div>
           </div>
-          <button id="btn-cust1" onclick="openLngPad('lng1')" class="btn-custom-lng">สถานที่อื่น</button>
+          <button id="btn-cust1" onclick="openCitySearch('lng1')" class="btn-custom-lng">สถานที่อื่น</button>
         </div>
+        <div class="lmt-badge" id="lmt-badge-1"></div>
         <div class="tag-row" id="tag-row-1"></div>
       </div>
 
@@ -228,8 +229,9 @@ canvas{max-width:100%;height:auto}
             <input id="prov2" value="กรุงเทพมหานคร" class="prov-input" placeholder="จังหวัด">
             <div class="prov-list" id="prov-list-2"></div>
           </div>
-          <button id="btn-cust2" onclick="openLngPad('lng2')" class="btn-custom-lng">สถานที่อื่น</button>
+          <button id="btn-cust2" onclick="openCitySearch('lng2')" class="btn-custom-lng">สถานที่อื่น</button>
         </div>
+        <div class="lmt-badge" id="lmt-badge-2"></div>
         <div class="tag-row" id="tag-row-2"></div>
       </div><!-- /section-2 -->
 
@@ -251,8 +253,9 @@ canvas{max-width:100%;height:auto}
             <input id="provt" value="กรุงเทพมหานคร" class="prov-input" placeholder="จังหวัด">
             <div class="prov-list" id="prov-list-t"></div>
           </div>
-          <button id="btn-custt" onclick="openLngPad('lngt')" class="btn-custom-lng">สถานที่อื่น</button>
+          <button id="btn-custt" onclick="openCitySearch('lngt')" class="btn-custom-lng">สถานที่อื่น</button>
         </div>
+        <div class="lmt-badge" id="lmt-badge-t"></div>
         <div class="btn-row-section">
           <button onclick="resetTransit()" class="btn-reset">วันนี้</button>
           <button onclick="saveEvent()" class="btn-reset">บันทึก</button>
@@ -295,7 +298,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.58</div>
+        <div class="about-version">V 3.3.59</div>
         <div class="about-update">อัปเดต 28 พ.ค. 2569 · แก้ปุ่มพยากรณ์ + นำเข้าไฟล์</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -329,7 +332,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-tals-credit-name">TALS · โหราศาสตร์ไทยแนวตรรกะ</div>
       <div class="about-tals-credit-founder">ก่อตั้งโดย <strong>ยืนยง นาวาสมุทร</strong> (แดง เมืองตราด)<br>ตำรา «โหราศาสตร์ไทยแนวตรรกะ»</div>
     </div>
-    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.58" preload="none" loop></audio>
+    <audio id="about-bgm" src="audio/dream-island-clip.mp3?v=3.3.59" preload="none" loop></audio>
     <div class="about-btn-group">
       <button class="btn-contact-page" onclick="showContactPage()">ช่องทางติดต่อ &amp; สนับสนุน →</button>
       <button class="btn-lunar-page" onclick="showLunarPage()">🌙 เกี่ยวกับสูตรคำนวณวันจันทรคติ →</button>
@@ -909,8 +912,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.58"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.58"></script>
+<script type="module" src="script.js?v=3.3.59"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.59"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -947,8 +950,21 @@ canvas{max-width:100%;height:auto}
   </div>
 </div>
 
-<script src="auth-pin.js?v=3.3.58"></script>
+<script src="auth-pin.js?v=3.3.59"></script>
 <!-- GUARD P1-B 2026-05-23: extracted from inline <script> -> auth-pin.js for CSP script-src self -->
+
+<!-- V3.3.59: City search modal (Nominatim / OpenStreetMap) -->
+<div id="city-search-backdrop" class="memory-backdrop hidden" onclick="closeCitySearch()"></div>
+<div id="city-search-modal" class="city-search-modal hidden">
+  <div class="city-search-title">ค้นหาสถานที่</div>
+  <input id="city-search-query" class="city-search-input" type="text"
+    placeholder="พิมพ์ชื่อเมือง เช่น Chiang Mai, London, Tokyo…"
+    autocomplete="off"
+    oninput="_citySearchInput(this.value)"
+    onkeydown="if(event.key==='Escape')closeCitySearch()">
+  <div class="city-results" id="city-search-results"></div>
+  <button class="city-close-btn" onclick="closeCitySearch()">ยกเลิก</button>
+</div>
 
 <!-- V2.2.35: Add-tag modal -->
 <div id="add-tag-modal" class="hidden" onclick="if(event.target===this)_closeAddTagModal()">
