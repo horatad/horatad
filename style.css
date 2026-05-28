@@ -111,7 +111,7 @@ input.time-input{min-width:0;padding:4px 2px}
 .btn-custom-lng:hover{background:#777}
 .lmt-badge{font-size:.7rem;color:#8b949e;min-height:.85rem;margin-top:2px;padding:0 2px;letter-spacing:.01em}
 /* Province picker modal (V3.3.59) */
-.city-search-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1f26;border:1px solid #30363d;border-radius:12px;padding:14px;z-index:800;width:min(94vw,360px);max-height:75vh;display:flex;flex-direction:column;gap:8px}
+.city-search-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1f26;border:1px solid #30363d;border-radius:12px;padding:14px;z-index:1000;width:min(94vw,360px);max-height:75vh;display:flex;flex-direction:column;gap:8px}
 .city-search-title{font-size:.92rem;font-weight:600;color:#c9d1d9}
 .prov-alpha-tabs{display:flex;flex-wrap:wrap;gap:4px}
 .prov-tab{padding:6px 10px;min-height:36px;background:#21262d;color:#8b949e;border:1px solid #30363d;border-radius:5px;cursor:pointer;font-size:.82rem;font-family:inherit;white-space:nowrap;transition:background .12s;touch-action:manipulation}

@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.68
-// Version 3.3.68 | 2026-05-28
+// HORATAD:SCRIPT:3.3.69
+// Version 3.3.69 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
