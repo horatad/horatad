@@ -64,18 +64,23 @@ async function fetchAllItems() {
   return items;
 }
 
-// ดึง video details (duration, tags)
+// ดึง video details (duration, tags) — batch 50 ต่อครั้ง (YouTube API limit)
 async function fetchVideoDetails(videoIds) {
-  const params = new URLSearchParams({
-    part: 'contentDetails,snippet,statistics',
-    id: videoIds.join(','),
-    key: API_KEY,
-  });
-  const url = `https://www.googleapis.com/youtube/v3/videos?${params}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`YouTube video details error: ${res.status}`);
-  const data = await res.json();
-  return Object.fromEntries((data.items || []).map(v => [v.id, v]));
+  const results = {};
+  for (let i = 0; i < videoIds.length; i += 50) {
+    const batch = videoIds.slice(i, i + 50);
+    const params = new URLSearchParams({
+      part: 'contentDetails,snippet,statistics',
+      id: batch.join(','),
+      key: API_KEY,
+    });
+    const url = `https://www.googleapis.com/youtube/v3/videos?${params}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`YouTube video details error: ${res.status}`);
+    const data = await res.json();
+    for (const v of (data.items || [])) results[v.id] = v;
+  }
+  return results;
 }
 
 // แปลง ISO 8601 duration → นาที
