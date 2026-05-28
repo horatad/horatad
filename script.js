@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.76
-// Version 3.3.76 | 2026-05-29
+// HORATAD:SCRIPT:3.3.77
+// Version 3.3.77 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.76';
+const APP_VERSION='3.3.77';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -492,24 +492,35 @@ function _renderTagRow(section){
     row.appendChild(addBtn);
     return;
   }
-  // V3.3.76: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
+  // V3.3.77: ซ่อน category chips ในฟอร์มหลัก — แยกออกจาก recent person chips
   row.style.display='none';
 }
-// V3.3.76: recent person chips — circular buffer 5 slots, active = มวง
+// V3.3.77: recent person chips — runtime buffer only (not from history)
 const _RECENT_CHIPS_MAX=5;
+function _addToRecentBuffer(section,rec){
+  // rec = {name,gender,d,m,y_be,t,prov,lng,tz,noTime}
+  if(!rec||!rec.name)return;
+  const s=String(section);
+  const key=_tankKey(rec);
+  const buf=_recentPersonBuffer[s];
+  const idx=buf.findIndex(e=>e.key===key);
+  if(idx>=0)buf.splice(idx,1); // ย้ายขึ้นหน้าถ้ามีอยู่แล้ว
+  buf.unshift({key,rec});
+  if(buf.length>_RECENT_CHIPS_MAX)buf.pop();
+  _activePersonKey[s]=key;
+}
 function _renderRecentPersonChips(section){
   const el=document.getElementById('recent-chips-'+section);
   if(!el)return;
-  const recs=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,_RECENT_CHIPS_MAX);
   el.innerHTML='';
-  const activeKey=_activePersonKey[String(section)]||null;
-  recs.forEach(m=>{
+  const s=String(section);
+  const activeKey=_activePersonKey[s]||null;
+  (_recentPersonBuffer[s]||[]).forEach(entry=>{
     const chip=document.createElement('span');
-    const isActive=activeKey&&_tankKey(m)===activeKey;
-    chip.className='tag-chip tag-person-chip'+(isActive?' tag-active':'');
-    chip.textContent=m.name||'—';
-    chip.title=`${m.d||''}/${m.m||''}/${m.y_be||''} ${m.t||''}`;
-    chip.addEventListener('click',()=>_quickLoadPerson(m,String(section)));
+    chip.className='tag-chip tag-person-chip'+(entry.key===activeKey?' tag-active':'');
+    chip.textContent=entry.rec.name||'—';
+    chip.title=`${entry.rec.d||''}/${entry.rec.m||''}/${entry.rec.y_be||''} ${entry.rec.t||''}`;
+    chip.addEventListener('click',()=>_quickLoadPerson(entry.rec,s));
     el.appendChild(chip);
   });
 }
@@ -517,7 +528,7 @@ function _quickLoadPerson(m,section){
   if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   _editingMemKey=null;_editingMemSection=null;
-  _activePersonKey[String(section)]=_tankKey(m);
+  _addToRecentBuffer(section,m);
   if(section==='1'){
     _setField('name-1',m.name||'');
     document.getElementById('gender1').value=m.gender||'ชาย';
@@ -1648,8 +1659,8 @@ function calculateBoth(){
   if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
   if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
   _editingMemKey=null;_editingMemSection=null;
-  if(natal)_activePersonKey['1']=_tankKey({name:natal.name,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov});
-  if(_chart2)_activePersonKey['2']=_tankKey({name:_chart2.name,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov});
+  if(natal)_addToRecentBuffer('1',{name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime});
+  if(_chart2)_addToRecentBuffer('2',{name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime});
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
   if(typeof _loadTagsForCurrentChart==='function'){_loadTagsForCurrentChart('1');_loadTagsForCurrentChart('2');_renderTagRow('1');_renderTagRow('2');}
@@ -2331,7 +2342,8 @@ function _addMemory(entry,replaceKey){
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
-let _activePersonKey={'1':null,'2':null}; // V3.3.76: track active person per section
+let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.77: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
+let _activePersonKey={'1':null,'2':null}; // track currently active per section
 // V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
 let _editingMemKey=null;
@@ -4373,7 +4385,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   _loadTagsForCurrentChart('2');
   _renderTagRow('1');
   _renderTagRow('2');
-  // V3.3.76: recent person chips
+  // V3.3.77: recent person chips
   _renderRecentPersonChips('1');
   _renderRecentPersonChips('2');
 
