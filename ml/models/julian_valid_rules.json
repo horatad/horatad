@@ -1,11 +1,15 @@
 {
   "meta": {
     "generated": "2026-05-27T17:33:29.357Z",
+    "reviewed": "2026-05-28",
     "source": "ml/models/julian_full_scan.json",
     "total_significant": 50,
-    "mr_invalidated": 28,
+    "mr_invalidated": 19,
+    "inconsistent_polarity_rejected": 9,
+    "borderline_monitor": 4,
+    "insufficient_data": 2,
     "valid_rules": 16,
-    "note": "MR rules invalidated: MR period=83yr → transit aspect = age proxy. SU×SA valid: SU period=1yr, not age proxy."
+    "note": "MR×MR: age proxy (83yr period). SA×MR/SU×MR: inconsistent polarity (dist1 shows opposite direction within same group). SU×SA 16 rules valid — clean hard/soft polarity, 15/15 cross-check symmetric."
   },
   "valid_rules": [
     {
@@ -19,7 +23,7 @@
       "class_n": 2684,
       "p_adj": 0,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU sext natal_SA",
@@ -32,7 +36,7 @@
       "class_n": 4434,
       "p_adj": 0,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU conj natal_SA",
@@ -45,7 +49,7 @@
       "class_n": 2225,
       "p_adj": 0,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU dist1 natal_SA",
@@ -58,7 +62,7 @@
       "class_n": 2801,
       "p_adj": 0,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU squa natal_SA",
@@ -71,7 +75,7 @@
       "class_n": 2823,
       "p_adj": 0,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU oppo natal_SA",
@@ -84,7 +88,7 @@
       "class_n": 2080,
       "p_adj": 0.000079,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU dist5 natal_SA",
@@ -97,7 +101,7 @@
       "class_n": 2196,
       "p_adj": 0.030159,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU trin natal_SA",
@@ -110,7 +114,7 @@
       "class_n": 3616,
       "p_adj": 0.02835,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU sext natal_SA",
@@ -123,7 +127,7 @@
       "class_n": 2734,
       "p_adj": 0.046365,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU trin natal_SA",
@@ -136,7 +140,7 @@
       "class_n": 2735,
       "p_adj": 0.032458,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU squa natal_SA",
@@ -149,7 +153,7 @@
       "class_n": 2614,
       "p_adj": 0.000002,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU sext natal_SA",
@@ -162,7 +166,7 @@
       "class_n": 2854,
       "p_adj": 0,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU oppo natal_SA",
@@ -175,7 +179,7 @@
       "class_n": 1378,
       "p_adj": 0.000064,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU conj natal_SA",
@@ -188,7 +192,7 @@
       "class_n": 1401,
       "p_adj": 0.000002,
       "polarity": "soft_award",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU dist1 natal_SA",
@@ -201,7 +205,7 @@
       "class_n": 2402,
       "p_adj": 0,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     },
     {
       "tals_rule": "transit_SU dist5 natal_SA",
@@ -214,9 +218,78 @@
       "class_n": 2068,
       "p_adj": 0,
       "polarity": "hard_death",
-      "status": "valid_candidate"
+      "status": "valid"
     }
   ],
-  "invalidated_mr_count": 28,
-  "invalidated_weak_count": 6
+  "rejected_groups": [
+    {
+      "group": "MR×MR",
+      "count": 19,
+      "reason": "age_proxy",
+      "detail": "MR orbital period ~83yr ≈ average lifespan. Transit MR conj natal MR at age ~83 = death by old age, not astrology. Event distribution: death=7, position=7, award=5 — spread evenly = age proxy signature."
+    },
+    {
+      "group": "SA×MR",
+      "count": 5,
+      "reason": "inconsistent_polarity",
+      "detail": "Consistency check: 2/5 match expected hard/soft polarity. dist1 appears twice in OPPOSITE directions (award+6.7% AND death-12.3%) = same aspect acting as both hard and soft = noise. Cannot establish polarity direction.",
+      "rules_summary": [
+        {"aspect":"dist5","event":"death","lift":1.069,"consistent":true},
+        {"aspect":"dist1","event":"award","lift":1.067,"consistent":false},
+        {"aspect":"trin","event":"death","lift":1.067,"consistent":false},
+        {"aspect":"dist1","event":"death","lift":0.877,"consistent":false},
+        {"aspect":"conj","event":"death","lift":0.854,"consistent":true}
+      ]
+    },
+    {
+      "group": "SU×MR",
+      "count": 4,
+      "reason": "inconsistent_polarity",
+      "detail": "dist5 (hard aspect) appears twice: award+8.5% AND death-9.6% — dist5 acting as SOFT (more award, less death), opposite of SU×SA polarity. squa shows expected hard behavior. dist5 and squa disagree on polarity direction = noise.",
+      "rules_summary": [
+        {"aspect":"dist5","event":"award","lift":1.085,"consistent":false},
+        {"aspect":"trin","event":"award","lift":1.068,"consistent":true},
+        {"aspect":"squa","event":"award","lift":0.922,"consistent":true},
+        {"aspect":"dist5","event":"death","lift":0.904,"consistent":false}
+      ]
+    }
+  ],
+  "monitor_groups": [
+    {
+      "group": "SA×SA",
+      "count": 2,
+      "reason": "borderline + possible_age_proxy",
+      "detail": "SA period=29.5yr. dist1 natal_SA at age ~87-88 (3rd SA return) = high mortality cohort. Possible mild age proxy. dist5 direction (-7.6% death) does not fit age proxy theory. Both borderline p (0.03, 0.01). Need larger dataset.",
+      "rules_summary": [
+        {"aspect":"dist1","event":"death","lift":1.066,"p_adj":0.0299,"n":3147,"age_context":"~87-88yr (3rd SA return, high mortality)"},
+        {"aspect":"dist5","event":"death","lift":0.924,"p_adj":0.0140,"n":2435,"age_context":"~80-81yr (ambiguous)"}
+      ]
+    },
+    {
+      "group": "SU×JU",
+      "count": 2,
+      "reason": "interesting_hypothesis_insufficient_data",
+      "detail": "Hypothesis: natal JU (benefic planet) may have REVERSED polarity vs natal SA (malefic) — hard aspect×benefic→award, soft aspect×benefic→award↓. But squa and dist5 disagree internally. Only 2 rules, both borderline (p=0.03, 0.006). Monitor with more data.",
+      "rules_summary": [
+        {"aspect":"squa","event":"award","lift":1.059,"p_adj":0.0289,"n":3606,"note":"hard→award+ — reverse of SU×SA polarity, possibly benefic-reversal"},
+        {"aspect":"dist5","event":"award","lift":0.930,"p_adj":0.0064,"n":2906,"note":"hard→award- — consistent with hard=bad"}
+      ]
+    },
+    {
+      "group": "SU×MA",
+      "count": 1,
+      "reason": "single_rule_insufficient",
+      "rules_summary": [
+        {"aspect":"dist1","event":"award","lift":0.921,"p_adj":0.0011,"n":2836}
+      ]
+    },
+    {
+      "group": "SU×MO",
+      "count": 1,
+      "reason": "single_rule_insufficient",
+      "rules_summary": [
+        {"aspect":"oppo","event":"award","lift":0.887,"p_adj":0.0025,"n":1324,"note":"oppo (soft aspect) → award- contradicts soft=good polarity"}
+      ]
+    }
+  ]
 }
