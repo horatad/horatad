@@ -51,7 +51,7 @@ if [ "$PENDING" != "0" ] && [ "$BRANCH" != "main" ]; then
 fi
 
 # แสดง scope banner ถ้ามีการประกาศ scope ไว้ (.claude/session_scope)
-SCOPE_FILE="$(dirname "$0")/session_scope"
+SCOPE_FILE="$(dirname "$0")/../../.session_scope"
 if [ -f "$SCOPE_FILE" ]; then
   SCOPE=$(cat "$SCOPE_FILE" | tr '[:lower:]' '[:upper:]' | tr -d '[:space:]')
   if [ -n "$SCOPE" ]; then

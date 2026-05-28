@@ -44,3 +44,4 @@ ml/models/training_history.json
 data/julian_all.json
 data/julian_events.jsonl
 data/julian_ml_features.jsonl
+.session_scope
