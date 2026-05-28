@@ -180,6 +180,57 @@ Cron (ทุก 6h):
 
 ---
 
+## 10. Vocabulary Standard — กฎถาวรสำหรับการเขียน FB / Research
+
+> **อ่านก่อนเขียน FB post ทุกครั้ง** — ไฟล์นี้เป็น source of truth คำศัพท์
+
+### แหล่งข้อมูล
+- `content/vocab_standard.json` — canonical list (ดูแลโดย Vocabulary tab ใน julian_approval.html)
+- `workers/julian_proposal_gen.mjs` — โหลด vocab ตอน module init (`const VOCAB = loadVocab()`)
+
+### 4-Field Schema (เหตุผลแต่ละ field)
+| Field | ใช้ที่ | ตัวอย่าง SU |
+|---|---|---|
+| `research_abbrev` | ตัวย่อในตาราง/code/research | `"SU"` |
+| `research_label` | ข้อความใน FB post body | `"ดาวอาทิตย์"` |
+| `tals_terms[]` | คำสั้นตามตำรา TALS | `["อาทิตย์", "ดาวอาทิตย์"]` |
+| `llm_aliases[]` | normalize input จาก LLM/text อื่น | `["Sun", "Sol", "☉"]` |
+
+### ⚠️ CRITICAL: Aspect Mapping (TALS vs Western — สลับกัน)
+| Code ใน valid_rules | TALS term (ถูก) | Western term (ผิดบริบทนี้) | องศา |
+|---|---|---|---|
+| `conj` | **กุม (KUM)** | Conjunction | 0° |
+| `oppo` | **เล็ง (LENG)** | Opposition | 180° |
+| `trin` / `dist5` | **โยค (YOK)** | Trine | 120° |
+| `sext` / `dist1` | **ตรีโกณ (TRI)** | Sextile | 60° |
+| `squa` | **ไม่มีใน TALS** | Square | 90° |
+
+TALS มีแค่ 4 มุม: กุม/เล็ง/โยค/ตรีโกณ — ห้ามใช้ Square ใน FB content
+
+### Functions ที่ใช้ใน code
+```javascript
+vocabLabel(abbrev)          // → research_label (ใช้ใน FB body)
+vocabTals(abbrev)           // → tals_terms[0] (ใช้ใน proposal.thai)
+vocabAliases(abbrev)        // → llm_aliases[] (ใช้ normalize input)
+aspectLabel(code)           // → TALS Thai label จาก rule code
+buildFBCaption(proposal)    // → string caption พร้อมโพสต์ FB (ใช้ vocab ทุกตัว)
+```
+
+### ดาวในระบบ JULIAN
+| abbrev | research_label | TALS tals_terms[0] |
+|---|---|---|
+| SU | ดาวอาทิตย์ | อาทิตย์ |
+| MO | ดาวจันทร์ | จันทร์ |
+| MA | ดาวอังคาร | อังคาร |
+| ME | ดาวพุธ | พุธ |
+| JU | ดาวพฤหัสบดี | พฤหัสบดี |
+| SA | ดาวเสาร์ | เสาร์ |
+| KE | ดาวพระเกตุ | เกตุ |
+| MR | ดาวยูเรนัส (มฤตยู) | ยูเรนัส |
+| RA | ดาวราหู | ราหู |
+
+---
+
 ## 9. LOG — session learnings (append-only)
 
 <!-- append ลง table นี้ทุกครั้งที่ session update ไฟล์นี้ — ห้ามแก้ entry เก่า -->
@@ -197,4 +248,5 @@ Cron (ทุก 6h):
 | 2026-05-28 | เพิ่ม image/genealogy/succession features | (1) **Image storage pattern**: เก็บแค่ filename ไม่ใช่ full URL — generate URL client-side: `https://commons.wikimedia.org/wiki/Special:FilePath/{filename}?width=120`. (2) **Mini record key `g`** = image filename (omit if null เพื่อลด bytes). (3) **genealogy raw vs index**: `julian_family.json` เก็บ raw (รวมทุก relation แม้ไม่อยู่ใน DB), `genealogy.json` cross-ref เฉพาะ in-DB pairs — pattern เดียวกับ succession. (4) **P1365/P1366 เป็น qualifier ไม่ใช่ direct property** — ต้อง query: `?person p:P39 ?stmt. ?stmt ps:P39 ?pos. ?stmt pq:P1365 ?prev.` ไม่ใช่ `?person wdt:P1365 ?prev`. (5) **dbQIDs Set** ต้อง compute ก่อน genealogy+succession sections ใน index_builder (share ทั้งคู่). (6) **Bug fix `_fetchJson` → `_fetchJSON`**: loadGenealogyIndex + loadImageIndex ใน julian_lookup.js เรียก method ผิด camelCase → runtime error ถ้า genealogy/images โหลดก่อน. |
 | 2026-05-28 | full_scan analysis — planet pair verdicts | (1) **Internal consistency test**: วิธีตรวจ polarity ที่ดีกว่า p-value คือดูว่า "aspect เดียวกันในกลุ่มเดียวกัน ชี้ทิศเดียวกันทุก event type ไหม?" — SA×MR dist1 ชี้ award+6.7% AND death-12.3% = ทิศตรงข้ามกัน = noise ไม่ใช่ signal. (2) **SU×MR dist5 reverse polarity**: dist5 (hard aspect) ใน SU×MR ทำตัวเหมือน soft (award+, death-) ≠ SU×SA ที่ dist5 → death+, award- คนละทิศ = inconsistent polarity = reject. (3) **SA×SA age proxy ระดับอ่อน**: SA period=29.5yr → dist1 natal_SA เกิดที่อายุ ~87-88yr (3rd return) = high mortality cohort — อาจเป็น partial age proxy แต่ dist5 ชี้ตรงข้าม (death-) ซึ่งไม่ fit age proxy → borderline monitor ไม่ใช่ debunk ชัดเจน. (4) **SU×JU benefic hypothesis**: อาจ natal JU (benefic) มี polarity กลับกับ natal SA (malefic) สำหรับ hard aspects แต่ squa/dist5 disagree internally — hypothesis น่าสนใจแต่ไม่พอยืนยัน. (5) **Verdict summary**: SU×SA=16 valid, MR×MR=19 debunked(age proxy), SA×MR=5+SU×MR=4 rejected(inconsistent polarity), SA×SA=2+SU×JU=2 monitor, SU×MA=1+SU×MO=1 insufficient. ดูเต็มใน `ml/models/julian_valid_rules.json`. |
 | 2026-05-28 | FB content pipeline — standing workflow | **JULIAN เป็นนักวิจัย + นักเขียน content ด้วย** (ไม่ใช่แค่ data engine). ทุก session ต้องตรวจ `content/julian_proposals.json` หา `status="approved"` ก่อนงานอื่นเสมอ. Pipeline: (1) `content/julian_proposals.json` status=approved → (2) ดึง valid rules จาก `ml/models/julian_valid_rules.json` → (3) เขียน caption ภาษาไทยพร้อม lift+n+p-value จริง → (4) บันทึก `content/inbox/<ts>_julian_<pair>.json` (format: id/title/body/type/source_proposal/created_at/status=pending_review) → (5) อัปเดต proposal status="done". ถ้าไม่มี approved → รัน `node workers/julian_proposal_gen.mjs` เพิ่ม pending ใหม่ แล้วแจ้งปีเตอร์อนุมัติที่ `https://horatad.com/tools/admin/julian_approval.html`. Tool: Content tab = อนุมัติ proposals, Vocabulary tab = รีวิว English→Thai. FB Post Helper: `https://horatad.com/tools/fb_post_helper.html`. Root cause ของ session ไม่รู้จัก workflow นี้ = ไม่ได้เขียนลง handoff/memory ไว้ก่อน → แก้แล้ว (v5 handoff + memory entry นี้). |
+| 2026-05-28 | vocab standard — 4-field schema (สำคัญมาก อ่านก่อนเขียน FB ทุกครั้ง) | **vocab_standard.json = แหล่งความจำถาวรสำหรับคำศัพท์ใน FB post** — ห้าม hardcode Thai planet/aspect names ในโค้ดหรือ caption. Schema มี 4 fields แยกตามบริบท: (1) `research_abbrev` = ตัวย่อในตาราง/โค้ด (SU/MO/MA/ME/JU/SA/KE/MR/RA) (2) `research_label` = คำไทยสำหรับ FB post (ดาวอาทิตย์/ดาวจันทร์ ฯลฯ) (3) `tals_terms[]` = คำ TALS/ตำรา (อาทิตย์/จันทร์ ฯลฯ — ไม่มี prefix "ดาว") (4) `llm_aliases[]` = คำที่ LLM/text โหราศาสตร์อื่นใช้ → ใช้สำหรับ normalize input. ใน code: `buildFBCaption()` ใน `workers/julian_proposal_gen.mjs` ดึง vocab อัตโนมัติผ่าน `vocabLabel(abbrev)` + `vocabTals(abbrev)`. **CRITICAL: aspect naming conflict TALS vs Western** — "ตรีโกณ" ใน TALS = 60° (Sextile ใน Western), "โยค" ใน TALS = 120° (Trine ใน Western) — สลับกัน! valid_rules.json ใช้ code "trin/sext/dist5/dist1" — mapping ที่ถูก: trin→โยค(YOK), sext→ตรีโกณ(TRI), dist5→โยค(YOK), dist1→ตรีโกณ(TRI), conj→กุม(KUM), oppo→เล็ง(LENG). Square(90°) **ไม่มีใน TALS** (TALS มีแค่ 4 มุม: KUM/LENG/YOK/TRI). Vocab UI: `https://horatad.com/tools/admin/julian_approval.html` แท็บ Vocabulary. |
 | 2026-05-29 | proposal_gen — polarity grouping + schema gotcha + content ethics | (1) **valid_rules field = `class_n` ไม่ใช่ `n`** — `buildFromValidRule` เดิมอ่าน `rule.n` → undefined → ทุก proposal โชว์ n=0. แก้เป็น `rule.class_n`. (2) **Group by polarity ไม่ใช่ pair|event**: SU×SA event เดียวกัน (เช่น death) มีทั้งทิศ ↑ (hard_death: lift>1) และ ↓ (soft_award: lift<1 = "less death"). ถ้า dedup ด้วย pair\|event จะเก็บแค่ rule แรก ทิ้งอีกขั้ว → caption ผิด. ทางแก้: group ด้วย field `polarity` → 16 กฎ SU×SA = 2 content units สะอาด (hard_death 7 กฎ, soft_award 9 กฎ). ดู `buildFromPolarityGroup`. (3) **event_type ใน valid_rules** = `death` / `award_received` / `position_start` (ไม่ใช่ `award`) — EVENT_THAI ต้อง map ครบ. (4) **Content ethics — caption ความตาย**: lift 1.18 = +18% เชิงสัมพัทธ์บนฐานเล็ก ≠ "จะตาย". โพสต์ด้านเสี่ยงเดี่ยวๆ = cost ผู้ใช้สูง (fatalism/panic) + cost dev สูง (moderate/disclaimer/policy). Best practice = รวมขั้ว hard+soft ใน 1 โพสต์ (กลไกสมมาตร, ปลอดภัย, น่าสนใจกว่า) + disclaimer "สถิติประชากร ≠ ชะตาบุคคล". (5) **public-facing FB = ต้อง credit ผู้ก่อตั้ง TALS** (ยืนยง นาวาสมุทร / แดง เมืองตราด) ใน caption ตามกฎ CLAUDE.md. |

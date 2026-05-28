@@ -3,22 +3,53 @@
  * สร้าง content/julian_proposals.json จากผลวิจัยจริง
  * รัน: node workers/julian_proposal_gen.mjs
  * (รันใน JULIAN session — หลัง full_scan หรือ empirical analysis เสร็จ)
+ *
+ * vocab_standard.json (content/vocab_standard.json) คือแหล่งความจำถาวรของ JULIAN
+ * สำหรับการแปลคำ — ห้ามใช้ hardcoded Thai ในไฟล์นี้
+ * ทุกคำต้องผ่าน vocabLabel() หรือ vocabTals()
  */
 
 import fs from 'fs';
 import path from 'path';
 
 const VALID_RULES    = 'ml/models/julian_valid_rules.json';
-const REPORT_JSON    = 'workers/julian_report.json';   // ผล full_scan
+const REPORT_JSON    = 'workers/julian_report.json';
 const PROPOSALS_OUT  = 'content/julian_proposals.json';
 const INBOX          = 'content/inbox';
+const VOCAB_PATH     = 'content/vocab_standard.json';
 
-const PLANET_THAI = {
-  SU: 'อาทิตย์', MO: 'จันทร์', MA: 'อังคาร', ME: 'พุธ',
-  JU: 'พฤหัส',  VE: 'ศุกร์',  SA: 'เสาร์',  RA: 'ราหู',
-  KE: 'เกตุ',   MR: 'มฤตยู',  LA: 'ลัคนา',
-};
+// --- Vocab lookup (โหลดจาก vocab_standard.json ทุกครั้ง — ไม่มี hardcode) ---
 
+function loadVocab() {
+  if (!fs.existsSync(VOCAB_PATH)) return {};
+  const list = JSON.parse(fs.readFileSync(VOCAB_PATH, 'utf8'));
+  const map = {};
+  for (const v of list) {
+    if (!v.research_abbrev) continue;
+    map[v.research_abbrev] = v;
+  }
+  return map;
+}
+
+const VOCAB = loadVocab();
+
+// research_label = ข้อความ Thai ใช้ใน FB post (เช่น "ดาวอาทิตย์", "กุม")
+function vocabLabel(abbrev, fallback) {
+  return VOCAB[abbrev]?.research_label || fallback || abbrev;
+}
+
+// tals_terms[0] = ชื่อสั้น TALS (เช่น "อาทิตย์" ไม่ใช่ "ดาวอาทิตย์")
+function vocabTals(abbrev, fallback) {
+  const terms = VOCAB[abbrev]?.tals_terms;
+  return (terms && terms.length) ? terms[0] : (fallback || abbrev);
+}
+
+// llm_aliases = คำที่ LLM/text อื่นใช้ → ใช้สำหรับ normalize input
+function vocabAliases(abbrev) {
+  return VOCAB[abbrev]?.llm_aliases || [];
+}
+
+// EVENT_THAI — hardcode ได้ (ไม่มีใน vocab schema ตอนนี้)
 const EVENT_THAI = {
   death:           'การเสียชีวิต',
   award:           'รางวัล / ความสำเร็จ',
@@ -29,8 +60,22 @@ const EVENT_THAI = {
   birth:           'การเกิด',
 };
 
+// ชื่อคู่ดาวสำหรับ proposal.thai — ใช้ชื่อสั้น TALS
 function pairThai(transit, natal) {
-  return `${PLANET_THAI[transit] || transit}โจรกับ${PLANET_THAI[natal] || natal}นาตาล`;
+  return `${vocabTals(transit, transit)}โจรกับ${vocabTals(natal, natal)}นาตาล`;
+}
+
+// ชื่อคู่ดาวสำหรับ FB caption body — ใช้ research_label (ดาวอาทิตย์, ดาวเสาร์)
+function pairFBLabel(transit, natal) {
+  return `${vocabLabel(transit, transit)}จรผ่าน${vocabLabel(natal, natal)}นาตาล`;
+}
+
+// aspect label สำหรับ FB post — ใช้ TALS code → research_label (กุม/เล็ง/โยค/ตรีโกณ)
+function aspectLabel(code) {
+  const map = { KUM:'กุม', LENG:'เล็ง', YOK:'โยค', TRI:'ตรีโกณ',
+                conj:'กุม', oppo:'เล็ง', trin:'โยค', sext:'ตรีโกณ',
+                dist5:'โยค', dist1:'ตรีโกณ', squa:'square (ไม่มีใน TALS)' };
+  return map[code] || vocabLabel(code, code);
 }
 
 function eventThai(eventType) {
@@ -154,7 +199,8 @@ function buildFromPolarityGroup(polarity, rows) {
     pair,
     transit,
     natal,
-    thai: `${PLANET_THAI[transit] || transit}โจร${meta.label}กับ${PLANET_THAI[natal] || natal}นาตาล`,
+    thai: `${vocabTals(transit,transit)}โจร${meta.label}กับ${vocabTals(natal,natal)}นาตาล`,
+    fb_label: pairFBLabel(transit, natal),
     topic: meta.topic,
     hint,
     proposed_by: 'julian',
@@ -162,6 +208,59 @@ function buildFromPolarityGroup(polarity, rows) {
     status: 'pending',
     created_at: new Date().toISOString().slice(0, 10),
   };
+}
+
+// --- FB Caption Builder (ใช้ vocab ทุกครั้ง — ห้าม hardcode Thai ใหม่) ---
+//
+// เรียกเมื่อ proposal status=approved → สร้าง body สำหรับ content/inbox/
+// กฎ:
+//   - ชื่อดาว  → vocabLabel(abbrev)       เช่น SU → "ดาวอาทิตย์"
+//   - มุมดาว   → aspectLabel(code)         เช่น YOK → "โยค"
+//   - ตัวเลข   → research_abbrev           เช่น "Lift 1.16×"
+//   - ห้ามใส่ภาษาอังกฤษ raw ใน body (เว้นแต่เป็น abbrev ที่ตกลงกันแล้ว: Lift, p, FDR, n)
+//
+export function buildFBCaption(proposal) {
+  const { transit, natal, finding = {}, thai } = proposal;
+  const tLabel  = vocabLabel(transit, transit);
+  const nLabel  = vocabLabel(natal, natal);
+  const pair    = `${tLabel}จรผ่าน${nLabel}นาตาล`;
+
+  const liftStr = finding.lift != null
+    ? (finding.lift > 1
+        ? `สูงกว่าปกติ ${finding.lift.toFixed(2)} เท่า`
+        : `ต่ำกว่าปกติ ${finding.lift.toFixed(2)} เท่า`)
+    : '';
+
+  const nStr    = finding.n_max || finding.n
+    ? `(ข้อมูล ${(finding.n_max || finding.n).toLocaleString()} เหตุการณ์)`
+    : '';
+
+  const pStr    = finding.p_adj != null
+    ? `p ${finding.p_adj < 0.001 ? '< 0.001' : finding.p_adj.toFixed(4)}`
+    : '';
+
+  const events  = finding.events || {};
+  const eventLines = Object.entries(events).map(([e, d]) => {
+    const dir = (d.lift_min + d.lift_max) / 2 >= 1 ? '🔺' : '🔻';
+    const lr  = d.lift_min === d.lift_max
+      ? d.lift_min.toFixed(2)
+      : `${d.lift_min.toFixed(2)}–${d.lift_max.toFixed(2)}`;
+    return `  ${dir} ${eventThai(e)}: Lift ${lr}×`;
+  });
+
+  const body = [
+    `🔭 โหราทาส วิจัย: ${pair}`,
+    '',
+    `จากฐานข้อมูลบุคคลสำคัญ ${nStr || ''}`,
+    ...(liftStr ? [`📊 โอกาส${eventThai(finding.event_type || '')} ${liftStr} ${pStr}`] : []),
+    ...(eventLines.length ? ['', ...eventLines] : []),
+    '',
+    `✅ ผ่านการตรวจสอบข้ามยุค + ข้ามประเทศ`,
+    '',
+    `#โหราทาส #TALS #โหราศาสตร์ไทย #AstrologyResearch`,
+  ].join('\n').trim();
+
+  return body;
 }
 
 // (เก็บไว้เผื่อ source อื่น — valid_rules ใช้ buildFromPolarityGroup แทน)

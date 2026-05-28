@@ -678,24 +678,25 @@ async function _pushVocab(retry = 0) {
 function addVocab() {
   const en  = document.getElementById('vEnInput').value.trim();
   const th  = document.getElementById('vThInput').value.trim();
-  const al  = document.getElementById('vAlInput').value.trim();
   const ctx = document.getElementById('vCtxInput').value.trim();
-  if (!en || !th) { showToast('กรุณาใส่ทั้ง English และ Thai'); return; }
+  if (!en || !th) { showToast('กรุณาใส่ทั้ง English และ Thai มาตรฐาน'); return; }
   if (vocabList.find(v => v.en.toLowerCase() === en.toLowerCase())) {
     showToast('คำนี้มีอยู่แล้ว'); return;
   }
-  const entry = {
+  vocabList.push({
     id: `v_${Date.now()}`,
-    en, th, context: ctx || '',
+    en, th,
+    research_label: th,
+    research_abbrev: '',
+    tals_terms: [],
+    llm_aliases: [],
+    context: ctx || 'general',
     status: 'draft',
     created_at: new Date().toISOString().slice(0, 10),
-  };
-  if (al) entry.aliases = al.split(',').map(s => s.trim()).filter(Boolean);
-  vocabList.push(entry);
+  });
   saveVocab();
   renderVocab();
   document.getElementById('vEnInput').value  = '';
-  document.getElementById('vAlInput').value  = '';
   document.getElementById('vThInput').value  = '';
   document.getElementById('vCtxInput').value = '';
   showToast('เพิ่มคำแล้ว ✅');
@@ -704,15 +705,17 @@ function addVocab() {
 function saveVocabItem(id) {
   const i = vocabList.findIndex(v => v.id === id);
   if (i < 0) return;
-  const newEn = document.getElementById(`ven_${id}`)?.value.trim();
-  const newTh = document.getElementById(`vth_${id}`).value.trim();
-  const newAl = document.getElementById(`val_${id}`)?.value.trim();
-  if (!newTh) { showToast('กรุณาใส่คำไทย'); return; }
+  const get = sel => document.getElementById(sel)?.value.trim();
+  const toArr = s => s ? s.split(',').map(t => t.trim()).filter(Boolean) : [];
+  const newEn = get(`ven_${id}`);
+  const newRl = get(`vrl_${id}`);
+  const newTa = get(`vta_${id}`);
+  const newLa = get(`vla_${id}`);
+  if (!newRl && !newEn) { showToast('กรุณาใส่ข้อความ Thai'); return; }
   if (newEn) vocabList[i].en = newEn;
-  vocabList[i].th = newTh;
-  if (newAl !== undefined) {
-    vocabList[i].aliases = newAl ? newAl.split(',').map(s => s.trim()).filter(Boolean) : [];
-  }
+  if (newRl) { vocabList[i].research_label = newRl; vocabList[i].th = newRl; }
+  if (newTa !== undefined) vocabList[i].tals_terms  = toArr(newTa);
+  if (newLa !== undefined) vocabList[i].llm_aliases = toArr(newLa);
   saveVocab();
   // visual feedback — border เขียวสักครู่
   const card = document.getElementById(`vcard_${id}`);
@@ -756,22 +759,34 @@ function renderVocab() {
   const approved = vocabList.filter(v => v.status === 'approved');
 
   const mkCard = (v) => {
-    const aliasesVal = (v.aliases||[]).join(', ').replace(/"/g,'&quot;');
+    const esc = s => (s||'').replace(/"/g,'&quot;');
+    const joinArr = arr => (arr||[]).join(', ');
     return `
   <div class="vocab-card ${v.status}" id="vcard_${v.id}">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
       <span style="font-size:11px;color:#999">English</span>
       <div style="display:flex;gap:4px;align-items:center">
-        ${v.tals_code ? `<span class="tals-badge">TALS:${v.tals_code}</span>` : ''}
+        ${v.research_abbrev ? `<span class="tals-badge">${v.research_abbrev}</span>` : ''}
         ${v.context ? `<span style="font-size:11px;color:#ba8345;background:#fff3e0;padding:2px 8px;border-radius:10px">${v.context}</span>` : ''}
       </div>
     </div>
-    <input class="vocab-en-input" id="ven_${v.id}" value="${v.en.replace(/"/g,'&quot;')}">
-    <div style="font-size:11px;color:#999;margin-bottom:2px">Thai (TALS มาตรฐาน)</div>
-    <textarea class="vocab-th" id="vth_${v.id}" rows="2">${v.th}</textarea>
+    <input class="vocab-en-input" id="ven_${v.id}" value="${esc(v.en)}">
+    <div style="font-size:11px;color:#999;margin:6px 0 2px">Thai มาตรฐาน TALS · <em>ใช้ใน FB post</em></div>
+    <input class="vocab-en-input" id="vrl_${v.id}" value="${esc(v.research_label||v.th)}" placeholder="ข้อความ Thai ใน FB post เช่น ดาวอาทิตย์, กุม">
     ${v.note ? `<div class="vocab-note">${v.note}</div>` : ''}
-    <div style="font-size:11px;color:#999;margin:4px 0 2px">ดัชนีคำคล้าย <span style="color:#aaa">(คั่นด้วย ,)</span></div>
-    <input class="vocab-aliases-input" id="val_${v.id}" value="${aliasesVal}" placeholder="เช่น กุมกัน, ร่วมราศี, 0°, Conjunct">
+    <details style="margin-top:6px">
+      <summary style="font-size:11px;color:#888;cursor:pointer;user-select:none">ดัชนีคำคล้าย ▾</summary>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <div>
+          <div style="font-size:10px;color:#1f2d5e;font-weight:700;margin-bottom:2px">ศัพท์ TALS / ตำรา</div>
+          <input class="vocab-aliases-input" id="vta_${v.id}" value="${esc(joinArr(v.tals_terms))}" placeholder="กุม, กุมกัน">
+        </div>
+        <div>
+          <div style="font-size:10px;color:#555;font-weight:700;margin-bottom:2px">LLM / text โหราศาสตร์อื่น</div>
+          <input class="vocab-aliases-input" id="vla_${v.id}" value="${esc(joinArr(v.llm_aliases))}" placeholder="Conjunction, 0°, same sign">
+        </div>
+      </div>
+    </details>
     <div class="vocab-actions">
       <button class="btn-sm btn-save-sm"    onclick="saveVocabItem('${v.id}')">💾 บันทึก</button>
       ${v.status !== 'approved' ? `<button class="btn-sm btn-approve-sm" onclick="approveVocab('${v.id}')">✅ อนุมัติ</button>` : ''}

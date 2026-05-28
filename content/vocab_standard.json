@@ -6,7 +6,10 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "Lift",
+    "research_label": "โอกาสเกิดสูงกว่าปกติ X เท่า",
+    "tals_terms": [],
+    "llm_aliases": [
       "lift ratio",
       "relative risk (approx.)",
       "rate ratio",
@@ -20,11 +23,14 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "ค่า p",
+    "research_abbrev": "p",
+    "research_label": "ความน่าเชื่อถือทางสถิติ",
+    "tals_terms": [],
+    "llm_aliases": [
       "p value",
       "significance level",
-      "probability value"
+      "probability value",
+      "ค่า p"
     ]
   },
   {
@@ -34,7 +40,10 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "FDR",
+    "research_label": "อัตราการค้นพบที่คลาดเคลื่อน",
+    "tals_terms": [],
+    "llm_aliases": [
       "false discovery rate",
       "Benjamini-Hochberg",
       "q-value"
@@ -47,11 +56,16 @@
     "context": "astronomy",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "จร",
-      "ดาวโคจร",
+    "research_abbrev": "Transit",
+    "research_label": "ดาวจร",
+    "tals_terms": [
+      "ดาวจร",
+      "จร"
+    ],
+    "llm_aliases": [
       "Transiting",
-      "Transits"
+      "Transits",
+      "ดาวโคจร"
     ]
   },
   {
@@ -61,11 +75,17 @@
     "context": "astronomy",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "Natal",
+    "research_label": "เจ้าชะตา",
+    "tals_terms": [
+      "เจ้าชะตา",
+      "ดาวเกิด"
+    ],
+    "llm_aliases": [
+      "natal",
+      "birth position",
       "นาตาล",
-      "ดาวนาตาล",
-      "ดาวเกิด",
-      "birth position"
+      "ดาวนาตาล"
     ]
   },
   {
@@ -76,14 +96,20 @@
     "status": "approved",
     "created_at": "2026-05-28",
     "tals_code": "KUM",
-    "aliases": [
-      "กุมกัน",
-      "ร่วมราศี",
+    "note": "TALS KUM — ดาวจรอยู่ราศีเดียวกับจุดพื้น (strength 1.0)",
+    "research_abbrev": "KUM",
+    "research_label": "กุม",
+    "tals_terms": [
+      "กุม",
+      "กุมกัน"
+    ],
+    "llm_aliases": [
+      "Conjunction",
       "Conjunct",
       "0°",
-      "same sign"
-    ],
-    "note": "TALS KUM — ดาวจรอยู่ราศีเดียวกับจุดพื้น (strength 1.0)"
+      "same sign",
+      "ร่วมราศี"
+    ]
   },
   {
     "id": "v_init_007",
@@ -93,13 +119,19 @@
     "status": "approved",
     "created_at": "2026-05-28",
     "tals_code": "LENG",
-    "aliases": [
-      "ตรงข้าม",
+    "note": "TALS LENG — ห่าง 6 ราศี (strength 0.8)",
+    "research_abbrev": "LENG",
+    "research_label": "เล็ง",
+    "tals_terms": [
+      "เล็ง"
+    ],
+    "llm_aliases": [
+      "Opposition",
       "Opposite",
       "180°",
-      "7th sign"
-    ],
-    "note": "TALS LENG — ห่าง 6 ราศี (strength 0.8)"
+      "7th sign",
+      "ตรงข้าม"
+    ]
   },
   {
     "id": "v_init_008",
@@ -109,13 +141,19 @@
     "status": "approved",
     "created_at": "2026-05-28",
     "tals_code": "YOK",
-    "aliases": [
-      "ตรีโกณ (Western)",
-      "Trine",
-      "120°",
+    "note": "TALS YOK — ภพ 5 หรือ 9 (120°). ⚠️ ตรีโกณ ใน TALS = 60° ไม่ใช่ 120°",
+    "research_abbrev": "YOK",
+    "research_label": "โยค",
+    "tals_terms": [
+      "โยค",
       "ภพ 5/9"
     ],
-    "note": "TALS YOK — ภพ 5 หรือ 9 (120°). ⚠️ ตรีโกณ ใน TALS = 60° ไม่ใช่ 120°"
+    "llm_aliases": [
+      "Trine",
+      "Trigon",
+      "120°",
+      "ตรีโกณ (Western)"
+    ]
   },
   {
     "id": "v_init_009",
@@ -124,13 +162,16 @@
     "context": "aspect_western",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "จตุโกณ",
+    "note": "TALS ไม่มีมุม 90° — ใช้เฉพาะบริบท Western astrology และ JULIAN full_scan",
+    "research_abbrev": "",
+    "research_label": "ไม่มีใน TALS",
+    "tals_terms": [],
+    "llm_aliases": [
       "Square",
       "90°",
+      "จตุโกณ",
       "4th/10th sign"
-    ],
-    "note": "TALS ไม่มีมุม 90° — ใช้เฉพาะบริบท Western astrology และ JULIAN full_scan"
+    ]
   },
   {
     "id": "v_init_010",
@@ -152,10 +193,12 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "n",
-      "ขนาดตัวอย่าง",
-      "sample count"
+    "research_abbrev": "n",
+    "research_label": "จำนวนกลุ่มตัวอย่าง",
+    "tals_terms": [],
+    "llm_aliases": [
+      "sample count",
+      "ขนาดตัวอย่าง"
     ]
   },
   {
@@ -165,10 +208,13 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "ค่าฐาน",
+    "research_abbrev": "Baseline",
+    "research_label": "ค่าพื้นฐานทั่วไป",
+    "tals_terms": [],
+    "llm_aliases": [
       "baseline rate",
-      "base rate"
+      "base rate",
+      "ค่าฐาน"
     ]
   },
   {
@@ -194,7 +240,10 @@
     "context": "astronomy",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "Orb",
+    "research_label": "องศาความคลาดเคลื่อน",
+    "tals_terms": [],
+    "llm_aliases": [
       "orb of aspect",
       "degree tolerance",
       "ค่าคลาดเคลื่อน"
@@ -207,8 +256,10 @@
     "context": "astronomy",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "JD",
+    "research_abbrev": "JD",
+    "research_label": "หน่วยวันจูเลียน",
+    "tals_terms": [],
+    "llm_aliases": [
       "Julian date",
       "เลขวันดาราศาสตร์"
     ]
@@ -252,9 +303,14 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "SU",
+    "research_label": "ดาวอาทิตย์",
+    "tals_terms": [
       "อาทิตย์",
-      "สุริยา",
+      "สุริยา"
+    ],
+    "llm_aliases": [
+      "Sun",
       "The Sun",
       "☀️"
     ]
@@ -266,9 +322,14 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "MO",
+    "research_label": "ดาวจันทร์",
+    "tals_terms": [
       "จันทร์",
-      "พระจันทร์",
+      "พระจันทร์"
+    ],
+    "llm_aliases": [
+      "Moon",
       "The Moon",
       "🌙"
     ]
@@ -280,8 +341,13 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "อังคาร",
+    "research_abbrev": "MA",
+    "research_label": "ดาวอังคาร",
+    "tals_terms": [
+      "อังคาร"
+    ],
+    "llm_aliases": [
+      "Mars",
       "The Mars",
       "♂"
     ]
@@ -293,8 +359,12 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "พุธ",
+    "research_abbrev": "ME",
+    "research_label": "ดาวพุธ",
+    "tals_terms": [
+      "พุธ"
+    ],
+    "llm_aliases": [
       "Mercury",
       "☿"
     ]
@@ -306,9 +376,13 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "JU",
+    "research_label": "ดาวพฤหัสบดี",
+    "tals_terms": [
       "พฤหัส",
-      "พฤหัสบดี",
+      "พฤหัสบดี"
+    ],
+    "llm_aliases": [
       "Jupiter",
       "♃"
     ]
@@ -320,8 +394,12 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "ศุกร์",
+    "research_abbrev": "VE",
+    "research_label": "ดาวศุกร์",
+    "tals_terms": [
+      "ศุกร์"
+    ],
+    "llm_aliases": [
       "Venus",
       "♀"
     ]
@@ -333,8 +411,12 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "เสาร์",
+    "research_abbrev": "SA",
+    "research_label": "ดาวเสาร์",
+    "tals_terms": [
+      "เสาร์"
+    ],
+    "llm_aliases": [
       "Saturn",
       "♄"
     ]
@@ -346,8 +428,12 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "ราหู",
+    "research_abbrev": "RA",
+    "research_label": "ดาวราหู",
+    "tals_terms": [
+      "ราหู"
+    ],
+    "llm_aliases": [
       "Rahu",
       "North Node",
       "จุดมังกรหัว"
@@ -360,8 +446,12 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "เกตุ",
+    "research_abbrev": "KE",
+    "research_label": "ดาวเกตุ",
+    "tals_terms": [
+      "เกตุ"
+    ],
+    "llm_aliases": [
       "Ketu",
       "South Node",
       "จุดมังกรหาง"
@@ -374,13 +464,17 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "มฤตยู",
+    "note": "ดาวยูเรนัส (Western) — เพิ่มในโหราศาสตร์ไทยสมัย ร.4. ⚠️ อย่าสับสนกับ Mrityunjaya ซึ่งเป็นคุณนามพระศิวะ",
+    "research_abbrev": "MR",
+    "research_label": "ดาวมฤตยู",
+    "tals_terms": [
+      "มฤตยู"
+    ],
+    "llm_aliases": [
       "Uranus",
       "Mrityu",
       "♅"
-    ],
-    "note": "ดาวยูเรนัส (Western) — เพิ่มในโหราศาสตร์ไทยสมัย ร.4. ⚠️ อย่าสับสนกับ Mrityunjaya ซึ่งเป็นคุณนามพระศิวะ"
+    ]
   },
   {
     "id": "v_planet_LA",
@@ -389,9 +483,14 @@
     "context": "planet",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "LA",
+    "research_label": "ลัคนา",
+    "tals_terms": [
       "ตนุ",
-      "ลัคน์",
+      "ลัคน์"
+    ],
+    "llm_aliases": [
+      "Ascendant",
       "Lagna",
       "ASC",
       "Rising sign"
@@ -445,13 +544,18 @@
     "status": "approved",
     "created_at": "2026-05-28",
     "tals_code": "TRI",
-    "aliases": [
-      "ฉัฏฐ์",
-      "Sextile",
-      "60°",
+    "note": "TALS TRI — ภพ 3 หรือ 11 (60°). ⚠️ ตรีโกณใน TALS = 60° ≠ Trine (120°) ของ Western",
+    "research_abbrev": "TRI",
+    "research_label": "ตรีโกณ",
+    "tals_terms": [
+      "ตรีโกณ",
       "ภพ 3/11"
     ],
-    "note": "TALS TRI — ภพ 3 หรือ 11 (60°). ⚠️ ตรีโกณใน TALS = 60° ≠ Trine (120°) ของ Western"
+    "llm_aliases": [
+      "Sextile",
+      "60°",
+      "ฉัฏฐ์"
+    ]
   },
   {
     "id": "v_aspect_quincunx",
@@ -460,12 +564,15 @@
     "context": "aspect_western",
     "status": "draft",
     "created_at": "2026-05-28",
-    "aliases": [
-      "กึ่งตรีโกณ",
+    "note": "ไม่มีใน TALS — ใช้เฉพาะบริบท Western astrology",
+    "research_abbrev": "",
+    "research_label": "กึ่งตรีโกณ (150°)",
+    "tals_terms": [],
+    "llm_aliases": [
+      "Quincunx",
       "Inconjunct",
       "150°"
-    ],
-    "note": "ไม่มีใน TALS — ใช้เฉพาะบริบท Western astrology"
+    ]
   },
   {
     "id": "v_stat_ci",
@@ -474,8 +581,10 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "CI",
+    "research_abbrev": "CI",
+    "research_label": "ช่วงความเชื่อมั่น",
+    "tals_terms": [],
+    "llm_aliases": [
       "confidence range",
       "interval estimate"
     ]
@@ -486,7 +595,14 @@
     "th": "ส่วนเบี่ยงเบนมาตรฐาน",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "research_abbrev": "SD",
+    "research_label": "ส่วนเบี่ยงเบนมาตรฐาน",
+    "tals_terms": [],
+    "llm_aliases": [
+      "standard deviation",
+      "ส่วนเบี่ยงเบน"
+    ]
   },
   {
     "id": "v_stat_sig",
@@ -494,7 +610,15 @@
     "th": "นัยสำคัญทางสถิติ",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "research_abbrev": "sig.",
+    "research_label": "นัยสำคัญทางสถิติ",
+    "tals_terms": [],
+    "llm_aliases": [
+      "significance",
+      "significant result",
+      "มีนัยสำคัญ"
+    ]
   },
   {
     "id": "v_stat_h0",
@@ -503,9 +627,12 @@
     "context": "statistical",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
-      "H0",
+    "research_abbrev": "H₀",
+    "research_label": "สมมติฐานว่าง",
+    "tals_terms": [],
+    "llm_aliases": [
       "null hypothesis",
+      "H0",
       "สมมติฐานว่าง"
     ]
   },
@@ -515,7 +642,14 @@
     "th": "ขนาดของผลกระทบ",
     "context": "statistical",
     "status": "approved",
-    "created_at": "2026-05-28"
+    "created_at": "2026-05-28",
+    "research_abbrev": "ES",
+    "research_label": "ขนาดของผลกระทบ",
+    "tals_terms": [],
+    "llm_aliases": [
+      "effect size",
+      "effect magnitude"
+    ]
   },
   {
     "id": "v_stat_corr",
@@ -660,10 +794,13 @@
     "context": "research",
     "status": "approved",
     "created_at": "2026-05-28",
-    "aliases": [
+    "research_abbrev": "T×N",
+    "research_label": "คู่ดาว (ดาวจร × เจ้าชะตา)",
+    "tals_terms": [],
+    "llm_aliases": [
       "planet pair",
-      "คู่มุมดาว",
-      "T×N pair"
+      "transit-natal pair",
+      "คู่มุมดาว"
     ]
   }
 ]
