@@ -219,8 +219,27 @@ input[type=password], input[type=text] {
   <div class="stats" id="statsBar"></div>
 
   <div id="pendingSection">
-    <div class="section-title">รออนุมัติ</div>
+    <div class="section-title">รออนุมัติ — เสนอโดย JULIAN</div>
     <div id="pendingList"></div>
+  </div>
+
+  <!-- ฟอร์มเสนอหัวข้อเอง -->
+  <div style="margin: 24px 0 8px">
+    <div class="section-title">เสนอหัวข้อเอง</div>
+    <div style="background:rgba(255,255,255,.08);border-radius:12px;padding:16px">
+      <input type="text" id="userPair" placeholder="คู่ดาว เช่น SU×JU หรือ MO×SA"
+        style="background:#fff;color:#222;margin-bottom:8px">
+      <input type="text" id="userTopic" placeholder="หัวข้อ/ประเด็นที่สนใจ เช่น โชคลาภ ความรัก"
+        style="background:#fff;color:#222;margin-bottom:8px">
+      <input type="text" id="userNote" placeholder="หมายเหตุ (ไม่บังคับ)"
+        style="background:#fff;color:#222;margin-bottom:12px">
+      <button class="btn-main btn-gold" onclick="addUserProposal()" style="margin-bottom:0">+ เพิ่มหัวข้อ</button>
+    </div>
+  </div>
+
+  <div id="userPendingSection">
+    <div class="section-title">รออนุมัติ — เสนอโดยปีเตอร์</div>
+    <div id="userPendingList"></div>
   </div>
 
   <div id="approvedSection">
@@ -388,17 +407,50 @@ function renderCard(p) {
   </div>`;
 }
 
+function addUserProposal() {
+  const pair  = document.getElementById('userPair').value.trim();
+  const topic = document.getElementById('userTopic').value.trim();
+  const note  = document.getElementById('userNote').value.trim();
+  if (!pair || !topic) { showToast('กรุณาใส่คู่ดาวและหัวข้อ'); return; }
+
+  const proposal = {
+    id: `user_${Date.now()}`,
+    pair,
+    transit: pair.split('×')[0] || '',
+    natal:   pair.split('×')[1] || '',
+    thai: pair,
+    topic,
+    hint: note || 'รอ JULIAN วิเคราะห์ข้อมูลจริง',
+    proposed_by: 'user',
+    finding: null,
+    status: 'pending',
+    created_at: new Date().toISOString().slice(0, 10),
+  };
+
+  proposals.push(proposal);
+  saveProposals();
+  renderAll();
+
+  document.getElementById('userPair').value  = '';
+  document.getElementById('userTopic').value = '';
+  document.getElementById('userNote').value  = '';
+  showToast('เพิ่มหัวข้อแล้ว ✅');
+}
+
 function renderAll() {
-  const pending  = proposals.filter(p => p.status === 'pending');
-  const approved = proposals.filter(p => p.status === 'approved' || p.status === 'processing');
-  const done     = proposals.filter(p => p.status === 'done');
+  const julianPending = proposals.filter(p => p.status === 'pending' && p.proposed_by !== 'user');
+  const userPending   = proposals.filter(p => p.status === 'pending' && p.proposed_by === 'user');
+  const approved      = proposals.filter(p => p.status === 'approved' || p.status === 'processing');
+  const done          = proposals.filter(p => p.status === 'done');
 
-  document.getElementById('pendingList').innerHTML  = pending.length  ? pending.map(renderCard).join('')  : '<div class="empty">ไม่มีหัวข้อรอนุมัติ</div>';
-  document.getElementById('approvedList').innerHTML = approved.length ? approved.map(renderCard).join('') : '<div class="empty">ยังไม่มีที่อนุมัติ</div>';
-  document.getElementById('doneList').innerHTML     = done.length     ? done.map(renderCard).join('')     : '<div class="empty">ยังไม่มีที่เสร็จ</div>';
+  document.getElementById('pendingList').innerHTML     = julianPending.length ? julianPending.map(renderCard).join('') : '<div class="empty">ยังไม่มีหัวข้อจาก JULIAN — รัน session JULIAN</div>';
+  document.getElementById('userPendingList').innerHTML = userPending.length   ? userPending.map(renderCard).join('')   : '<div class="empty">ยังไม่มีหัวข้อที่ปีเตอร์เสนอ</div>';
+  document.getElementById('approvedList').innerHTML   = approved.length      ? approved.map(renderCard).join('')      : '<div class="empty">ยังไม่มีที่อนุมัติ</div>';
+  document.getElementById('doneList').innerHTML       = done.length          ? done.map(renderCard).join('')          : '<div class="empty">ยังไม่มีที่เสร็จ</div>';
 
+  const allPending = julianPending.length + userPending.length;
   document.getElementById('statsBar').innerHTML = `
-    <div class="stat"><b>${pending.length}</b>รออนุมัติ</div>
+    <div class="stat"><b>${allPending}</b>รออนุมัติ</div>
     <div class="stat"><b>${approved.length}</b>อนุมัติแล้ว</div>
     <div class="stat"><b>${done.length}</b>ใน inbox</div>
     <div class="stat"><b>${proposals.filter(p=>p.status==='skipped').length}</b>ข้าม</div>
