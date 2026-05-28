@@ -1,4 +1,4 @@
-// HORATAD:SCRIPT:3.3.79
+// HORATAD:SCRIPT:3.3.80
 // Version 3.3.79 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
