@@ -28,7 +28,7 @@ import {
 // ── Config ────────────────────────────────────────────────────────────────
 const TYPHOON_WORKER_URL = 'https://horatad-ai.uchujaro5.workers.dev';
 const TYPHOON_MODEL = 'typhoon-v2.5-30b-a3b-instruct';
-const MAX_TOKENS = 1200;
+const MAX_TOKENS = 2800;
 const MAX_RULES = 120;
 const MIN_MANIFESTATION = 0.10; // ตาม tb_predictions threshold
 
@@ -500,20 +500,13 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
   const _parsePredictions=(txt)=>{
     const m=txt.match(/\{[\s\S]*\}/);
     const parsed=JSON.parse(m?m[0]:txt); // throws ถ้าไม่ใช่ JSON
-    if(!parsed.predictions||!Array.isArray(parsed.predictions)){
-      console.warn('[Typhoon] parsed keys:', Object.keys(parsed));
-      return null;
-    }
+    if(!parsed.predictions||!Array.isArray(parsed.predictions)) return null;
     const valid=parsed.predictions.filter(p=>ruleIds.has(p.rule_id)&&p.text);
-    if(!valid.length){
-      console.warn('[Typhoon] ruleIds sample:',[...ruleIds].slice(0,5),'| pred IDs:',parsed.predictions.slice(0,5).map(p=>p.rule_id));
-      return null;
-    }
+    if(!valid.length) return null;
     if(typeof options.onPredictions==='function') options.onPredictions(valid);
     return valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n');
   };
-  try{ const r=_parsePredictions(raw); if(r) return r; }catch(e){ console.warn('[Typhoon] parse threw:',e.message,raw.slice(0,200)); }
-  console.warn('[Typhoon] raw1 (first 300):', raw.slice(0,300));
+  try{ const r=_parsePredictions(raw); if(r) return r; }catch(_){}
 
   // retry 1 ครั้ง — Typhoon ไม่ follow JSON format → ลองอีกครั้งก่อน fallback
   try{
@@ -521,10 +514,7 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
     if(r2.ok){
       const d2=await r2.json();
       const raw2=(d2.choices?.[0]?.message?.content||d2.content?.[0]?.text||'').trim();
-      if(raw2){
-        console.warn('[Typhoon] raw2 (first 300):', raw2.slice(0,300));
-        try{ const r=_parsePredictions(raw2); if(r) return r; }catch(_){}
-      }
+      if(raw2){ try{ const r=_parsePredictions(raw2); if(r) return r; }catch(_){} }
     }
   }catch(_){}
   throw new Error('[Typhoon] ตอบไม่ใช่ JSON หลัง retry');
