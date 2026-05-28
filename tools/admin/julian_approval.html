@@ -190,9 +190,16 @@ input[type=password], input[type=text] {
 <!-- Setup screen -->
 <div id="setupScreen" style="display:none">
   <h2>ตั้งค่าครั้งแรก</h2>
-  <p>ใส่ GitHub Personal Access Token (PAT) เพื่อให้ tool นี้บันทึกโพสต์ที่อนุมัติลง inbox อัตโนมัติ<br><br>
-  สร้าง PAT: GitHub → Settings → Developer settings → Personal access tokens → Fine-grained → เลือก repo horatad/horatad → Contents: Read and Write</p>
-  <input type="password" id="patInput" placeholder="github_pat_xxxxxxxxxxxx">
+  <p>ใส่ GitHub Personal Access Token (PAT) เพื่อให้ tool นี้บันทึกโพสต์ที่อนุมัติลง inbox อัตโนมัติ</p>
+  <p style="background:#fff8e1;border-left:3px solid #ba8345;padding:10px 12px;border-radius:0 6px 6px 0;font-size:13px;color:#555;margin-bottom:12px">
+    ⭐ ใช้ <b>Classic PAT</b> (ไม่หมดอายุ)<br>
+    GitHub → Settings → Developer settings →<br>
+    Personal access tokens → <b>Tokens (classic)</b><br>
+    → Generate new token (classic)<br>
+    → Expiration: <b>No expiration</b><br>
+    → Scope: ติ๊ก <b>public_repo</b> → Generate
+  </p>
+  <input type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
   <button class="btn-main btn-gold" onclick="savePat()">บันทึก Token</button>
   <button class="btn-main btn-gray" onclick="skipSetup()">ข้าม (ดูอย่างเดียว)</button>
 </div>

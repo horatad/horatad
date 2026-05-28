@@ -97,6 +97,24 @@ tools/*.html ทุกไฟล์ deploy บน GitHub Pages เสมอ
 
 App หลักของแต่ละ project ใช้ production URL — ดู project doc (เช่น HORATAD → `docs/HORATAD.md` Production URL)
 
+### 🔑 GitHub PAT standard — Classic PAT ไม่หมดอายุ (standing rule)
+
+**ทุกครั้งที่แนะนำให้สร้าง GitHub PAT ให้ใช้ Classic PAT เสมอ — ห้ามแนะนำ Fine-grained PAT**
+
+| | Classic PAT | Fine-grained PAT |
+|---|---|---|
+| Expiration | **No expiration** ได้ | บังคับ max 1 ปี |
+| ใช้ใน project นี้ | ✅ มาตรฐาน | ❌ ไม่แนะนำ |
+
+**Step มาตรฐาน (copy ได้เลย):**
+1. GitHub → Settings → Developer settings → Personal access tokens → **Tokens (classic)**
+2. Generate new token (classic)
+3. Expiration: **No expiration**
+4. Scope: ติ๊ก **`public_repo`** (repo ของเราเป็น public)
+5. Generate → copy token (`ghp_xxx...`)
+
+**เมื่อ tool ถาม PAT:** placeholder ต้องเป็น `ghp_xxxx` (classic format) ไม่ใช่ `github_pat_xxxx`
+
 ---
 
 ## 📄 Doc Generation — standing rule (เอกสาร share Google Docs)
