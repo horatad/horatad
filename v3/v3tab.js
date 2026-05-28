@@ -743,10 +743,18 @@ async function v3Typhoon() {
     _showSpinner(false);
     _showResult(text, false, `🤖 Typhoon AI V24 (${primaryRules.length}/${matched.length} กฎ)`);
 
-    // Auto-TTS top 3 ทันที
+    // Auto-TTS top 3 ทันที — เปลี่ยนปุ่มเป็น "ฟังซ้ำ" หลังเล่น
     if (_predPool.length && nokCanSpeak()) {
       const topText = _predPool.slice(0, 3).map(p => p.text).join(' ');
-      nokSpeak(topText, { rate: _v3SpeakRate });
+      const _autoBtn = _el('v3-speak-btn');
+      nokSpeak(topText, {
+        rate: _v3SpeakRate,
+        onState: (ev) => {
+          if (!_autoBtn) return;
+          if (ev === 'start') { _autoBtn.textContent = '⏸ หยุด'; _autoBtn.classList.add('speaking'); }
+          else if (ev === 'end' || ev === 'error') { _autoBtn.textContent = '🔁 ฟังซ้ำ'; _autoBtn.classList.remove('speaking'); }
+        },
+      });
     }
 
     // Background: ส่งกฎที่เหลือให้ Typhoon ขณะ TTS กำลังเล่น — เงียบๆ
@@ -784,29 +792,28 @@ async function v3Typhoon() {
 }
 
 // ── NOK: Speak (Text-to-Speech) ──────────────────────────────
+// ใช้ _predPool (Typhoon predictions) แทน full result text
+// → ข้อความสั้น ไม่เกิน byte limit ของ Cloud TTS
 function v3Speak() {
   const btn = _el('v3-speak-btn');
-  const raw = _el('v3-result') ? _el('v3-result').textContent : '';
-  if (!raw) return;
-  // ตัด rule ID เช่น [R01] ออกก่อนพูด — user ไม่ต้องได้ยินหมายเลขกฎ
-  const text = raw.replace(/\[R\d+\]\s*/g, '');
 
-  // กดซ้ำขณะกำลังพูด → หยุด
+  // กดขณะกำลังพูด → หยุด
   if (nokIsSpeaking()) {
     nokStop();
-    if (btn) {
-      btn.textContent = '🔊 ฟังคำพยากรณ์';
-      btn.classList.remove('speaking');
-    }
+    if (btn) { btn.textContent = '🔁 ฟังซ้ำ'; btn.classList.remove('speaking'); }
     return;
   }
+
+  // ใช้ _predPool — เหมือน auto-TTS แต่เล่นทั้งหมด (ไม่แค่ top 3)
+  if (!_predPool.length) return;
+  const text = _predPool.map(p => p.text).join(' ');
 
   nokSpeak(text, {
     rate: _v3SpeakRate,
     onState: (event, detail) => {
       if (event === 'error' && detail === 'no-thai-voice') {
         _showTTSGuide();
-        if (btn) { btn.textContent = '🔊 ฟังคำพยากรณ์'; btn.classList.remove('speaking'); }
+        if (btn) { btn.textContent = '🔁 ฟังซ้ำ'; btn.classList.remove('speaking'); }
         return;
       }
       if (!btn) return;
@@ -814,14 +821,13 @@ function v3Speak() {
         btn.textContent = '⏸ หยุด';
         btn.classList.add('speaking');
       } else if (event === 'end') {
-        btn.textContent = '🔊 ฟังคำพยากรณ์';
+        btn.textContent = '🔁 ฟังซ้ำ';
         btn.classList.remove('speaking');
       } else if (event === 'error') {
-        btn.textContent = '🔊 ฟังคำพยากรณ์';
+        btn.textContent = '🔁 ฟังซ้ำ';
         btn.classList.remove('speaking');
-        if (detail === 'no-thai-voice') _showToastV3('เครื่องนี้ไม่มีเสียงไทย');
-        else if (detail === 'not-supported') _showToastV3('เบราว์เซอร์นี้ไม่รองรับเสียงพูด');
-        else _showToastV3('เล่นเสียงไม่ได้');
+        if (detail === 'not-supported') _showToastV3('เบราว์เซอร์นี้ไม่รองรับเสียงพูด');
+        else if (detail !== 'no-thai-voice') _showToastV3('เล่นเสียงไม่ได้');
       }
     }
   });
