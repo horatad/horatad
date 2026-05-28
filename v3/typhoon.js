@@ -507,6 +507,7 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
     return valid.map(p=>`[${p.rule_id}] ${p.text.trim()}`).join('\n\n');
   };
   try{ const r=_parsePredictions(raw); if(r) return r; }catch(_){}
+  console.warn('[Typhoon] raw1 (first 300):', raw.slice(0,300));
 
   // retry 1 ครั้ง — Typhoon ไม่ follow JSON format → ลองอีกครั้งก่อน fallback
   try{
@@ -514,7 +515,10 @@ export async function send_to_typhoon(natalPayload, matchedRules, options={}){
     if(r2.ok){
       const d2=await r2.json();
       const raw2=(d2.choices?.[0]?.message?.content||d2.content?.[0]?.text||'').trim();
-      if(raw2){ try{ const r=_parsePredictions(raw2); if(r) return r; }catch(_){} }
+      if(raw2){
+        console.warn('[Typhoon] raw2 (first 300):', raw2.slice(0,300));
+        try{ const r=_parsePredictions(raw2); if(r) return r; }catch(_){}
+      }
     }
   }catch(_){}
   throw new Error('[Typhoon] ตอบไม่ใช่ JSON หลัง retry');

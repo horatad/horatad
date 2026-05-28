@@ -76,8 +76,16 @@ async function handleTTS(request, env) {
     return corsResp('{"error":"text required"}', 400);
   }
 
+  // Google TTS limit: 5000 bytes (not chars). Thai = 3 bytes/char.
+  // Truncate at byte boundary to stay safe.
+  const enc = new TextEncoder();
+  const raw = enc.encode(text);
+  const safeText = raw.length > 4800
+    ? new TextDecoder('utf-8', { fatal: false }).decode(raw.subarray(0, 4800))
+    : text;
+
   const payload = {
-    input: { text: text.slice(0, 5000) },
+    input: { text: safeText },
     voice: { languageCode: 'th-TH', name: voice },
     audioConfig: {
       audioEncoding: 'MP3',
