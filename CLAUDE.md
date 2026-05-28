@@ -91,8 +91,9 @@
 ## 🌐 HTML Tools — standing rule
 
 tools/*.html ทุกไฟล์ deploy บน GitHub Pages เสมอ
-**ห้ามบอก "เปิดใน browser ได้เลย"** — ต้องส่ง URL นี้เสมอ:
-`https://horatad.github.io/horatad/tools/<filename>.html`
+**ห้ามบอก "เปิดใน browser ได้เลย"** — ต้องส่ง URL แบบ **horatad.com เสมอ** (ไม่ใช่ horatad.github.io):
+- tools ทั่วไป: `https://horatad.com/tools/<filename>.html`
+- tools/admin/: `https://horatad.com/tools/admin/<filename>.html`
 
 App หลักของแต่ละ project ใช้ production URL — ดู project doc (เช่น HORATAD → `docs/HORATAD.md` Production URL)
 
@@ -235,7 +236,7 @@ node scripts/admin/gen_risk_register.mjs    # regenerate docs/admin/RISK_REGISTE
 - `stale_branch_cleanup.yml` — weekly cleanup `claude/*` ที่ merged + >14 วัน (dry-run + manual apply)
 
 **Dashboard:**
-- `tools/admin_dashboard.html` → `https://horatad.github.io/horatad/tools/admin_dashboard.html`
+- `tools/admin_dashboard.html` → `https://horatad.com/tools/admin_dashboard.html`
   อ่าน handoffs/GUARD risk register live ผ่าน GitHub raw + API → cards + table
 
 **กฎการใช้:**
