@@ -318,6 +318,33 @@ class JulianLookup {
   }
 
   /**
+   * โหลด images.json (lazy, cached) — { QID: filename }
+   * @returns {Promise<object>} imageMap
+   */
+  async loadImageIndex() {
+    const cacheKey = '__images__';
+    if (this._cache.has(cacheKey)) return this._cache.get(cacheKey);
+    const map = await this._fetchJson(`${this._base}/images.json`);
+    this._cache.set(cacheKey, map);
+    this._filesLoaded++;
+    return map;
+  }
+
+  /**
+   * สร้าง Wikimedia Commons thumbnail URL จาก QID
+   * @param {string} qid   - Wikidata QID เช่น "Q937"
+   * @param {number} width - ความกว้าง px (default 120)
+   * @returns {Promise<string|null>} thumbnail URL หรือ null ถ้าไม่มีรูป
+   */
+  async getImageUrl(qid, width = 120) {
+    if (!qid) return null;
+    const map = await this.loadImageIndex();
+    const filename = map[qid];
+    if (!filename) return null;
+    return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}?width=${width}`;
+  }
+
+  /**
    * สถิติ cache ปัจจุบัน
    * @returns {{ cacheSize: number, filesLoaded: number, recordsLoaded: number }}
    */

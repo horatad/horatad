@@ -101,7 +101,7 @@ function yearToFilePath(year) {
 
 /** สร้าง mini record สำหรับ planet_sign buckets (short keys = ลด bytes) */
 function toMiniRecord(rec, signs) {
-  return {
+  const mini = {
     q: rec.qid        ?? null,
     n: rec.name       ?? '',
     j: rec.jd         ?? null,
@@ -111,6 +111,8 @@ function toMiniRecord(rec, signs) {
     c: rec.country    ?? null,
     s: signs,
   };
+  if (rec.img) mini.g = rec.img; // g = image filename (omit if null ลด bytes)
+  return mini;
 }
 
 /** สร้าง full record — original + signs field */
@@ -315,6 +317,26 @@ function main() {
     }
   }
 
+  // ── Write images.json — QID→filename สำหรับ notable persons ─────────────────
+  // threshold: sitelinks >= 20 หรือ importance >= 0.4 (คาดประมาณ 5-15K records)
+  process.stderr.write(`Building images.json...\n`);
+  const IMAGE_MIN_SITELINKS = 20;
+  const IMAGE_MIN_IMPORTANCE = 0.4;
+  const imageMap = {};
+  let imgCount = 0;
+  for (const rec of records) {
+    if (!rec.img || !rec.qid) continue;
+    const sl = rec.sitelinks ?? 0;
+    const im = rec.importance ?? 0;
+    if (sl >= IMAGE_MIN_SITELINKS || im >= IMAGE_MIN_IMPORTANCE) {
+      imageMap[rec.qid] = rec.img;
+      imgCount++;
+    }
+  }
+  const imgResult = writeFile('images.json', imageMap);
+  writtenFiles.push(imgResult);
+  process.stderr.write(`images.json: ${imgCount} notable persons with images\n`);
+
   // ── Write meta.json ──────────────────────────────────────────────────────────
   process.stderr.write(`Writing meta.json...\n`);
 
@@ -328,11 +350,13 @@ function main() {
     year_map          : yearMap,
     planet_sign_top_n : PLANET_SIGN_TOP_N,
     split_log         : splitLog,
+    images_count      : imgCount,
     file_types        : {
       planet_sign : 'planet_sign/{PLANET}/{SIGN}.json — mini records sorted by importance',
       by_year     : 'by_year/{YYYY}.json — full records ≥1900',
       by_decade   : 'by_decade/{NNNN}s.json — full records 1700-1899',
       by_50yr     : 'by_50yr/{NNNN}-{NNNN}.json — full records <1700',
+      images      : 'images.json — { QID: filename } สำหรับ notable persons (sitelinks≥20 หรือ importance≥0.4)',
     },
   };
 

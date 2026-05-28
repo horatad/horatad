@@ -123,6 +123,25 @@ function computeImportance(tier, sitelinks, accuracy) {
 }
 
 // ── Process one query — returns records written (0 = exhausted/skip) ──────────
+
+/** inject ?img เข้า SPARQL อัตโนมัติ — ไม่ต้องแก้ทุก query ใน config */
+function injectImgField(sparql) {
+  if (sparql.includes('?img')) return sparql; // มีแล้ว ข้าม
+  return sparql
+    .replace(/SELECT DISTINCT /, 'SELECT DISTINCT ?img ')
+    .replace(
+      /SERVICE wikibase:label/,
+      'OPTIONAL { ?person wdt:P18 ?img. }\n        SERVICE wikibase:label'
+    );
+}
+
+/** แปลง Wikimedia Commons URI → filename เท่านั้น (ลด bytes ใน record) */
+function extractImgFilename(uri) {
+  if (!uri) return null;
+  const idx = uri.indexOf('Special:FilePath/');
+  return idx >= 0 ? decodeURIComponent(uri.slice(idx + 17)) : null;
+}
+
 async function processQuery(query, progress, batchFile, today) {
   const { limit } = calcRunLimit(progress);
   if (limit === 0) return { done: false, budgetExhausted: true };
@@ -132,7 +151,7 @@ async function processQuery(query, progress, batchFile, today) {
 
   let bindings;
   try {
-    bindings = await sparqlQuery(query.sparql);
+    bindings = await sparqlQuery(injectImgField(query.sparql));
     console.log(`Wikidata: ${bindings.length} results`);
   } catch (e) {
     console.error(`Query ${query.id} failed: ${e.message} — skipping`);
@@ -175,6 +194,7 @@ async function processQuery(query, progress, batchFile, today) {
     const sitelinks = b.links?.value ? parseInt(b.links.value) : null;
     const importance = computeImportance(query.tier, sitelinks, accuracy);
     records.push({
+      qid,
       jd: birth.jd, name,
       event_label: query.label, type: 'human',
       country: countryCode?.toUpperCase().slice(0, 2) || null,
@@ -186,6 +206,7 @@ async function processQuery(query, progress, batchFile, today) {
       accuracy,
       sitelinks,
       importance,
+      img: extractImgFilename(b.img?.value),
       validated_count: 0,
       confidence: time_utc ? 0.95 : 0.85,
       notes: null,
