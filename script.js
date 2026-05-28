@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.70
-// Version 3.3.70 | 2026-05-28
+// HORATAD:SCRIPT:3.3.71
+// Version 3.3.71 | 2026-05-28
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -76,36 +76,35 @@ const PROVINCES_LAT={
 "อุดรธานี":17.41,"อุทัยธานี":15.38,"อุตรดิตถ์":17.62,"อุบลราชธานี":15.25,"อำนาจเจริญ":15.87
 };
 const FOREIGN_CITIES={
-  // เอเชียตะวันออก
-  'โตเกียว (ญี่ปุ่น)':139.69,'โอซาก้า (ญี่ปุ่น)':135.50,'โซล (เกาหลีใต้)':126.98,
-  'ปักกิ่ง (จีน)':116.41,'เซี่ยงไฮ้ (จีน)':121.47,'กว่างโจว (จีน)':113.26,
-  'ฮ่องกง':114.16,'ไทเป (ไต้หวัน)':121.56,
-  // เอเชียตะวันออกเฉียงใต้
-  'สิงคโปร์':103.82,'กัวลาลัมเปอร์ (มาเลเซีย)':101.69,
-  'จาการ์ตา (อินโดนีเซีย)':106.85,'มะนิลา (ฟิลิปปินส์)':120.98,
-  'ย่างกุ้ง (เมียนมา)':96.17,'ฮานอย (เวียดนาม)':105.85,'โฮจิมินห์ (เวียดนาม)':106.66,
-  'พนมเปญ (กัมพูชา)':104.92,'เวียงจันทน์ (ลาว)':102.60,
-  // เอเชียใต้ & ตะวันออกกลาง
-  'นิวเดลี (อินเดีย)':77.21,'มุมไบ (อินเดีย)':72.88,
-  'การาจี (ปากีสถาน)':67.01,'ดูไบ (UAE)':55.30,'ริยาด (ซาอุ)':46.72,
-  // ยุโรป
-  'ลอนดอน (สหราชอาณาจักร)':-0.13,'ปารีส (ฝรั่งเศส)':2.35,'เบอร์ลิน (เยอรมนี)':13.41,
-  'อัมสเตอร์ดัม (เนเธอร์แลนด์)':4.90,'บรัสเซลส์ (เบลเยียม)':4.35,
-  'ซูริก (สวิตเซอร์แลนด์)':8.55,'มิลาน (อิตาลี)':9.19,'โรม (อิตาลี)':12.49,
-  'มาดริด (สเปน)':-3.70,'สตอกโฮล์ม (สวีเดน)':18.07,'วอร์ซอ (โปแลนด์)':21.01,
-  'เฮลซิงกิ (ฟินแลนด์)':24.94,'เอเธนส์ (กรีซ)':23.73,'มอสโก (รัสเซีย)':37.62,
-  // อเมริกาเหนือ
-  'นิวยอร์ก (สหรัฐ)':-74.01,'ลอสแองเจลิส (สหรัฐ)':-118.24,'ชิคาโก (สหรัฐ)':-87.63,
-  'ฮิวสตัน (สหรัฐ)':-95.37,'ซีแอตเทิล (สหรัฐ)':-122.33,
-  'โตรอนโต (แคนาดา)':-79.38,'แวนคูเวอร์ (แคนาดา)':-123.12,
-  'เม็กซิโกซิตี้ (เม็กซิโก)':-99.13,
-  // อเมริกาใต้ & อื่น
-  'เซาเปาลู (บราซิล)':-46.63,'บัวโนสไอเรส (อาร์เจนตินา)':-58.38,
-  // โอเชียเนีย
-  'ซิดนีย์ (ออสเตรเลีย)':151.21,'เมลเบิร์น (ออสเตรเลีย)':144.97,
-  'เพิร์ท (ออสเตรเลีย)':115.86,'โอ๊คแลนด์ (นิวซีแลนด์)':174.76,
-  // แอฟริกา
-  'ไคโร (อียิปต์)':31.24,'โจฮันเนสเบิร์ก (แอฟริกาใต้)':28.05,
+  // East Asia
+  'Beijing, China':116.41,'Guangzhou, China':113.26,'Hong Kong':114.16,
+  'Osaka, Japan':135.50,'Seoul, South Korea':126.98,'Shanghai, China':121.47,
+  'Taipei, Taiwan':121.56,'Tokyo, Japan':139.69,
+  // Southeast Asia
+  'Hanoi, Vietnam':105.85,'Ho Chi Minh City, Vietnam':106.66,
+  'Jakarta, Indonesia':106.85,'Kuala Lumpur, Malaysia':101.69,
+  'Manila, Philippines':120.98,'Phnom Penh, Cambodia':104.92,
+  'Singapore':103.82,'Vientiane, Laos':102.60,'Yangon, Myanmar':96.17,
+  // South Asia & Middle East
+  'Dubai, UAE':55.30,'Karachi, Pakistan':67.01,
+  'Mumbai, India':72.88,'New Delhi, India':77.21,'Riyadh, Saudi Arabia':46.72,
+  // Europe
+  'Amsterdam, Netherlands':4.90,'Athens, Greece':23.73,'Berlin, Germany':13.41,
+  'Brussels, Belgium':4.35,'Helsinki, Finland':24.94,'London, UK':-0.13,
+  'Madrid, Spain':-3.70,'Milan, Italy':9.19,'Moscow, Russia':37.62,
+  'Paris, France':2.35,'Rome, Italy':12.49,'Stockholm, Sweden':18.07,
+  'Warsaw, Poland':21.01,'Zurich, Switzerland':8.55,
+  // North America
+  'Chicago, USA':-87.63,'Houston, USA':-95.37,'Los Angeles, USA':-118.24,
+  'Mexico City, Mexico':-99.13,'New York, USA':-74.01,'Seattle, USA':-122.33,
+  'Toronto, Canada':-79.38,'Vancouver, Canada':-123.12,
+  // South America
+  'Buenos Aires, Argentina':-58.38,'São Paulo, Brazil':-46.63,
+  // Oceania
+  'Auckland, New Zealand':174.76,'Melbourne, Australia':144.97,
+  'Perth, Australia':115.86,'Sydney, Australia':151.21,
+  // Africa
+  'Cairo, Egypt':31.24,'Johannesburg, South Africa':28.05,
 };
 const _FOREIGN_ALPHA='__FOREIGN__';
 // V2.2.23: Julian Day จาก d/m/y_BE — ตรงกับ engine.py get_j
@@ -1814,10 +1813,11 @@ function openLngPad(fieldId){
 }
 // ── City search via Nominatim (OpenStreetMap) — สำหรับหา longitude สถานที่นอกไทย ──
 // ── Province picker modal (แทน Nominatim) — ก-ฮ tabs + list จากข้อมูลใน code ──
-let _citySearchField=null,_provPickerAlpha='';
+let _citySearchField=null,_provPickerAlpha='',_foreignLetterFilter='';
 function openCitySearch(fieldId){
   _citySearchField=fieldId;
   _provPickerAlpha='';
+  _foreignLetterFilter='';
   _renderProvPickerTabs();
   _renderProvPickerList('');
   document.getElementById('city-search-modal').classList.remove('hidden');
@@ -1842,8 +1842,28 @@ function closeCitySearch(){
 function _renderProvPickerTabs(){
   const el=document.getElementById('city-search-tabs');
   if(!el)return;
-  const initials=[...new Set(Object.keys(PROVINCES).map(p=>p[0]))].sort();
   el.innerHTML='';
+  if(_provPickerAlpha===_FOREIGN_ALPHA){
+    // A-Z filter tabs for foreign cities
+    const available=new Set(Object.keys(FOREIGN_CITIES).map(c=>c[0].toUpperCase()));
+    const allBtn=document.createElement('button');
+    allBtn.className='prov-tab'+(!_foreignLetterFilter?' active':'');
+    allBtn.dataset.forletter='';allBtn.textContent='All';
+    el.appendChild(allBtn);
+    for(const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'){
+      if(!available.has(c))continue;
+      const btn=document.createElement('button');
+      btn.className='prov-tab'+(_foreignLetterFilter===c?' active':'');
+      btn.dataset.forletter=c;btn.textContent=c;
+      el.appendChild(btn);
+    }
+    const foreign=document.createElement('button');
+    foreign.className='prov-tab prov-tab-foreign active';
+    foreign.dataset.alpha=_FOREIGN_ALPHA;foreign.textContent='🌏 ต่างประเทศ';
+    el.appendChild(foreign);
+    return;
+  }
+  const initials=[...new Set(Object.keys(PROVINCES).map(p=>p[0]))].sort();
   const all=document.createElement('button');
   all.className='prov-tab'+(!_provPickerAlpha?' active':'');
   all.dataset.alpha='';all.textContent='ทั้งหมด';
@@ -1855,7 +1875,7 @@ function _renderProvPickerTabs(){
     el.appendChild(btn);
   }
   const foreign=document.createElement('button');
-  foreign.className='prov-tab prov-tab-foreign'+(_provPickerAlpha===_FOREIGN_ALPHA?' active':'');
+  foreign.className='prov-tab prov-tab-foreign';
   foreign.dataset.alpha=_FOREIGN_ALPHA;foreign.textContent='🌏 ต่างประเทศ';
   el.appendChild(foreign);
 }
@@ -1864,7 +1884,10 @@ function _renderProvPickerList(alpha){
   if(!listEl)return;
   listEl.innerHTML='';
   if(alpha===_FOREIGN_ALPHA){
-    for(const[city,lng] of Object.entries(FOREIGN_CITIES)){
+    const cities=Object.entries(FOREIGN_CITIES)
+      .filter(([city])=>!_foreignLetterFilter||city[0].toUpperCase()===_foreignLetterFilter)
+      .sort((a,b)=>a[0].localeCompare(b[0]));
+    for(const[city,lng] of cities){
       const div=document.createElement('div');
       div.className='city-item';
       div.dataset.lng=lng;div.dataset.prov=city;div.dataset.foreign='true';
@@ -1873,6 +1896,14 @@ function _renderProvPickerList(alpha){
       div.append(nameEl,lngEl);
       listEl.appendChild(div);
     }
+    // Custom longitude entry
+    const customDiv=document.createElement('div');
+    customDiv.className='city-item city-item-custom-lng';
+    customDiv.dataset.customLng='true';
+    const nameEl=document.createElement('span');nameEl.className='city-name';nameEl.textContent='📍 ระบุ Longitude เอง...';
+    const hintEl=document.createElement('span');hintEl.className='city-lng';hintEl.style.color='#7dd3fc';hintEl.textContent='กรอกเอง';
+    customDiv.append(nameEl,hintEl);
+    listEl.appendChild(customDiv);
     return;
   }
   const provs=Object.keys(PROVINCES).filter(p=>!alpha||p[0]===alpha).sort();
@@ -3819,20 +3850,24 @@ function cancelLongPress(){
 }
 
 function showContactPage(){
+  const _bgm=document.getElementById('about-bgm');if(_bgm){_bgm.pause();}
   document.getElementById('about-main').classList.add('hidden');
   document.getElementById('about-contact').classList.remove('hidden');
 }
 function hideContactPage(){
   document.getElementById('about-contact').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
+  const _bgm=document.getElementById('about-bgm');if(_bgm){_bgm.play().catch(()=>{});}
 }
 function showLunarPage(){
+  const _bgm=document.getElementById('about-bgm');if(_bgm){_bgm.pause();}
   document.getElementById('about-main').classList.add('hidden');
   document.getElementById('about-lunar').classList.remove('hidden');
 }
 function hideLunarPage(){
   document.getElementById('about-lunar').classList.add('hidden');
   document.getElementById('about-main').classList.remove('hidden');
+  const _bgm=document.getElementById('about-bgm');if(_bgm){_bgm.play().catch(()=>{});}
 }
 // ── V2.2.17: Rule Matching ───────────────────────────────
 function _matchRules(natal,transit){
@@ -4272,9 +4307,16 @@ window.addEventListener('DOMContentLoaded',()=>{
     _csTabs.addEventListener('click',e=>{
       const btn=e.target.closest('.prov-tab');
       if(!btn)return;
-      _provPickerAlpha=btn.dataset.alpha||'';
-      _renderProvPickerTabs();
-      _renderProvPickerList(_provPickerAlpha);
+      if('forletter' in btn.dataset){
+        _foreignLetterFilter=btn.dataset.forletter||'';
+        _renderProvPickerTabs();
+        _renderProvPickerList(_FOREIGN_ALPHA);
+      }else{
+        _provPickerAlpha=btn.dataset.alpha||'';
+        if(_provPickerAlpha===_FOREIGN_ALPHA)_foreignLetterFilter='';
+        _renderProvPickerTabs();
+        _renderProvPickerList(_provPickerAlpha);
+      }
     });
   }
   const _csResults=document.getElementById('city-search-results');
@@ -4282,6 +4324,12 @@ window.addEventListener('DOMContentLoaded',()=>{
     _csResults.addEventListener('click',e=>{
       const item=e.target.closest('.city-item');
       if(!item||!_citySearchField)return;
+      if(item.dataset.customLng==='true'){
+        const savedField=_citySearchField;
+        closeCitySearch();
+        openLngPad(savedField);
+        return;
+      }
       const prov=item.dataset.prov||'';
       const isForeign=item.dataset.foreign==='true';
       const cn=_citySearchField==='lng1'?'1':_citySearchField==='lng2'?'2':'t';

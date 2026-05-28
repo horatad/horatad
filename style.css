@@ -22,8 +22,8 @@ h1{font-size:15px;font-weight:500;margin-bottom:0.5rem;color:#333;display:flex;a
 .era-row{display:flex;align-items:center;gap:8px}
 .btn-era{margin-top:0;height:44px;min-width:52px;font-size:13px;padding:0 10px;background:#444;color:#fff;border:none;border-radius:6px;cursor:pointer}
 .btn-era:hover{background:#666}
-.btn-calc-main{margin-top:0;height:39px;flex:1;padding:0 10px;font-size:13px;font-weight:500;background:#222;color:#fff;border:none;border-radius:6px;cursor:pointer}
-.btn-calc-main:hover{background:#444}
+.btn-calc-main{margin-top:0;height:39px;flex:1;padding:0 10px;font-size:13px;font-weight:500;background:#5b3fa0;color:#fff;border:none;border-radius:6px;cursor:pointer}
+.btn-calc-main:hover{background:#7b5fc0}
 
 /* Memory icon button */
 .btn-mem{margin-top:0;height:44px;width:44px;padding:0;font-size:14px;background:#444;color:#fff;border:none;border-radius:6px;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
@@ -101,14 +101,14 @@ input.time-input{min-width:0;padding:4px 2px}
 /* Province row */
 .prov-row{display:flex;gap:6px;margin-top:5px;align-items:center}
 .prov-wrap{position:relative;flex:1;min-width:0;max-width:158px}
-.prov-input{width:100%}
+.prov-input{width:100%;pointer-events:none;cursor:default;user-select:none;-webkit-user-select:none}
 .prov-list{position:absolute;top:100%;left:0;min-width:100%;max-width:280px;max-height:240px;overflow-y:auto;background:#fff;border:0.5px solid #ccc;border-radius:6px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.15);margin-top:2px;display:none}
 .prov-list.active{display:block}
 .prov-item{padding:6px 10px;cursor:pointer;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#222}
 .prov-item:hover{background:#f0f0f0}
 .prov-empty{padding:10px;text-align:center;color:#999;font-size:12px}
-.btn-custom-lng{margin-top:0;height:28px;min-width:80px;padding:0 8px;font-size:11px;background:#555;color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
-.btn-custom-lng:hover{background:#777}
+.btn-custom-lng{margin-top:0;height:28px;min-width:80px;padding:0 8px;font-size:11px;background:#5b3fa0;color:#fff;border:none;border-radius:6px;cursor:pointer;white-space:nowrap;flex:0 0 auto}
+.btn-custom-lng:hover{background:#7b5fc0}
 .lmt-badge{font-size:.7rem;color:#8b949e;min-height:.85rem;margin-top:2px;padding:0 2px;letter-spacing:.01em}
 /* Province picker modal (V3.3.59) */
 .city-search-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#1c1f26;border:1px solid #30363d;border-radius:12px;padding:14px;z-index:1000;width:min(94vw,360px);max-height:75vh;display:flex;flex-direction:column;gap:8px}
@@ -138,8 +138,8 @@ input.time-input{min-width:0;padding:4px 2px}
 button{font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;cursor:pointer}
 .btn-reset{margin-top:0;height:39px;padding:0 10px;font-size:12px;background:#666;color:#fff;border:none;border-radius:6px;flex:0 0 auto}
 .btn-reset:hover{background:#888}
-.btn-calc{margin-top:0;height:39px;padding:0 10px;font-size:12px;background:#222;color:#fff;border:none;border-radius:6px;flex:1}
-.btn-calc:hover{background:#444}
+.btn-calc{margin-top:0;height:39px;padding:0 10px;font-size:12px;background:#5b3fa0;color:#fff;border:none;border-radius:6px;flex:1}
+.btn-calc:hover{background:#7b5fc0}
 .btn-calc-transit{background:#7a6200}
 .btn-calc-transit:hover{background:#b8860b}
 
