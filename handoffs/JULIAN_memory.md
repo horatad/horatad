@@ -230,6 +230,19 @@ Cron (ทุก 6h):
 ฟังก์ชัน `checkFBPolicy(body)` ใน `workers/julian_proposal_gen.mjs` ตรวจ violations อัตโนมัติ
 และ `buildFBCaption()` auto-append disclaimer + เตือน warning ถ้าโพสต์ death ไม่มี award คู่
 
+### ⛔ Claude ห้ามละเมิด — 3 ช่องที่ต้องปิด (2026-05-28)
+
+| ช่อง | ห้ามทำ | เหตุผล |
+|---|---|---|
+| **แชทโดยตรง** | เขียน caption ใน text response | ไม่ผ่าน checkFBPolicy() |
+| **เขียนไฟล์ข้าม function** | `Write` ลง `content/inbox/` โดยตรง | bypass gate ทั้งหมด |
+| **Session ไม่อ่าน memory** | ทำงานโดยไม่อ่าน §11 ก่อน | ผลิต "คุณจะ..." โดยไม่รู้ตัว |
+
+**กฎบังคับ (เพิ่มใน CLAUDE.md แล้ว):**
+- ห้ามเขียน FB caption ใน chat โดยตรงทุกกรณี
+- ทุก caption ต้องผ่าน `buildFBCaption()` → `checkFBPolicy()` pass → write inbox
+- ถ้า user ขอ caption ตรงๆ → ชี้ไปที่ approval pipeline แทน
+
 ---
 
 ## 10. Vocabulary Standard — กฎถาวรสำหรับการเขียน FB / Research
