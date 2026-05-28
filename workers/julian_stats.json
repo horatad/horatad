@@ -1,32 +1,51 @@
 {
-  "generated": "2026-05-28T13:24:52.998Z",
-  "total": 126005,
+  "generated": "2026-05-28T23:36:43.495Z",
+  "genealogy": {
+    "status": "missing",
+    "raw_persons": 0,
+    "in_db_persons": 0,
+    "in_db_links": 0,
+    "by_relation": {
+      "father": 0,
+      "mother": 0,
+      "spouse": 0,
+      "child": 0,
+      "sibling": 0
+    }
+  },
+  "succession": {
+    "status": "missing",
+    "raw_persons": 0,
+    "in_db_persons": 0,
+    "in_db_links": 0
+  },
+  "total": 129163,
   "target": 500000,
-  "pct": 25.2,
-  "delta_today": 59093,
+  "pct": 25.8,
+  "delta_today": 62251,
   "by_source": {
-    "wikidata": 74913,
+    "wikidata": 78188,
     "astrotheme": 0,
-    "musicbrainz": 51092,
+    "musicbrainz": 50975,
     "astrodatabank": 0
   },
   "by_accuracy": {
     "A": 0,
     "B": 0,
-    "C": 614,
-    "D": 125341,
+    "C": 617,
+    "D": 128496,
     "F": 50,
     "?": 0
   },
   "by_tier": {
-    "1": 4373,
-    "2": 121632,
+    "1": 4631,
+    "2": 124532,
     "3": 0
   },
   "with_hpi": 0,
-  "with_importance": 59538,
-  "with_sitelinks": 8446,
-  "avg_importance": 0.333,
+  "with_importance": 62696,
+  "with_sitelinks": 11721,
+  "avg_importance": 0.338,
   "history": [
     {
       "date": "2026-05-21",
@@ -100,11 +119,11 @@
     },
     {
       "date": "2026-05-28",
-      "total": 126005,
+      "total": 129163,
       "by_source": {
-        "wikidata": 74913,
+        "wikidata": 78188,
         "astrotheme": 0,
-        "musicbrainz": 51092,
+        "musicbrainz": 50975,
         "astrodatabank": 0
       }
     }
