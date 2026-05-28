@@ -4,7 +4,9 @@
   "agentPushNotifEnabled": true,
   "permissions": {
     "allow": [
-      "Edit(.claude/hooks/**)"
+      "Edit(.claude/hooks/**)",
+      "Bash(echo * > /home/user/horatad/.claude/hooks/session_scope)",
+      "Bash(echo * > /home/user/horatad/.claude/hooks/session_scope &&*)"
     ]
   },
   "hooks": {
