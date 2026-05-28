@@ -108,5 +108,77 @@
     "hint": "ยังไม่มีข้อมูล — รัน full scan",
     "status": "skipped",
     "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_vr_SU_SA_soft_award_1780004536947",
+    "pair": "SU×SA",
+    "transit": "SU",
+    "natal": "SA",
+    "thai": "อาทิตย์โจรมุมอ่อน (soft)กับเสาร์นาตาล",
+    "topic": "รางวัล / ความสำเร็จ",
+    "hint": "✅ validated (9 กฎ FDR · มุมอ่อน (soft)) | ได้รับรางวัล↑ lift 1.06–1.16 | รับตำแหน่ง↓ lift 0.94 | การเสียชีวิต↓ lift 0.85–0.93 | n สูงสุด 4,434 | p_adj < 0.001 (***)",
+    "proposed_by": "julian",
+    "finding": {
+      "polarity": "soft_award",
+      "n_rules": 9,
+      "events": {
+        "award_received": {
+          "lift_min": 1.0596,
+          "lift_max": 1.1604,
+          "n_max": 4434
+        },
+        "position_start": {
+          "lift_min": 0.9354,
+          "lift_max": 0.9354,
+          "n_max": 2734
+        },
+        "death": {
+          "lift_min": 0.8488,
+          "lift_max": 0.9343,
+          "n_max": 2854
+        }
+      },
+      "lift": 1.1604,
+      "p_adj": 0,
+      "source": "valid_rules"
+    },
+    "status": "pending",
+    "created_at": "2026-05-28"
+  },
+  {
+    "id": "julian_vr_SU_SA_hard_death_1780004536946",
+    "pair": "SU×SA",
+    "transit": "SU",
+    "natal": "SA",
+    "thai": "อาทิตย์โจรมุมแข็ง (hard)กับเสาร์นาตาล",
+    "topic": "เหตุร้าย / เสียชีวิต",
+    "hint": "✅ validated (7 กฎ FDR · มุมแข็ง (hard)) | การเสียชีวิต↑ lift 1.13–1.18 | รับตำแหน่ง↑ lift 1.08 | ได้รับรางวัล↓ lift 0.78–0.89 | n สูงสุด 2,823 | p_adj < 0.001 (***)",
+    "proposed_by": "julian",
+    "finding": {
+      "polarity": "hard_death",
+      "n_rules": 7,
+      "events": {
+        "death": {
+          "lift_min": 1.1261,
+          "lift_max": 1.181,
+          "n_max": 2823
+        },
+        "position_start": {
+          "lift_min": 1.0838,
+          "lift_max": 1.0838,
+          "n_max": 2196
+        },
+        "award_received": {
+          "lift_min": 0.7806,
+          "lift_max": 0.8945,
+          "n_max": 2614
+        }
+      },
+      "lift": 0.7806,
+      "p_adj": 0,
+      "source": "valid_rules"
+    },
+    "status": "pending",
+    "created_at": "2026-05-28"
   }
 ]

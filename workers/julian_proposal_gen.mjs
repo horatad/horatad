@@ -20,11 +20,13 @@ const PLANET_THAI = {
 };
 
 const EVENT_THAI = {
-  death:   'การเสียชีวิต',
-  award:   'รางวัล / ความสำเร็จ',
-  elected: 'ได้รับเลือกตั้ง',
-  scandal: 'เรื่องอื้อฉาว',
-  birth:   'การเกิด',
+  death:           'การเสียชีวิต',
+  award:           'รางวัล / ความสำเร็จ',
+  award_received:  'ได้รับรางวัล',
+  position_start:  'รับตำแหน่ง',
+  elected:         'ได้รับเลือกตั้ง',
+  scandal:         'เรื่องอื้อฉาว',
+  birth:           'การเกิด',
 };
 
 function pairThai(transit, natal) {
@@ -105,18 +107,79 @@ function buildFromFinding(finding) {
   };
 }
 
-// สร้าง proposal จาก valid_rules
+// ป้ายกำกับ polarity (TALS) — ใช้รวม valid_rules เป็น content unit เดียว
+const POLARITY_THAI = {
+  hard_death: { label: 'มุมแข็ง (hard)', topic: 'เหตุร้าย / เสียชีวิต' },
+  soft_award: { label: 'มุมอ่อน (soft)', topic: 'รางวัล / ความสำเร็จ' },
+};
+
+// รวม valid_rules ที่ polarity เดียวกัน → 1 proposal
+// (เคารพ TALS polarity — pair|event หยาบเกินเพราะ event เดียวกันมีทั้งทิศ ↑ และ ↓)
+function buildFromPolarityGroup(polarity, rows) {
+  const transit = rows[0].transit_planet;
+  const natal   = rows[0].natal_planet;
+  const pair    = `${transit}×${natal}`;
+  const meta    = POLARITY_THAI[polarity] || { label: polarity, topic: '' };
+
+  // สรุปแต่ละ event: ทิศทาง (↑/↓) + ช่วง lift + n สูงสุด
+  const byEvent = {};
+  for (const r of rows) (byEvent[r.event_type] ||= []).push(r);
+
+  const eventParts = [];
+  const events = {};
+  let maxN = 0, minP = 1, strongLift = 1;
+  for (const [e, ers] of Object.entries(byEvent)) {
+    const lifts = ers.map(r => r.lift);
+    const lo = Math.min(...lifts), hi = Math.max(...lifts);
+    const nMax = Math.max(...ers.map(r => r.class_n || 0));
+    const dir = (lo + hi) / 2 >= 1 ? '↑' : '↓';
+    const lr  = lo === hi ? lo.toFixed(2) : `${lo.toFixed(2)}–${hi.toFixed(2)}`;
+    eventParts.push(`${eventThai(e)}${dir} lift ${lr}`);
+    events[e] = { lift_min: lo, lift_max: hi, n_max: nMax };
+    maxN = Math.max(maxN, nMax);
+    minP = Math.min(minP, ...ers.map(r => r.p_adj ?? 1));
+    // lift ที่ effect แรงสุด (ห่างจาก 1 มากสุด) — ใช้ sort
+    for (const l of lifts) if (Math.abs(l - 1) > Math.abs(strongLift - 1)) strongLift = l;
+  }
+
+  const hint = [
+    `✅ validated (${rows.length} กฎ FDR · ${meta.label})`,
+    ...eventParts,
+    `n สูงสุด ${maxN.toLocaleString()}`,
+    `p_adj ${minP < 0.001 ? '< 0.001 (***)' : minP.toFixed(4)}`,
+  ].join(' | ');
+
+  return {
+    id: `julian_vr_${pair.replace('×','_')}_${polarity}_${Date.now()}`,
+    pair,
+    transit,
+    natal,
+    thai: `${PLANET_THAI[transit] || transit}โจร${meta.label}กับ${PLANET_THAI[natal] || natal}นาตาล`,
+    topic: meta.topic,
+    hint,
+    proposed_by: 'julian',
+    finding: { polarity, n_rules: rows.length, events, lift: strongLift, p_adj: minP, source: 'valid_rules' },
+    status: 'pending',
+    created_at: new Date().toISOString().slice(0, 10),
+  };
+}
+
+// (เก็บไว้เผื่อ source อื่น — valid_rules ใช้ buildFromPolarityGroup แทน)
 function buildFromValidRule(rule) {
   const transit = rule.transit_planet || rule.planet1 || '';
   const natal   = rule.natal_planet   || rule.planet2 || '';
   const pair    = rule.pair || `${transit}×${natal}`;
   const lift    = rule.lift || 0;
-  const n       = rule.n   || 0;
+  // valid_rules ใช้ field `class_n` (จำนวนเหตุการณ์ในกลุ่ม) — `n` ไม่มีจริง
+  const n       = rule.class_n || rule.n || 0;
   const event   = rule.event_type || rule.category || '';
+  const p_adj   = rule.p_adj ?? null;
+  const aspect  = rule.aspect || '';
 
   const hint = [
     `✅ validated rule — Lift ${lift.toFixed(3)}×`,
     n ? `n = ${n.toLocaleString()}` : '',
+    p_adj !== null ? `p_adj = ${p_adj < 0.001 ? '< 0.001 (***)' : p_adj.toFixed(4)}` : '',
     event ? eventThai(event) : '',
   ].filter(Boolean).join(' | ');
 
@@ -129,7 +192,7 @@ function buildFromValidRule(rule) {
     topic: eventThai(event),
     hint,
     proposed_by: 'julian',
-    finding: { lift, n, event_type: event, source: 'valid_rules' },
+    finding: { lift, n, event_type: event, aspect, p_adj, source: 'valid_rules' },
     status: 'pending',
     created_at: new Date().toISOString().slice(0, 10),
   };
@@ -141,9 +204,13 @@ function main() {
   const existingPairs  = getExistingPairs();
   const existing       = loadExistingProposals();
 
-  // เก็บ pair+event ที่มีอยู่แล้ว (ป้องกันซ้ำ)
+  // เก็บ pair+event ที่มีอยู่แล้ว (ป้องกันซ้ำ — สำหรับ full_scan findings)
   const existingKeys = new Set(
     existing.map(p => `${p.pair}|${p.finding?.event_type || ''}`)
+  );
+  // เก็บ pair+polarity ที่มีอยู่แล้ว (ป้องกันซ้ำ — สำหรับ valid_rules grouped)
+  const existingPolarityKeys = new Set(
+    existing.filter(p => p.finding?.polarity).map(p => `${p.pair}|${p.finding.polarity}`)
   );
 
   let added = 0;
@@ -166,20 +233,24 @@ function main() {
     added++;
   }
 
-  // 2. จาก valid_rules (ผ่าน FDR แล้ว)
+  // 2. จาก valid_rules (ผ่าน FDR แล้ว) — group by polarity → 1 proposal/group
+  const byPolarity = {};
   for (const r of validRules) {
     const transit = r.transit_planet || r.planet1 || '';
     const natal   = r.natal_planet   || r.planet2 || '';
     const pair    = r.pair || `${transit}×${natal}`;
-    const event   = r.event_type || r.category || '';
-    const key     = `${pair}|${event}`;
-
     if (!pair || pair === '×') continue;
-    if (existingKeys.has(key)) continue;
-    if (existingPairs.has(pair)) continue;
+    const pol = r.polarity || (r.event_type || 'unknown');
+    (byPolarity[`${pair}|${pol}`] ||= []).push(r);
+  }
+  for (const [groupKey, rows] of Object.entries(byPolarity)) {
+    const pair = groupKey.split('|')[0];
+    const pol  = rows[0].polarity || groupKey.split('|')[1];
+    if (existingPolarityKeys.has(groupKey)) continue;
+    if (existingPairs.has(pair)) continue;  // มี inbox post ของ pair นี้แล้ว
 
-    existing.push(buildFromValidRule(r));
-    existingKeys.add(key);
+    existing.push(buildFromPolarityGroup(pol, rows));
+    existingPolarityKeys.add(groupKey);
     added++;
   }
 
