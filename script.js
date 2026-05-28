@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.73
-// Version 3.3.73 | 2026-05-28
+// HORATAD:SCRIPT:3.3.74
+// Version 3.3.74 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
@@ -1812,7 +1812,7 @@ function openLngPad(fieldId){
   document.getElementById('numpad-backdrop').classList.remove('hidden');
 }
 // ── City search via Nominatim (OpenStreetMap) — สำหรับหา longitude สถานที่นอกไทย ──
-// ── Time picker modal (V3.3.73) — H 00-23, M 00-59 grids ──
+// ── Time picker modal (V3.3.74) — H 00-23, M 00-59 grids ──
 let _timePickerField=null,_timePickerH=0,_timePickerM=0;
 function openTimePicker(fieldId){
   const el=document.getElementById(fieldId);
@@ -4341,7 +4341,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // V3.3.59: LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
-  // V3.3.73: Time picker event delegation
+  // V3.3.74: Time picker event delegation
   const _tpH=document.getElementById('time-picker-hours');
   if(_tpH){
     _tpH.addEventListener('click',e=>{
