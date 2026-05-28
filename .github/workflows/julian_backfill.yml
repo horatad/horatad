@@ -13,8 +13,11 @@ name: JULIAN Accuracy Backfill
 #   regrade_only: รันแค่ regrade ไม่ query Wikidata (ถ้าต้องการ regrade เพียงอย่างเดียว)
 
 on:
+  workflow_run:
+    workflows: ['JULIAN Data Sync']
+    types: [completed]
   schedule:
-    - cron: '0 */6 * * *'    # รันทุก 6 ชั่วโมงจนกว่า checkpoint จะหาย (all done)
+    - cron: '0 */6 * * *'    # recovery: รันต่อถ้า P3447 backfill ยังมี checkpoint ค้าง
   workflow_dispatch:
     inputs:
       p3447_limit:
@@ -34,6 +37,10 @@ jobs:
   backfill:
     runs-on: ubuntu-latest
     timeout-minutes: 35
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'schedule' ||
+      github.event.workflow_run.conclusion == 'success'
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       NODE_OPTIONS: --max-old-space-size=4096

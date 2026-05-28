@@ -4,7 +4,7 @@ name: JULIAN Index Builder
 # หรือ manual trigger เพื่อ rebuild index โดยไม่ต้อง sync
 on:
   workflow_run:
-    workflows: ['JULIAN Data Sync']
+    workflows: ['JULIAN Accuracy Backfill']
     types: [completed]
   workflow_dispatch:
 
