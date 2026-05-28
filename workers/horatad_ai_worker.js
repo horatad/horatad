@@ -60,7 +60,7 @@ async function handleTyphoon(request, env) {
 //
 // Google TTS voice options for Thai:
 //   Standard (offline): th-TH-Standard-A (female) / th-TH-Standard-B (male)
-//   WaveNet (better):   th-TH-Wavenet-A  / th-TH-Wavenet-B / th-TH-Wavenet-C
+//   Neural2 (current):  th-TH-Neural2-C (female) — WaveNet deprecated 2025
 //   Chirp3-HD:          th-TH-Chirp3-HD-Aoede (best, needs newer API)
 async function handleTTS(request, env) {
   if (!env.GOOGLE_TTS_KEY) {
@@ -71,7 +71,7 @@ async function handleTTS(request, env) {
   try { body = await request.json(); } catch (_) {
     return corsResp('{"error":"invalid JSON"}', 400);
   }
-  const { text, voice = 'th-TH-Wavenet-C', rate = 1.0 } = body;
+  const { text, voice = 'th-TH-Neural2-C', rate = 1.0 } = body;
   if (!text || typeof text !== 'string') {
     return corsResp('{"error":"text required"}', 400);
   }
