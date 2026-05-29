@@ -5,14 +5,15 @@
 ---
 
 ## HORATAD — Thai Astrology PWA 🟡 Pre-launch
-**Version:** V3.3.83 | **URL:** horatad.com
+**Version:** V3.3.89 | **URL:** horatad.com
 
 ### สถานะ
 - App ทำงานครบ — natal + transit + V3 tab prediction + capture + JULIAN import
 - 3-tank memory: Private / QR / JULIAN ✅ (V3.3.16-17)
 - Chart redesign M1-M6 ✅ ครบ (V3.3.18-22)
 - **V3.3.59–73** ✅ LMT badge, province picker (scroll/tab/z-index fix, ต่างประเทศ A-Z, longitude เอง), DST −1ชม., time picker modal
-- **V3.3.74–83** ✅ 4-column digit picker · recent person chips (runtime buffer, active state) · column picker วัน/เดือน/ปี · tag logic fix 6 จุด (key normalize y_be, noTime group tag, stale active)
+- **V3.3.74–83** ✅ 4-column digit picker · column picker วัน/เดือน/ปี · (tag/recent-chips ลบออกแล้ว V3.3.84–89)
+- **V3.3.84–89** ✅ ลบ tag system + chips ทั้งหมด (redundant กับ memory modal) · schema `source_id`+`relate_id` (conform JULIAN namespace) · 5 relation helpers + `_tankGetRelated` รองรับ JULIAN → infra พร้อมทำ genealogy UI · **PENDING: unify store Tank+DB_v4 (~155 call sites, approved)**
 - **V3.3.24** ✅ KB_RULES extract — script.js 393KB→199KB (-49%) async load
 - **V3.3.25** ✅ wire matchRulesV24 + kb_v24-3 (290 rules) เข้าปุ่ม "ดูกฎ" V3 tab local
 - **V3.3.26** ✅ speak-rate ปุ่ม cycle 1×/1.25×/1.5×/1.75× + save localStorage

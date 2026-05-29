@@ -177,6 +177,19 @@ matcher.js     ← buildNatalState, matchRulesV24 — BIBLE domain
 - `_setField()` ใช้ `.value=` ตรงๆ → ไม่ trigger `input` event → listener ต้องเรียก update เอง
 - pattern: `_setField(el, val); _onInputChange(el);`
 
+### Derived view ไม่ refresh หลัง state เปลี่ยน
+- อาการ: เคลียร์/ลบ data แล้ว UI ยังโชว์ของเดิม ("เหมือนไม่ถูกเคลียร์") — เกิดทั้ง mobile+desktop (code bug)
+- root cause: function เคลียร์ store + refresh แค่ view ที่เปิดอยู่ (เช่น modal list) แต่ไม่ refresh view อื่นที่ derive จาก store เดียวกัน (เช่น chips บนฟอร์มหลัก)
+- pattern ตรวจ: เวลาแก้ store ให้ grep ทุก function ที่ render จาก store นั้น → refresh ให้ครบทุกตัว
+- ตัวอย่าง: V3.3.88 — clear memory 3 path ไม่ refresh quick-memory-chips/recent-chips (แก้แล้วลบ chips ทิ้งเลย V3.3.89)
+
+### dual-storage identity mismatch (⚠️ root cause บัก tag ทั้งหมด)
+- Tank (`horatad_tank_*`) key ด้วย derived `_tankKey()` = `name|d/m/y_be|t|prov` — เปลี่ยนทุกครั้งที่แก้ field
+- DB_v4 (`horatad_db_v4`) key ด้วย uid (stable)
+- `_addMemory()` มิเรอร์ natal ลง Tank โดยไม่ส่ง uid → Tank ได้ uid+source_id ใหม่ทุก save ไม่ตรง natal
+- → tag/relation ที่ผูกกับ key ใดก็หลุดเมื่อ identity ขยับ
+- **แก้ระยะยาว (approved 2026-05-29):** unify Tank+DB_v4 เป็น store เดียว key ด้วย source_id
+
 ---
 
 ## 6. Platform Quirks
@@ -297,3 +310,4 @@ function stopFEATUREBgm(){
 | 2026-05-27 | Engine Layer Separation architecture decision | Layer A/B split concept + Swiss Ephemeris compatibility noted ใน ECOSYSTEM.md section "Engine Architecture". `assessStandards(planetIdx, sign)` = target API. ยังไม่ implement — รอมีโปรเจคที่ต้องการ Swiss Eph จริง |
 | 2026-05-26 | Tank redesign Phase A + prototype iteration | (1) **3-layer architecture** (storage/relationships/display buffers) — แยก compareMode/outerDisplay ออกจาก persistent. spec `docs/HORATAD_tank_redesign.md` 15 rules + 4 phases. (2) **Prototype-first workflow** — tools/tank_redesign_prototype.html (598+ บรรทัด, 12 commits iteration) ลง user แบบไม่ touch script.js → user confirm flow ก่อน refactor real code. (3) **V4 schema extension additive** — `_v3Record()` เพิ่ม `source` + `tags[]` default · `_v3UpsertDB1()` hook save `LAST_SLOT1_UID_KEY` · helpers `_dbSetSource/_dbAddTag/_dbRemoveTag/_dbGetByTag/_dbRecentLinks/_loadLastSlot1Uid` (Layer 1 DB API สำหรับ Phase B/C). (4) **Lifetime window สำหรับ planet search** = birth_y to birth_y+100 (sign-entry events ~17k/100yr → compute on-demand 100ms, ไม่ต้อง pre-compute table). (5) **L2 reactive sync dot** ก่อน L3 tab badge — cosmetic 30 บรรทัด ทดสอบ reactive UX cue ก่อน scope creep. (6) **Force-with-lease ปลอดภัยสำหรับ own feature branch หลัง rebase** — กรณีต้อง resolve conflict ใน PROJECT_STATUS.md ระหว่าง ff main. (7) **Retroactive backup branches** — push `backup/v3.3.X` จาก historical SHA ผ่าน `git push origin <sha>:refs/heads/backup/v3.3.X` ทำได้ทีหลังโดยไม่ต้อง check out |
 | 2026-05-27 | เกาะในฝัน auto-play lock (V3.3.39) | **🔒 LOCKED by user** — `about-bgm` เล่น auto เมื่อเข้า tab 2 (about), หยุดเมื่อออก — ลบปุ่ม BGM ออกแล้ว — ห้ามแก้ไขพฤติกรรมนี้โดยไม่มีคำสั่งจาก ปีเตอร์ โดยตรง. implementation: `switchTab()` lines ~189-191 ใน script.js: `_bgm.play()` เมื่อ n===2, `_bgm.pause()+currentTime=0` เมื่อออก. `<audio loop>` ใน index.html. |
+| 2026-05-29 | V3.3.84–89 ลบ tag/chips + schema relation | (1) **ลบ tag system + recent/quick chips ทั้งหมด** — root cause บักแก้ 6 รอบไม่หาย = dual-storage identity mismatch (ดู Bug Patterns section 5 ใหม่). พี่ปีเตอร์: "เคลียร์ทิ้งให้หมด ไม่ใช่ซ่อน". เหลือแค่ event-chips (#event-chips-1) ที่ render โดย `_renderLinkedEventChips()`. (2) **schema source_id + relate_id** — `source_id` namespace = JULIAN internet.source: `wikidata:Qxxx`(public) \| `local:uuid`(private) → cross-DB lookup ตรงตัวไม่ต้อง map. `relate_id[]` = bidirectional edge ของ source_id (ไม่ใช่ JD array แบบ JULIAN เพราะ JD ชนกันได้). (3) **5 relation helpers** ใน script.js ~line 2231: `_tankFindBySourceId`/`_dbFindBySourceId`/`_julianFindBySourceId`/`_resolveBySourceId`/`_tankRelate`/`_tankUnrelate`/`_tankGetRelated`(BFS). JULIAN figure = leaf (relate_id JD namespace แยก ไม่ traverse ลึก). JULIAN cache write ไม่ได้ → ผูก figure ต้อง copy ลง store ก่อน. (4) **APPROVED: unify Tank+DB_v4 store เดียว** key ด้วย source_id — งานใหญ่ ~155 call sites, กลยุทธ์ facade (คง _tankLoad/_tankSave เป็น shim). มี 800 records ไม่มี user data → clean slate. ปลดล็อก genealogy UI. (5) **Bug pattern ใหม่:** derived view ไม่ refresh หลัง state เปลี่ยน + dual-storage identity mismatch (section 5) |
