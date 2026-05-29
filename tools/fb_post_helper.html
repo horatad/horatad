@@ -162,7 +162,7 @@ function savePat() {
   const v = document.getElementById('patInput').value.trim();
   if (!v) { showToast('ใส่ token ก่อนครับ'); return; }
   localStorage.setItem(PAT_KEY, v);
-  renderPatState(); render();
+  renderPatState(); loadData();   // re-fetch ด้วย limit ใหม่ (60→5,000)
   showToast('บันทึก Token แล้ว ✅');
 }
 function clearPat() {
@@ -177,15 +177,27 @@ function renderPatState() {
 }
 
 // --- GitHub fetch ---
+// ส่ง PAT ทุกครั้งที่อ่าน (ถ้ามี) → limit 60 → 5,000/ชม. · ไม่กลืน error
 async function listDir(path) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}&t=${Date.now()}`;
-  const res = await fetch(url, { headers: { Accept: 'application/vnd.github.v3+json' } });
-  if (!res.ok) return [];
+  const pat = getPat();
+  const headers = { Accept: 'application/vnd.github.v3+json' };
+  if (pat) headers.Authorization = `token ${pat}`;
+  const res = await fetch(url, { headers });
+  if (res.status === 403 || res.status === 429) {
+    const rem = res.headers.get('x-ratelimit-remaining');
+    throw new Error(rem === '0'
+      ? (pat ? 'GitHub rate limit (มี Token แล้วยังเกิน) — รอสักครู่แล้วรีเฟรช'
+             : 'GitHub rate limit — ใส่ Token (กาง 🔑) จะเพิ่มเป็น 5,000/ชม. หรือรอ ~1 ชม.')
+      : `GitHub ปฏิเสธ (403) — ตรวจสิทธิ์ Token`);
+  }
+  if (!res.ok) throw new Error(`โหลดรายการไม่ได้ (HTTP ${res.status})`);
   const files = await res.json();
   return Array.isArray(files) ? files.filter(f => f.name.endsWith('.json') && !f.name.startsWith('.')) : [];
 }
 async function fetchJson(downloadUrl) {
   const res = await fetch(downloadUrl + '?t=' + Date.now());
+  if (!res.ok) throw new Error(`โหลดไฟล์ไม่ได้ (HTTP ${res.status})`);
   return res.json();
 }
 
@@ -348,9 +360,10 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-// --- init ---
-(async () => {
-  renderPatState();
+// --- load (เรียกตอน init + หลังบันทึก Token) ---
+async function loadData() {
+  queue.length = 0; posted.length = 0;
+  document.getElementById('queue').innerHTML = `<div class="empty">กำลังโหลด…</div>`;
   try {
     const schedFiles = await listDir(SCHED_PATH);
     for (const f of schedFiles) queue.push({ filename: f.name, sha: f.sha, data: await fetchJson(f.download_url) });
@@ -365,9 +378,17 @@ function showToast(msg) {
 
     render();
   } catch (e) {
-    document.getElementById('queue').innerHTML = `<div class="empty">โหลดไม่ได้: ${esc(e.message)}</div>`;
+    // ❗ แยก "โหลดไม่ได้" ออกจาก "ไม่มีคิว" — ไม่กลืน error
+    document.getElementById('queue').innerHTML =
+      `<div class="empty" style="border:1px solid #c0392b;border-radius:8px;padding:14px;color:#e8b4b4">`
+      + `⚠️ ${esc(e.message)}<br><br>`
+      + `<button class="btn btn-copy" onclick="loadData()">↻ ลองใหม่</button></div>`;
   }
-})();
+}
+
+// --- init ---
+renderPatState();
+loadData();
 </script>
 </body>
 </html>
