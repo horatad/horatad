@@ -9,6 +9,12 @@ cd "$(dirname "$0")/../.." || exit 0
 # Skip ถ้าไม่ใช่ git repo
 [ ! -d .git ] && exit 0
 
+# Unshallow ถ้า clone เป็น shallow (--depth N) — กัน false-alarm ที่ตัวต้นเหตุ
+# ทำก่อน fetch ปกติ; ถ้าเป็น full clone แล้วจะ no-op หรือ error ไม่สำคัญ
+if [ -f "$(git rev-parse --git-dir 2>/dev/null)/shallow" ]; then
+  timeout 30 git fetch --unshallow origin --quiet 2>/dev/null || true
+fi
+
 # Fetch quietly ใน background — ไม่ block (timeout 5s)
 timeout 5 git fetch origin --quiet 2>/dev/null &
 FETCH_PID=$!
