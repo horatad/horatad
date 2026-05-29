@@ -17,14 +17,30 @@ wait "$FETCH_PID" 2>/dev/null || true
 BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "?")
 HEAD=$(git rev-parse --short HEAD 2>/dev/null || echo "?")
 MAIN_HEAD=$(git rev-parse --short origin/main 2>/dev/null || echo "?")
-PENDING=$(git log origin/main..HEAD --oneline 2>/dev/null | wc -l | tr -d ' ')
 UNCOMMITTED=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+
+# นับ commits ค้าง — shallow-aware (กัน false-alarm)
+# บน shallow clone (.git/shallow) common ancestor อยู่ใต้ขอบ depth → git นับ
+# ทั้ง history ที่ถูกตัดเป็น "ค้าง" ทำให้ขึ้นตัวเลข = ความลึก shallow (เช่น 50) ทั้งที่ synced จริง
+HEAD_FULL=$(git rev-parse HEAD 2>/dev/null)
+MAIN_FULL=$(git rev-parse origin/main 2>/dev/null)
+if [ "$HEAD_FULL" = "$MAIN_FULL" ]; then
+  PENDING=0                                              # ตรงกันเป๊ะ = synced (เชื่อถือได้แม้ shallow)
+elif [ -f "$(git rev-parse --git-dir 2>/dev/null)/shallow" ] \
+     && ! git merge-base origin/main HEAD >/dev/null 2>&1; then
+  PENDING="?"                                            # shallow + ไม่เห็น merge-base → นับไม่ได้
+else
+  PENDING=$(git log origin/main..HEAD --oneline 2>/dev/null | wc -l | tr -d ' ')
+fi
 
 echo "━━━ Horatad ecosystem · session start ━━━"
 echo "branch    : $BRANCH @ $HEAD"
 echo "main      : $MAIN_HEAD"
 
-if [ "$PENDING" != "0" ]; then
+if [ "$PENDING" = "?" ]; then
+  echo "ℹ shallow clone — ข้ามนับ commits ค้าง (มองไม่เห็น common ancestor ใต้ขอบ depth)"
+  echo "   ตรวจจริง: git fetch --unshallow origin"
+elif [ "$PENDING" != "0" ]; then
   echo "⚠ commits ค้างยังไม่ ff main: $PENDING"
   git log origin/main..HEAD --oneline 2>/dev/null | head -5 | sed 's/^/   /'
 else
@@ -35,8 +51,8 @@ if [ "$UNCOMMITTED" != "0" ]; then
   echo "⚠ uncommitted files: $UNCOMMITTED"
 fi
 
-# ตรวจ cross-project commit contamination บน branch
-if [ "$PENDING" != "0" ] && [ "$BRANCH" != "main" ]; then
+# ตรวจ cross-project commit contamination บน branch (ข้ามถ้า count ไม่น่าเชื่อถือ = shallow)
+if [ "$PENDING" != "0" ] && [ "$PENDING" != "?" ] && [ "$BRANCH" != "main" ]; then
   BRANCH_PROJECT=$(echo "$BRANCH" | grep -oiE '(bible|horatad|julian|nok|guard|reorg|platform|big)' | head -1 | tr '[:lower:]' '[:upper:]')
   if [ -n "$BRANCH_PROJECT" ]; then
     FOREIGN=$(git log origin/main..HEAD --oneline 2>/dev/null \
