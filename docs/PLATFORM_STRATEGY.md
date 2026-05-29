@@ -75,13 +75,40 @@ content/posted/
 
 ---
 
+## 🔑 FB Token — สถานะ + กฎจำ (verified 2026-05-29)
+
+**Token ปัจจุบัน (ใน GitHub Secrets `FB_PAGE_TOKEN`):**
+
+| Field | ค่า | หมายเหตุ |
+|---|---|---|
+| Type | **Page** | ✅ ถูกตัว (ไม่ใช่ user token) |
+| Expires | **Never** | ✅ token เองไม่หมดอายุ — โพสต์ได้ตลอด |
+| Scopes | `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`, `public_profile` | engagement KPI ทำงานได้ |
+| **Data Access Expires** | **~ปลาย ส.ค. 2026 (90 วัน)** | ⚠️ กฎ GDPR — คนละตัวกับ token expiry |
+
+**กฎจำ 2 ข้อ:**
+
+1. **Data Access ทุก ~90 วัน (≠ token expiry):**
+   - Token **ไม่หมดอายุ** → posting ทำงานตลอด ✅
+   - แต่ FB บังคับ re-authorize ทุก 90 วัน **ถ้าต้องการอ่าน data (insights/engagement)**
+   - ราวปลาย ส.ค. 2026 → ถ้า KPI report เริ่ม fail ที่ engagement → re-login generate token ใหม่ (posting ยังไม่กระทบ)
+
+2. **`read_insights` ยังไม่ได้เพิ่ม — รอ ≥100 followers:**
+   - ตอนนี้ Page มี ~5 followers → page-level insights (reach/impressions) ยังไม่มี data มีความหมาย
+   - เพิ่ม scope `read_insights` ตอน generate token **เมื่อ followers ≥100** จะคุ้มกว่า
+   - จนกว่าถึงตอนนั้น KPI report ติดตามแค่ followers + post engagement (พอแล้ว)
+
+**วิธี re-generate (ถ้าต้อง):** Graph API Explorer → ติ๊ก scopes → exchange long-lived → `me/accounts` → `data[0].access_token` → อัปเดต Secret (ดู `workers/fb_token_exchange.mjs`)
+
+---
+
 ## 🚨 Risk Monitor
 
 | ความเสี่ยง | สัญญาณ | action |
 |---|---|---|
 | Reach ลดฮวบ | avg reach ลด >50% ใน 2 สัปดาห์ | audit content type + posting time |
 | Engagement drop | rate < 1% ต่อเนื่อง 2 สัปดาห์ | เพิ่ม research/findings ใน mix |
-| Token หมดอายุ | fb_autopost fail | refresh FB_PAGE_TOKEN ใน GitHub Secrets |
+| Data Access หมด (90 วัน) | KPI report fail ที่ engagement (posting ยังปกติ) | re-authorize → generate Page token ใหม่ |
 | คิวว่าง | scheduled < 3 อัน | รัน requeue ทันที |
 
 ---
@@ -93,7 +120,8 @@ content/posted/
 | รายวัน | cron โพสต์อัตโนมัติ | PLATFORM (อัตโนมัติ) |
 | รายสัปดาห์ | ตรวจ scheduled ว่าเหลือพอไหม | PLATFORM (Claude) |
 | รายเดือน | ดู FB Insights + เทียบ KPI | ปีเตอร์ |
-| ~60 วัน | refresh FB_PAGE_TOKEN | ปีเตอร์ |
+| ~90 วัน (ปลาย ส.ค. 2026) | re-authorize ถ้า KPI report fail ที่ engagement (Data Access GDPR) | ปีเตอร์ |
+| เมื่อ followers ≥100 | เพิ่ม scope `read_insights` ตอน regenerate token | ปีเตอร์ |
 | เมื่อ JULIAN มี findings ใหม่ | รัน julian_proposal_gen.mjs → inbox | PLATFORM (Claude) |
 
 ---
