@@ -1,0 +1,52 @@
+name: FB KPI Monthly Report
+
+on:
+  schedule:
+    - cron: '0 2 1 * *'   # วันที่ 1 ของทุกเดือน 09:00 ICT (02:00 UTC)
+  workflow_dispatch:        # รันมือได้ทันที
+
+jobs:
+  kpi:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check secrets
+        id: gate
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          if [ -z "$FB_PAGE_TOKEN" ]; then
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "⏭  ยังไม่ได้ตั้ง FB_PAGE_TOKEN — ข้าม"
+          else
+            echo "ready=true" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/setup-node@v5
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          node-version: '22'
+
+      - name: Fetch KPI from FB Graph API
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          FB_PAGE_ID:    ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: node workers/fb_kpi_report.mjs
+
+      - name: Commit KPI report
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          git config user.name  "horatad-bot"
+          git config user.email "contact@horatad.com"
+          git add content/kpi/
+          if git diff --staged --quiet; then
+            echo "ไม่มี KPI ใหม่"
+            exit 0
+          fi
+          git commit -m "kpi: FB report $(date +%Y-%m)"
+          git push
