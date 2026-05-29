@@ -61,8 +61,10 @@ function epNum(item) {
   return m ? parseInt(m[1]) : Infinity;
 }
 
-// FB hygiene gate — engagement-bait ผิดกฎ FB ชัดเจน (เสี่ยง shadowban)
-// ตรวจก่อน schedule — ถ้าเจอให้ข้ามไป item ถัดไป ไม่ปล่อยขึ้นคิว
+// ── FB Policy Gate ──────────────────────────────────────────────────────────
+// 4 กฎ (เรียงจากเสี่ยงสูง → ต่ำ) — ถ้า fail ข้าม item นั้น ไม่ปล่อยขึ้นคิว
+
+// กฎ 1: Engagement bait — FB shadowban ทันที
 const FB_BAIT = [
   /tag\s*เพื่อน/i, /แท็ก\s*เพื่อน/, /share\s*เพื่อโชค/i, /แชร์\s*เพื่อโชค/,
   /like\s*ถ้า/i, /กด\s*ไลค์\s*ถ้า/, /คอมเมนต์\s*เพื่อรับ/,
@@ -70,6 +72,48 @@ const FB_BAIT = [
 function baitFound(item) {
   const body = (item.body || '') + ' ' + (item.title || '');
   return FB_BAIT.filter(re => re.test(body)).map(re => re.source);
+}
+
+// กฎ 2: Disclaimer บังคับเฉพาะ finding/case_study (prediction content)
+// YouTube/education/manual ไม่ต้องมี — เป็น content คนละประเภท
+const DISCLAIMER_REQUIRED_CATS = new Set(['finding', 'case_study']);
+const DISCLAIMER_PATTERNS = [
+  /สถิติประชากร\s*[≠!=]\s*ชะตากรรมบุคคล/,
+  /เพื่อการศึกษา/i, /เพื่อการวิจัย/i, /ไม่ใช่คำทำนาย/i,
+  /for\s*research/i, /for\s*educational/i,
+];
+function hasDisclaimer(item) {
+  if (!DISCLAIMER_REQUIRED_CATS.has(item.category)) return true;  // ไม่ต้องตรวจ
+  const body = (item.body || '') + ' ' + (item.disclaimer || '');
+  return DISCLAIMER_PATTERNS.some(re => re.test(body));
+}
+
+// กฎ 3: Accuracy claim ต้องมี n= — เฉพาะ finding/case_study (prediction content)
+const ACCURACY_CLAIM = /(\d+\s*%|ร้อยละ\s*\d+|แม่นยำ|percent)/i;
+const N_PRESENT      = /n\s*=\s*\d+|\d[\d,]+\s*(คน|ราย|records?)/i;
+function accuracyWithoutN(item) {
+  if (!DISCLAIMER_REQUIRED_CATS.has(item.category)) return false;
+  const body = item.body || '';
+  return ACCURACY_CLAIM.test(body) && !N_PRESENT.test(body);
+}
+
+// กฎ 4: Format variation — ไม่โพสต์ category เดิมเกิน 3 วันติด (spam signal)
+function formatRepeat(item, recentPosts) {
+  const sameCat = recentPosts
+    .slice(0, 3)
+    .filter(p => p.category === item.category).length;
+  return sameCat >= 3;
+}
+
+// รวม gate — คืน array ของ violations (ว่าง = ผ่าน)
+function fbPolicyViolations(item, recentPosts = []) {
+  const v = [];
+  const bait = baitFound(item);
+  if (bait.length > 0)                 v.push(`engagement-bait: ${bait.join(', ')}`);
+  if (!hasDisclaimer(item))            v.push('ไม่มี disclaimer (finding/case_study ต้องมี)');
+  if (accuracyWithoutN(item))          v.push('มี accuracy claim แต่ไม่มี n=');
+  if (formatRepeat(item, recentPosts)) v.push('category ซ้ำ 3 วันติด');
+  return v;
 }
 
 // --- main ---
@@ -114,19 +158,19 @@ function main() {
     console.log(`${i+1}. [${item._score}pt] ${item.title} (${item.category}/${item.source})`);
   });
 
-  // เลือก top `need` อันที่ผ่าน FB hygiene gate
+  // เลือก top `need` อันที่ผ่าน FB policy gate (4 กฎ)
   const picked = [];
   for (const item of scored) {
     if (picked.length >= need) break;
-    const bait = baitFound(item);
-    if (bait.length > 0) {
-      console.log(`⚠️  ข้าม "${item.title}" — engagement-bait: ${bait.join(', ')}`);
+    const violations = fbPolicyViolations(item, recentPosts);
+    if (violations.length > 0) {
+      console.log(`⚠️  ข้าม "${item.title}" — ${violations.join(' · ')}`);
       continue;
     }
     picked.push(item);
   }
   if (picked.length === 0) {
-    console.log('\n⚠️ ไม่มี item ที่ผ่าน FB hygiene — ไม่ schedule (ตรวจ inbox)');
+    console.log('\n⚠️ ไม่มี item ที่ผ่าน FB policy gate — ไม่ schedule (ตรวจ inbox)');
     return;
   }
 
