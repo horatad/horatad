@@ -39,9 +39,13 @@ function die(msg) { console.error(`\n❌ ${msg}\n`); process.exit(1); }
 // normalize ข้อความเทียบ dedup — รวบ whitespace, trim
 function norm(s) { return (s || '').replace(/\s+/g, ' ').trim(); }
 
-// ดึงข้อความโพสต์ใน Page feed 24 ชม.ล่าสุด — ใช้กัน duplicate (F2)
+// dedup window — 48 ชม. (ไม่ใช่ 24) เพราะ cron รันทุก 24 ชม.พอดี · GitHub delay 5-30 นาที
+// บ่อย → ถ้า window = 24 ชม. โพสต์รอบก่อนหลุด window → dedup miss → โพสต์ซ้ำ (F4 root cause)
+const DEDUP_WINDOW_SEC = 48 * 3600;
+
+// ดึงข้อความโพสต์ใน Page feed (window ด้านบน) — ใช้กัน duplicate (F2/F4)
 async function recentlyPostedMessages(pageId, token) {
-  const since = Math.floor(Date.now() / 1000) - 24 * 3600;
+  const since = Math.floor(Date.now() / 1000) - DEDUP_WINDOW_SEC;
   const url = `${GRAPH}/${pageId}/feed?fields=message,created_time&since=${since}&limit=25&access_token=${encodeURIComponent(token)}`;
   const res  = await fetch(url);
   const json = await res.json().catch(() => ({}));
@@ -128,14 +132,14 @@ async function main() {
 
   // F2: idempotency guard — กัน duplicate post จาก push-fail รอบก่อน
   // ถ้ารอบก่อนโพสต์ FB สำเร็จแต่ push ledger fail → ไฟล์ยังค้าง scheduled/ → รอบนี้จะหยิบมาโพสต์ซ้ำ
-  // เช็ค Page feed 24 ชม.: ถ้าข้อความตรงกับที่ขึ้น Page แล้ว → reconcile ledger (ย้าย posted/) ไม่โพสต์ซ้ำ
+  // เช็ค Page feed 48 ชม.: ถ้าข้อความตรงกับที่ขึ้น Page แล้ว → reconcile ledger (ย้าย posted/) ไม่โพสต์ซ้ำ
   const candidate = norm(pick.item.body || pick.item.title || '');
   try {
     const recent = await recentlyPostedMessages(PAGE_ID, TOKEN);
     const dup = recent.find(m =>
       m === candidate || (candidate.length >= 40 && m.startsWith(candidate.slice(0, 80))));
     if (dup) {
-      console.log('\n♻️  ตรวจพบโพสต์นี้ขึ้น Page แล้วใน 24 ชม. (น่าจะ push ledger fail รอบก่อน)');
+      console.log('\n♻️  ตรวจพบโพสต์นี้ขึ้น Page แล้วใน 48 ชม. (น่าจะ push ledger fail รอบก่อน)');
       console.log('   → reconcile: ย้าย scheduled/ → posted/ โดยไม่โพสต์ซ้ำ');
       pick.item.status      = 'posted';
       pick.item.date_posted = new Date().toISOString().slice(0, 10);
