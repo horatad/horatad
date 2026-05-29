@@ -1,9 +1,9 @@
-// HORATAD:SCRIPT:3.3.87
-// Version 3.3.87 | 2026-05-29
+// HORATAD:SCRIPT:3.3.88
+// Version 3.3.88 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 
-const APP_VERSION='3.3.87';
+const APP_VERSION='3.3.88';
 // expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2693,12 +2693,21 @@ window.copyJulianToPrivate=function(i){
   }
 };
 
+// refresh chips บนฟอร์มหลักหลังแก้ Tank — ไม่งั้น chips เดิมค้างจนกว่าจะ reload
+// (clearRecentBuffer=true เมื่อ clear ทั้งถัง, false เมื่อลบ/แก้รายเดียว)
+function _refreshFormChips(clearRecentBuffer){
+  if(clearRecentBuffer)_recentPersonBuffer={'1':[],'2':[]};
+  _renderQuickMemory();
+  _renderRecentPersonChips('1');_renderRecentPersonChips('2');
+}
+
 window.confirmClearTank=function(tank){
   const label=tank==='qr'?'QR':'ส่วนตัว';
   _showConfirm(`ล้าง${label}ทั้งหมด`,`ลบทุกรายการใน${label}? ไม่สามารถกู้คืนได้`,()=>{
     _tankSave(tank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
+    if(tank!=='qr')_refreshFormChips(true);
   });
 };
 
@@ -2788,6 +2797,7 @@ function _confirmDeleteMemory(i){
     _tankSave(tankKey,arr);
     _updateTankCounts();
     _renderTank(document.getElementById('memory-search')?.value||'');
+    if(tankKey===TANK_PRIVATE_KEY)_refreshFormChips(false);
   });
 }
 function confirmClearMemory(){
@@ -2795,6 +2805,7 @@ function confirmClearMemory(){
     _tankSave(TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
+    _refreshFormChips(true);
   });
 }
 function exportMemory(){
