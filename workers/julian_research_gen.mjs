@@ -16,6 +16,7 @@
 import { writeResearchPost, buildResearchCaption } from './julian_proposal_gen.mjs';
 
 const DRY_RUN   = process.argv.includes('--dry-run');
+const ONLY      = (() => { const i = process.argv.indexOf('--only'); return i >= 0 ? process.argv[i+1] : null; })();
 const DB_SIZE   = 129163;  // อัปเดตทุกครั้งที่รัน script ใหม่
 const SOURCE    = 'docs/julian_research_report.pdf';
 const SERIES    = 'julian_research_overview';
@@ -189,6 +190,39 @@ JULIAN จึงให้ Accuracy Grade แบบเกรดโรงเรี
 เมื่อ BIBLE พร้อม → JULIAN จะทดสอบทุกกฎ systematically — นี่คือ endgame`,
   },
 
+  // ─── Post 6 (standalone milestone): Connecting broken lineages ──────────────
+  {
+    slug:          '06_connecting_lineages',
+    title:         'JULIAN เบื้องหลัง — ต่อสายเครือญาติที่ขาดตอน',
+    category:      'behind_scenes',
+    priority_score: 8,
+    tags: ['JULIAN', 'research', 'TALS', 'โหราศาสตร์ไทย', 'genealogy'],
+    db_size: DB_SIZE,
+    body: `งานเบื้องหลังสัปดาห์นี้: ต่อ "สายเครือญาติที่ขาดตอน"
+
+— — —
+
+ที่ผ่านมาเราบันทึกความสัมพันธ์ของบุคคลในฐานข้อมูล — ใครเป็นพ่อ แม่ ลูก คู่สมรส พี่น้อง
+
+แต่มีปัญหาหนึ่ง: บางครั้งญาติที่ถูกอ้างถึง "ยังไม่มีดวง" อยู่ในฐานข้อมูล
+
+เหมือนต้นไม้ครอบครัวที่มีชื่อ แต่บางกิ่งหายไป — สายเลยขาดตรงกลาง
+
+— — —
+
+รอบนี้เราเพิ่มกระบวนการดึงญาติเหล่านั้นเข้ามา เฉพาะคนที่มีวันเกิดชัดเจนระดับวัน (ไม่งั้นคำนวณตำแหน่งดาวไม่ได้)
+
+ผลคือสายเครือญาติ "ยาวต่อเนื่อง" ขึ้น — ไล่ดูได้หลายชั่วรุ่นโดยไม่ขาดช่วง
+
+— — —
+
+ทำไมต้องลงแรงตรงนี้?
+
+เพราะคำถามที่น่าสนใจที่สุดของเรา — "ตำแหน่งดาวส่งต่อกันในสายเลือดหรือไม่" — จะตอบได้ก็ต่อเมื่อมีดวงครบทั้งสาย
+
+นี่ยังไม่ใช่ผลการวิจัย เป็นแค่การปูพื้นฐานข้อมูลให้พร้อมก่อน — เราเล่าให้ฟังตามจริงว่ากำลังสร้างอะไรอยู่`,
+  },
+
 ];
 
 // ---------------------------------------------------------------------------
@@ -196,10 +230,14 @@ JULIAN จึงให้ Accuracy Grade แบบเกรดโรงเรี
 // ---------------------------------------------------------------------------
 
 console.log(`\n=== JULIAN Research Content Generator ===`);
-console.log(`Mode: ${DRY_RUN ? 'DRY RUN (ไม่เขียนไฟล์)' : 'WRITE'}`);
-console.log(`Posts: ${posts.length} · DB size: ${DB_SIZE.toLocaleString()} คน\n`);
+console.log(`Mode: ${DRY_RUN ? 'DRY RUN (ไม่เขียนไฟล์)' : 'WRITE'}${ONLY ? ` · only=${ONLY}` : ''}`);
 
-for (const post of posts) {
+// --only <slug>: เขียนเฉพาะโพสต์ที่ slug ตรง (กันการ resurrect โพสต์เก่าที่ไป pipeline แล้ว)
+const selected = ONLY ? posts.filter(p => p.slug === ONLY) : posts;
+if (ONLY && !selected.length) { console.error(`✗ ไม่พบ slug "${ONLY}"`); process.exit(1); }
+console.log(`Posts: ${selected.length}/${posts.length} · DB size: ${DB_SIZE.toLocaleString()} คน\n`);
+
+for (const post of selected) {
   if (DRY_RUN) {
     const caption = buildResearchCaption(post);
     console.log(`\n${'─'.repeat(60)}`);
@@ -213,7 +251,7 @@ for (const post of posts) {
 }
 
 if (!DRY_RUN) {
-  console.log(`\n✅ สร้าง ${posts.length} posts เข้า content/inbox/`);
+  console.log(`\n✅ สร้าง ${selected.length} posts เข้า content/inbox/`);
   console.log(`   category: behind_scenes + education · priority_score=9`);
   console.log(`   series: ${SERIES} (${TOTAL} parts)`);
 }
