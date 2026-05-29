@@ -148,6 +148,7 @@ function main() {
 
   const existing  = loadJsonArray(MAIN_FILE);
   const wikidata  = dedupLatest(loadJsonl(`${RAW_DIR}/wikidata.jsonl`));
+  const geneExp   = dedupLatest(loadJsonl(`${RAW_DIR}/genealogy_expansion.jsonl`));
   const coord     = dedupLatest(loadJsonl(`${RAW_DIR}/wikidata_coord.jsonl`));
   const astro     = dedupLatest(loadJsonl(`${RAW_DIR}/astrotheme.jsonl`));
   const wikiTh    = dedupLatest(loadJsonl(`${RAW_DIR}/wikipedia_th.jsonl`));
@@ -156,6 +157,7 @@ function main() {
   console.log(`Inputs:
   existing main      : ${existing.length}
   wikidata raw       : ${wikidata.length} (dedup'd)
+  gene_expansion raw : ${geneExp.length} (dedup'd)
   wikidata_coord raw : ${coord.length}
   astrotheme raw     : ${astro.length}
   wiki_th raw        : ${wikiTh.length}
@@ -167,6 +169,7 @@ function main() {
 
   // priority: low → high (later overrides earlier where applicable)
   const stats = {
+    geneExp: { added:0, updated:0 },
     base:    { added:0, updated:0 },
     coord:   { enriched:0, no_target:0 },
     astro:   { enriched:0, no_target:0 },
@@ -174,6 +177,9 @@ function main() {
     seed:    { added:0, replaced:0 },
   };
 
+  // genealogy_expansion = base level priority ต่ำสุด — apply ก่อน wikidata
+  // เพื่อให้ canonical wikidata scrape override ได้ถ้าภายหลัง person เดียวกันถูก scrape ตรง
+  applyBase(m, geneExp, stats.geneExp);
   applyBase(m, wikidata, stats.base);
   applyEnrich(m, coord, stats.coord);
   applyEnrich(m, astro, stats.astro);
@@ -183,6 +189,7 @@ function main() {
   const merged = [...m.values()].sort((a, b) => (b.jd || 0) - (a.jd || 0));
 
   console.log(`\nMerge stats:
+  Gene expansion  : +${stats.geneExp.added} new / ${stats.geneExp.updated} updated
   Wikidata base   : +${stats.base.added} new / ${stats.base.updated} updated
   Wikidata coord  : ${stats.coord.enriched} enriched / ${stats.coord.no_target} no-target
   Astrotheme      : ${stats.astro.enriched} enriched / ${stats.astro.no_target} no-target
