@@ -18,6 +18,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { fbPolicyViolations } from './fb_policy.mjs';
 
 const INBOX     = 'content/inbox';
 const SCHEDULED = 'content/scheduled';
@@ -89,7 +90,23 @@ function main() {
   //    (เดิมดึงเฉพาะ research จาก inbox → EP standalone ค้าง inbox ตลอด)
   const scheduled = loadDir(SCHEDULED);
   const inboxAll  = loadDir(INBOX);
-  const pool = [...scheduled, ...inboxAll];
+  const rawPool = [...scheduled, ...inboxAll];
+
+  // FB policy gate — กรอง content เสีย (video ถูกลบ/bait/ฯลฯ) ออกก่อนเข้าคิว
+  //    (variation ไม่ตรวจที่นี่ — curator คุมตอนเติมรายวัน · ส่ง [] = ข้าม)
+  const pool = [];
+  const rejectedItems = [];
+  for (const it of rawPool) {
+    const v = fbPolicyViolations(it, []);
+    if (v.length > 0) {
+      console.log(`⛔ ข้าม "${(it.title || it._file).slice(0, 40)}" — ${v.join(' · ')}`);
+      rejectedItems.push(it);
+      continue;
+    }
+    pool.push(it);
+  }
+  if (rejectedItems.length) console.log(`(กรองออก ${rejectedItems.length} item ที่ผิด policy — ค้างใน inbox ไม่ลบ)\n`);
+
   if (pool.length === 0) {
     console.log('ไม่มี item ให้ requeue');
     return;
@@ -160,10 +177,10 @@ function main() {
     if (origDir === INBOX) fs.unlinkSync(path.join(INBOX, origFile));
   });
 
-  // 6. backlog ที่มาจาก scheduled ต้องย้ายกลับ inbox (ไม่งั้นหายตอนลบ scheduled)
-  //    backlog ที่อยู่ inbox อยู่แล้ว → คงไว้ตามเดิม
+  // 6. ย้ายกลับ inbox สิ่งที่มาจาก scheduled แต่ไม่ได้ลงคิวรอบนี้ (ไม่งั้นหายตอนลบ scheduled):
+  //    (a) backlog = series เกิน cap   (b) rejectedItems = ผิด policy (เก็บไว้ review ไม่ลบ)
   let movedToInbox = 0;
-  for (const item of backlog) {
+  for (const item of [...backlog, ...rejectedItems]) {
     if (item._dir !== SCHEDULED) continue;
     const origFile = item._file;
     delete item._file;
