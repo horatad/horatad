@@ -17,7 +17,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -34,7 +34,7 @@ jobs:
             echo "ready=true" >> $GITHUB_OUTPUT
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         if: steps.gate.outputs.ready == 'true'
         with:
           node-version: '22'
@@ -44,8 +44,9 @@ jobs:
         env:
           FB_PAGE_ID:    ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          DRY_RUN:       ${{ github.event.inputs.dry_run }}   # ว่างเมื่อ cron → โพสต์จริง
         run: |
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+          if [ "$DRY_RUN" = "true" ]; then
             node workers/fb_autopost.mjs --dry-run
           else
             node workers/fb_autopost.mjs
