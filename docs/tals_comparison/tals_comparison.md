@@ -20,6 +20,7 @@ header-includes:
   - \usepackage{ucharclasses}
   - \setDefaultTransitions{\normalfont}{}
   - \setTransitionTo{Thai}{\thaifont}
+  - \setTransitionFrom{Thai}{\normalfont}
   - \usepackage{xcolor}
   - \definecolor{gold}{HTML}{ba8345}
   - \definecolor{darkblue}{HTML}{1f2d5e}
