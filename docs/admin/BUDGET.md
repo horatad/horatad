@@ -1,5 +1,5 @@
 # BUDGET — Horatad Expense Tracker
-Updated: 2026-05-24 (v3: เพิ่ม domain + Google One)
+Updated: 2026-05-29 (v4: เพิ่ม Claude Code Max Plan)
 
 ---
 
@@ -14,7 +14,7 @@ Updated: 2026-05-24 (v3: เพิ่ม domain + Google One)
 | Groq API | BIBLE | Free | ฿0 | ~500 req/mo | 14,400/day | 🟢 ปกติ |
 | Typhoon API | HORATAD | Beta/Free | ฿0 | ~200 req/mo | ไม่ทราบ | 🟡 ต้องติดตาม |
 | HuggingFace Inference | PLATFORM | Free | ฿0 | 0 (ยังไม่ใช้) | rate-limited | 🟢 ปกติ |
-| Claude Code Max | DEV | Max plan | (ค่า subscription) | - | unlimited | 🟢 ปกติ |
+| Claude Code Max | DEV | Max $100/mo | ฿3,271 | - | unlimited | 🟢 ปกติ |
 
 ---
 
@@ -49,10 +49,21 @@ Updated: 2026-05-24 (v3: เพิ่ม domain + Google One)
 
 | หมวด | ฿ | หมายเหตุ |
 |---|---:|---|
-| Services รายเดือน | 0 | ทั้งหมด free tier |
+| Services รายเดือน | 3,271 | Claude Code Max ($100/mo @ 32.71) |
 | Hardware + peripherals + OS | 56,870 | จ่ายครั้งเดียว 2026-05-24 |
 | Google One AI Premium | 7,500 | รายปี (ต่ออายุ 12 พ.ค. ทุกปี) |
 | Domain horatad.com | 348 | รายปี (ต่ออายุ 16 พ.ค. ทุกปี) |
+
+---
+
+## 📅 วันตัดบัตรรายเดือน
+
+| Service | วันตัดบัตร | ฿/รอบ | หมายเหตุ |
+|---|---|---:|---|
+| Claude Code Max | ทุกวันที่ **12** ของเดือน | ~฿3,271 | $100 · อัตราแลกเปลี่ยนผันผวน — ดูยอดจริงในบัตร |
+
+> อัตราอ้างอิง: $1 = **฿32.71** (Wise mid-market, 28 พ.ค. 2026)
+> อัปเดตอัตราทุกรอบบิลที่: `docs/admin/BUDGET.md`
 
 ---
 
@@ -70,3 +81,4 @@ Updated: 2026-05-24 (v3: เพิ่ม domain + Google One)
 ## WHY LOG
 
 - **2026-05-24** — เริ่ม track budget หลังวิเคราะห์สเปคคอมใหม่ architecture cloud-first ทำให้ค่าใช้จ่าย service = ฿0 ทั้งหมด cost หลักคือ hardware amortize เท่านั้น
+- **2026-05-29** — เพิ่ม Claude Code Max Plan $100/mo (ตัดบัตรทุกวันที่ 12) — บันทึกเป็น ฿3,271 ณ rate 32.71 (Wise, 28 พ.ค. 2026) — ยอดจริงผันผวนตาม rate วันตัดบัตร
