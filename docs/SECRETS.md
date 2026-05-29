@@ -1,5 +1,5 @@
 # SECRETS — Horatad Ecosystem Inventory
-**Owner:** GUARD (cross-project) | **Last updated:** 2026-05-23 (GUARD-P0-B + T-07)
+**Owner:** GUARD (cross-project) | **Last updated:** 2026-05-29 (GUARD FB pipeline audit — +FB/YOUTUBE secrets, R-20)
 **Source-of-truth:** this file | **Update on:** every new secret introduced / rotated / revoked
 
 > ⚠️ This file contains NO secret values — only **names**, **locations**, **owners**, and **rotation schedule**.
@@ -28,6 +28,14 @@
 | `GROQ_API_KEY` | GitHub Actions Secret | `kb_extract.yml`, `kb_extract_test.yml` | Groq LLM API (BIBLE extraction) | **unknown — needs verify** | next quarter |
 | `TYPHOON_SERVER_KEY` | sandbox env + CF Worker `horatad-ai` env | `horatad-ai` Worker (Typhoon proxy) | Typhoon API auth | **unknown — needs verify** | next quarter |
 | Horatad-auth PIN salt/secret | CF Worker `horatad-auth` env | Worker (PIN verify) | PIN hashing if stored hashed | **unknown — out-of-repo Worker** | review on Worker audit (T-06) |
+| `FB_PAGE_TOKEN` | GitHub Actions Secret | `fb_autopost.yml`, `fb_post_manage.yml`, `fb_kpi_monthly.yml` | FB Page post/edit/delete + read insights | **2026-05 (initial)** | quarterly (R-20 — never-expire) |
+| `FB_PAGE_ID` | GitHub Actions Secret | FB workflows ข้างบน | Page identifier (public — ไม่ลับจริง) | n/a (identifier) | n/a |
+| `YOUTUBE_API_KEY` | GitHub Actions Secret | `youtube_sync.yml` | YouTube Data API v3 (read playlist) | **unknown — needs verify** | quarterly |
+| `YOUTUBE_PLAYLIST_ID` | GitHub Actions Secret | `youtube_sync.yml` | Playlist identifier (ไม่ลับ) | n/a (identifier) | n/a |
+
+> **FB App-level secrets (FB_APP_ID / FB_APP_SECRET / FB_SHORT_TOKEN):** ใช้เฉพาะ `workers/fb_token_exchange.mjs` ตอน setup ครั้งเดียว — รันบน **เครื่อง user เท่านั้น** ไม่อยู่ใน GitHub Secrets/CI (ตรง Secret Handling Rule) ✅
+>
+> **R-20 — FB_PAGE_TOKEN never-expire (high blast radius):** token ไม่หมดอายุ + post/edit/delete Page ได้ → rotate **quarterly** แม้ไม่หมดอายุ. ถ้ารั่ว: FB → Settings → Business Integrations → revoke → รัน `fb_token_exchange.mjs` ใหม่ → อัปเดต GitHub Secret. GHA mask token อัตโนมัติ (registered secret) · `fb_post_manage.yml` = `contents:read` (least-priv).
 
 ---
 
@@ -84,6 +92,8 @@ Verified 2026-05-22 (per CLAUDE.md):
 | `GROQ_API_KEY` | quarterly | user (Groq console) | 1) Groq console → New key. 2) Update GH Secret. 3) Verify with `kb_extract_test.yml`. 4) Revoke old key. |
 | `TYPHOON_SERVER_KEY` | quarterly | user (Typhoon console) | 1) Typhoon console → New key. 2) Update CF Worker `horatad-ai` env. 3) Test via horatad.com → V3 → Predict. 4) Revoke old. |
 | `horatad-auth` PIN secret | yearly OR on compromise | user (CF Worker env) | 1) CF Worker env → update. 2) Test PIN unlock flow. |
+| `FB_PAGE_TOKEN` | quarterly (R-20) | user (FB token_exchange) | 1) รัน `workers/fb_token_exchange.mjs` (เครื่อง user) → ได้ Page token ใหม่. 2) ทดสอบ `node workers/fb_autopost.mjs --dry-run`. 3) อัปเดต GH Secret `FB_PAGE_TOKEN`. 4) ตรวจ Page feed ปกติ → revoke ตัวเก่า (FB → Business Integrations). |
+| `YOUTUBE_API_KEY` | quarterly | user (Google Cloud Console) | 1) Console → Credentials → regenerate. 2) Restrict by API (YouTube Data v3). 3) อัปเดต GH Secret. 4) Verify `youtube_sync.yml` dispatch. |
 | `GITHUB_TOKEN` | auto (per workflow) | GitHub | n/a |
 
 **Automation gap (P1-F):** Quarterly reminder. **Plan:** GH issue auto-created by workflow on 1st of Mar/Jun/Sep/Dec with the rotation checklist.
