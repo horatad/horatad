@@ -101,6 +101,18 @@
     display: none;
   }
   .step-hint.show { display: block; }
+
+  .pat-box { margin-top: 4px; font-size: 13px; }
+  .pat-box summary { cursor: pointer; color: #888; padding: 6px 0; user-select: none; }
+  .pat-box summary:hover { color: #ba8345; }
+  .pat-hint { color: #777; line-height: 1.6; margin: 8px 0; }
+  .pat-hint code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  #patInput { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 8px; }
+  .pat-row { display: flex; gap: 8px; }
+  .pat-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .pat-btn.save  { background: #ba8345; color: #fff; }
+  .pat-btn.clear { background: #f0f0f0; color: #777; }
+  .pat-state { font-size: 12px; margin-top: 8px; color: #2e7d32; }
 </style>
 </head>
 <body>
@@ -120,6 +132,21 @@
   <button id="btnDone" class="btn btn-done" disabled onclick="markPosted()">✅ โพสต์แล้ว</button>
   <button id="btnNext" class="btn btn-next" onclick="loadNext()" style="display:none">ดูโพสต์ถัดไป →</button>
 
+  <details id="patBox" class="pat-box">
+    <summary>🔑 เชื่อมต่อ GitHub (ย้ายโพสต์ออกจากคิวอัตโนมัติ)</summary>
+    <p class="pat-hint">
+      ใส่ Classic PAT (ไม่หมดอายุ · scope <b>public_repo</b>) แล้วปุ่ม "โพสต์แล้ว"
+      จะย้ายไฟล์ <code>scheduled → posted</code> จริง — คิวจะไม่ค้างซ้ำ<br>
+      ถ้าไม่ใส่ ก็ยังใช้ได้ แต่จดสถานะไว้แค่เครื่องนี้
+    </p>
+    <input type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    <div class="pat-row">
+      <button class="pat-btn save" onclick="savePat()">บันทึก Token</button>
+      <button class="pat-btn clear" onclick="clearPat()">ลบ Token</button>
+    </div>
+    <div id="patState" class="pat-state"></div>
+  </details>
+
   <div id="meta" class="meta"></div>
 </div>
 
@@ -128,10 +155,12 @@
 <script>
 const REPO   = 'horatad/horatad';
 const BRANCH = 'main';
-const SCHED_PATH = 'content/scheduled';
+const SCHED_PATH  = 'content/scheduled';
+const POSTED_PATH = 'content/posted';
 const POSTED_KEY = 'fb_posted_ids';
+const PAT_KEY    = 'fb_post_helper_pat';
 
-let posts = [];   // [{filename, data}]
+let posts = [];   // [{filename, sha, data}]
 let idx   = 0;
 
 function getPosted() {
@@ -139,6 +168,28 @@ function getPosted() {
 }
 function savePosted(arr) {
   localStorage.setItem(POSTED_KEY, JSON.stringify(arr));
+}
+
+// --- GitHub PAT (optional — ย้ายไฟล์ scheduled→posted จริง) ---
+function getPat() { return localStorage.getItem(PAT_KEY) || ''; }
+function savePat() {
+  const v = document.getElementById('patInput').value.trim();
+  if (!v) { showToast('ใส่ token ก่อนครับ'); return; }
+  localStorage.setItem(PAT_KEY, v);
+  renderPatState();
+  showToast('บันทึก Token แล้ว ✅');
+}
+function clearPat() {
+  localStorage.removeItem(PAT_KEY);
+  document.getElementById('patInput').value = '';
+  renderPatState();
+  showToast('ลบ Token แล้ว');
+}
+function renderPatState() {
+  const el = document.getElementById('patState');
+  if (!el) return;
+  el.textContent = getPat() ? '✅ เชื่อมต่อแล้ว — ปุ่ม "โพสต์แล้ว" จะย้ายไฟล์ออกจากคิวให้'
+                            : '';
 }
 
 async function fetchScheduled() {
@@ -239,14 +290,66 @@ function doCopy() {
   });
 }
 
-function markPosted() {
-  const item   = posts[idx];
+async function markPosted() {
+  const item = posts[idx];
   if (!item) return;
+
+  // มี PAT → ย้ายไฟล์ scheduled → posted จริงในรีโป (ปิด loop)
+  if (getPat()) {
+    const btnDone = document.getElementById('btnDone');
+    btnDone.disabled = true;
+    showToast('กำลังย้ายออกจากคิว...');
+    const ok = await moveToPosted(item);
+    if (ok) {
+      posts.splice(idx, 1);
+      if (idx >= posts.length) idx = Math.max(0, posts.length - 1);
+      document.getElementById('hint').classList.remove('show');
+      showToast('ย้ายไป posted แล้ว ✅ คิวอัปเดต');
+      render();
+    } else {
+      btnDone.disabled = false;
+    }
+    return;
+  }
+
+  // ไม่มี PAT → จดสถานะไว้แค่เครื่องนี้ (fallback เดิม)
   const posted = getPosted();
   if (!posted.includes(item.filename)) posted.push(item.filename);
   savePosted(posted);
-  showToast('บันทึกแล้ว ✅');
+  showToast('บันทึกแล้ว (เครื่องนี้) ✅ — ใส่ Token เพื่อย้ายไฟล์จริง');
   render();
+}
+
+// ย้ายไฟล์: PUT content/posted/<name> (+date_posted) แล้ว DELETE content/scheduled/<name>
+async function moveToPosted(item) {
+  const pat = getPat();
+  const data = { ...item.data, status: 'posted', date_posted: new Date().toISOString().slice(0, 10) };
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+
+  // 1) สร้างไฟล์ใน posted/
+  const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${POSTED_PATH}/${item.filename}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `fb: mark posted ${item.filename}`, content: encoded }),
+  });
+  if (!putRes.ok) {
+    if (putRes.status === 401) showToast('❌ Token หมดอายุ — กด "ลบ Token" แล้วใส่ใหม่');
+    else if (putRes.status === 422) showToast('ไฟล์นี้อยู่ใน posted แล้ว — ข้ามการย้าย');
+    else showToast('ย้ายไม่สำเร็จ: ' + putRes.status);
+    if (putRes.status !== 422) return false;
+  }
+
+  // 2) ลบออกจาก scheduled/
+  const delRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${SCHED_PATH}/${item.filename}`, {
+    method: 'DELETE',
+    headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: `fb: remove from queue ${item.filename}`, sha: item.sha }),
+  });
+  if (!delRes.ok && delRes.status !== 404) {
+    showToast('ย้ายแล้วแต่ลบจากคิวไม่ได้: ' + delRes.status);
+    return true; // posted สำเร็จแล้ว — ถือว่าโพสต์แล้ว
+  }
+  return true;
 }
 
 function loadNext() {
@@ -268,8 +371,9 @@ function showToast(msg) {
     const files = await fetchScheduled();
     for (const f of files) {
       const data = await fetchFile(f.download_url);
-      posts.push({ filename: f.name, data });
+      posts.push({ filename: f.name, sha: f.sha, data });
     }
+    renderPatState();
     render();
   } catch (e) {
     document.getElementById('postBox').textContent = 'โหลดไม่ได้: ' + e.message;

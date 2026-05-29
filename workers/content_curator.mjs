@@ -50,6 +50,17 @@ function scoreItem(item, recentPosts = []) {
        + diversityPenalty(item, recentPosts);
 }
 
+// FB hygiene gate — engagement-bait ผิดกฎ FB ชัดเจน (เสี่ยง shadowban)
+// ตรวจก่อน schedule — ถ้าเจอให้ข้ามไป item ถัดไป ไม่ปล่อยขึ้นคิว
+const FB_BAIT = [
+  /tag\s*เพื่อน/i, /แท็ก\s*เพื่อน/, /share\s*เพื่อโชค/i, /แชร์\s*เพื่อโชค/,
+  /like\s*ถ้า/i, /กด\s*ไลค์\s*ถ้า/, /คอมเมนต์\s*เพื่อรับ/,
+];
+function baitFound(item) {
+  const body = (item.body || '') + ' ' + (item.title || '');
+  return FB_BAIT.filter(re => re.test(body)).map(re => re.source);
+}
+
 // --- main ---
 function main() {
   const inboxFiles = fs.readdirSync(INBOX).filter(f => f.endsWith('.json'));
@@ -81,8 +92,18 @@ function main() {
     console.log(`${i+1}. [${item._score}pt] ${item.title} (${item.category}/${item.source})`);
   });
 
-  // เลือก top 1 → scheduled
-  const top = scored[0];
+  // FB hygiene gate — เลือก item คะแนนสูงสุดที่ "ผ่าน" bait check
+  let top = null;
+  for (const item of scored) {
+    const bait = baitFound(item);
+    if (bait.length === 0) { top = item; break; }
+    console.log(`⚠️  ข้าม "${item.title}" — engagement-bait: ${bait.join(', ')}`);
+  }
+  if (!top) {
+    console.log('\n⚠️ ทุก item ติด FB bait — ไม่ schedule วันนี้ (ตรวจ inbox)');
+    return;
+  }
+
   top.status = 'scheduled';
   top.scheduled_at = new Date().toISOString();
   delete top._score;
