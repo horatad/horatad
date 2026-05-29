@@ -66,13 +66,20 @@ async function main() {
   console.log(`Impressions (28d):  ${impressions.toLocaleString()}`);
 
   // 3. Top 5 posts (30 วัน) — engagement จาก likes/comments/shares (ไม่พึ่ง metric ที่ deprecated)
+  //    ต้องการ permission pages_read_engagement — ถ้าไม่มี degrade graceful (รายงาน followers อย่างเดียว)
   const since30 = Math.floor(Date.now() / 1000) - 30 * 86400;
-  const posts = await get(
-    `${PAGE_ID}/posts?fields=message,created_time,` +
-    `likes.summary(true),comments.summary(true),shares,` +
-    `insights.metric(post_impressions_unique)` +
-    `&since=${since30}&limit=25&access_token=${TOKEN}`
-  );
+  let posts = { data: [] };
+  try {
+    posts = await get(
+      `${PAGE_ID}/posts?fields=message,created_time,` +
+      `likes.summary(true),comments.summary(true),shares,` +
+      `insights.metric(post_impressions_unique)` +
+      `&since=${since30}&limit=25&access_token=${TOKEN}`
+    );
+  } catch (err) {
+    console.log(`⚠ posts/engagement ไม่ได้ (${err.message})`);
+    console.log('   → token ขาด permission pages_read_engagement — รายงานเฉพาะ followers');
+  }
 
   const postStats = (posts.data || []).map(p => {
     const likes    = p.likes?.summary?.total_count    || 0;
