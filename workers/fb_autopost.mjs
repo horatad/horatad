@@ -18,6 +18,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { fbPolicyViolations } from './fb_policy.mjs';
 
 const SCHEDULED = 'content/scheduled';
 const POSTED    = 'content/posted';
@@ -29,17 +30,24 @@ const FORCE = process.argv.includes('--force');
 // เพดานความถี่ — sync กับ tools/fb_post_helper.html (organic Page health)
 const WEEKLY_MAX = 14;  // 2/วัน — เกินนี้เสี่ยง reach ลด / spam flag
 
-// FB hygiene gate (defensive — curator กรองแล้ว แต่กันพลาดอีกชั้นก่อนยิงจริง)
-const FB_BAIT = [
-  /tag\s*เพื่อน/i, /แท็ก\s*เพื่อน/, /share\s*เพื่อโชค/i, /แชร์\s*เพื่อโชค/,
-  /like\s*ถ้า/i, /กด\s*ไลค์\s*ถ้า/, /คอมเมนต์\s*เพื่อรับ/,
-];
-function baitFound(item) {
-  const body = (item.body || '') + ' ' + (item.title || '');
-  return FB_BAIT.filter(re => re.test(body)).map(re => re.source);
-}
+// FB hygiene gate ใช้ fbPolicyViolations() ร่วม (workers/fb_policy.mjs) — defensive ชั้นสุดท้ายก่อนยิง
+// curator/requeue กรองแล้ว แต่กันพลาด: เช็คครบ 6 กฎ (dead/bait/disclaimer/n=/framing)
+// variation (กฎ 5) ข้ามที่นี่ — ส่ง recentPosts=[] (curator คุมตอนเติมคิวรายวัน)
 
 function die(msg) { console.error(`\n❌ ${msg}\n`); process.exit(1); }
+
+// normalize ข้อความเทียบ dedup — รวบ whitespace, trim
+function norm(s) { return (s || '').replace(/\s+/g, ' ').trim(); }
+
+// ดึงข้อความโพสต์ใน Page feed 24 ชม.ล่าสุด — ใช้กัน duplicate (F2)
+async function recentlyPostedMessages(pageId, token) {
+  const since = Math.floor(Date.now() / 1000) - 24 * 3600;
+  const url = `${GRAPH}/${pageId}/feed?fields=message,created_time&since=${since}&limit=25&access_token=${encodeURIComponent(token)}`;
+  const res  = await fetch(url);
+  const json = await res.json().catch(() => ({}));
+  if (json.error) throw new Error(`${json.error.message} (code ${json.error.code})`);
+  return (json.data || []).map(p => norm(p.message)).filter(Boolean);
+}
 
 // นับโพสต์ใน 7 วันล่าสุด (จาก date_posted) — วัดความถี่ต่อสัปดาห์
 function weeklyPostedCount() {
@@ -87,14 +95,14 @@ async function main() {
       (a.item.scheduled_at || a.item.date_added || a.f)
         .localeCompare(b.item.scheduled_at || b.item.date_added || b.f));
 
-  // เลือกอันแรกที่ผ่าน hygiene gate
+  // เลือกอันแรกที่ผ่าน FB policy gate ครบ 6 กฎ (variation ข้าม → recentPosts=[])
   let pick = null;
   for (const q of queue) {
-    const bait = baitFound(q.item);
-    if (bait.length) { console.log(`⚠️  ข้าม "${q.item.title}" — engagement-bait: ${bait.join(', ')}`); continue; }
+    const v = fbPolicyViolations(q.item, []);
+    if (v.length) { console.log(`⚠️  ข้าม "${q.item.title}" — ${v.join(' · ')}`); continue; }
     pick = q; break;
   }
-  if (!pick) die('ทุกโพสต์ในคิวติด FB hygiene gate — ตรวจ content/scheduled/');
+  if (!pick) die('ทุกโพสต์ในคิวติด FB policy gate — ตรวจ content/scheduled/');
 
   console.log(`📋 โพสต์ถัดไป: ${pick.item.title}`);
   console.log(`   category=${pick.item.category} source=${pick.item.source}`);
@@ -117,6 +125,29 @@ async function main() {
   }
 
   if (!PAGE_ID || !TOKEN) die('ต้องตั้ง env: FB_PAGE_ID, FB_PAGE_TOKEN (รัน fb_token_exchange.mjs เพื่อขอ)');
+
+  // F2: idempotency guard — กัน duplicate post จาก push-fail รอบก่อน
+  // ถ้ารอบก่อนโพสต์ FB สำเร็จแต่ push ledger fail → ไฟล์ยังค้าง scheduled/ → รอบนี้จะหยิบมาโพสต์ซ้ำ
+  // เช็ค Page feed 24 ชม.: ถ้าข้อความตรงกับที่ขึ้น Page แล้ว → reconcile ledger (ย้าย posted/) ไม่โพสต์ซ้ำ
+  const candidate = norm(pick.item.body || pick.item.title || '');
+  try {
+    const recent = await recentlyPostedMessages(PAGE_ID, TOKEN);
+    const dup = recent.find(m =>
+      m === candidate || (candidate.length >= 40 && m.startsWith(candidate.slice(0, 80))));
+    if (dup) {
+      console.log('\n♻️  ตรวจพบโพสต์นี้ขึ้น Page แล้วใน 24 ชม. (น่าจะ push ledger fail รอบก่อน)');
+      console.log('   → reconcile: ย้าย scheduled/ → posted/ โดยไม่โพสต์ซ้ำ');
+      pick.item.status      = 'posted';
+      pick.item.date_posted = new Date().toISOString().slice(0, 10);
+      pick.item.reconciled  = true;   // ปิด ledger โดยไม่ได้ยิงรอบนี้ (โพสต์ไปแล้วรอบก่อน)
+      fs.writeFileSync(path.join(POSTED, pick.f), JSON.stringify(pick.item, null, 2));
+      fs.unlinkSync(path.join(SCHEDULED, pick.f));
+      console.log(`📦 ย้าย ${pick.f} → posted/ (reconciled) — รอบหน้าโพสต์อันถัดไป`);
+      return;
+    }
+  } catch (e) {
+    console.log(`⚠️  เช็ค dedup กับ Page feed ไม่ได้ (${e.message}) — ดำเนินการโพสต์ต่อ (fail-open)`);
+  }
 
   // ยิงจริง
   console.log('\n🚀 กำลังโพสต์ …');
