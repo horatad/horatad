@@ -51,6 +51,10 @@
 | `.github/workflows/kb_extract_test.yml` | `GROQ_API_KEY` | curl `-H "Authorization: Bearer $GROQ_API_KEY"` ✅ |
 | `.github/workflows/main_sync_check.yml` | `GITHUB_TOKEN` (issues:write) | — |
 | `.github/workflows/stale_branch_cleanup.yml` | `GITHUB_TOKEN` (contents:write, issues:write) | — |
+| `.github/workflows/fb_autopost.yml` | `FB_PAGE_TOKEN`, `FB_PAGE_ID` | env vars only ✅ + secret-gate ก่อนใช้ |
+| `.github/workflows/fb_post_manage.yml` | `FB_PAGE_TOKEN`, `FB_PAGE_ID` | env vars only ✅ · `contents:read` least-priv · destructive (manual dispatch) |
+| `.github/workflows/fb_kpi_monthly.yml` | `FB_PAGE_TOKEN`, `FB_PAGE_ID` | env vars only ✅ + secret-gate |
+| `.github/workflows/youtube_sync.yml` | `YOUTUBE_API_KEY`, `YOUTUBE_PLAYLIST_ID` | env vars only ✅ |
 
 ### 3.2 Workers (Node scripts, deployed or local)
 | File | Secret(s) expected from env | Notes |
