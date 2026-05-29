@@ -1,0 +1,59 @@
+name: FB Post Manage — แก้/ลบโพสต์ที่เผยแพร่แล้ว (กดเอง)
+
+# ⚠️ destructive — กดเองเท่านั้น (ไม่มี schedule, ไม่ให้ automation เรียก)
+#    edit = แก้ข้อความ (การ์ด/engagement เดิมอยู่ครบ)
+#    delete = ลบถาวร (กู้ไม่ได้) — ต้องพิมพ์ confirm = DELETE
+on:
+  workflow_dispatch:
+    inputs:
+      post_id:
+        description: 'POST_ID เต็ม <pageid>_<postid> (ดูจาก content/posted/*.json → fb_post_id)'
+        required: true
+      action:
+        description: 'edit = แก้ข้อความ · delete = ลบถาวร'
+        required: true
+        type: choice
+        default: 'edit'
+        options:
+          - edit
+          - delete
+      body:
+        description: 'ข้อความใหม่ (เฉพาะ action=edit)'
+        required: false
+        default: ''
+      confirm:
+        description: 'ยืนยันลบ — พิมพ์ DELETE (เฉพาะ action=delete)'
+        required: false
+        default: ''
+
+jobs:
+  manage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Check secret
+        id: gate
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          if [ -z "$FB_PAGE_TOKEN" ]; then
+            echo "❌ ยังไม่ได้ตั้ง FB_PAGE_TOKEN secret"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Manage post (echo-before → edit/delete)
+        env:
+          FB_PAGE_ID:    ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          POST_ID:       ${{ github.event.inputs.post_id }}
+          ACTION:        ${{ github.event.inputs.action }}
+          BODY:          ${{ github.event.inputs.body }}
+          CONFIRM:       ${{ github.event.inputs.confirm }}
+        run: node workers/fb_post_manage.mjs
