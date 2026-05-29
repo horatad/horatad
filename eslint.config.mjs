@@ -21,9 +21,23 @@ export default [
     ],
   },
 
-  // Classic browser scripts (loaded via <script src=>, not modules)
+  // Browser scripts — script.js uses ES module import/export, sw.js/auth-pin.js are classic scripts
   {
-    files: ['script.js', 'sw.js', 'auth-pin.js'],
+    files: ['script.js'],
+    languageOptions: {
+      ecmaVersion: 2024,
+      sourceType: 'module',
+      globals: { ...globals.browser },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' }],
+      'no-undef': 'off',
+      'no-empty': ['warn', { allowEmptyCatch: true }],
+      'no-constant-condition': ['warn', { checkLoops: false }],
+    },
+  },
+  {
+    files: ['sw.js', 'auth-pin.js'],
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: 'script',
