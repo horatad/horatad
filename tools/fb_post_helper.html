@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FB Post Helper — โหราทาส AI</title>
+<title>ตารางโพสต์อัตโนมัติ — โหราทาส AI</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -18,17 +18,14 @@
   h1 { font-size: 22px; color: #fff; margin-bottom: 4px; }
   .stats { font-size: 13px; color: #c9d2f0; margin-bottom: 14px; }
   .stats b { color: #ba8345; }
-  .wk { display: inline-block; padding: 1px 9px; border-radius: 10px; font-weight: 700; font-size: 12px; }
-  .wk.green { background: #e8f5e9; color: #2e7d32; }
-  .wk.amber { background: #fff3e0; color: #e65100; }
-  .wk.red   { background: #ffebee; color: #c62828; }
 
-  .quota-warn {
-    background: #fff3f3; border: 1px solid #ffcdd2; border-left: 4px solid #c62828;
-    border-radius: 0 10px 10px 0; padding: 12px 14px; margin-bottom: 16px;
-    font-size: 13px; color: #b71c1c; line-height: 1.6; display: none;
+  /* info banner — อธิบายว่าระบบ auto */
+  .auto-info {
+    background: rgba(46,125,50,.14); border: 1px solid rgba(129,199,132,.4); border-left: 4px solid #66bb6a;
+    border-radius: 0 10px 10px 0; padding: 12px 14px; margin-bottom: 18px;
+    font-size: 13px; color: #c9efd0; line-height: 1.6;
   }
-  .quota-warn.show { display: block; }
+  .auto-info b { color: #a5e8b0; }
 
   .section-title { font-size: 14px; font-weight: 700; color: #fff; margin: 22px 0 10px; display: flex; align-items: center; gap: 8px; }
   .section-title .count { background: rgba(255,255,255,.15); color: #fff; font-size: 12px; padding: 1px 9px; border-radius: 10px; }
@@ -41,29 +38,23 @@
   .item-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
   .sched-badge {
     font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 8px;
-    background: #fff3e0; color: #e65100; white-space: nowrap;
+    background: #e3f2fd; color: #1565c0; white-space: nowrap;
   }
-  .sched-badge.today { background: #e8f5e9; color: #2e7d32; }
+  .sched-badge.soon { background: #e8f5e9; color: #2e7d32; }
   .order { font-size: 12px; color: #aaa; font-weight: 700; }
   .chip { font-size: 11px; background: #f0f0f0; color: #666; padding: 2px 8px; border-radius: 6px; }
-  .item-title { font-size: 15px; font-weight: 600; color: #1f2d5e; line-height: 1.45; margin-bottom: 8px; cursor: pointer; }
+  .item-title { font-size: 15px; font-weight: 600; color: #1f2d5e; line-height: 1.45; cursor: pointer; }
   .item-title:hover { color: #ba8345; }
 
   .body-box {
     display: none; background: #f8f9fa; border: 1px solid #e8e8e8; border-radius: 8px;
     padding: 12px; font-size: 13.5px; line-height: 1.65; color: #333;
-    white-space: pre-wrap; word-break: break-word; margin-bottom: 10px;
+    white-space: pre-wrap; word-break: break-word; margin-top: 10px;
   }
   .body-box.show { display: block; }
 
-  .actions { display: flex; gap: 8px; }
-  .btn { flex: 1; padding: 11px; border: none; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity .15s, transform .1s; }
-  .btn:active { transform: scale(.97); }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
-  .btn-copy { background: #ba8345; color: #fff; }
-  .btn-done { background: #1877f2; color: #fff; }
-
   .empty { background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.25); border-radius: 12px; padding: 26px 16px; text-align: center; color: #c9d2f0; font-size: 14px; line-height: 1.6; }
+  .reload-btn { background: #ba8345; color: #fff; border: none; border-radius: 9px; padding: 10px 18px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
   /* posted history */
   .posted-item {
@@ -76,35 +67,18 @@
   details.posted-wrap > summary::-webkit-details-marker { display: none; }
   details.posted-wrap > summary::before { content: '▸ '; }
   details.posted-wrap[open] > summary::before { content: '▾ '; }
-
-  /* PAT */
-  .pat-box { margin-top: 18px; background: rgba(255,255,255,.06); border-radius: 12px; padding: 4px 14px; }
-  .pat-box summary { cursor: pointer; color: #c9d2f0; padding: 10px 0; user-select: none; font-size: 13px; list-style: none; }
-  .pat-box summary::-webkit-details-marker { display: none; }
-  .pat-hint { color: #aab4d8; line-height: 1.6; margin: 4px 0 10px; font-size: 12.5px; }
-  .pat-hint code { background: rgba(255,255,255,.12); padding: 1px 5px; border-radius: 4px; }
-  #patInput { width: 100%; padding: 10px; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; font-size: 14px; margin-bottom: 8px; background: #fff; }
-  .pat-row { display: flex; gap: 8px; padding-bottom: 12px; }
-  .pat-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-  .pat-btn.save { background: #ba8345; color: #fff; }
-  .pat-btn.clear { background: rgba(255,255,255,.15); color: #fff; }
-  .pat-state { font-size: 12px; padding-bottom: 12px; color: #8fe0a0; }
-
-  .toast {
-    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-    background: #222; color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 14px;
-    opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; max-width: 90vw; text-align: center;
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 <div class="wrap">
   <a class="back" href="index.html">← Tools</a>
-  <h1>📱 คิวโพสต์ Facebook</h1>
+  <h1>📅 ตารางโพสต์อัตโนมัติ</h1>
   <div class="stats" id="stats">กำลังโหลด…</div>
 
-  <div class="quota-warn" id="quotaWarn"></div>
+  <div class="auto-info">
+    🤖 <b>ระบบโพสต์อัตโนมัติทุกวัน 08:30 น.</b> — ไม่ต้องโพสต์เอง<br>
+    หน้านี้เป็น <b>รายงาน</b> แสดงว่าโพสต์ไหนจะขึ้นวันไหน · คิวเติมเองจาก Content Curator ทุกวัน
+  </div>
 
   <!-- คิวรอโพสต์ -->
   <div class="section-title">⏳ รอโพสต์ <span class="count" id="queueCount">–</span></div>
@@ -115,81 +89,24 @@
     <summary>✅ โพสต์แล้ว (<span id="postedCount">0</span>)</summary>
     <div id="posted" style="margin-top:10px"></div>
   </details>
-
-  <!-- PAT -->
-  <details id="patBox" class="pat-box">
-    <summary>🔑 เชื่อมต่อ GitHub (ย้ายโพสต์ออกจากคิวอัตโนมัติ)</summary>
-    <p class="pat-hint">
-      ใส่ Classic PAT (ไม่หมดอายุ · scope <code>public_repo</code>) แล้วปุ่ม "โพสต์แล้ว"
-      จะย้ายไฟล์ <code>scheduled → posted</code> จริง — คิวจะไม่ค้างซ้ำ<br>
-      ถ้าไม่ใส่ ก็ยังกด Copy ไปโพสต์ได้ แต่จะย้ายออกจากคิวไม่ได้
-    </p>
-    <input type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-    <div class="pat-row">
-      <button class="pat-btn save" onclick="savePat()">บันทึก Token</button>
-      <button class="pat-btn clear" onclick="clearPat()">ลบ Token</button>
-    </div>
-    <div id="patState" class="pat-state"></div>
-  </details>
 </div>
-
-<div id="toast" class="toast"></div>
 
 <script>
 const REPO   = 'horatad/horatad';
 const BRANCH = 'main';
 const SCHED_PATH  = 'content/scheduled';
 const POSTED_PATH = 'content/posted';
-const PAT_KEY = 'fb_post_helper_pat';
+const POST_HOUR = 8, POST_MIN = 30;   // cron fb_autopost: 08:30 ICT ทุกวัน
 
-// เพดานความถี่กัน FB spam policy (organic page health) — ปีเตอร์ override ได้
-const WEEKLY_TARGET = 7;   // 1/วัน — เป้าหมายที่ดี (🟢)
-const WEEKLY_MAX    = 14;  // 2/วัน — เกินนี้เสี่ยง reach ลด / spam flag (🔴 เตือน+ยืนยัน)
-
-let queue  = [];   // [{filename, sha, data}] รอโพสต์ เรียงเก่า→ใหม่
+let queue  = [];   // [{filename, data}] รอโพสต์ เรียงเก่า→ใหม่ (ตาม scheduled_at = ลำดับคิว)
 let posted = [];   // [{filename, data}] โพสต์แล้ว เรียงใหม่→เก่า
 
-// นับโพสต์ใน 7 วันล่าสุด (จาก date_posted) — วัดความถี่ต่อสัปดาห์
-function weeklyPostedCount() {
-  const cut = new Date(); cut.setDate(cut.getDate() - 6);
-  const cutStr = cut.toISOString().slice(0, 10);
-  return posted.filter(p => (p.data.date_posted || '') >= cutStr).length;
-}
-
-// --- PAT (optional) ---
-function getPat() { return localStorage.getItem(PAT_KEY) || ''; }
-function savePat() {
-  const v = document.getElementById('patInput').value.trim();
-  if (!v) { showToast('ใส่ token ก่อนครับ'); return; }
-  localStorage.setItem(PAT_KEY, v);
-  renderPatState(); loadData();   // re-fetch ด้วย limit ใหม่ (60→5,000)
-  showToast('บันทึก Token แล้ว ✅');
-}
-function clearPat() {
-  localStorage.removeItem(PAT_KEY);
-  document.getElementById('patInput').value = '';
-  renderPatState(); render();
-  showToast('ลบ Token แล้ว');
-}
-function renderPatState() {
-  const el = document.getElementById('patState');
-  if (el) el.textContent = getPat() ? '✅ เชื่อมต่อแล้ว — ปุ่ม "โพสต์แล้ว" จะย้ายไฟล์ออกจากคิวให้' : '';
-}
-
-// --- GitHub fetch ---
-// ส่ง PAT ทุกครั้งที่อ่าน (ถ้ามี) → limit 60 → 5,000/ชม. · ไม่กลืน error
+// --- GitHub fetch (read-only, ไม่ต้องใช้ token — public repo) ---
 async function listDir(path) {
   const url = `https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}&t=${Date.now()}`;
-  const pat = getPat();
-  const headers = { Accept: 'application/vnd.github.v3+json' };
-  if (pat) headers.Authorization = `token ${pat}`;
-  const res = await fetch(url, { headers });
+  const res = await fetch(url, { headers: { Accept: 'application/vnd.github.v3+json' } });
   if (res.status === 403 || res.status === 429) {
-    const rem = res.headers.get('x-ratelimit-remaining');
-    throw new Error(rem === '0'
-      ? (pat ? 'GitHub rate limit (มี Token แล้วยังเกิน) — รอสักครู่แล้วรีเฟรช'
-             : 'GitHub rate limit — ใส่ Token (กาง 🔑) จะเพิ่มเป็น 5,000/ชม. หรือรอ ~1 ชม.')
-      : `GitHub ปฏิเสธ (403) — ตรวจสิทธิ์ Token`);
+    throw new Error('GitHub rate limit — รอสักครู่แล้วรีเฟรช (public repo จำกัด 60 ครั้ง/ชม.)');
   }
   if (!res.ok) throw new Error(`โหลดรายการไม่ได้ (HTTP ${res.status})`);
   const files = await res.json();
@@ -201,7 +118,7 @@ async function fetchJson(downloadUrl) {
   return res.json();
 }
 
-// --- caption text (body พร้อมโพสต์ หรือ fallback ประกอบจาก title+link+tags) ---
+// --- caption preview (body หรือ fallback ประกอบจาก title+link+tags) ---
 function buildText(d) {
   if (d.body) return d.body.trim();
   const lines = [d.title || ''];
@@ -211,15 +128,25 @@ function buildText(d) {
   return lines.join('\n').trim();
 }
 
-// --- กำหนดเวลาแนะนำโพสต์: 1 โพสต์/วัน เวลา 20:00 (prime time ICT) ---
+// --- เวลาโพสต์จริง: cron ยิง 08:30 ICT ทุกวัน · order #0 = รอบ 08:30 ถัดไป ---
+// (scheduled_at ในไฟล์เป็นแค่ลำดับคิว FIFO — เวลาจริงมาจาก cron ไม่ใช่ค่านั้น)
 const TH_MONTH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 function schedLabel(orderIdx) {
-  const d = new Date();
-  d.setDate(d.getDate() + orderIdx);
-  const dateStr = `${d.getDate()} ${TH_MONTH[d.getMonth()]}`;
-  if (orderIdx === 0) return { text: `วันนี้ 20:00`, today: true };
-  if (orderIdx === 1) return { text: `พรุ่งนี้ · ${dateStr}`, today: false };
-  return { text: `${dateStr} · 20:00`, today: false };
+  const now = new Date();
+  // หา 08:30 ถัดไป — ถ้าวันนี้เลย 08:30 แล้ว เริ่มพรุ่งนี้
+  const base = new Date();
+  base.setHours(POST_HOUR, POST_MIN, 0, 0);
+  if (now >= base) base.setDate(base.getDate() + 1);
+  base.setDate(base.getDate() + orderIdx);
+
+  const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const diff = Math.round((new Date(base.getFullYear(), base.getMonth(), base.getDate()) - dayStart) / 86400000);
+  const dateStr = `${base.getDate()} ${TH_MONTH[base.getMonth()]}`;
+  const hhmm = `${String(POST_HOUR).padStart(2,'0')}:${String(POST_MIN).padStart(2,'0')}`;
+  let prefix = '';
+  if (diff === 0) prefix = 'วันนี้ ';
+  else if (diff === 1) prefix = 'พรุ่งนี้ ';
+  return { text: `${prefix}${dateStr} · ${hhmm}`, soon: diff <= 1 };
 }
 
 function esc(s) { return (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -229,34 +156,15 @@ function render() {
   const stats = document.getElementById('stats');
   const queueEl = document.getElementById('queue');
   const postedEl = document.getElementById('posted');
-  const hasPat = !!getPat();
 
-  const wk = weeklyPostedCount();
-  const wkCls = wk >= WEEKLY_MAX ? 'red' : wk >= WEEKLY_TARGET ? 'amber' : 'green';
-  stats.innerHTML = `<b>${queue.length}</b> รอโพสต์ · <b>${posted.length}</b> โพสต์แล้ว · `
-                  + `<span class="wk ${wkCls}">📅 สัปดาห์นี้ ${wk}/${WEEKLY_MAX}</span>`;
+  const days = queue.length;
+  stats.innerHTML = `<b>${queue.length}</b> รอโพสต์ (พอ <b>${days}</b> วัน) · <b>${posted.length}</b> โพสต์แล้ว`;
   document.getElementById('queueCount').textContent = queue.length;
   document.getElementById('postedCount').textContent = posted.length;
 
-  // banner เตือนความถี่
-  const warn = document.getElementById('quotaWarn');
-  if (wk >= WEEKLY_MAX) {
-    warn.innerHTML = `🔴 สัปดาห์นี้โพสต์ไป <b>${wk}</b> ครั้งแล้ว — ถึงเพดานแนะนำ ${WEEKLY_MAX}/สัปดาห์`
-                   + `<br>แนะนำพักโพสต์ ป้องกัน FB ลด reach หรือมองว่าเป็น spam (ยังโพสต์ได้แต่ต้องยืนยัน)`;
-    warn.classList.add('show');
-  } else if (wk >= WEEKLY_TARGET) {
-    warn.innerHTML = `🟡 สัปดาห์นี้โพสต์ไป <b>${wk}</b> ครั้ง — ถึงเป้าหมาย ${WEEKLY_TARGET}/สัปดาห์แล้ว`
-                   + ` เกินได้อีกถึง ${WEEKLY_MAX} แต่อย่าถี่เกินไป`;
-    warn.classList.add('show');
-    warn.style.cssText = 'background:#fff8e1;border-color:#ffe0b2;border-left-color:#e65100;color:#e65100;display:block';
-  } else {
-    warn.classList.remove('show');
-    warn.style.cssText = '';
-  }
-
   // queue
   if (queue.length === 0) {
-    queueEl.innerHTML = `<div class="empty">🎉 คิวว่าง — ไม่มีโพสต์รออยู่<br>Content Curator จะเติมให้อัตโนมัติทุกวัน 08:00</div>`;
+    queueEl.innerHTML = `<div class="empty">🎉 คิวว่าง<br>Content Curator จะเติมให้อัตโนมัติทุกวัน 08:00</div>`;
   } else {
     queueEl.innerHTML = queue.map((item, i) => {
       const d = item.data;
@@ -266,16 +174,12 @@ function render() {
         <div class="item" data-i="${i}">
           <div class="item-top">
             <span class="order">#${i + 1}</span>
-            <span class="sched-badge ${sl.today ? 'today' : ''}">📅 ${sl.text}</span>
+            <span class="sched-badge ${sl.soon ? 'soon' : ''}">📅 ${sl.text}</span>
             ${d.category ? `<span class="chip">${esc(d.category)}</span>` : ''}
             ${d.source ? `<span class="chip">${esc(d.source)}</span>` : ''}
           </div>
           <div class="item-title" onclick="toggleBody(${i})">${esc(d.title)}</div>
           <div class="body-box" id="body-${i}">${esc(buildText(d))}${ytId ? `\n\n▶️ youtube.com/watch?v=${ytId}` : ''}</div>
-          <div class="actions">
-            <button class="btn btn-copy" onclick="doCopy(${i})">📋 Copy</button>
-            <button class="btn btn-done" onclick="markPosted(${i})" ${hasPat ? '' : 'disabled title="ใส่ Token ก่อนถึงจะย้ายออกจากคิวได้"'}>✅ โพสต์แล้ว</button>
-          </div>
         </div>`;
     }).join('');
   }
@@ -292,102 +196,30 @@ function render() {
 
 function toggleBody(i) { document.getElementById('body-' + i)?.classList.toggle('show'); }
 
-function doCopy(i) {
-  const item = queue[i]; if (!item) return;
-  const d = item.data;
-  const ytId = d.meta?.youtube_video_id;
-  const text = buildText(d) + (ytId && !buildText(d).includes(ytId) ? `\n\nhttps://www.youtube.com/watch?v=${ytId}` : '');
-  const done = () => showToast('Copy แล้ว! เปิด Meta Business Suite → วางได้เลย');
-  navigator.clipboard.writeText(text).then(done).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = text; document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta); done();
-  });
-}
-
-async function markPosted(i) {
-  const item = queue[i]; if (!item) return;
-  if (!getPat()) { showToast('ใส่ Token ก่อน (กางส่วน 🔑 ด้านล่าง)'); return; }
-
-  // เตือนความถี่กัน FB spam — ปีเตอร์ยืนยัน override ได้
-  const wk = weeklyPostedCount();
-  if (wk >= WEEKLY_MAX &&
-      !confirm(`⚠️ สัปดาห์นี้โพสต์ไป ${wk} ครั้งแล้ว — เกินเพดานแนะนำ ${WEEKLY_MAX}/สัปดาห์\n`
-             + `(กัน Facebook ลด reach หรือมองว่าเป็น spam)\n\nยืนยันบันทึกว่าโพสต์เพิ่ม?`)) {
-    return;
-  }
-
-  showToast('กำลังย้ายออกจากคิว…');
-  const ok = await moveToPosted(item);
-  if (!ok) return;
-  // อัปเดต state ในหน้าทันที
-  queue.splice(i, 1);
-  const movedData = { ...item.data, status: 'posted', date_posted: new Date().toISOString().slice(0, 10) };
-  posted.unshift({ filename: item.filename, data: movedData });
-  showToast('ย้ายไป "โพสต์แล้ว" ✅');
-  render();
-}
-
-// PUT content/posted/<name> (+date_posted) แล้ว DELETE content/scheduled/<name>
-async function moveToPosted(item) {
-  const pat = getPat();
-  const data = { ...item.data, status: 'posted', date_posted: new Date().toISOString().slice(0, 10) };
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-
-  const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${POSTED_PATH}/${item.filename}`, {
-    method: 'PUT',
-    headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: `fb: mark posted ${item.filename}`, content: encoded }),
-  });
-  if (!putRes.ok && putRes.status !== 422) {
-    if (putRes.status === 401) showToast('❌ Token หมดอายุ — กด "ลบ Token" แล้วใส่ใหม่');
-    else showToast('ย้ายไม่สำเร็จ: ' + putRes.status);
-    return false;
-  }
-
-  const delRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${SCHED_PATH}/${item.filename}`, {
-    method: 'DELETE',
-    headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: `fb: remove from queue ${item.filename}`, sha: item.sha }),
-  });
-  if (!delRes.ok && delRes.status !== 404) showToast('ย้ายแล้วแต่ลบจากคิวไม่ได้: ' + delRes.status);
-  return true;
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2600);
-}
-
-// --- load (เรียกตอน init + หลังบันทึก Token) ---
+// --- load ---
 async function loadData() {
   queue.length = 0; posted.length = 0;
   document.getElementById('queue').innerHTML = `<div class="empty">กำลังโหลด…</div>`;
   try {
     const schedFiles = await listDir(SCHED_PATH);
-    for (const f of schedFiles) queue.push({ filename: f.name, sha: f.sha, data: await fetchJson(f.download_url) });
-    // เรียงเก่า→ใหม่ ตาม scheduled_at (fallback date_added / ชื่อไฟล์)
+    for (const f of schedFiles) queue.push({ filename: f.name, data: await fetchJson(f.download_url) });
+    // เรียงเก่า→ใหม่ ตาม scheduled_at (= ลำดับ FIFO ที่ cron จะหยิบ) · fallback date_added / ชื่อไฟล์
     queue.sort((a, b) => (a.data.scheduled_at || a.data.date_added || a.filename)
                          .localeCompare(b.data.scheduled_at || b.data.date_added || b.filename));
 
     const postedFiles = await listDir(POSTED_PATH);
     for (const f of postedFiles) posted.push({ filename: f.name, data: await fetchJson(f.download_url) });
-    // เรียงใหม่→เก่า ตาม date_posted
     posted.sort((a, b) => (b.data.date_posted || '').localeCompare(a.data.date_posted || ''));
 
     render();
   } catch (e) {
-    // ❗ แยก "โหลดไม่ได้" ออกจาก "ไม่มีคิว" — ไม่กลืน error
     document.getElementById('queue').innerHTML =
-      `<div class="empty" style="border:1px solid #c0392b;border-radius:8px;padding:14px;color:#e8b4b4">`
-      + `⚠️ ${esc(e.message)}<br><br>`
-      + `<button class="btn btn-copy" onclick="loadData()">↻ ลองใหม่</button></div>`;
+      `<div class="empty" style="border:1px solid #c0392b;color:#e8b4b4">`
+      + `⚠️ ${esc(e.message)}<br>`
+      + `<button class="reload-btn" onclick="loadData()">↻ ลองใหม่</button></div>`;
   }
 }
 
-// --- init ---
-renderPatState();
 loadData();
 </script>
 </body>
