@@ -89,6 +89,13 @@
     <summary>✅ โพสต์แล้ว (<span id="postedCount">0</span>)</summary>
     <div id="posted" style="margin-top:10px"></div>
   </details>
+
+  <!-- Backlog (inbox — ยังไม่เข้าคิว) -->
+  <details class="posted-wrap" id="backlogWrap" style="margin-top:14px">
+    <summary>📦 Backlog รอเข้าคิว (<span id="backlogCount">0</span>)</summary>
+    <div style="color:#9fb0e0;font-size:12px;padding:2px 2px 8px">วัตถุดิบดิบ — Content Curator จะคัดเข้าคิวอัตโนมัติทุกวัน 08:00 (ผ่าน FB policy gate)</div>
+    <div id="backlog" style="margin-top:4px"></div>
+  </details>
 </div>
 
 <script>
@@ -96,10 +103,12 @@ const REPO   = 'horatad/horatad';
 const BRANCH = 'main';
 const SCHED_PATH  = 'content/scheduled';
 const POSTED_PATH = 'content/posted';
+const INBOX_PATH  = 'content/inbox';
 const POST_HOUR = 8, POST_MIN = 30;   // cron fb_autopost: 08:30 ICT ทุกวัน
 
-let queue  = [];   // [{filename, data}] รอโพสต์ เรียงเก่า→ใหม่ (ตาม scheduled_at = ลำดับคิว)
-let posted = [];   // [{filename, data}] โพสต์แล้ว เรียงใหม่→เก่า
+let queue   = [];   // [{filename, data}] รอโพสต์ เรียงเก่า→ใหม่ (ตาม scheduled_at = ลำดับคิว)
+let posted  = [];   // [{filename, data}] โพสต์แล้ว เรียงใหม่→เก่า
+let backlog = [];   // [{filename, data}] inbox — ยังไม่เข้าคิว
 
 // --- GitHub fetch (read-only, ไม่ต้องใช้ token — public repo) ---
 async function listDir(path) {
@@ -192,13 +201,23 @@ function render() {
           <span class="pdate">${esc(p.data.date_posted || '–')}</span>
           <span class="ptitle">${esc(p.data.title)}</span>
         </div>`).join('');
+
+  // backlog (inbox)
+  document.getElementById('backlogCount').textContent = backlog.length;
+  document.getElementById('backlog').innerHTML = backlog.length === 0
+    ? `<div style="color:#9fb0e0;font-size:13px;padding:4px 2px">ว่าง</div>`
+    : backlog.map(b => `
+        <div class="posted-item">
+          ${b.data.category ? `<span class="chip">${esc(b.data.category)}</span>` : ''}
+          <span class="ptitle">${esc(b.data.title)}</span>
+        </div>`).join('');
 }
 
 function toggleBody(i) { document.getElementById('body-' + i)?.classList.toggle('show'); }
 
 // --- load ---
 async function loadData() {
-  queue.length = 0; posted.length = 0;
+  queue.length = 0; posted.length = 0; backlog.length = 0;
   document.getElementById('queue').innerHTML = `<div class="empty">กำลังโหลด…</div>`;
   try {
     const schedFiles = await listDir(SCHED_PATH);
@@ -210,6 +229,15 @@ async function loadData() {
     const postedFiles = await listDir(POSTED_PATH);
     for (const f of postedFiles) posted.push({ filename: f.name, data: await fetchJson(f.download_url) });
     posted.sort((a, b) => (b.data.date_posted || '').localeCompare(a.data.date_posted || ''));
+
+    // backlog (inbox) — ดึงขนาน (94+ ไฟล์ ถ้า sequential จะช้ามากบนมือถือ)
+    const inboxFiles = await listDir(INBOX_PATH);
+    const loaded = await Promise.all(inboxFiles.map(async f => {
+      try { return { filename: f.name, data: await fetchJson(f.download_url) }; }
+      catch { return { filename: f.name, data: { title: f.name } }; }   // ไฟล์เดียวพังไม่ทำทั้ง list ล่ม
+    }));
+    backlog.push(...loaded);
+    backlog.sort((a, b) => (a.data.title || a.filename).localeCompare(b.data.title || b.filename));
 
     render();
   } catch (e) {
