@@ -377,6 +377,128 @@ export function buildFBCaption(proposal) {
   return body;
 }
 
+// =============================================================================
+// 📰 RESEARCH CAPTION BUILDER — behind_scenes / education JULIAN content
+//
+// ต่างจาก buildFBCaption() ตรงที่:
+//   - ไม่ต้องมี transit/natal pair
+//   - ไม่ต้องมี n= และ p-value ทุกโพสต์ (methodology posts ไม่มี stat ทุกอย่าง)
+//   - ยังต้องมี disclaimer + #TALS + ไม่มี engagement bait
+//
+// ใช้เมื่อ:
+//   - รายงาน "behind the scenes" เกี่ยวกับโครงการ JULIAN
+//   - educational content อธิบาย methodology / research design
+//   - project milestones (DB size, new features, roadmap)
+//
+// กฎ JULIAN Research Session (standing rule 2026-05-29):
+//   ทุก session ที่ทำงาน JULIAN research ควรผลิต ≥1 research post
+//   เพื่อสร้าง valuable content stream ควบคู่งานวิจัย
+// =============================================================================
+
+export function checkResearchPolicy(body) {
+  const errors   = [];
+  const warnings = [];
+
+  // banned phrases เหมือน checkFBPolicy — no individual predictions, no bait
+  for (const re of FB_BANNED_PHRASES) {
+    if (re.test(body)) errors.push(`ห้ามใช้วลีนี้: "${re.source}"`);
+  }
+
+  // required: disclaimer + TALS credit (เหมือนกัน)
+  if (!FB_REQUIRED.disclaimer.test(body))
+    errors.push('ขาด disclaimer: "สถิติประชากร ≠ ชะตากรรมบุคคล"');
+  if (!FB_REQUIRED.credit_tals.test(body))
+    errors.push('ขาด credit: #TALS');
+
+  // NOTE: ไม่ตรวจ n= และ p-value — research posts ไม่ต้องมีทุกโพสต์
+  // (ต่างจาก checkFBPolicy ที่ require ทั้งคู่สำหรับ statistical findings)
+
+  const hashtagCount = (body.match(/#\w/g) || []).length;
+  if (hashtagCount > 5)
+    warnings.push(`hashtag มากเกินไป (${hashtagCount}) — แนะนำไม่เกิน 5`);
+
+  return { ok: errors.length === 0, errors, warnings };
+}
+
+/**
+ * buildResearchCaption(post)
+ * สร้าง FB caption สำหรับ behind_scenes / education content เรื่อง JULIAN project
+ *
+ * @param {object} post
+ *   .body        {string}  เนื้อหาหลัก (Thai FB copy ไม่รวม footer)
+ *   .db_size     {number}  ขนาด DB ปัจจุบัน (optional — default 129163)
+ *   .hashtags    {string}  hashtag string (optional — ใช้ default ถ้าไม่ระบุ)
+ *   .include_db  {boolean} แสดงขนาด DB ใน footer (default true)
+ */
+export function buildResearchCaption(post) {
+  const {
+    body,
+    db_size     = 129163,
+    hashtags    = '#โหราทาส #TALS #JULIANResearch #โหราศาสตร์ไทย',
+    include_db  = true,
+  } = post;
+
+  const dbLine = include_db
+    ? `📦 ฐานข้อมูล n≈${db_size.toLocaleString()} คน (เพิ่มต่อเนื่องทุก 6 ชม.)\n`
+    : '';
+
+  const full = [
+    body.trim(),
+    '',
+    `${dbLine}⚠️ สถิติประชากร ≠ ชะตากรรมบุคคล`,
+    '',
+    `→ horatad.com`,
+    '',
+    hashtags,
+  ].join('\n').trim();
+
+  const check = checkResearchPolicy(full);
+  if (check.warnings.length) {
+    check.warnings.forEach(w => console.warn(`⚠️  Research Policy Warning: ${w}`));
+  }
+  if (!check.ok) {
+    throw new Error(`❌ Research Policy Violations:\n${check.errors.map(e => '  • ' + e).join('\n')}`);
+  }
+
+  return full;
+}
+
+/**
+ * writeResearchPost(post, inboxDir?)
+ * สร้างไฟล์ inbox JSON สำหรับ research content
+ * ผ่าน buildResearchCaption() + checkResearchPolicy() ก่อนเขียนเสมอ
+ */
+export function writeResearchPost(post, inboxDir = INBOX) {
+  const body = buildResearchCaption(post);
+  const today = new Date().toISOString().slice(0, 10);
+  const slug  = (post.slug || post.title)
+    .toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 40);
+  const filename = `${today}_research_julian_${slug}.json`;
+
+  const entry = {
+    title:          post.title,
+    body,
+    category:       post.category || 'behind_scenes',
+    source:         'manual',
+    tags:           post.tags || ['JULIAN', 'research', 'TALS', 'โหราศาสตร์ไทย'],
+    date_added:     today,
+    priority_score: post.priority_score ?? 8,
+    status:         'inbox',
+    meta: {
+      series:        post.series       || null,
+      series_part:   post.series_part  || null,
+      series_total:  post.series_total || null,
+      source_doc:    post.source_doc   || null,
+      content_type:  'research_report',
+    },
+  };
+
+  const outPath = path.join(inboxDir, filename);
+  fs.writeFileSync(outPath, JSON.stringify(entry, null, 2));
+  console.log(`✅ research inbox: ${filename}`);
+  return outPath;
+}
+
 // (เก็บไว้เผื่อ source อื่น — valid_rules ใช้ buildFromPolarityGroup แทน)
 function buildFromValidRule(rule) {
   const transit = rule.transit_planet || rule.planet1 || '';
