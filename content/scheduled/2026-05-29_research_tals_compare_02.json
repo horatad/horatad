@@ -13,11 +13,12 @@
   ],
   "date_added": "2026-05-29",
   "priority_score": 9,
-  "status": "inbox",
+  "status": "scheduled",
   "meta": {
     "series": "tals_comparison",
     "series_part": 2,
     "series_total": 5,
     "source_doc": "docs/tals_comparison/tals_comparison.md"
-  }
+  },
+  "scheduled_at": "2026-05-29T06:59:49.921Z"
 }
