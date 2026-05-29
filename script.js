@@ -1,9 +1,9 @@
-// HORATAD:SCRIPT:3.3.88
-// Version 3.3.88 | 2026-05-29
+// HORATAD:SCRIPT:3.3.89
+// Version 3.3.89 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 
-const APP_VERSION='3.3.88';
+const APP_VERSION='3.3.89';
 // expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -445,77 +445,6 @@ function _renderLinkedEventChips(){
   addBtn.textContent='+ เหตุการณ์';
   addBtn.addEventListener('click',()=>_openEventSlotsPopup());
   row.appendChild(addBtn);
-}
-// recent person chips — runtime buffer, auto-width max
-function _recentChipsMax(){
-  // ~72px per chip (padding 4+11+11+4 + text ~42px avg) + 6px gap, clamp 3–8
-  return Math.min(8,Math.max(3,Math.floor((window.innerWidth-24)/78)));
-}
-function _addToRecentBuffer(section,rec){
-  if(!rec||!rec.name)return;
-  if(_suppressRecentBuffer)return;
-  if(_SKIP_NAMES_RECENT.includes(rec.name.trim()))return;
-  const s=String(section);
-  const key=_tankKey(rec);
-  const buf=_recentPersonBuffer[s];
-  const idx=buf.findIndex(e=>e.key===key);
-  if(idx>=0)buf.splice(idx,1); // move-to-front ถ้ามีอยู่แล้ว
-  buf.unshift({key,rec});
-  const max=_recentChipsMax();
-  if(buf.length>max)buf.pop();
-  _activePersonKey[s]=key;
-}
-function _renderRecentPersonChips(section){
-  const el=document.getElementById('recent-chips-'+section);
-  if(!el)return;
-  el.innerHTML='';
-  const s=String(section);
-  // Bug 6: compute active key from current form (ไม่ใช้ _activePersonKey ที่อาจ stale)
-  const _fn=(document.getElementById('name-'+s)||{}).value||'';
-  const _fd=(document.getElementById('d'+s)||{}).value||'';
-  const _fm=(document.getElementById('m'+s)||{}).value||'';
-  const _fy=parseInt((document.getElementById('y'+s)||{}).value||'0',10);
-  const _fy_be=_era==='BE'?_fy:_fy+543;
-  const _ft=(document.getElementById('t'+s)||{}).value||'';
-  const _fp=(document.getElementById('prov'+s)||{}).value||'';
-  const formKey=`${_fn}|${_fd}/${_fm}/${_fy_be}|${_ft}|${_fp}`;
-  (_recentPersonBuffer[s]||[]).forEach(entry=>{
-    const chip=document.createElement('span');
-    chip.className='tag-chip tag-person-chip'+(entry.key===formKey?' tag-active':'');
-    chip.textContent=entry.rec.name||'—';
-    chip.title=`${entry.rec.d||''}/${entry.rec.m||''}/${entry.rec.y_be||''} ${entry.rec.t||''}`;
-    chip.addEventListener('click',()=>_quickLoadPerson(entry.rec,s));
-    el.appendChild(chip);
-  });
-}
-function _quickLoadPerson(m,section){
-  if(!m)return;
-  const y_use=_era==='BE'?m.y_be:m.y_be-543;
-  _editingMemKey=null;_editingMemSection=null;
-  _addToRecentBuffer(section,m);
-  if(section==='1'){
-    _setField('name-1',m.name||'');
-    document.getElementById('gender1').value=m.gender||'ชาย';
-    _setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
-    document.getElementById('prov1').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
-    _customLng1=(typeof m.lng==='number')?m.lng:null;
-    _customTz1=(typeof m.tz==='number')?m.tz:null;
-    const _nt1b=document.getElementById('notime1');if(_nt1b){_nt1b.checked=!!m.noTime;}
-    const _t1b=document.getElementById('t1');if(_t1b)_t1b.disabled=!!m.noTime;
-    _updateLngUI('1');_applyInputColors('1','init');
-  }else{
-    _setField('name-2',m.name||'');
-    document.getElementById('gender2').value=m.gender||'ชาย';
-    _setField('d2',m.d);_setField('m2',m.m);_setField('y2',y_use);_setField('t2',m.noTime?'':m.t);
-    document.getElementById('prov2').value=m.noTime?'':(m.prov||'กรุงเทพมหานคร');
-    _customLng2=(typeof m.lng==='number')?m.lng:null;
-    _customTz2=(typeof m.tz==='number')?m.tz:null;
-    const _nt2b=document.getElementById('notime2');if(_nt2b){_nt2b.checked=!!m.noTime;}
-    const _t2b=document.getElementById('t2');if(_t2b)_t2b.disabled=!!m.noTime;
-    _updateLngUI('2');_applyInputColors('2','init');
-  }
-  _renderRecentPersonChips(section);
-  _showToast(`โหลด ${m.name||''} แล้ว`);
 }
 function _eventSlotLoadByUid(uid){
   if(!uid)return;
@@ -1543,12 +1472,8 @@ function calculateBoth(){
   if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
   if(_chart2){const r=_addMemory({name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime},_rk2);if(r==='updated')_showToast(`อัปเดตดวง ${_chart2.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${_chart2.name} แล้ว`);}
   _editingMemKey=null;_editingMemSection=null;
-  if(natal)_addToRecentBuffer('1',{name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime});
-  if(_chart2)_addToRecentBuffer('2',{name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime});
-  _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
   _renderLinkedEventChips();
-  _renderRecentPersonChips('1');_renderRecentPersonChips('2');
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
 // split into saveChart() = direct download, shareChart() = Web Share API
@@ -1757,8 +1682,6 @@ function openTimePicker(fieldId){
 function closeTimePicker(){
   document.getElementById('time-picker-modal').classList.add('hidden');
   document.getElementById('time-picker-backdrop').classList.add('hidden');
-  // Bug 6: refresh recent chips ถ้า field เป็น section 1 หรือ 2
-  if(_timePickerField){const _s=_timePickerField.slice(-1);if(_s==='1'||_s==='2')_renderRecentPersonChips(_s);}
   _timePickerField=null;
 }
 function _renderTimePicker(){
@@ -1797,8 +1720,6 @@ function openColPicker(fieldId,type){
   document.getElementById('col-picker-backdrop').classList.remove('hidden');
 }
 function closeColPicker(){
-  // Bug 6: refresh recent chips ถ้า field เป็น section 1 หรือ 2
-  if(_colPickerField){const _s=_colPickerField.slice(-1);if(_s==='1'||_s==='2')_renderRecentPersonChips(_s);}
   document.getElementById('col-picker-modal').classList.add('hidden');
   document.getElementById('col-picker-backdrop').classList.add('hidden');
   _colPickerField=null;_colPickerType=null;
@@ -2377,10 +2298,6 @@ function _addMemory(entry,replaceKey){
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
-let _recentPersonBuffer={'1':[],'2':[]};  // runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
-let _activePersonKey={'1':null,'2':null}; // track currently active per section
-let _suppressRecentBuffer=false;          // ป้องกัน header quick-chip เพิ่ม buffer
-const _SKIP_NAMES_RECENT=['ดวงที่ 2','ไม่ระบุ',''];
 // edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
 let _editingMemKey=null;
@@ -2695,19 +2612,12 @@ window.copyJulianToPrivate=function(i){
 
 // refresh chips บนฟอร์มหลักหลังแก้ Tank — ไม่งั้น chips เดิมค้างจนกว่าจะ reload
 // (clearRecentBuffer=true เมื่อ clear ทั้งถัง, false เมื่อลบ/แก้รายเดียว)
-function _refreshFormChips(clearRecentBuffer){
-  if(clearRecentBuffer)_recentPersonBuffer={'1':[],'2':[]};
-  _renderQuickMemory();
-  _renderRecentPersonChips('1');_renderRecentPersonChips('2');
-}
-
 window.confirmClearTank=function(tank){
   const label=tank==='qr'?'QR':'ส่วนตัว';
   _showConfirm(`ล้าง${label}ทั้งหมด`,`ลบทุกรายการใน${label}? ไม่สามารถกู้คืนได้`,()=>{
     _tankSave(tank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
-    if(tank!=='qr')_refreshFormChips(true);
   });
 };
 
@@ -2797,7 +2707,6 @@ function _confirmDeleteMemory(i){
     _tankSave(tankKey,arr);
     _updateTankCounts();
     _renderTank(document.getElementById('memory-search')?.value||'');
-    if(tankKey===TANK_PRIVATE_KEY)_refreshFormChips(false);
   });
 }
 function confirmClearMemory(){
@@ -2805,7 +2714,6 @@ function confirmClearMemory(){
     _tankSave(TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
-    _refreshFormChips(true);
   });
 }
 function exportMemory(){
@@ -4136,28 +4044,6 @@ function _copyInterpretation(){
       _showToast('คัดลอกคำทำนายแล้ว');
     });
 }
-function _renderQuickMemory(){
-  const el=document.getElementById('quick-memory-chips');
-  if(!el)return;
-  const mem=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0)).slice(0,5);
-  el.innerHTML=mem.map((m,i)=>`<button class="qm-chip" onclick="_quickLoad(${i})">${_escHtml(m.name||'—')}</button>`).join('');
-}
-function _quickLoad(i){
-  _editingMemKey=null;_editingMemSection=null;
-  const mem=_tankLoad(TANK_PRIVATE_KEY).slice().sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
-  const m=mem[i];if(!m)return;
-  const y_use=_era==='BE'?m.y_be:m.y_be-543;
-  _setField('name-1',m.name);_setField('gender1',m.gender||'');_setField('d1',m.d);_setField('m1',m.m);_setField('y1',y_use);_setField('t1',m.noTime?'':m.t);
-  if(m.prov&&!m.noTime)document.getElementById('prov1').value=m.prov;
-  else if(m.noTime)document.getElementById('prov1').value='';
-  _customLng1=(typeof m.lng==='number')?m.lng:null;
-  _customTz1=(typeof m.tz==='number')?m.tz:null;
-  _updateLngUI('1');
-  // Bug 3: header quick-chip ไม่ควรสะสม recent-chips buffer — ใช้ flag ป้องกัน
-  _suppressRecentBuffer=true;
-  calculateBoth();
-  _suppressRecentBuffer=false;
-}
 async function installPWA(){
   if(!_deferredInstallPrompt)return;
   _deferredInstallPrompt.prompt();
@@ -4329,9 +4215,6 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   // d/m/y inputs ใช้ col-picker แล้ว — ไม่ต้องติด numpad listener
   // (readonly + onclick="openColPicker" ใน HTML จัดการแทน)
-  // Bug 6: name input เปลี่ยน → refresh recent chips ทันที (active state ไม่ stale)
-  const el_n1=document.getElementById('name-1');if(el_n1)el_n1.addEventListener('input',()=>_renderRecentPersonChips('1'));
-  const el_n2=document.getElementById('name-2');if(el_n2)el_n2.addEventListener('input',()=>_renderRecentPersonChips('2'));
 
   // sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
   ['btn-era'].forEach(id=>{
@@ -4381,7 +4264,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   _applyLabelModeChip();
   _redraw();
   _updateShareButton();
-  _renderQuickMemory();
   // KB load async — display populated in _loadEmbeddedKB() callback
   _loadEmbeddedKB();
 
@@ -4389,10 +4271,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   _wireDbIndicatorListeners();
   _updateDbIndicator('1');
   _updateDbIndicator('2');
-
-  // recent person chips
-  _renderRecentPersonChips('1');
-  _renderRecentPersonChips('2');
 
   // LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
