@@ -16,8 +16,19 @@
   .wrap { max-width: 560px; margin: 0 auto; }
   .back { display: inline-block; color: #ba8345; text-decoration: none; font-size: 13px; opacity: .85; margin-bottom: 8px; }
   h1 { font-size: 22px; color: #fff; margin-bottom: 4px; }
-  .stats { font-size: 13px; color: #c9d2f0; margin-bottom: 18px; }
+  .stats { font-size: 13px; color: #c9d2f0; margin-bottom: 14px; }
   .stats b { color: #ba8345; }
+  .wk { display: inline-block; padding: 1px 9px; border-radius: 10px; font-weight: 700; font-size: 12px; }
+  .wk.green { background: #e8f5e9; color: #2e7d32; }
+  .wk.amber { background: #fff3e0; color: #e65100; }
+  .wk.red   { background: #ffebee; color: #c62828; }
+
+  .quota-warn {
+    background: #fff3f3; border: 1px solid #ffcdd2; border-left: 4px solid #c62828;
+    border-radius: 0 10px 10px 0; padding: 12px 14px; margin-bottom: 16px;
+    font-size: 13px; color: #b71c1c; line-height: 1.6; display: none;
+  }
+  .quota-warn.show { display: block; }
 
   .section-title { font-size: 14px; font-weight: 700; color: #fff; margin: 22px 0 10px; display: flex; align-items: center; gap: 8px; }
   .section-title .count { background: rgba(255,255,255,.15); color: #fff; font-size: 12px; padding: 1px 9px; border-radius: 10px; }
@@ -93,6 +104,8 @@
   <h1>📱 คิวโพสต์ Facebook</h1>
   <div class="stats" id="stats">กำลังโหลด…</div>
 
+  <div class="quota-warn" id="quotaWarn"></div>
+
   <!-- คิวรอโพสต์ -->
   <div class="section-title">⏳ รอโพสต์ <span class="count" id="queueCount">–</span></div>
   <div id="queue"></div>
@@ -129,8 +142,19 @@ const SCHED_PATH  = 'content/scheduled';
 const POSTED_PATH = 'content/posted';
 const PAT_KEY = 'fb_post_helper_pat';
 
+// เพดานความถี่กัน FB spam policy (organic page health) — ปีเตอร์ override ได้
+const WEEKLY_TARGET = 7;   // 1/วัน — เป้าหมายที่ดี (🟢)
+const WEEKLY_MAX    = 14;  // 2/วัน — เกินนี้เสี่ยง reach ลด / spam flag (🔴 เตือน+ยืนยัน)
+
 let queue  = [];   // [{filename, sha, data}] รอโพสต์ เรียงเก่า→ใหม่
 let posted = [];   // [{filename, data}] โพสต์แล้ว เรียงใหม่→เก่า
+
+// นับโพสต์ใน 7 วันล่าสุด (จาก date_posted) — วัดความถี่ต่อสัปดาห์
+function weeklyPostedCount() {
+  const cut = new Date(); cut.setDate(cut.getDate() - 6);
+  const cutStr = cut.toISOString().slice(0, 10);
+  return posted.filter(p => (p.data.date_posted || '') >= cutStr).length;
+}
 
 // --- PAT (optional) ---
 function getPat() { return localStorage.getItem(PAT_KEY) || ''; }
@@ -195,9 +219,28 @@ function render() {
   const postedEl = document.getElementById('posted');
   const hasPat = !!getPat();
 
-  stats.innerHTML = `<b>${queue.length}</b> รอโพสต์ · <b>${posted.length}</b> โพสต์แล้ว`;
+  const wk = weeklyPostedCount();
+  const wkCls = wk >= WEEKLY_MAX ? 'red' : wk >= WEEKLY_TARGET ? 'amber' : 'green';
+  stats.innerHTML = `<b>${queue.length}</b> รอโพสต์ · <b>${posted.length}</b> โพสต์แล้ว · `
+                  + `<span class="wk ${wkCls}">📅 สัปดาห์นี้ ${wk}/${WEEKLY_MAX}</span>`;
   document.getElementById('queueCount').textContent = queue.length;
   document.getElementById('postedCount').textContent = posted.length;
+
+  // banner เตือนความถี่
+  const warn = document.getElementById('quotaWarn');
+  if (wk >= WEEKLY_MAX) {
+    warn.innerHTML = `🔴 สัปดาห์นี้โพสต์ไป <b>${wk}</b> ครั้งแล้ว — ถึงเพดานแนะนำ ${WEEKLY_MAX}/สัปดาห์`
+                   + `<br>แนะนำพักโพสต์ ป้องกัน FB ลด reach หรือมองว่าเป็น spam (ยังโพสต์ได้แต่ต้องยืนยัน)`;
+    warn.classList.add('show');
+  } else if (wk >= WEEKLY_TARGET) {
+    warn.innerHTML = `🟡 สัปดาห์นี้โพสต์ไป <b>${wk}</b> ครั้ง — ถึงเป้าหมาย ${WEEKLY_TARGET}/สัปดาห์แล้ว`
+                   + ` เกินได้อีกถึง ${WEEKLY_MAX} แต่อย่าถี่เกินไป`;
+    warn.classList.add('show');
+    warn.style.cssText = 'background:#fff8e1;border-color:#ffe0b2;border-left-color:#e65100;color:#e65100;display:block';
+  } else {
+    warn.classList.remove('show');
+    warn.style.cssText = '';
+  }
 
   // queue
   if (queue.length === 0) {
@@ -253,6 +296,15 @@ function doCopy(i) {
 async function markPosted(i) {
   const item = queue[i]; if (!item) return;
   if (!getPat()) { showToast('ใส่ Token ก่อน (กางส่วน 🔑 ด้านล่าง)'); return; }
+
+  // เตือนความถี่กัน FB spam — ปีเตอร์ยืนยัน override ได้
+  const wk = weeklyPostedCount();
+  if (wk >= WEEKLY_MAX &&
+      !confirm(`⚠️ สัปดาห์นี้โพสต์ไป ${wk} ครั้งแล้ว — เกินเพดานแนะนำ ${WEEKLY_MAX}/สัปดาห์\n`
+             + `(กัน Facebook ลด reach หรือมองว่าเป็น spam)\n\nยืนยันบันทึกว่าโพสต์เพิ่ม?`)) {
+    return;
+  }
+
   showToast('กำลังย้ายออกจากคิว…');
   const ok = await moveToPosted(item);
   if (!ok) return;

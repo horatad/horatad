@@ -1,9 +1,10 @@
 /**
  * content_curator.mjs
- * อ่านไฟล์จาก content/inbox/ → score → เลือก top item → ย้ายไป content/scheduled/
+ * อ่านไฟล์จาก content/inbox/ → score → เติมคิว content/scheduled/ ให้ครบ QUEUE_TARGET
  *
- * รัน: node workers/content_curator.mjs
- * ใช้ใน GitHub Action: content_curator.yml
+ * รัน: node workers/content_curator.mjs            (เติมให้ครบ 5)
+ *      node workers/content_curator.mjs --target=7 (เติมให้ครบ 7)
+ * ใช้ใน GitHub Action: content_curator.yml (cron) — แต่ละรอบเติมเฉพาะส่วนที่ขาด
  */
 
 import fs from 'fs';
@@ -12,6 +13,10 @@ import path from 'path';
 const INBOX     = 'content/inbox';
 const SCHEDULED = 'content/scheduled';
 const POSTED    = 'content/posted';
+
+// จำนวนโพสต์ที่อยากให้ค้างในคิวเสมอ (buffer หลายวันล่วงหน้า)
+const targetArg = process.argv.find(a => a.startsWith('--target='));
+const QUEUE_TARGET = targetArg ? Math.max(1, parseInt(targetArg.split('=')[1]) || 5) : 5;
 
 // --- scoring rules ---
 const CATEGORY_SCORE = {
@@ -50,6 +55,12 @@ function scoreItem(item, recentPosts = []) {
        + diversityPenalty(item, recentPosts);
 }
 
+// เลข episode จาก title (EP01, EP 48, …) — ใช้ tiebreak ให้คอร์สเรียงตอนถูกลำดับ
+function epNum(item) {
+  const m = (item.title || '').match(/EP\s*0*(\d+)/i);
+  return m ? parseInt(m[1]) : Infinity;
+}
+
 // FB hygiene gate — engagement-bait ผิดกฎ FB ชัดเจน (เสี่ยง shadowban)
 // ตรวจก่อน schedule — ถ้าเจอให้ข้ามไป item ถัดไป ไม่ปล่อยขึ้นคิว
 const FB_BAIT = [
@@ -63,6 +74,14 @@ function baitFound(item) {
 
 // --- main ---
 function main() {
+  // คิวมีอยู่เท่าไหร่แล้ว → เติมเฉพาะส่วนที่ขาด
+  const inQueue = fs.readdirSync(SCHEDULED).filter(f => f.endsWith('.json')).length;
+  const need = QUEUE_TARGET - inQueue;
+  if (need <= 0) {
+    console.log(`คิวเต็มแล้ว (${inQueue}/${QUEUE_TARGET}) — ไม่ต้องเติม`);
+    return;
+  }
+
   const inboxFiles = fs.readdirSync(INBOX).filter(f => f.endsWith('.json'));
   if (inboxFiles.length === 0) {
     console.log('inbox ว่าง — ไม่มีอะไรต้อง curate');
@@ -84,39 +103,46 @@ function main() {
     item._file = f;
     item._score = scoreItem(item, recentPosts);
     return item;
-  }).sort((a, b) => b._score - a._score);
+  }).sort((a, b) =>
+       (b._score - a._score)              // คะแนนสูงก่อน
+    || (epNum(a) - epNum(b))              // คะแนนเท่า → เรียงตอน EP น้อย→มาก
+    || (a.date_added || '').localeCompare(b.date_added || '')
+  );
 
-  // log ranking
-  console.log('=== Content Ranking ===');
+  console.log(`=== Content Ranking (เติมคิว ${need} อัน, เป้า ${QUEUE_TARGET}) ===`);
   scored.forEach((item, i) => {
     console.log(`${i+1}. [${item._score}pt] ${item.title} (${item.category}/${item.source})`);
   });
 
-  // FB hygiene gate — เลือก item คะแนนสูงสุดที่ "ผ่าน" bait check
-  let top = null;
+  // เลือก top `need` อันที่ผ่าน FB hygiene gate
+  const picked = [];
   for (const item of scored) {
+    if (picked.length >= need) break;
     const bait = baitFound(item);
-    if (bait.length === 0) { top = item; break; }
-    console.log(`⚠️  ข้าม "${item.title}" — engagement-bait: ${bait.join(', ')}`);
+    if (bait.length > 0) {
+      console.log(`⚠️  ข้าม "${item.title}" — engagement-bait: ${bait.join(', ')}`);
+      continue;
+    }
+    picked.push(item);
   }
-  if (!top) {
-    console.log('\n⚠️ ทุก item ติด FB bait — ไม่ schedule วันนี้ (ตรวจ inbox)');
+  if (picked.length === 0) {
+    console.log('\n⚠️ ไม่มี item ที่ผ่าน FB hygiene — ไม่ schedule (ตรวจ inbox)');
     return;
   }
 
-  top.status = 'scheduled';
-  top.scheduled_at = new Date().toISOString();
-  delete top._score;
+  // เขียนลงคิว — scheduled_at ไล่ลำดับ (ของที่เลือกก่อน = โพสต์ก่อน → FIFO เสถียร)
+  const baseTs = Date.now();
+  const today  = new Date().toISOString().slice(0, 10);
+  picked.forEach((top, i) => {
+    top.status = 'scheduled';
+    top.scheduled_at = new Date(baseTs + i).toISOString();
+    delete top._score;
+    fs.writeFileSync(path.join(SCHEDULED, `${today}_${top._file}`), JSON.stringify(top, null, 2));
+    fs.unlinkSync(path.join(INBOX, top._file));
+    console.log(`✅ +คิว: ${top.title}`);
+  });
 
-  const outFile = path.join(SCHEDULED, `${new Date().toISOString().slice(0,10)}_${top._file}`);
-  fs.writeFileSync(outFile, JSON.stringify(top, null, 2));
-
-  // ลบออกจาก inbox
-  fs.unlinkSync(path.join(INBOX, top._file));
-
-  console.log(`\n✅ Scheduled: ${top.title}`);
-  console.log(`   → ${outFile}`);
-  console.log(`   inbox เหลือ: ${inboxFiles.length - 1} items`);
+  console.log(`\nคิวตอนนี้: ${inQueue + picked.length}/${QUEUE_TARGET} · inbox เหลือ: ${inboxFiles.length - picked.length} items`);
 }
 
 main();

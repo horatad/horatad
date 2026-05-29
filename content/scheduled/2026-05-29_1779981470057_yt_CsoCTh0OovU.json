@@ -9,12 +9,14 @@
   ],
   "date_added": "2026-05-28",
   "priority_score": 7,
-  "status": "inbox",
+  "status": "scheduled",
   "meta": {
     "youtube_video_id": "CsoCTh0OovU",
     "youtube_url": "https://www.youtube.com/watch?v=CsoCTh0OovU",
     "youtube_thumbnail": "https://i.ytimg.com/vi/CsoCTh0OovU/maxresdefault.jpg",
     "youtube_published_at": "2026-05-06T16:46:54Z",
     "duration_minutes": 10
-  }
+  },
+  "_file": "1779981470057_yt_CsoCTh0OovU.json",
+  "scheduled_at": "2026-05-29T06:26:01.104Z"
 }
