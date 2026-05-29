@@ -1,9 +1,9 @@
-// HORATAD:SCRIPT:3.3.86
-// Version 3.3.86 | 2026-05-29
+// HORATAD:SCRIPT:3.3.87
+// Version 3.3.87 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 
-const APP_VERSION='3.3.86';
+const APP_VERSION='3.3.87';
 // expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2242,6 +2242,32 @@ function _dbFindBySourceId(sourceId){
   return _dbLoad().find(r=>r.source_id===sourceId)||null;
 }
 
+// resolve source_id → record ใน JULIAN cache (read-only, ต้องโหลด cache ก่อน)
+// JULIAN record ใช้ field 'source' = 'wikidata:Qxxx' ตรงกับ source_id namespace ของเรา
+// return shape ปรับให้เหมือน tank record เพื่อแสดงผลร่วมกันได้
+function _julianFindBySourceId(sourceId){
+  if(!sourceId||!_julianCache||!sourceId.startsWith('wikidata:'))return null;
+  const r=_julianCache.find(x=>x.source===sourceId);
+  if(!r)return null;
+  const{d,m:mo,y_ce}=_jdToGregorian(r.jd);
+  return{
+    name:r.name,jd:r.jd,d,m:mo,y_be:y_ce+543,
+    t:r.time_utc?String(r.time_utc).substring(0,5):'',
+    lat:r.lat,lng:r.lng,prov:'',
+    source:'julian',source_id:sourceId,
+    relate_id:[],            // JULIAN relate_id = JD namespace, ไม่ traverse ต่อ
+    event_label:r.event_label||null,country:r.country||null,tier:r.tier||null,
+    _julian:true             // marker: read-only, ยังไม่ได้ copy ลง Tank
+  };
+}
+
+// resolve source_id ข้ามทุก source: Tank → JULIAN cache (สำหรับ genealogy)
+function _resolveBySourceId(sourceId){
+  const t=_tankFindBySourceId(sourceId);
+  if(t)return t.record;
+  return _julianFindBySourceId(sourceId);
+}
+
 // สร้าง edge ระหว่าง sourceIdA ↔ sourceIdB (bidirectional) ใน Tank
 function _tankRelate(sourceIdA,sourceIdB){
   if(!sourceIdA||!sourceIdB||sourceIdA===sourceIdB)return false;
@@ -2279,6 +2305,7 @@ function _tankUnrelate(sourceIdA,sourceIdB){
 }
 
 // ดึง records ทั้งหมดที่ relate กับ sourceId (multi-hop ใช้ BFS)
+// resolve ข้าม Tank + JULIAN — figure ใน JULIAN เป็น leaf (relate_id ว่าง) จึงไม่ traverse ต่อ
 function _tankGetRelated(sourceId,depth=1){
   if(!sourceId||depth<1)return[];
   const visited=new Set([sourceId]);
@@ -2286,14 +2313,14 @@ function _tankGetRelated(sourceId,depth=1){
   const results=[];
   while(queue.length){
     const cur=queue.shift();
-    const found=_tankFindBySourceId(cur);
-    if(!found)continue;
-    const relIds=(found.record.relate_id||[]).filter(s=>!visited.has(s));
+    const rec=_resolveBySourceId(cur);
+    if(!rec)continue;
+    const relIds=(rec.relate_id||[]).filter(s=>!visited.has(s));
     relIds.forEach(s=>{
       visited.add(s);
       if(depth>1)queue.push(s);
-      const rel=_tankFindBySourceId(s);
-      if(rel)results.push(rel.record);
+      const rel=_resolveBySourceId(s);
+      if(rel)results.push(rel);
     });
   }
   return results;
