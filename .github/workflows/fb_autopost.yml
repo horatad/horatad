@@ -57,5 +57,22 @@ jobs:
           git config user.name  "horatad-bot"
           git config user.email "contact@horatad.com"
           git add content/
-          git diff --staged --quiet || git commit -m "autopost: เผยแพร่คิวถัดไป $(date +%Y-%m-%d)"
-          git push
+          if git diff --staged --quiet; then
+            echo "ไม่มีการเปลี่ยนแปลง (คิวว่าง/ติด gate/ถึงเพดาน) — ไม่ commit"
+            exit 0
+          fi
+          git commit -m "autopost: เผยแพร่คิวถัดไป $(date +%Y-%m-%d)"
+          # push พร้อม rebase+retry — กัน DUPLICATE POST: ถ้า main ขยับแล้ว push เปล่าๆ
+          # ไฟล์ที่โพสต์แล้วจะไม่ถูกย้ายใน repo → cron รอบหน้าโพสต์ซ้ำ
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "✅ push สำเร็จ (ครั้งที่ $i)"
+              exit 0
+            fi
+            echo "⚠ push ครั้งที่ $i ล้มเหลว — pull --rebase แล้วลองใหม่"
+            git pull --rebase origin main || { echo "❌ rebase conflict — หยุด (ตรวจ scheduled/ ด้วยมือ)"; exit 1; }
+            sleep $((i * 3))
+          done
+          echo "❌ push ล้มเหลวหลัง retry 5 ครั้ง — ⚠️ โพสต์ขึ้น FB แล้วแต่ ledger ไม่อัปเดต เสี่ยง repost รอบหน้า"
+          exit 1
+
