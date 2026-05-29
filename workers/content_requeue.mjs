@@ -25,6 +25,18 @@ function epNum(item) {
   return m ? parseInt(m[1]) : Infinity;
 }
 
+// ตัด "EP\d+ " ออกจาก body (FB caption) — คนใหม่ไม่รู้สึกตกขบวน series
+// เก็บเลขไว้ใน meta.episode สำหรับเรียงลำดับ · title คงเดิม (label ใน helper)
+// idempotent: รันซ้ำไม่พัง (body ที่ strip แล้วไม่ match regex)
+function stripEpForFB(item) {
+  const ep = epNum(item);
+  if (ep === Infinity) return item;          // ไม่ใช่โพสต์ EP
+  item.meta = item.meta || {};
+  item.meta.episode = ep;
+  if (item.body) item.body = item.body.replace(/^EP\s*0*\d+\s+/i, '');
+  return item;
+}
+
 // กลุ่มของ item: series ที่ระบุใน meta > EP (จาก title) > "standalone"
 function groupKey(item) {
   if (item.meta?.series) return item.meta.series;
@@ -91,11 +103,13 @@ function main() {
     }
   }
 
-  // 4. แสดงลำดับ
+  // 4. transform FB caption (ตัด EP number) + แสดงลำดับ
+  ordered.forEach(stripEpForFB);
   console.log(`\n=== Requeue Plan (${ordered.length} โพสต์) ===`);
   ordered.forEach((item, i) => {
     const g = groupKey(item);
     console.log(`${String(i+1).padStart(2)}. [${g}] ${item.title.slice(0, 55)}`);
+    if (item.meta?.episode) console.log(`     FB caption: "${item.body.split('\n')[0].slice(0, 50)}…"`);
   });
 
   if (DRY_RUN) {
