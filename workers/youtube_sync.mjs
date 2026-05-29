@@ -108,7 +108,7 @@ function buildDraft(item, details) {
                    || snippet.thumbnails?.default?.url || '';
 
   // ร่าง caption สำหรับ FB
-  const caption = buildCaption(title, description, youtubeUrl, duration);
+  const caption = buildCaption(title, description);
 
   return {
     title,
@@ -129,18 +129,15 @@ function buildDraft(item, details) {
   };
 }
 
-function buildCaption(title, description, url, duration) {
-  // ดึงประโยคแรกที่มีความหมาย
-  const firstLine = description.split('\n').find(l => l.trim().length > 20) || '';
-  const durationText = duration > 0 ? `(${duration} นาที)` : '';
+function buildCaption(title, description) {
+  // ประโยคแรกที่มีความหมาย = hook ที่ดึงให้คนอยากดู (fallback = ชื่อตอน)
+  const hook = description.split('\n').find(l => l.trim().length > 20)?.trim() || title;
 
-  return `${title} ${durationText}
+  // ไม่ใส่ URL เปลือย — fb_autopost ส่ง link แยกให้ FB ทำ preview card อยู่แล้ว
+  // ไม่ใส่ชื่อตอนซ้ำ — การ์ดวิดีโอแสดงชื่อตอน + thumbnail ให้แล้ว
+  return `${hook}
 
-${firstLine}
-
-▶️ ดูวิดีโอเต็ม: ${url}
-
-#โหราศาสตร์ไทย #TALS #โหราทาส #HoratadAI`;
+#โหราศาสตร์ไทย #TALS #โหราทาส`;
 }
 
 // --- main ---
