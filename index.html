@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- HORATAD:INDEX:3.3.83 -->
+<!-- HORATAD:INDEX:3.3.84 -->
 <!-- Version 3.3.79 | 2026-05-29 -->
 <html lang="th">
 <head>
@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="horatad_180x180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3.3.83">
+<link rel="stylesheet" href="style.css?v=3.3.84">
 <style>
 /* Critical inline: ป้องกัน Android content:// MIME type issue */
 .hidden{display:none!important}
@@ -120,11 +120,6 @@ canvas{max-width:100%;height:auto}
 .tank-transfer-btn{background:#1a3c6b;color:#79c0ff;border:1px solid #30363d;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
 .tank-transfer-btn:hover{background:#1f4c8b;}
 .julian-badge{font-size:10px;color:#8b949e;margin-left:4px;}
-.priv-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
-.priv-tag-chip{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
-.priv-tag-chip.active{background:#1a3c6b;border-color:#4a9eff;color:#79c0ff;}
-.mem-tag-badges{display:inline-flex;gap:3px;margin-left:5px;vertical-align:middle;}
-.mem-tag-badge{background:#1a2b3c;border:1px solid #2a4a6b;border-radius:8px;color:#79c0ff;font-size:10px;padding:0 5px;line-height:1.6;font-family:'Sarabun',sans-serif;}
 .julian-tag-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px;}
 .julian-sub-row{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;padding-left:8px;border-left:2px solid #30363d;}
 .julian-tag-btn{background:#21262d;border:1px solid #30363d;border-radius:12px;color:#8b949e;padding:3px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun',sans-serif;}
@@ -143,7 +138,7 @@ canvas{max-width:100%;height:auto}
   <img src="horatad_128x128.png" class="logo-h1" alt="Horatad">
   <span class="brand-en">Horatad</span>
   <span class="brand-th">โหราทาส</span>
-  <span class="brand-ver">V 3.3.83</span>
+  <span class="brand-ver">V 3.3.84</span>
 </h1>
 
 <!-- Tab nav -->
@@ -203,7 +198,7 @@ canvas{max-width:100%;height:auto}
           <button id="btn-cust1" onclick="openCitySearch('lng1')" class="btn-custom-lng">เลือกสถานที่</button>
         </div>
         <div class="lmt-badge" id="lmt-badge-1"></div>
-        <div class="tag-row" id="tag-row-1"></div>
+        <div id="event-chips-1"></div>
         <div class="tag-row recent-chips-row" id="recent-chips-1"></div>
       </div>
 
@@ -241,7 +236,6 @@ canvas{max-width:100%;height:auto}
           <button id="btn-cust2" onclick="openCitySearch('lng2')" class="btn-custom-lng">เลือกสถานที่</button>
         </div>
         <div class="lmt-badge" id="lmt-badge-2"></div>
-        <div class="tag-row" id="tag-row-2"></div>
         <div class="tag-row recent-chips-row" id="recent-chips-2"></div>
       </div><!-- /section-2 -->
 
@@ -311,7 +305,7 @@ canvas{max-width:100%;height:auto}
       <div class="about-brand-title">
         <div class="about-title-en">Horatad</div>
         <div class="about-title-th">โหราทาส</div>
-        <div class="about-version">V 3.3.83</div>
+        <div class="about-version">V 3.3.84</div>
         <div class="about-update">อัปเดต 28 พ.ค. 2569 · แก้ปุ่มพยากรณ์ + นำเข้าไฟล์</div>
         <div id="kb-version-display" class="about-kb-version"></div>
       </div>
@@ -560,7 +554,6 @@ canvas{max-width:100%;height:auto}
       <button id="memory-sort-dir-btn" class="memory-sort-dir-btn" onclick="toggleSortDir()">↓</button>
     </div>
   </div>
-  <div id="private-tag-filter" class="priv-tag-row hidden"></div>
   <div id="julian-tag-row" class="julian-tag-row hidden"></div>
   <div id="julian-sub-row" class="julian-sub-row hidden"></div>
   <div id="julian-load-area" class="julian-load-area hidden">
@@ -925,8 +918,8 @@ canvas{max-width:100%;height:auto}
 <!-- ── Toast (V2.1.9) ─────────────────────────────────────── -->
 <div id="toast" class="toast"></div>
 
-<script type="module" src="script.js?v=3.3.83"></script>
-<script type="module" src="v3/v3tab.js?v=3.3.83"></script>
+<script type="module" src="script.js?v=3.3.84"></script>
+<script type="module" src="v3/v3tab.js?v=3.3.84"></script>
 
 <!-- ── TTS Guide modal (NOK — ไม่มี Thai voice) ──────────── -->
 <div id="v3-tts-guide-backdrop" class="memory-backdrop hidden" onclick="closeTTSGuide()"></div>
@@ -1006,16 +999,5 @@ canvas{max-width:100%;height:auto}
   <button class="city-close-btn" onclick="closeCitySearch()">ยกเลิก</button>
 </div>
 
-<!-- V2.2.35: Add-tag modal -->
-<div id="add-tag-modal" class="hidden" onclick="if(event.target===this)_closeAddTagModal()">
-  <div class="add-tag-modal-content">
-    <div class="add-tag-modal-title">เพิ่ม Tag ใหม่</div>
-    <input id="add-tag-input" placeholder="ชื่อ tag (สูงสุด 20 ตัวอักษร)" maxlength="20">
-    <div class="add-tag-actions">
-      <button type="button" class="btn-cancel" onclick="_closeAddTagModal()">ยกเลิก</button>
-      <button type="button" class="add-tag-ok" onclick="_submitAddTag()">เพิ่ม</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>

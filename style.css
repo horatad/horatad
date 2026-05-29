@@ -52,15 +52,13 @@ h1{font-size:15px;font-weight:500;margin-bottom:0.5rem;color:#333;display:flex;a
 /* V2.2.35: tag chips (4 per chart) + add modal */
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
 .tag-chip{background:#2a2a2e;border:1px solid #3d3d44;color:#8b949e;padding:4px 11px;border-radius:14px;font-size:12px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;line-height:1.3;user-select:none}
-.tag-chip.tag-active{background:#5b3fa0;border-color:#7b5fc0;color:#fff;font-weight:700}
 .tag-chip-add{background:transparent;border:1px dashed #2ea043;color:#56d364;padding:4px 11px;border-radius:14px;font-size:12px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;line-height:1.3}
 .tag-chip-add:hover{background:rgba(46,160,67,0.08)}
 .tag-chip.tag-event-chip{border-color:#5b3fa0;color:#c9b8f0}
 .tag-chip.tag-event-chip:hover{background:#2d2040}
-.tag-chip-del{background:none;border:none;color:#666;cursor:pointer;font-size:11px;padding:0 0 0 5px;line-height:1;vertical-align:middle}
-.tag-chip-del:hover{color:#f85149}
 .tag-chip.tag-person-chip{background:#21262d;border-color:#30363d;color:#8b949e}
 .tag-chip.tag-person-chip:hover{background:#1a3c6b;border-color:#4a9eff;color:#79c0ff}
+.tag-chip.tag-active{background:#5b3fa0;border-color:#7b5fc0;color:#fff;font-weight:700}
 .recent-chips-row{margin-top:4px;min-height:0}
 .input-toggle-row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .btn-toggle-input{background:#2d333b;color:#8b949e;border:1px solid #444;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;line-height:1.3;transition:none}
@@ -75,15 +73,6 @@ h1{font-size:15px;font-weight:500;margin-bottom:0.5rem;color:#333;display:flex;a
 .chart-nav-view.active{background:#3d2b5b;border-color:#5b3fa0;color:#c9b8f0}
 .db1-sort-btn{background:#2d333b;color:#8b949e;border:1px solid #444;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;white-space:nowrap}
 .db1-sort-btn:hover{background:#3d444c;color:#c9d1d9}
-#add-tag-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:3100;display:flex;align-items:center;justify-content:center;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif}
-.add-tag-modal-content{background:#0d1117;border:1px solid #2d2d4e;border-radius:12px;padding:20px 24px;min-width:280px;max-width:90vw;color:#c9d1d9}
-.add-tag-modal-title{font-size:15px;font-weight:700;margin-bottom:12px;color:#fff}
-#add-tag-input{width:100%;background:#1a1a2e;border:1px solid #2d2d4e;color:#c9d1d9;padding:8px 12px;border-radius:8px;font-size:14px;font-family:inherit;box-sizing:border-box;margin-bottom:14px}
-#add-tag-input:focus{outline:none;border-color:#5b3fa0}
-.add-tag-actions{display:flex;gap:8px;justify-content:flex-end}
-.btn-cancel{background:transparent;border:1px solid #444;color:#8b949e;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit}
-.add-tag-ok{background:#2ea043;border:none;color:#fff;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit}
-.add-tag-ok:hover{background:#3fc057}
 
 label{font-size:11px;color:#666;margin-bottom:2px;white-space:nowrap;display:block}
 input,select{width:100%;font-family:'Sarabun','Noto Sans Thai','Tahoma',sans-serif;font-size:13px;padding:4px 6px;height:28px;border:0.5px solid #ccc;border-radius:6px;outline:none;background:#f0f0f0;transition:background 0.25s}

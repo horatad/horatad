@@ -1,5 +1,5 @@
-// HORATAD:SCRIPT:3.3.83
-// Version 3.3.83 | 2026-05-29
+// HORATAD:SCRIPT:3.3.84
+// Version 3.3.84 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 // Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
@@ -28,7 +28,7 @@ import { getHouse } from './v3/engine.js';
 // Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
 // See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.83';
+const APP_VERSION='3.3.84';
 // V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -168,7 +168,6 @@ let _memSortType='jd'; // 'jd'|'name'|'saved'
 let _memSortDir='desc';  // 'asc'|'desc'
 let _memScrollKey='';   // key of last selected item for scroll restore
 let _activeTank='private'; // 'private'|'qr'|'julian'
-let _memTagFilter=[]; // D1: active tag filter chips (empty=all)
 let _julianCache=null; // null=not loaded, array=loaded
 let _julianFiltered=[]; // filtered slice for display
 let _julianPage=0;
@@ -417,7 +416,6 @@ function clearForm(section){
   const dstCb=document.getElementById('dst'+s);if(dstCb)dstCb.checked=false;
   _updateLngUI(s);
   _updateDbIndicator(s);
-  if(typeof _chartTags!=='undefined'){_chartTags[s]=[];if(typeof _renderTagRow==='function')_renderTagRow(s);}
 }
 function _updateDbIndicator(section){
   const s=String(section);
@@ -448,71 +446,32 @@ function _wireDbIndicatorListeners(){
 }
 
 // V2.2.34: tag groups (4 per chart) + custom tags + auto-save to DB
-const DEFAULT_TAGS=['ตัวอย่าง','เพื่อน','ครอบครัว','ลูกค้า'];
-const CUSTOM_TAGS_KEY='horatad_custom_tags';
-const MAX_GROUPS_PER_CHART=4;
-let _chartTags={'1':[],'2':[]};
-let _addTagSection=null;
-function _loadCustomTags(){return _loadJSON(CUSTOM_TAGS_KEY)||[];}
-function _saveCustomTags(arr){_saveJSON(CUSTOM_TAGS_KEY,arr.slice(0,32));}
-function _allTags(){
-  const custom=_loadCustomTags();
-  const merged=DEFAULT_TAGS.slice();
-  custom.forEach(t=>{if(!merged.includes(t))merged.push(t);});
-  return merged;
-}
-function _renderTagRow(section){
-  const row=document.getElementById('tag-row-'+section);
+function _renderLinkedEventChips(){
+  const row=document.getElementById('event-chips-1');
   if(!row)return;
   row.innerHTML='';
-  // Phase 3: transit mode → tag-row-1 แสดง linked event chips (เฉพาะกรณีนี้เท่านั้น)
-  if(section==='1'&&_reportTransitShow){
-    row.style.display='';
-    const evs=natal?.uid?_dbEvents(natal.uid):[];
-    if(evs.length){
-      evs.forEach(s=>{
-        const chip=document.createElement('span');
-        chip.className='tag-chip tag-event-chip';
-        chip.textContent='🔗 '+(s.name||'—');
-        chip.title=`${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''} — คลิกโหลด`;
-        chip.addEventListener('click',()=>_eventSlotLoadByUid(s.uid));
-        row.appendChild(chip);
-      });
-    }else{
-      const ph=document.createElement('span');
-      ph.className='tag-chip';
-      ph.style.cssText='color:#444;cursor:default;background:transparent;border-color:#2a2a2e';
-      ph.textContent='ยังไม่มีเหตุการณ์';
-      row.appendChild(ph);
-    }
-    const addBtn=document.createElement('span');
-    addBtn.className='tag-chip-add';
-    addBtn.textContent='+ เหตุการณ์';
-    addBtn.addEventListener('click',()=>_openEventSlotsPopup());
-    row.appendChild(addBtn);
-    return;
+  if(!_reportTransitShow)return;
+  const evs=natal?.uid?_dbEvents(natal.uid):[];
+  if(evs.length){
+    evs.forEach(s=>{
+      const chip=document.createElement('span');
+      chip.className='tag-chip tag-event-chip';
+      chip.textContent='🔗 '+(s.name||'—');
+      chip.title=`${s.d||''}/${s.m||''}/${s.y_be||''} · ${s.t||''} — คลิกโหลด`;
+      chip.addEventListener('click',()=>_eventSlotLoadByUid(s.uid));
+      row.appendChild(chip);
+    });
+  }else{
+    const ph=document.createElement('span');
+    ph.className='tag-chip';
+    ph.style.cssText='color:#444;cursor:default;background:transparent;border-color:#2a2a2e';
+    ph.textContent='ยังไม่มีเหตุการณ์';
+    row.appendChild(ph);
   }
-  // group assignment row — แสดง all tags เป็น toggles + "+" เพิ่ม custom
-  row.style.display='';
-  const tags=_allTags();
-  const active=_chartTags[section]||[];
-  const isCustom=name=>!DEFAULT_TAGS.includes(name);
-  tags.forEach(name=>{
-    const chip=document.createElement('span');
-    chip.className='tag-chip'+(active.includes(name)?' tag-active':'');
-    if(isCustom(name)){
-      chip.innerHTML=`<span>${_escHtml(name)}</span><button class="tag-chip-del" title="ลบ tag" onclick="event.stopPropagation();_deleteCustomTag('${_escHtml(name)}')">✕</button>`;
-      chip.querySelector('span').addEventListener('click',()=>_toggleTag(section,name));
-    }else{
-      chip.textContent=name;
-      chip.addEventListener('click',()=>_toggleTag(section,name));
-    }
-    row.appendChild(chip);
-  });
   const addBtn=document.createElement('span');
   addBtn.className='tag-chip-add';
-  addBtn.textContent='+ เพิ่ม';
-  addBtn.addEventListener('click',()=>_openAddTagModal(section));
+  addBtn.textContent='+ เหตุการณ์';
+  addBtn.addEventListener('click',()=>_openEventSlotsPopup());
   row.appendChild(addBtn);
 }
 // V3.3.79: recent person chips — runtime buffer, auto-width max
@@ -583,9 +542,6 @@ function _quickLoadPerson(m,section){
     const _t2b=document.getElementById('t2');if(_t2b)_t2b.disabled=!!m.noTime;
     _updateLngUI('2');_applyInputColors('2','init');
   }
-  // Bug 5: sync group tags ให้ตรงกับ person ที่โหลดมา
-  _loadTagsForCurrentChart(section);
-  _renderTagRow(section);
   _renderRecentPersonChips(section);
   _showToast(`โหลด ${m.name||''} แล้ว`);
 }
@@ -593,89 +549,6 @@ function _eventSlotLoadByUid(uid){
   if(!uid)return;
   const s=_dbFind(uid);
   if(s&&s.type==='event')_eventSlotLoadRecord(s);
-}
-function _toggleTag(section,name){
-  const arr=_chartTags[section]||(_chartTags[section]=[]);
-  const idx=arr.indexOf(name);
-  if(idx>=0){arr.splice(idx,1);}
-  else{
-    if(arr.length>=MAX_GROUPS_PER_CHART){_showToast(`เลือกได้สูงสุด ${MAX_GROUPS_PER_CHART} กลุ่ม/dวง`,true);return;}
-    arr.push(name);
-  }
-  _renderTagRow(section);
-  _saveTagsToMemory(section);
-}
-function _saveTagsToMemory(section){
-  const s=String(section);
-  const name=(document.getElementById('name-'+s)||{}).value||'';
-  const d=(document.getElementById('d'+s)||{}).value||'';
-  const m=(document.getElementById('m'+s)||{}).value||'';
-  const y=(document.getElementById('y'+s)||{}).value||'';
-  const y_be=_era==='BE'?parseInt(y,10):parseInt(y,10)+543;
-  const t=(document.getElementById('t'+s)||{}).value||'';
-  const p=(document.getElementById('prov'+s)||{}).value||'';
-  if(!name||!d||!m||!y)return;
-  const key=`${name}|${d}/${m}/${y_be}|${t}|${p}`;
-  const mem=_tankLoad(TANK_PRIVATE_KEY);
-  const i=mem.findIndex(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
-  if(i<0)return;
-  mem[i].groups=(_chartTags[s]||[]).slice();
-  mem[i].savedAt=Date.now();
-  _tankSave(TANK_PRIVATE_KEY,mem);
-}
-function _openAddTagModal(section){
-  _addTagSection=String(section);
-  const modal=document.getElementById('add-tag-modal');
-  const input=document.getElementById('add-tag-input');
-  if(input){input.value='';setTimeout(()=>input.focus(),50);}
-  if(modal)modal.classList.remove('hidden');
-}
-function _closeAddTagModal(){
-  const modal=document.getElementById('add-tag-modal');
-  if(modal)modal.classList.add('hidden');
-  _addTagSection=null;
-}
-function _submitAddTag(){
-  const input=document.getElementById('add-tag-input');
-  const name=(input&&input.value||'').trim().slice(0,20);
-  if(!name){_showToast('ใส่ชื่อ tag ก่อน',true);return;}
-  const custom=_loadCustomTags();
-  if(_allTags().includes(name)){
-    // already exists — เลือก tag นั้นแทน
-    if(_addTagSection&&!(_chartTags[_addTagSection]||[]).includes(name)){
-      _toggleTag(_addTagSection,name);
-    }
-  }else{
-    custom.push(name);
-    _saveCustomTags(custom);
-    if(_addTagSection){_toggleTag(_addTagSection,name);}
-  }
-  _closeAddTagModal();
-  if(_addTagSection)_renderTagRow(_addTagSection);
-}
-function _deleteCustomTag(name){
-  _saveCustomTags(_loadCustomTags().filter(t=>t!==name));
-  ['1','2'].forEach(s=>{
-    if(_chartTags[s]){const i=_chartTags[s].indexOf(name);if(i>=0){_chartTags[s].splice(i,1);_saveTagsToMemory(s);}}
-    _renderTagRow(s);
-  });
-}
-function _loadTagsForCurrentChart(section){
-  const s=String(section);
-  const name=(document.getElementById('name-'+s)||{}).value||'';
-  const d=(document.getElementById('d'+s)||{}).value||'';
-  const m=(document.getElementById('m'+s)||{}).value||'';
-  const y=(document.getElementById('y'+s)||{}).value||'';
-  // Bug 1: normalize ปีจากฟอร์ม → y_be เสมอ (form อาจเป็น CE ถ้า era=CE)
-  const y_be=_era==='BE'?parseInt(y,10):parseInt(y,10)+543;
-  const t=(document.getElementById('t'+s)||{}).value||'';
-  const p=(document.getElementById('prov'+s)||{}).value||'';
-  // Bug 2: ไม่ตรวจ !t||!p — noTime person มี t='' p='' ได้และควรมี group ได้
-  if(!name||!d||!m||!y){_chartTags[s]=[];return;}
-  const key=`${name}|${d}/${m}/${y_be}|${t}|${p}`;
-  const mem=_tankLoad(TANK_PRIVATE_KEY);
-  const rec=mem.find(r=>`${r.name}|${r.d}/${r.m}/${r.y_be}|${r.t}|${r.prov}`===key);
-  _chartTags[s]=(rec&&Array.isArray(rec.groups))?rec.groups.slice():[];
 }
 
 // logo preload
@@ -1274,7 +1147,7 @@ function toggleReportTransit(){
   const tb2=document.getElementById('main-menu-transit-btn');
   if(tb2){tb2.textContent=_reportTransitShow?'แสดง':'ซ่อน';tb2.classList.toggle('active',_reportTransitShow);}
   _playBeep(700);
-  _renderTagRow('1');
+  _renderLinkedEventChips();
   if(_reportTransitShow){
     calculateTransit();
   }else{
@@ -1703,7 +1576,7 @@ function calculateBoth(){
   if(_chart2)_addToRecentBuffer('2',{name:_chart2.name,gender:_chart2.gender,d:_chart2.d,m:_chart2.m,y_be:_chart2.y_be,t:_chart2.t,prov:_chart2.prov,lng:_customLng2,tz:_customTz2,noTime:_chart2.noTime});
   _renderQuickMemory();
   if(typeof _updateDbIndicator==='function'){_updateDbIndicator('1');_updateDbIndicator('2');}
-  if(typeof _loadTagsForCurrentChart==='function'){_loadTagsForCurrentChart('1');_loadTagsForCurrentChart('2');_renderTagRow('1');_renderTagRow('2');}
+  _renderLinkedEventChips();
   _renderRecentPersonChips('1');_renderRecentPersonChips('2');
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
@@ -2360,20 +2233,6 @@ function _v3UpsertDB1(rec){
 }
 
 // ── Tank redesign Phase A helpers — spec: docs/HORATAD_tank_redesign.md ────
-function _dbGetByTag(tag,type){
-  return _dbLoad().filter(r=>(type?r.type===type:true)&&Array.isArray(r.tags)&&r.tags.includes(tag));
-}
-function _dbAddTag(uid,tag){
-  const r=_dbFind(uid);if(!r)return false;
-  if(!Array.isArray(r.tags))r.tags=[];
-  if(!r.tags.includes(tag))r.tags.push(tag);
-  return _dbUpsert(r)&&true;
-}
-function _dbRemoveTag(uid,tag){
-  const r=_dbFind(uid);if(!r||!Array.isArray(r.tags))return false;
-  r.tags=r.tags.filter(t=>t!==tag);
-  return _dbUpsert(r)&&true;
-}
 function _dbSetSource(uid,source){
   const r=_dbFind(uid);if(!r)return false;
   r.source=source;return _dbUpsert(r)&&true;
@@ -2435,7 +2294,7 @@ let _memSection='1';
 let _memCache=[];
 let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.79: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
 let _activePersonKey={'1':null,'2':null}; // track currently active per section
-let _suppressRecentBuffer=false;          // V3.3.83: ป้องกัน header quick-chip เพิ่ม buffer
+let _suppressRecentBuffer=false;          // V3.3.84: ป้องกัน header quick-chip เพิ่ม buffer
 const _SKIP_NAMES_RECENT=['ดวงที่ 2','ไม่ระบุ',''];
 // V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
@@ -2480,7 +2339,6 @@ function _updateTankCounts(){
 
 window.switchTank=function(tank){
   _activeTank=tank;
-  _memTagFilter=[]; // D1: reset tag filter on tank switch
   ['private','qr','julian'].forEach(t=>{
     const btn=document.getElementById('tank-tab-'+t);
     if(btn)btn.classList.toggle('tank-tab-active',t===tank);
@@ -2496,37 +2354,8 @@ window.switchTank=function(tank){
   document.getElementById('julian-sub-row')?.classList.toggle('hidden',!isJulian);
   document.getElementById('julian-more-btn')?.classList.toggle('hidden',true);
   _updateTankCounts();
-  _buildPrivateTagRow(); // D1
   const f=document.getElementById('memory-search')?.value||'';
   _renderTank(f);
-};
-
-// D1: build tag filter chips for private tank
-function _buildPrivateTagRow(){
-  const row=document.getElementById('private-tag-filter');
-  if(!row)return;
-  const isPrivate=_activeTank==='private';
-  row.classList.toggle('hidden',!isPrivate);
-  if(!isPrivate)return;
-  const recs=_tankLoad(TANK_PRIVATE_KEY);
-  const tagSet=new Set();
-  for(const r of recs)for(const t of(r.tags||[]))tagSet.add(t);
-  if(!tagSet.size){row.innerHTML='';return;}
-  const tags=[...tagSet].sort((a,b)=>a.localeCompare(b,'th'));
-  const allActive=!_memTagFilter.length;
-  row.innerHTML=`<button class="priv-tag-chip${allActive?' active':''}" onclick="togglePrivateTagFilter('')">ทั้งหมด</button>`
-    +tags.map(t=>`<button class="priv-tag-chip${_memTagFilter.includes(t)?' active':''}" onclick="togglePrivateTagFilter('${_escHtml(t)}')">${_escHtml(t)}</button>`).join('');
-}
-
-window.togglePrivateTagFilter=function(tag){
-  if(!tag){_memTagFilter=[];}
-  else{
-    const idx=_memTagFilter.indexOf(tag);
-    if(idx>=0)_memTagFilter.splice(idx,1);
-    else _memTagFilter.push(tag);
-  }
-  _buildPrivateTagRow();
-  _renderTank(document.getElementById('memory-search')?.value||'');
 };
 
 function _renderTank(filter){
@@ -2539,21 +2368,13 @@ function _renderTank(filter){
   const items=[];
   _memCache.forEach((m,i)=>{
     if(f&&!(m.name||'').toLowerCase().includes(f)&&!(m.prov||'').toLowerCase().includes(f))return;
-    // D1: tag filter — OR logic (record must have at least one selected tag)
-    if(_activeTank==='private'&&_memTagFilter.length){
-      const mTags=m.tags||[];
-      if(!_memTagFilter.some(t=>mTags.includes(t)))return;
-    }
     const y_ce=_beToce(m.y_be,m.m);
     const tCell=m.noTime?'<span class="no-time-tag">ไม่ทราบเวลาเกิด</span>':_escHtml(m.t);
     const meta=`${_escHtml(m.d)}/${_escHtml(m.m)}/${_escHtml(m.y_be)} (${_escHtml(y_ce)}) · ${tCell}`;
-    // D1: tag badges
-    const tagBadges=_activeTank==='private'&&(m.tags||[]).length
-      ?`<span class="mem-tag-badges">${(m.tags||[]).map(t=>`<span class="mem-tag-badge">${_escHtml(t)}</span>`).join('')}</span>`:''
     if(_activeTank==='qr'){
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}${tagBadges}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><div class="tank-item-actions"><button class="tank-transfer-btn" onclick="transferQRToPrivate(${i})">📥 ย้ายไป ส่วนตัว</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div></div>`);
     }else{
-      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}${tagBadges}</div><div class="meta">${meta}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
+      items.push(`<div class="memory-item" data-i="${i}"><div>${_escHtml(m.name||'')}</div><div class="meta">${meta}</div><button class="memory-edit" data-i="${i}" title="แก้ไข">✏️</button><button class="memory-del" data-i="${i}" title="ลบ">×</button></div>`);
     }
   });
   list.innerHTML=items.length?items.join(''):`<div class="memory-empty">${f?'ไม่พบรายการ':(_activeTank==='qr'?'ยังไม่มี QR ที่นำเข้า':'ยังไม่มีรายการในความทรงจำ')}</div>`;
@@ -2790,9 +2611,6 @@ window.confirmClearTank=function(tank){
     _tankSave(tank==='qr'?TANK_QR_KEY:TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
-    // clear orphaned tags — record หายจาก tank แล้ว ไม่มี record รองรับ
-    if(tank!=='qr'){_chartTags={'1':[],'2':[]};_renderTagRow('1');_renderTagRow('2');}
-    else{['1','2'].forEach(s=>{_loadTagsForCurrentChart(s);_renderTagRow(s);});}
   });
 };
 
@@ -2811,7 +2629,6 @@ window.searchAllTanks=function(query){
 function openMemory(section){
   _memSection=section;
   _editingMemKey=null;_editingMemSection=null;
-  _memTagFilter=[]; // D1: reset filter on open
   const s=document.getElementById('memory-search');
   if(s)s.value='';
   _updateSortBtns();
@@ -2825,7 +2642,6 @@ function openMemory(section){
   document.getElementById('mem-actions-private')?.classList.toggle('hidden',_activeTank!=='private');
   document.getElementById('mem-actions-qr')?.classList.toggle('hidden',_activeTank!=='qr');
   document.getElementById('mem-actions-julian')?.classList.toggle('hidden',_activeTank!=='julian');
-  _buildPrivateTagRow(); // D1
   _renderTank('');
   document.getElementById('memory-backdrop').classList.remove('hidden');
   document.getElementById('memory-modal').classList.remove('hidden');
@@ -2884,8 +2700,6 @@ function _confirmDeleteMemory(i){
     _tankSave(tankKey,arr);
     _updateTankCounts();
     _renderTank(document.getElementById('memory-search')?.value||'');
-    // clear orphaned tags ถ้า record ที่ลบตรงกับ form ปัจจุบัน
-    ['1','2'].forEach(s=>{_loadTagsForCurrentChart(s);_renderTagRow(s);});
   });
 }
 function confirmClearMemory(){
@@ -2893,7 +2707,6 @@ function confirmClearMemory(){
     _tankSave(TANK_PRIVATE_KEY,[]);
     _updateTankCounts();
     _renderTank('');
-    _chartTags={'1':[],'2':[]};_renderTagRow('1');_renderTagRow('2');
   });
 }
 function exportMemory(){
@@ -3284,7 +3097,7 @@ function _eventSlotDeleteByUid(uid){
   if(!s)return;
   _showConfirm('ลบเหตุการณ์',`ลบ "${_escHtml(s.name||'—')}"?`,()=>{
     _dbRemove(uid);
-    _renderEventSlotsList();_updateMainMenuState();_renderTagRow('1');
+    _renderEventSlotsList();_updateMainMenuState();_renderLinkedEventChips();
   });
 }
 function _eventSlotSaveCurrent(){
@@ -3303,7 +3116,7 @@ function _eventSlotSaveCurrent(){
     linkedNatalUid:natal?.uid||null
   };
   _dbUpsert(rec);
-  _renderEventSlotsList();_updateMainMenuState();_renderTagRow('1');
+  _renderEventSlotsList();_updateMainMenuState();_renderLinkedEventChips();
   _showToast(`บันทึก "${_escHtml(rec.name)}"${natal?' (🔗 '+_escHtml(natal.name)+')':''}`);
 }
 
@@ -3357,7 +3170,7 @@ function _submitCreateEvent(){
   };
   _dbUpsert(rec);
   _closeCreateEventModal();
-  _updateMainMenuState();_renderTagRow('1');_updateLinkedEventsDisplay();
+  _updateMainMenuState();_renderLinkedEventChips();_updateLinkedEventsDisplay();
   const linkedName=natalUid?_v3FindDB1(natalUid)?.name:null;
   _showToast(`บันทึก "${_escHtml(name)}"${linkedName?' (🔗 '+_escHtml(linkedName)+')':''}`);
 }
@@ -4480,11 +4293,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   _updateDbIndicator('1');
   _updateDbIndicator('2');
 
-  // V2.2.34: render tag rows + load saved groups from DB
-  _loadTagsForCurrentChart('1');
-  _loadTagsForCurrentChart('2');
-  _renderTagRow('1');
-  _renderTagRow('2');
   // V3.3.79: recent person chips
   _renderRecentPersonChips('1');
   _renderRecentPersonChips('2');
@@ -4695,7 +4503,6 @@ window._closeSompongPopup=_closeSompongPopup;window._toggleSompongInput=_toggleS
 window._tsCalc=_tsCalc;window._tsReset=_tsReset;window._sompongNew=_sompongNew;
 window._confirmYes=_confirmYes;window.closeConfirm=closeConfirm;
 window._numpadConfirm=_numpadConfirm;window._numpadKey=_numpadKey;
-window._submitAddTag=_submitAddTag;window._deleteCustomTag=_deleteCustomTag;
 window.cycleOuterDisplay=cycleOuterDisplay;window.toggleOuterView=toggleOuterView;
 window.cycleCompareMode=cycleCompareMode;window.toggleChartType=toggleChartType;
 window.cycleEventSort=cycleEventSort;window.toggleReportTransit=toggleReportTransit;
@@ -4706,7 +4513,7 @@ window.installPWA=installPWA;
 window.setDonateAmount=setDonateAmount;window.applyDonateCustom=applyDonateCustom;
 window.getNatal=getNatal;window.getTransit=getTransit;window._showToast=_showToast;
 window.importMemory=importMemory;window._importDB=_importDB;window._importFromImageFile=_importFromImageFile;
-window.toggleView=toggleView;window._closeAddTagModal=_closeAddTagModal;
+window.toggleView=toggleView;
 window._renderDB1List=_renderDB1List;window._renderNatalPicker=_renderNatalPicker;
 window._tsEventSelect=_tsEventSelect;
 window.showAlert=showAlert;window.closeAlert=closeAlert;
