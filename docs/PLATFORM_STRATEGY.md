@@ -131,3 +131,168 @@ content/posted/
 - **Goal = credibility ไม่ใช่ viral (2026-05-29)** — page ขาย "โหราศาสตร์ที่พิสูจน์ได้" ไม่ใช่ entertainment · viral content เสี่ยง FB flag มากกว่า · credibility content สร้าง long-term trust กับ audience ที่ใช้ horatad.com จริง
 - **29% research cap (2026-05-29)** — มากกว่านี้เสี่ยง spam signal เพราะ format ซ้ำ · น้อยกว่านี้ research หายไปในคิว YouTube · 2/7 = balance reach (EP) + trust (research)
 - **ไม่วัด viral metrics (2026-05-29)** — shares/virality ของ prediction content เสี่ยง FB policy · วัด engagement rate แทนเพราะสะท้อน audience quality ไม่ใช่ luck
+
+---
+
+## 📋 Session Report — 2026-05-29 (BIG → PLATFORM strategy deep-dive)
+
+> รายงานนี้สรุปการตัดสินใจเชิงกลยุทธ์ทั้งหมดจาก session 2026-05-29
+> เก็บไว้เป็น reference ถาวร — session ใหม่ไม่ต้องรื้อเล่าใหม่
+
+---
+
+### 1. ปัญหาที่นำมาสู่การสนทนา: Project Mix-up
+
+**สัญญาณ:** พี่ปีเตอร์พบว่า files ถูกแก้ผิด project, version drift, context หายระหว่าง session
+
+**วินิจฉัยรากเหตุ (ไม่ใช่ "แยก role ผิด" แต่คือ DRY violation):**
+- ข้อมูลเดียวกัน (เช่น HORATAD version) ถูกเก็บใน **4 ที่** พร้อมกัน → แก้ที่เดียว อีก 3 ที่ค้าง → session ถัดไปอ่านผิด
+- ตัวอย่าง: HORATAD version line ใน `PROJECT_STATUS.md` เขียน V3.3.49 แต่จริง V3.3.73
+
+**สรุปการตัดสินใจ:**
+> ✅ **เก็บการแยก project ไว้ (focus tag)** — ไม่รวมเป็น single role
+> เหตุผล: รวมแล้ว context เต็มเร็ว (script.js 200KB + KB + data = แพงและช้า) + ไม่มี scope = Claude explore กว้าง → แก้ผิดจุดบ่อย
+
+**แนวแก้ที่ตกลงไว้ (ยังไม่ได้ implement รอ session BIG ต่อ):**
+- `gen_project_status.mjs` → `PROJECT_STATUS.md` กลายเป็น generated (ไม่แก้มือ = drift หายถาวร)
+- handoff เปลี่ยนเป็น 1 rolling file/project (overwrite ไม่สะสม v1→v7)
+- BIG = reconciler ประจำ ไม่ใช่แค่ coordinator
+
+---
+
+### 2. FB Audience Measurement — Framework ที่ตกลงไว้
+
+#### 2.1 ข้อจำกัดที่ต้องรู้ก่อน
+| ข้อจำกัด | เหตุผล | แนวทาง |
+|---|---|---|
+| Sandbox เรียก `graph.facebook.com` ไม่ได้ | network policy | ส่วน "ดึง insight" ต้องอยู่ใน GitHub Actions runner |
+| followers น้อย = insight ไร้ความหมาย | n เล็กเกินสรุป | เลื่อน own-page insight loop ออกไปก่อน |
+| `read_insights` scope ยังไม่ได้เพิ่ม | รอ followers ≥100 | เพิ่ม scope ตอน regenerate token ที่จุดนั้น |
+| n=4 (ประธานาธิบดีถูกลอบสังหาร) = ไม่มีนัยสถิติ | pattern เจอได้โดยบังเอิญ | **ต้องมี control group เสมอ** |
+
+#### 2.2 Interest Score Formula (เมื่อ followers พอแล้ว)
+```
+interest_score = (shares×3 + comments×2 + saves×2 + reactions×1 − negative×5) / reach
+```
+- หาร reach = วัด "อัตราความสนใจ" ไม่ใช่จำนวนดิบ
+- Maturity window: **ดึง insight เฉพาะโพสต์อายุ ≥ 3-7 วัน** (engagement ยังไม่นิ่งวันแรก = วัดผิด)
+- Baseline: เทียบกับ **median ของเพจตัวเอง** ไม่ใช่เลขลอยๆ
+
+#### 2.3 Architecture แบบ Decoupled (ที่ตกลง — ยังไม่ได้ implement)
+```
+เก็บข้อมูล  : cron จันทร์เช้า (Actions runner → Graph API → content/insights/)
+วิเคราะห์    : Claude อ่าน JSON local ได้ทุกเมื่อ (0 round-trip)
+force refresh: push content/insights/REFRESH → trigger ทันที (optional เท่านั้น)
+preflight    : step แรกใน workflow ตรวจ token scope → สร้าง Issue ถ้าขาด
+```
+**phasing:**
+- Phase 0 (ทำตอนนี้): เรียนจาก demand signal ภายนอก ไม่ใช่ own-page
+- Phase 1-3 (เลื่อน): own-page insights loop — เปิดเมื่อ followers โตพอ
+
+---
+
+### 3. Audience Strategy — "คนของเรา" ≠ ตลาดมู
+
+#### 3.1 Insight สำคัญ: copy เพจมู = สัญญาณผิด + อันตราย
+**เพจดูดวงดังในไทย** เสิร์ฟ audience สายมู/intuition (เลขเด็ด, เสริมดวง) ซึ่ง:
+- ขัด content policy เรา (TALS = ตรรกะ/empirical)
+- ถ้า optimize ตามเพจมู → ดึงคนผิดกลุ่ม → engagement ขึ้น แต่ทำลาย positioning
+
+**สูตรง่าย:** ตัวเลข engagement สูงไม่ใช่ชัยชนะ ถ้าคนที่มาไม่ใช่คนที่เราต้องการ
+
+#### 3.2 ICP (Ideal Customer Profile) — ตกผลึกครั้งนี้
+> **"ผู้แสวงหาที่ไร้บ้านทางความเชื่อ"**
+
+คนที่ติดอยู่ตรงกลางระหว่าง 2 ขั้ว:
+- **ศรัทธาเก่าสลาย** — ไม่เชื่อสถาบัน/ศาสนา/หมอดูคลุมเครือ
+- **ของใหม่ท่วมท้นแต่ไร้หลักฐาน** — เบื่อ wellness fad / conspiracy / self-help ลอยๆ
+
+→ เขายังโหยหาความหมาย **แต่ต้องตรวจสอบได้** — หิวหลักฐานสูง ระแวง BS สูง เพราะเคยถูกหลอกมาแล้วทั้งของเก่าและใหม่
+
+#### 3.3 ตลาดนี้คือ Blue Ocean
+| | เพจมูทั่วไป | โหราทาส (TALS) |
+|---|---|---|
+| Audience | สายศรัทธา/สัญชาตญาณ | สายคิด/อยากเห็นหลักฐาน |
+| ตลาด | แดง (แข่งกันเยอะ) | **น้ำเงิน (แทบไม่มีคนทำ)** |
+| Content moat | ใครก็ทำได้ | **JULIAN empirical — ลอกไม่ได้** |
+
+#### 3.4 FIT metric — วัด "เล็งถูกคนไหม" (สำคัญกว่ายอดตอน stage เล็ก)
+- ✅ **ถูกกลุ่ม:** คน comment "ขอดูกลุ่มควบคุมด้วย" / "n เท่าไหร่" / "ลองกับเคส X ไหม"
+- ❌ **ผิดกลุ่ม:** "ขอเลขเด็ด" / "ดวงหนูเป็นไง" → ยังสื่อสารผิด ต้องปรับ content
+
+---
+
+### 4. Flagship Content Format — "โหราทาส Investigates"
+
+**Concept:** เหตุการณ์ดัง (ข่าว/ประวัติศาสตร์) → วิเคราะห์ดวงเชิงเปรียบเทียบด้วยข้อมูลจริง → ชวนคิด/ถก
+
+**ตัวอย่างที่พี่ปีเตอร์เสนอ:** ประธานาธิบดีสหรัฐที่ถูกลอบสังหาร (Lincoln/Garfield/McKinley/Kennedy) — วิเคราะห์ดาวจรทับดวงเดิมเทียบกับกลุ่มควบคุม
+
+**ทำไม format นี้ใช่:**
+| โจทย์ | format นี้แก้ยังไง |
+|---|---|
+| หาหัวข้อน่าสนใจ | ข่าวดังให้หัวข้อมาเอง (newsjacking) — reach ฟรี |
+| ดึง audience ที่ใช่ | มุม "มาดูสถิติ" กรองสายคิดเข้ามาเอง |
+| Content moat | JULIAN ทำได้คนเดียว — เพจมูเทียบดวงผู้นำ 4 คนแบบมีข้อมูลไม่ได้ |
+
+#### 3 Hard Gate (บังคับทุกครั้ง — ขาดข้อใดข้อหนึ่ง = ห้ามโพสต์)
+1. **Control group เสมอ** — กลุ่มเป้าหมาย vs กลุ่มควบคุม · n เล็กหา pattern โดยบังเอิญเสมอ · ถ้ากลุ่มควบคุมมี pattern พอกัน → โพสต์ความจริงนั้นอย่างกล้าหาญ
+2. **Exploratory framing** — "ข้อสังเกต ไม่ใช่ข้อพิสูจน์" · ห้าม claim "TALS ทำนาย X ได้"
+3. **Taste gate** — เหตุการณ์สดกับคนยังมีชีวิต = เสี่ยงฉวยโอกาส · prefer historical · เหตุการณ์สดต้องระวังโทน
+
+**Infra รองรับแล้ว:**
+- JULIAN: birthdate 129k + Wikidata P1196 (manner-of-death=assassination) + engine.js ดาวจร + สถิติ
+- BIBLE: wording
+- PLATFORM: เผยแพร่ผ่าน policy gate
+
+**งานต่อ (ยังไม่ implement):** JULIAN ต้องสร้าง "cohort builder" (รับประเภทเหตุการณ์ → ดึงกลุ่มที่เจอแบบเดียวกัน + control อัตโนมัติ)
+
+---
+
+### 5. Brand North Star — ตกผลึกครั้งนี้
+
+#### 5.1 Positioning statement
+> สำหรับ **คนที่ศรัทธาเก่าสลาย แต่ไม่ยอมเชื่ออะไรง่ายๆ อีก** ที่ยังโหยหาความหมายแต่ต้องตรวจสอบได้ — **โหราทาส** คือโหราศาสตร์ไทยแนวตรรกะ (TALS) ที่พิสูจน์ด้วยข้อมูลจริง ให้ความหมายโดยไม่ขอศรัทธาตาบอด · ต่างจากหมอดู/มูเตลูที่ขอให้ "เชื่อ" — เรา**เปิดให้ "ตรวจสอบ"**
+
+#### 5.2 Tagline 🟡 PROVISIONAL
+> **"โหราศาสตร์ที่ตรวจสอบได้"**
+
+**วิวัฒนาการ tagline (เก็บเหตุผลไว้กัน session หน้าสงสัย):**
+| เวอร์ชัน | เหตุผลเปลี่ยน |
+|---|---|
+| ~~"ความเชื่อที่ตรวจสอบได้"~~ (ตั้งต้น) | "ความเชื่อ" กินถึงศาสนา → โดยนัยดูหมิ่นศรัทธาคนที่ไม่อยากพิสูจน์ |
+| **"โหราศาสตร์ที่ตรวจสอบได้"** (ปัจจุบัน) | หดประธานเป็น "โหราศาสตร์" (ความเชี่ยวชาญของเรา) — ไม่ตัดสินใคร |
+
+**⚖️ Unresolved paradox (เหตุผลที่ยังไม่ final):**
+โหราศาสตร์ทุกแขนง claim หลัก = "พยากรณ์อนาคต" แต่ "ตรวจสอบได้/falsifiable" คือมาตรฐานที่โหราศาสตร์ส่วนใหญ่สอบตก (JULIAN debunk เองหลาย rule — เหลือ SU×SA 16 rule) · ชู "ตรวจสอบได้" แรงเกิน = อาจทำลาย claim หลักของโหราศาสตร์เอง
+
+**ทิศทางคลี่ (ยังไม่ final):**
+- "ตรวจสอบได้" = **วิธีการโปร่งใส** ไม่ใช่การันตีว่าแม่น
+- prediction = **probabilistic (แนวโน้ม)** ไม่ใช่ deterministic (ชะตากำหนด)
+- คุณค่า = ความหมาย/กรอบคิดใคร่ครวญตัวเอง + ส่วนที่รอดการกรองจริงๆ
+
+#### 5.3 หลักการแกน — "ความซื่อสัตย์ = ตัวสินค้า"
+- โพสต์ที่บอก "เราทดสอบแล้ว... pattern อ่อน ยังสรุปไม่ได้" = โพสต์ที่ **on-brand ที่สุด** ไม่ใช่ความล้มเหลว
+- ความกล้ายอมรับว่า "ยังไม่ชัด" = สิ่งที่หมอดู/เพจมูไม่เคยกล้าทำ = เครื่องมือสร้าง trust ที่ทรงพลังสุด
+- **วินัย = การอยู่รอด**: overclaim ครั้งเดียว = เสีย trust ถาวร (กลุ่มนี้ให้โอกาสครั้งเดียว)
+- policy gate (n=, disclaimer, control) = **เกราะป้องกันแบรนด์** ไม่ใช่ระเบียบราชการ
+
+#### 5.4 อุปมาที่ใช้งาน
+> "เราคือกาลิเลโอที่บอกว่า 'มาดูสิ' ไม่ใช่ 'ศรัทธาคุณผิด'"
+> "เหมือนเสนอว่าโลกกลม ในยุคที่คนยังเชื่อว่าโลกแบน — มั่นใจแต่ถ่อมตน เชิญชวน ไม่ปะทะ"
+
+---
+
+### 6. งานที่ตกลงทำต่อ (ยังไม่ implement — ส่งต่อ session ถัดไป)
+
+| งาน | Project | Priority |
+|---|---|---|
+| cohort builder สำหรับ "โหราทาส Investigates" | JULIAN | สูง — unlock flagship content |
+| `fb_insights.yml` + `fb_analyze.mjs` (decoupled architecture) | PLATFORM | กลาง — รอ followers ≥100 |
+| `gen_project_status.mjs` — fix drift ถาวร | BIG | สูง — แก้ root cause mix-up |
+| handoff → 1 rolling file/project | BIG | กลาง |
+| tagline สุดท้าย (เมื่อ paradox ตกผลึก) | CLAUDE.md | รอ — ไม่เร่ง |
+
+---
+
+*บันทึก: 2026-05-29 · สร้างโดย PLATFORM session (BIG + PLATFORM scope) · อัปเดต PLATFORM_STRATEGY.md*
