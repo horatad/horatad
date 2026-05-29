@@ -4,9 +4,9 @@
 
 > **Source of truth:**
 > - Charter risks (R-01..R-14): `docs/GUARD_MISSION.md` § 3.2
-> - Extended risks + status: `handoffs/GUARD_20260523_v3.md`
+> - Extended risks + status: `handoffs/GUARD_20260529_v4.md`
 
-## Risk register (19 risks)
+## Risk register (23 risks)
 
 | ID | Risk | Priority/Status | Source |
 |---|---|---|---|
@@ -29,6 +29,10 @@
 | R-17 | horatad-auth Worker hardening | medium | high | client gate cosmetic; Worker source review required | **P1** | medium |
 | R-18 | Secret sprawl & inventory drift | medium | medium | docs/SECRETS.md + rotation reminder workflow | **P1** | low |
 | R-19 | TTS text egress to cloud voice engine (Web Speech API) | low | low | local voices preferred (lang=th-TH bias); friendly disclosure if Phase 3 cloud TTS | **informational** | none now |
+| R-20 | `FB_PAGE_TOKEN` never-expire + post/edit/delete blast radius | low | high | SOP-05 quarterly rotation + SECRETS.md entry + GHA mask | **P1 ✅ controls active** | low |
+| R-21 | Destructive FB workflow dispatch ไม่มี approval gate | low | medium | `contents:read` least-priv (✅); GitHub Environment protection = user decision (เมื่อมี collaborator) | **P2 partial** | very low |
+| R-22 | URL-encoded FB token อาจ bypass GHA log mask (token-in-query) | very low | medium | แนะนำ PLATFORM: ใช้ Bearer header แทน token-in-query (GET feed/kpi/manage); ห้าม log url | **P3 → PLATFORM** | low |
+| R-23 | Drive→inbox content supply chain (arbitrary post) | low | medium | fb_policy 6-rule gate + autopost cap 14/wk; accepted (single-user Drive) | **P3 / accepted** | — |
 
 ## Transferred items (T-NN → R-NN cross-link)
 
@@ -38,7 +42,7 @@ _(no T-NN transfers found)_
 
 1. **อ่านไฟล์นี้** — overview risks + status
 2. `docs/GUARD_MISSION.md` — full context (threat model, decision framework, SOPs)
-3. `handoffs/GUARD_20260523_v3.md` — live task state, blocked/pending/done
+3. `handoffs/GUARD_20260529_v4.md` — live task state, blocked/pending/done
 
 ## คำสั่ง maintenance
 
@@ -47,7 +51,7 @@ _(no T-NN transfers found)_
 node scripts/admin/gen_risk_register.mjs
 
 # ตรวจ handoff format
-node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260523_v3.md
+node scripts/admin/handoff_lint.mjs handoffs/GUARD_20260529_v4.md
 
 # BIG overview
 node scripts/admin/big_status.mjs --verbose
