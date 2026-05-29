@@ -38,50 +38,55 @@ async function main() {
   const page = await get(`${PAGE_ID}?fields=name,fan_count&access_token=${TOKEN}`);
   console.log(`Page: ${page.name} · Followers: ${page.fan_count.toLocaleString()}`);
 
-  // 2. Page insights (28 วันล่าสุด)
-  const since = Math.floor(Date.now() / 1000) - 28 * 86400;
-  const until = Math.floor(Date.now() / 1000);
+  // 2. Page insights (28 วันล่าสุด) — ใช้เฉพาะ metric ที่ยังไม่ถูก deprecated
+  //    period=days_28 (Meta deprecate metric หลายตัว พ.ย. 2024 — page_post_engagements หายไป)
   const metrics = [
-    'page_impressions_unique',      // reach
-    'page_post_engagements',        // engagement
     'page_impressions',             // total impressions
+    'page_impressions_unique',      // reach (unique)
   ].join(',');
 
-  const insights = await get(
-    `${PAGE_ID}/insights?metric=${metrics}&since=${since}&until=${until}&period=period&access_token=${TOKEN}`
-  );
-
-  const kv = {};
-  for (const m of insights.data || []) {
-    const val = m.values?.[0]?.value ?? m.values?.[1]?.value ?? 0;
-    kv[m.name] = val;
+  let reach = 0, impressions = 0;
+  try {
+    const insights = await get(
+      `${PAGE_ID}/insights?metric=${metrics}&period=days_28&access_token=${TOKEN}`
+    );
+    const kv = {};
+    for (const m of insights.data || []) {
+      // days_28 คืน array ของ data point — เอาตัวล่าสุด
+      const vals = m.values || [];
+      kv[m.name] = vals.length ? vals[vals.length - 1].value : 0;
+    }
+    reach       = kv['page_impressions_unique'] || 0;
+    impressions = kv['page_impressions']        || 0;
+  } catch (err) {
+    console.log(`⚠ page insights ไม่ได้ (${err.message}) — ข้าม reach/impressions`);
   }
 
-  const reach      = kv['page_impressions_unique'] || 0;
-  const engagement = kv['page_post_engagements']   || 0;
-  const impressions = kv['page_impressions']        || 0;
-  const engRate    = reach > 0 ? ((engagement / reach) * 100).toFixed(2) : '0.00';
-
   console.log(`Reach (28d unique): ${reach.toLocaleString()}`);
-  console.log(`Engagement (28d):   ${engagement.toLocaleString()}`);
-  console.log(`Engagement rate:    ${engRate}%`);
   console.log(`Impressions (28d):  ${impressions.toLocaleString()}`);
 
-  // 3. Top 5 posts (30 วัน) — reach + engagement
+  // 3. Top 5 posts (30 วัน) — engagement จาก likes/comments/shares (ไม่พึ่ง metric ที่ deprecated)
   const since30 = Math.floor(Date.now() / 1000) - 30 * 86400;
   const posts = await get(
-    `${PAGE_ID}/posts?fields=message,created_time,insights.metric(post_impressions_unique,post_engagements)&since=${since30}&limit=25&access_token=${TOKEN}`
+    `${PAGE_ID}/posts?fields=message,created_time,` +
+    `likes.summary(true),comments.summary(true),shares,` +
+    `insights.metric(post_impressions_unique)` +
+    `&since=${since30}&limit=25&access_token=${TOKEN}`
   );
 
   const postStats = (posts.data || []).map(p => {
+    const likes    = p.likes?.summary?.total_count    || 0;
+    const comments = p.comments?.summary?.total_count || 0;
+    const shares   = p.shares?.count                  || 0;
+    const postEng  = likes + comments + shares;
     const ins = p.insights?.data || [];
     const postReach = ins.find(i => i.name === 'post_impressions_unique')?.values?.[0]?.value || 0;
-    const postEng   = ins.find(i => i.name === 'post_engagements')?.values?.[0]?.value || 0;
     return {
       id:         p.id,
       created:    p.created_time?.slice(0, 10),
       message:    (p.message || '').slice(0, 60),
       reach:      postReach,
+      likes, comments, shares,
       engagement: postEng,
       eng_rate:   postReach > 0 ? +((postEng / postReach) * 100).toFixed(2) : 0,
     };
@@ -92,6 +97,16 @@ async function main() {
     console.log(`  ${i+1}. [${p.created}] reach=${p.reach} eng=${p.engagement} (${p.eng_rate}%) — ${p.message}`)
   );
 
+  // engagement รวม 30 วัน — จากทุก post ที่ดึงมา (ไม่ใช่แค่ top 5)
+  const allPosts = posts.data || [];
+  const totalEng = allPosts.reduce((s, p) =>
+      s + (p.likes?.summary?.total_count || 0)
+        + (p.comments?.summary?.total_count || 0)
+        + (p.shares?.count || 0), 0);
+  const avgEngPerPost = allPosts.length ? +(totalEng / allPosts.length).toFixed(1) : 0;
+  const engRate = reach > 0 ? +((totalEng / reach) * 100).toFixed(2) : 0;
+  console.log(`\nEngagement (30d total): ${totalEng} · avg/post: ${avgEngPerPost} · rate: ${engRate}%`);
+
   // 4. บันทึก JSON
   const month  = new Date().toISOString().slice(0, 7);
   const outDir = 'content/kpi';
@@ -101,7 +116,8 @@ async function main() {
     month,
     generated: new Date().toISOString(),
     page: { id: PAGE_ID, name: page.name, followers: page.fan_count },
-    period_28d: { reach, engagement, impressions, eng_rate: +engRate },
+    period_28d: { reach, impressions },
+    engagement_30d: { total: totalEng, avg_per_post: avgEngPerPost, posts: allPosts.length, eng_rate: engRate },
     top_posts: postStats,
   };
 
