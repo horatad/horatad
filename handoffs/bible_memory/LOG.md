@@ -4,6 +4,61 @@
 
 ---
 
+## 2026-05-29 — TALS comparative analysis session (Q&A + report)
+
+### หลักการที่ clarify ครั้งนี้ (ต้องจำทุก session)
+
+**(1) "ภพเล่าเรื่อง ดาวบอกคุณภาพ" — articulated ชัดเจนครั้งแรก**
+- ภพเรือน = SUBJECT / domain ของชีวิต (เรื่องนี้เกี่ยวกับอะไร)
+- ดาวเคราะห์ (คุณภาพ) = QUALITY ของเรื่องนั้น (ดีหรือเลว อย่างไร)
+- สองส่วนนี้แยกกัน **สมบูรณ์** — คุณภาพมาจากราศี ไม่มาจากภพ
+- ผล: quality ของทุกดาวรู้ได้จาก **วันเกิดเพียงอย่างเดียว** (ราศีไม่เปลี่ยนตามเวลาเกิดในวันเดียวกัน)
+- ต่างจาก Western ที่ planet+house merge กัน / ต่างจาก ไทยดั้งเดิมที่ house เป็น primary indicator
+
+**(2) Two-tier research model — นัยต่อเวลาเกิด**
+เนื่องจาก quality เป็น sign-based (ไม่ใช่ house-based) TALS มีสองระดับวิจัยที่ต้องการข้อมูลต่างกัน:
+
+| ระดับ | ต้องการ | ทดสอบอะไร |
+|---|---|---|
+| **Quality Research** | วันเกิดเพียงอย่างเดียว | สถิติ quality: คนดังมีดาวอุจ/เกษตรมากกว่าเฉลี่ยไหม? Rule #5 (ดาวเด่น vs อาชีพ) |
+| **Activation Research** | วันเกิด + เวลาเกิด | Rule #2: ดาวสัมพันธ์ลัคนาของคนดังมี quality สูงกว่าดาวที่ไม่สัมพันธ์ไหม? |
+
+ระบบอื่น (Western/Vedic): เสีย quality analysis เมื่อขาดเวลาเกิด (เพราะ quality entangled กับ house)
+TALS: ยังทำ quality research ได้ครบ ขาดแค่ activation routing
+
+**(3) ไม่สัมพันธ์ลัคนา = อัจฉริยภาพภายใน — ยืนยันอีกครั้ง ห้ามลืม**
+- Claude เคยตอบผิดว่า "ไม่สัมพันธ์ → ผลน้อยมาก"
+- ถูกต้อง (ch020 step 7): ไม่สัมพันธ์ → **อัจฉริยภาพภายใน** (internal talent, hidden reserve)
+- ยังมีอยู่ แต่ไม่แสดงออกในโลกภายนอก ไม่ถูก "เปิดใช้งาน" ต่อเหตุการณ์
+
+**(4) Subgroup math property ของตำแหน่งสัมพันธ์ลัคนา**
+ตำแหน่งที่สัมพันธ์ลัคนาได้ (นับจากลัคนา inclusive): {1, 3, 5, 7, 9, 11}
+เซตนี้เป็น subgroup ของ ℤ/12ℤ ภายใต้การบวก mod 12
+
+→ **ถ้าดาวพื้นดวงสัมพันธ์ลัคนา AND ดาวจรสัมพันธ์ลัคนา → ทั้งสองต้องสัมพันธ์กันเองเสมอ (100%)** — mathematical certainty ไม่ใช่ probabilistic
+→ ไม่ต้องตรวจ transit-natal aspect แยก ถ้า Rule #2 ทำงานอยู่แล้ว
+
+**(5) TALS falsifiability สูงกว่าระบบอื่น — Popper criterion**
+- TALS: axiom-based + quality deterministic + binary activation + ไม่มี escape hatch → **falsifiable สูง**
+- ระบบอื่น: multivalent meanings + interpretive flexibility + "astrologer skill" escape hatch → falsify ยาก
+- TALS claims ที่ testable โดยตรง:
+  - Rule #5: ดาวเด่น predict career ได้แม่นกว่า house 10 หรือเปล่า?
+  - Rule #2: เหตุการณ์สำคัญเกิดเมื่อดาวจรสัมพันธ์ลัคนาไหม?
+- ข้อสังเกต: ระบบที่ disprove ยาก ≠ ระบบที่ถูกต้อง
+
+**(6) Career = ดาวเด่น (ย้ำ Rule #5 ใน context comparative)**
+- ❌ Western/Vedic/ไทยดั้งเดิม: "house 10 หรือ lord ของ house 10 = อาชีพ"
+- ✅ TALS: rank ทุกดาวด้วย score = quality_strength × aspect_weight × time_phase_factor → top-ranked = ทิศทางอาชีพที่ถูกโฉลก
+
+### Hallucinations ที่เกิดและแก้แล้ว
+| ❌ ผิด | ✅ ถูก |
+|---|---|
+| "ไม่สัมพันธ์ลัคนา → ผลน้อยมาก" | ไม่สัมพันธ์ → **อัจฉริยภาพภายใน** (ch020 step 7) |
+| "transit ไม่จำเป็นต้องสัมพันธ์ดาวพื้นดวงโดยตรง" | สัมพันธ์กันเองเสมอ 100% (subgroup property) |
+| ตอบคำถาม TALS จากความรู้ generic โหราศาสตร์ | ต้องอ่าน BIBLE memory ก่อนตอบทุกครั้ง |
+
+---
+
 ## 2026-05-22 — Session 1: ch001-ch015 (90 rules)
 - พบ pattern สำคัญ: ตนุเศษ/กุมลัคนา/ตนุลัคน์ = สามระดับที่แตกต่างกัน
 - กฎลบ-ลบ=บวก ใช้เฉพาะ เกษตร/ประเกษตร/อุจ/นิจ (ห้ามใช้กับ มหาจักร/ราชาโชค)

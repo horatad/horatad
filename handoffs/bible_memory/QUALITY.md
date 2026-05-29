@@ -131,3 +131,36 @@
 ch025 explicitly states career judged by **ดาวเด่น (planet ranking)**, NOT ภพกัมมะ (10) alone.
 → Common Vedic/Western pattern of "10th house = career" → WRONG in TALS
 → TALS: rank all planets by ดาวเด่น_score → top planet's nature = career direction
+
+---
+
+## ⭐ Planet Quality = Sign-Based → Birth Date Sufficient (added 2026-05-29)
+
+**หลักการ (ยืนยันจาก comparative analysis session 2026-05-29):**
+
+คุณภาพดาวใน TALS กำหนดโดย **ราศีที่ดาวสถิต** เท่านั้น ไม่ใช่ภพเรือน
+
+- ราศีของดาวไม่เปลี่ยนตามเวลาเกิดในวันเดียวกัน (ดาวเคลื่อนช้า)
+- ดังนั้น **quality ของทุกดาวในดวงชาตา = deterministic จากวันเกิด** ไม่ต้องการเวลาเกิด
+- เวลาเกิดเพิ่ม: ลัคนา (activation routing) + house routing เท่านั้น
+
+**เปรียบกับระบบอื่น:**
+- Western/ไทยดั้งเดิม: quality บางส่วนขึ้นกับ house placement → ขาดเวลาเกิด = ขาด quality บางส่วน
+- TALS: quality อยู่ใน sign ไม่ใช่ house → ขาดเวลาเกิด = ยังรู้ quality ครบ 100%
+
+**Two-tier research model:**
+
+| ระดับ | ต้องการ | ทดสอบ TALS ด้านไหน |
+|---|---|---|
+| Quality Research | วันเกิดเพียงอย่างเดียว | Rule #5 (ดาวเด่น vs อาชีพ), quality correlations |
+| Activation Research | วันเกิด + เวลาเกิด | Rule #2 (lagna activation), chart strength |
+
+## ⭐ ไม่สัมพันธ์ลัคนา = อัจฉริยภาพภายใน — ห้ามบอกว่า "ผลน้อย" (added 2026-05-29)
+
+⚠️ **Hallucination ที่เกิดบ่อย** — Claude เคยบอกว่า "ไม่สัมพันธ์ลัคนา → ผลน้อยมาก"
+
+**ถูกต้อง (ch020 step 7):**
+- ไม่สัมพันธ์ลัคนา = **อัจฉริยภาพภายใน (internal talent)**
+- ดาวยังมีผล แต่เป็น "ด้านใน" ไม่ออกมาในโลกภายนอก ไม่ถูก trigger โดยเหตุการณ์
+- ตัวอย่าง: จันทร์อุจจาภิมุข **ไม่สัมพันธ์ลัคนา** → ช่วยกริยามารยาท แต่ไม่ช่วยพูดจาอ่อนหวานกับคนอื่น (ออกฤทธิ์ภายใน ไม่ภายนอก)
+- **แตกต่างจากทุกระบบอื่น** — ระบบอื่นไม่มี concept นี้ ทุกดาวมีผลระดับต่างๆ เสมอ
