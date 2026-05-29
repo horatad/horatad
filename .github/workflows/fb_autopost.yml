@@ -1,0 +1,61 @@
+name: FB Auto-post — โพสต์คิวขึ้น Facebook Page
+
+on:
+  schedule:
+    - cron: '30 1 * * *'   # ทุกวัน 08:30 ICT (01:30 UTC) — หลัง content_curator (08:00)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'ทดสอบ ไม่ยิงจริง (true/false)'
+        required: false
+        default: 'false'
+
+jobs:
+  autopost:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # ถ้ายังไม่ได้ตั้ง secret (FB_PAGE_TOKEN) → ข้ามเงียบๆ ไม่ fail
+      - name: Check secrets
+        id: gate
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          if [ -z "$FB_PAGE_TOKEN" ]; then
+            echo "ready=false" >> $GITHUB_OUTPUT
+            echo "⏭  ยังไม่ได้ตั้ง FB_PAGE_TOKEN secret — ข้าม auto-post (รัน fb_token_exchange.mjs ก่อน)"
+          else
+            echo "ready=true" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          node-version: '22'
+
+      - name: Auto-post next in queue
+        if: steps.gate.outputs.ready == 'true'
+        env:
+          FB_PAGE_ID:    ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            node workers/fb_autopost.mjs --dry-run
+          else
+            node workers/fb_autopost.mjs
+          fi
+
+      - name: Commit moved post
+        if: steps.gate.outputs.ready == 'true' && github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "horatad-bot"
+          git config user.email "contact@horatad.com"
+          git add content/
+          git diff --staged --quiet || git commit -m "autopost: เผยแพร่คิวถัดไป $(date +%Y-%m-%d)"
+          git push
