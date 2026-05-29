@@ -1,35 +1,10 @@
-// HORATAD:SCRIPT:3.3.84
-// Version 3.3.84 | 2026-05-29
+// HORATAD:SCRIPT:3.3.85
+// Version 3.3.85 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
-// Changes: [V3.3.74] feat(time-picker): เปลี่ยนจาก H/M grid → 4-column digit picker (H×10,H×1:M×10,M×1) — ไม่ต้อง scroll, tap ผิดแก้ได้ทันที, auto-close หลัง M×1
-// Changes: [V3.3.53] fix: window exports getNatal/getTransit/importMemory ขาด → ปุ่มพยากรณ์+นำเข้าไฟล์ไม่ทำงาน
-// Changes: [V3.3.52] fix(v3tab): ลบปุ่ม ดวงเดิม/ดวงจร/ทั้งคู่ · เรียง natal→transit อัตโนมัติ
-// Changes: [V3.3.51] feat: Transit Phase 2 (matchTransitRules + kb_transit.json) · MAX_RULES 120 · interpretation BIBLE schema
-// Changes: [V3.3.39] feat(about): เกาะในฝัน auto-play เมื่อเข้าหน้า about — ลบปุ่ม BGM
-// Changes: [V3.3.37] fix(quality): MAHACHAK_MAP อาทิตย์ 6→3 + swap อุจจาวิลาส/อุจจาภิมุข ใน script.js
-// Changes: [V3.3.36] feat(about): restore เกาะในฝัน BGM button on About page
-// Changes: [V3.3.23] perf(Phase2-Step0): extract KB_RULES (198KB inline) → v3/kb_embedded.json — script.js 393KB→199KB (-49%)
-// Changes: [V3.3.22] feat(M6+_navHeader): localStorage persist _synastryIdx/_eventIdx/_transitCursor + _tsCalc sync + _updateNavHeader compareMode===3 (จร)
-// Changes: [V3.3.21] feat(M5): eventChart full support — _compareMode===2 path, cycleMemory _eventIdx, _updateNavHeader compareMode-aware
-// Changes: [V3.3.20] refactor(M4): rename natal1→natal / natal2→synastry ทั้งไฟล์ (63 occurrences)
-// Changes: [V3.3.16] feat: 3-tank memory system (ส่วนตัว / QR / JULIAN) — แยก storage, tab UI, dedup dialog
-// Changes: [V3.3.12] fix: JULIAN 404 — placeholder data/julian_all.json, ปรับ empty msg
-// Changes: [V3.3.11] fix: QR ใน capture — bundle qrcode.min.js, fix qrDiv pos, เพิ่ม toast location
-// Changes: [V3.3.10] fix(about): ลบ section ปรัชญาการพัฒนา, about page full-screen layout
-// Changes: [V3.3.9] fix: JULIAN URL→raw.githubusercontent, no autofocus search, swap transit fn, lunar restore content
-// Changes: [V3.3.8] feat(UX): 8 changes — import choice, DB1 sort, pin fix, tag delete, toggle btns, nav view btn, lunar cleanup
-// Changes: [V3.3.7] fix(UX): memory modal ใช้ dvh แทน vh — keyboard ไม่บัง Export/Import/ปิด บนมือถือ
-// Changes: [V3.3.4] feat(HORATAD): V3 tab — 3-panel view (กฎ / Input Typhoon / Output)
-// Changes: [V3.3.3] fix(BIBLE): match_rules — house_lord_of (dynamic เจ้าเรือน), REFERENCE filter, fix planet_id=0 bug
-// Changes: [V3.3.1] feat: wire M8 compose_local_prediction → v3tab.js (✅/⚠️/📋 grouped, แทน render_fallback)
-// Changes: [V3.2.8] feat: kb.json V2.1 — 284/342 conditions[] (combine 2 Typhoon fill rounds)
-// Changes: [V3.2.7] feat: kb.json V2 — 342 rules + conditions[] จาก Typhoon (83% coverage)
-// Changes: [V3.2.5] fix: PWA offline — CORE_ASSETS: เพิ่ม 746x746, ลบ 500x500 (unused)
-// See CHANGELOG.md for full history
 
-const APP_VERSION='3.3.84';
-// V2.2.39: expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
+const APP_VERSION='3.3.85';
+// expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
 
@@ -54,7 +29,7 @@ const PROVINCES={
 "สุรินทร์":103.49,"หนองคาย":102.74,"หนองบัวลำภู":102.43,"อ่างทอง":100.45,
 "อุดรธานี":102.79,"อุทัยธานี":100.03,"อุตรดิตถ์":100.09,"อุบลราชธานี":104.85,"อำนาจเจริญ":104.63
 };
-// V2.2.23: ละติจูดโดยประมาณรายจังหวัด (อ้างอิง)
+// ละติจูดโดยประมาณรายจังหวัด (อ้างอิง)
 const PROVINCES_LAT={
 "กรุงเทพมหานคร":13.75,"กระบี่":8.09,"กาญจนบุรี":14.02,"กาฬสินธุ์":16.43,
 "กำแพงเพชร":16.48,"ขอนแก่น":16.44,"จันทบุรี":12.60,"ฉะเชิงเทรา":13.69,
@@ -108,7 +83,7 @@ const FOREIGN_CITIES={
   'Cairo, Egypt':31.24,'Johannesburg, South Africa':28.05,
 };
 const _FOREIGN_ALPHA='__FOREIGN__';
-// V2.2.23: Julian Day จาก d/m/y_BE — ตรงกับ engine.py get_j
+// Julian Day จาก d/m/y_BE — ตรงกับ engine.py get_j
 function _calcJD(d,m,y_be){
   const y=y_be-543;
   const yt=m>=3?y:y-1,mt=m>=3?m-3:m+9;
@@ -135,17 +110,17 @@ const WORKER_URL='https://horatad-ai.uchujaro5.workers.dev';
 // ── State ─────────────────────────────────────────────────
 let _era='BE';
 let natal=null;   // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
-// V3 bridge: expose natal + _transitDate ให้ ES module อ่านได้
+// expose natal + _transitDate ให้ ES module (v3tab.js) อ่านได้
 function getNatal(){return natal;}
 function getTransit(){return _transitDate;}
 let _chart2=null; // {name,gender,pos,vel,d,m,y_be,t,prov,lng}
 let _viewMode=0;   // 0=ดวงที่1, 1=ดวงที่2
-// V2.1: 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
+// 5-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง
 let _outerState=0;
 // D6: label cycle 0=ราศี 1=ภพ 2=ปิด — persisted, independent from transit _outerState
 let _labelMode=parseInt(localStorage.getItem('horatad_label_mode')||'0')%3;
 let _chartTypeState=0; // 0=ราศี 1=ตรียางค์ 2=นวางค์
-let _reportTransitShow=false; // V2.1 toggle transit section in report
+let _reportTransitShow=false; // toggle transit section in report
 let _activeTab=1;
 let _calc1Done=false,_calc2Done=false;
 let _editingUid=null; // Phase 10: uid ของ record ที่กำลังแก้ไขใน DB1
@@ -159,9 +134,8 @@ let _transitDate=null;
 let _donateAmount=50;
 let _donateInitialized=false;
 let _confirmCallback=null;
-let _deferredInstallPrompt=null; // V2.1 PWA install
-let _swRefreshing=false; // V2.1.5 prevent double reload on SW update
-// V2.1.9
+let _deferredInstallPrompt=null; // PWA install
+let _swRefreshing=false; // prevent double reload on SW update
 let _soundLevel=1; // 0=🔇 off, 1-5 = 🔈🔉🔊 scale
 let _audioCtx=null;
 let _memSortType='jd'; // 'jd'|'name'|'saved'
@@ -193,7 +167,7 @@ let _outerDisplay=1;        // 0=hide|1=data|2=ราศี|3=ภพ
 let _transitUnit={type:'fixed',value:'day'}; // type='fixed'|'planet'
 
 // ── V2.2.17: Interpretation (KB + AI) ────────────────────
-// V3.3.23: KB extracted to v3/kb_embedded.json — load async ที่ _initApp
+// KB extracted to v3/kb_embedded.json — load async ที่ _initApp
 let _kbRules=null;     // populated by _loadEmbeddedKB() after fetch
 let _kbVersion='';
 let _kbTotal=0;
@@ -229,7 +203,7 @@ function switchTab(n){
   // เกาะในฝัน: auto-play เมื่อเข้าหน้า about, หยุดเมื่อออก — ห้ามแก้ไขโดยไม่ได้รับอนุญาต
   const _bgm=document.getElementById('about-bgm');
   if(_bgm){if(n===2){_bgm.play().catch(()=>{});}else{_bgm.pause();_bgm.currentTime=0;}}
-  // V2.1.9: hide H1 logo when About active
+  // hide H1 logo when About active
   document.body.classList.toggle('about-active',n===2);
   document.querySelectorAll('.tab-content').forEach((el,i)=>el.classList.toggle('hidden',i!==n));
   document.querySelectorAll('.tab-btn').forEach((el,i)=>el.classList.toggle('tab-active',i===n));
@@ -377,7 +351,7 @@ function _showToast(msg,warn){
   _toastTimer=setTimeout(()=>t.classList.remove('toast-show'),2200);
 }
 
-// V2.2.32: showAlert/closeAlert — popup ค้างกระพริบ tap-backdrop-to-dismiss
+// showAlert/closeAlert — popup ค้างกระพริบ tap-backdrop-to-dismiss
 function showAlert(msg,type){
   closeAlert();
   const overlay=document.createElement('div');
@@ -396,7 +370,6 @@ function closeAlert(){
   if(ov)ov.remove();
 }
 
-// V2.2.33: clearForm(section) + _updateDbIndicator(section)
 function toggleNoTime(num){
   const cb=document.getElementById('notime'+num);
   const tEl=document.getElementById('t'+num);
@@ -434,7 +407,7 @@ function _updateDbIndicator(section){
   indicator.classList.toggle('hidden',!found);
 }
 function _wireDbIndicatorListeners(){
-  // V2.2.37: ฟัง 'change' ด้วย — native time picker (iOS Safari) ยิง change อย่างเดียว
+  // ฟัง 'change' ด้วย — native time picker (iOS Safari) ยิง change อย่างเดียว
   ['1','2'].forEach(s=>{
     ['name-'+s,'d'+s,'m'+s,'y'+s,'t'+s,'prov'+s].forEach(id=>{
       const el=document.getElementById(id);
@@ -445,7 +418,6 @@ function _wireDbIndicatorListeners(){
   });
 }
 
-// V2.2.34: tag groups (4 per chart) + custom tags + auto-save to DB
 function _renderLinkedEventChips(){
   const row=document.getElementById('event-chips-1');
   if(!row)return;
@@ -474,7 +446,7 @@ function _renderLinkedEventChips(){
   addBtn.addEventListener('click',()=>_openEventSlotsPopup());
   row.appendChild(addBtn);
 }
-// V3.3.79: recent person chips — runtime buffer, auto-width max
+// recent person chips — runtime buffer, auto-width max
 function _recentChipsMax(){
   // ~72px per chip (padding 4+11+11+4 + text ~42px avg) + 6px gap, clamp 3–8
   return Math.min(8,Math.max(3,Math.floor((window.innerWidth-24)/78)));
@@ -887,7 +859,7 @@ function buildReport(name,gender,d,m,y_be,t,prov,pos,vel,tpos,isView2){
   h2+=`<tr><td ${CL}>ตนุลัคน์ ${ST[tl_id]}</td><td>${aspectNarrativeShort(pos,tl_id)}</td></tr>`;
   h2+=`<tr><td ${CL}>ตนุเศษ ${ST[ts_id]}</td><td>${aspectNarrativeShort(pos,ts_id)}</td></tr>`;
   h2+=`<tr><td ${CL}>ดาวคู่</td><td>${analyzePairs(pos)}</td></tr>`;
-  // V2.1.8: aspect บรรทัด "ดาวจรสัมพันธ์ ณ" แสดงเสมอเมื่อมี tpos
+  // aspect บรรทัด "ดาวจรสัมพันธ์ ณ" แสดงเสมอเมื่อมี tpos
   if(tpos&&tpos!==pos){
     const td2=_transitDate||_chart2;
     const td_str=td2?`${td2.d}/${td2.m}/${td2.y_be}(${_beToce(td2.y_be,td2.m)})  ${td2.t}`:'—';
@@ -916,7 +888,7 @@ const OUTER_R_TRANSIT=480;
 const NATAL_COLOR_ASC='#ffd966',NATAL_COLOR_STAR='#ffffff',TRANSIT_RED='#f85149';
 const TRANSIT_SLOW=[10,8,7,5,3],TRANSIT_FAST=[9,6,4,2,1];
 const TRANSIT_LABEL={1:'1',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'0'};
-// V2.2: 6-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง 5=ดาววงนอก
+// 6-state 0=ราศี 1=ภพ 2=จรทั้งหมด 3=จรช้า 4=ไม่แสดง 5=ดาววงนอก
 const OUTER_LABELS=['ชื่อราศี','ชื่อภพเรือน','แสดงดาวจร','ดาวจรช้า','ไม่แสดง'];
 const REPORT_TRANSIT_LABELS=['ดวงเดิม','ดาวจร'];
 const CHART_TYPE_LABELS=['ราศี','ตรียางค์','นวางค์'];
@@ -1135,8 +1107,8 @@ function toggleChartType(){
   _playBeep(700);
   _redraw();
 }
-// V2.1: toggle transit section visibility in report (replaces toggleTransit)
-// V2.1.9: auto-recalc transit on toggle ON so lunar info matches latest inputs
+// toggle transit section visibility in report (replaces toggleTransit)
+// auto-recalc transit on toggle ON so lunar info matches latest inputs
 function toggleReportTransit(){
   _reportTransitShow=!_reportTransitShow;
   const btn=document.getElementById('btn-transit');
@@ -1155,7 +1127,7 @@ function toggleReportTransit(){
   }
 }
 
-// V2.1.9: cycle memory items into current viewMode slot
+// cycle memory items into current viewMode slot
 // dir: -1=prev, +1=next
 function cycleMemory(dir){
   // M3: compareMode=3 → move transit cursor by selected unit
@@ -1423,7 +1395,7 @@ function sanitizeTime(val){
 function _setField(id,val){const el=document.getElementById(id);if(el)el.value=val;}
 
 // ── Calculate ─────────────────────────────────────────────
-// V2.2.40 refactor: calculateChart1/2 ใช้ logic เดียวกันยกเว้น id suffix + default
+// refactor: calculateChart1/2 ใช้ logic เดียวกันยกเว้น id suffix + default
 // → factor เป็น _calcChart(num) เพื่อตัด duplicate code
 const _CHART_CFG={
   '1':{defName:'ไม่ระบุ',defY_BE:2509,defY_CE:1966},
@@ -1564,9 +1536,8 @@ function calculateBoth(){
   _playBeep(900);
   calculateChart2();
   calculateChart1();
-  // V1.8: persist + history
   _saveState();
-  // V2.2.38: pass replaceKey ถ้ากำลังแก้ไข section นั้น → ลบ entry เดิมแม้ key เปลี่ยน
+  // pass replaceKey ถ้ากำลังแก้ไข section นั้น → ลบ entry เดิมแม้ key เปลี่ยน
   const _rk1=_editingMemSection==='1'?_editingMemKey:null;
   const _rk2=_editingMemSection==='2'?_editingMemKey:null;
   if(natal){const r=_addMemory({name:natal.name,gender:natal.gender,d:natal.d,m:natal.m,y_be:natal.y_be,t:natal.t,prov:natal.prov,lng:_customLng1,tz:_customTz1,noTime:natal.noTime},_rk1);if(r==='updated')_showToast(`อัปเดตดวง ${natal.name} แล้ว`);else if(r==='saved')_showToast(`บันทึกดวง ${natal.name} แล้ว`);}
@@ -1580,7 +1551,7 @@ function calculateBoth(){
   _renderRecentPersonChips('1');_renderRecentPersonChips('2');
 }
 // ── Share as Image (V2.0) ─────────────────────────────────────────────
-// V2.1.9: split into saveChart() = direct download, shareChart() = Web Share API
+// split into saveChart() = direct download, shareChart() = Web Share API
 function _updateShareButton(){
   const hasData=(_viewMode===1&&(synastry||eventChart))||(_viewMode===0&&natal);
   const btnS=document.getElementById('btn-share');
@@ -1588,7 +1559,7 @@ function _updateShareButton(){
   const btnIn=document.getElementById('btn-interpret');
   if(btnS)btnS.disabled=!hasData;
   if(btnSv)btnSv.disabled=!hasData;
-  // V2.2.23: ทำนาย ใช้ natal เสมอ — enable เมื่อมี natal ไม่ขึ้นกับ viewMode
+  // ทำนาย ใช้ natal เสมอ — enable เมื่อมี natal ไม่ขึ้นกับ viewMode
   if(btnIn)btnIn.disabled=!natal;
 }
 
@@ -1728,7 +1699,7 @@ async function _generateShareImage(active){
     const qrDiv=document.createElement('div');
     qrDiv.style.cssText='position:fixed;left:0;top:0;opacity:0;pointer-events:none;z-index:-1';
     document.body.appendChild(qrDiv);
-    // V2.2.42: ECC H → M เพราะ Thai UTF-8 (3 bytes/char) ทำ payload โต → H overflow
+    // ECC H → M เพราะ Thai UTF-8 (3 bytes/char) ทำ payload โต → H overflow
     new QRCode(qrDiv,{text:qrText,width:250,height:250,colorDark:'#000000',colorLight:'#ffffff',correctLevel:typeof QRCode!=='undefined'&&QRCode.CorrectLevel?QRCode.CorrectLevel.M:undefined});
     // iOS Safari: qrcodejs creates <img> not <canvas> — wait for onload
     await new Promise(res=>{
@@ -1970,7 +1941,7 @@ function _numpadOpen(id){
   _numpadField=document.getElementById(id);if(!_numpadField)return;
   const cfg=_NUMPAD_CFG[id]||{type:'int',min:1,max:9999,def:1,label:id};
   _numpadBuf='';
-  // V2.1.9: remember current value for revert on 3 invalid strikes
+  // remember current value for revert on 3 invalid strikes
   _numpadPrevValue=_numpadField.value||'';
   _numpadInvalidCount=0;
   document.getElementById('numpad-label').textContent=cfg.label||id;
@@ -2004,7 +1975,7 @@ function _numpadKey(k){
   document.getElementById('numpad-display').textContent=disp;
   _updatePre2484Warning();
 }
-// V2.1.9: validate buffer on confirm; revert to prev value after 3 invalid attempts
+// validate buffer on confirm; revert to prev value after 3 invalid attempts
 function _numpadConfirm(){
   if(_numpadField&&_numpadBuf){
     const id=_numpadField.id||'';
@@ -2065,7 +2036,7 @@ function _numpadConfirm(){
       }
     }
   }
-  // V2.2.37: numpad commit (d/m/y/lng) ไม่ fire 'input' event → ปลุก DB indicator เอง
+  // numpad commit (d/m/y/lng) ไม่ fire 'input' event → ปลุก DB indicator เอง
   if(_numpadField){
     const cid=_numpadField.id||'';
     const sec=cid.slice(-1);
@@ -2186,7 +2157,7 @@ function _v3FindDB1(uid){const r=_dbFind(uid);return(r&&r.type==='natal')?r:null
 function _v3RemoveDB1(uid){_dbRemove(uid);}
 function _v3AddDB1(rec){return _dbUpsert({...rec,type:'natal'});}
 
-// V4 record factory
+// record factory
 function _v3Record(input,type='natal'){
   const{name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,tz=null,pos=null,vel=null,linkedNatalUid=null}=input||{};
   const lat2=(typeof lat==='number')?lat:(PROVINCES_LAT[prov]||13.75);
@@ -2292,11 +2263,11 @@ function _addMemory(entry,replaceKey){
 // ── Memory popup ──────────────────────────────────────────
 let _memSection='1';
 let _memCache=[];
-let _recentPersonBuffer={'1':[],'2':[]};  // V3.3.79: runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
+let _recentPersonBuffer={'1':[],'2':[]};  // runtime buffer — เพิ่มเฉพาะเมื่อผูกดวง
 let _activePersonKey={'1':null,'2':null}; // track currently active per section
-let _suppressRecentBuffer=false;          // V3.3.84: ป้องกัน header quick-chip เพิ่ม buffer
+let _suppressRecentBuffer=false;          // ป้องกัน header quick-chip เพิ่ม buffer
 const _SKIP_NAMES_RECENT=['ดวงที่ 2','ไม่ระบุ',''];
-// V2.2.38: edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
+// edit-mode state (req 20) — เซ็ตเมื่อกด ✏️ แล้ว calculateBoth ใช้ลบ
 // entry เดิมแม้ key เปลี่ยน, clear ทันทีหลังใช้หรือเมื่อ user เริ่ม flow อื่น
 let _editingMemKey=null;
 let _editingMemSection=null;
@@ -2656,7 +2627,7 @@ function _pickMemory(i){
   const m=_memCache[i];if(!m)return;
   const y_use=_era==='BE'?m.y_be:m.y_be-543;
   const section=_memSection;
-  // V2.2.38: tap (not ✏️) = pick only — clear any pending edit flag
+  // tap (not ✏️) = pick only — clear any pending edit flag
   _editingMemKey=null;_editingMemSection=null;
   _memScrollKey=_tankKey(m); // remember position for scroll restore
   if(section==='1'){
@@ -2682,7 +2653,7 @@ function _pickMemory(i){
   }
   closeMemory();
 }
-// V2.2.38: ✏️ แก้ไข — โหลด record + จำ key เดิม → calculateBoth จะแทนที่ entry เดิม
+// ✏️ แก้ไข — โหลด record + จำ key เดิม → calculateBoth จะแทนที่ entry เดิม
 function _editMemory(i){
   const m=_memCache[i];if(!m)return;
   const section=_memSection;
@@ -2785,7 +2756,6 @@ function saveEvent(){
 
 let _evtCache=[];
 
-// V2.1.9: event sort
 const _EVT_SORT_LABELS={'recent':'🕐 ล่าสุด','asc':'ก-ฮ','desc':'ฮ-ก'};
 function cycleEventSort(){
   _evtSort=_evtSort==='recent'?'asc':_evtSort==='asc'?'desc':'recent';
@@ -2822,7 +2792,6 @@ function closeEvents(){
   document.getElementById('event-modal').classList.add('hidden');
 }
 function _pickEvent(i){
-  // V2.1.9: pick from sorted _evtCache
   const ev=_evtCache[i];if(!ev)return;
   const y_use=_era==='BE'?ev.y_be:ev.y_be-543;
   _setField('dt',ev.d);_setField('mt',ev.m);_setField('yt',y_use);_setField('tt',ev.t);
@@ -2835,7 +2804,7 @@ function _pickEvent(i){
 }
 function _deleteEvent(i){
   const ev=_evtCache[i];if(!ev)return;
-  // V2.1.9: key-based delete (sort-safe)
+  // key-based delete (sort-safe)
   const key=v=>`${v.name}|${v.d}/${v.m}/${v.y_be}|${v.t}|${v.prov}`;
   const mk=key(ev);
   _showConfirm('ลบเหตุการณ์',`ลบ "${ev.name}"?`,()=>{
@@ -3792,7 +3761,7 @@ async function _importFromImageFile(file){
 }
 
 // ── Pre-2484 warning (numpad year) ────────────────────────
-// V2.1.9: only show when buf is full 4-digit year (avoid flash during partial typing)
+// only show when buf is full 4-digit year (avoid flash during partial typing)
 function _updatePre2484Warning(){
   const warn=document.getElementById('numpad-warning');
   if(!warn)return;
@@ -3800,7 +3769,7 @@ function _updatePre2484Warning(){
   const id=_numpadField.id||_numpadField||'';
   const fid=typeof id==='string'?id:(id.id||'');
   if(!['y1','y2','yt'].includes(fid)){warn.classList.add('hidden');return;}
-  // V2.1.9: require full 4-digit buffer before evaluating
+  // require full 4-digit buffer before evaluating
   if(_numpadBuf.length<4){warn.classList.add('hidden');return;}
   const mId=fid==='y1'?'m1':fid==='y2'?'m2':'mt';
   const mVal=parseInt(document.getElementById(mId)?.value||'',10);
@@ -3816,7 +3785,7 @@ function _updatePre2484Warning(){
 // ── PWA Install ───────────────────────────────────────────
 // Long-press 1s สำหรับ btn-save / btn-share
 let _lpTimer=null;
-// V2.2.24: shutter sound max volume ไม่ขึ้นกับ _soundLevel
+// shutter sound max volume ไม่ขึ้นกับ _soundLevel
 function _playShutter(){
   try{
     if(!_audioCtx)_audioCtx=new(window.AudioContext||window.webkitAudioContext)();
@@ -3976,7 +3945,7 @@ async function _callTyphoon(natal,transit,matched){
 }
 // ── V2.2.17: Interpretation Modal ───────────────────────
 async function openInterpretation(){
-  // V2.2.23: ทำนายจากดวงวงใน (natal) เสมอ ไม่ขึ้นกับ viewMode
+  // ทำนายจากดวงวงใน (natal) เสมอ ไม่ขึ้นกับ viewMode
   const active=natal;
   if(!active)return;
   if(!_kbRules){_showToast('กำลังโหลด KB... ลองอีกครั้ง');return;}
@@ -4108,16 +4077,15 @@ function setupProvDropdown(inputId,listId){
 
 // ── Init ──────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded',()=>{
-  // V3.0: show migrate notice (1 ครั้ง) — _showToast ต้องพร้อมแล้ว
+  // show migrate notice (1 ครั้ง) — _showToast ต้องพร้อมแล้ว
   setTimeout(_v3MaybeShowMigrateNotice,500);
   setupProvDropdown('prov1','prov-list-1');
   setupProvDropdown('prov2','prov-list-2');
   setupProvDropdown('provt','prov-list-t');
 
-  // V2.1.9: init sound state
   _initSound();
 
-  // V2.2.23: long-press on name-1/name-2 → ลบทั้ง record
+  // long-press on name-1/name-2 → ลบทั้ง record
   _initLongPress();
 
   // memory list click + long-press delete delegation
@@ -4178,7 +4146,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     _renderEvents(e.target.value);
   });
 
-  // V3.3.48: auto-format HH:MM for text time inputs
+  // auto-format HH:MM for text time inputs
   document.querySelectorAll('input.time-input').forEach(el=>{
     el.addEventListener('input',e=>{
       let v=e.target.value.replace(/[^\d]/g,'');
@@ -4230,13 +4198,13 @@ window.addEventListener('DOMContentLoaded',()=>{
     if(el){el.addEventListener('input',_scheduleSave);el.addEventListener('change',_scheduleSave);}
   });
 
-  // V3.3.80: d/m/y inputs ใช้ col-picker แล้ว — ไม่ต้องติด numpad listener
+  // d/m/y inputs ใช้ col-picker แล้ว — ไม่ต้องติด numpad listener
   // (readonly + onclick="openColPicker" ใน HTML จัดการแทน)
   // Bug 6: name input เปลี่ยน → refresh recent chips ทันที (active state ไม่ stale)
   const el_n1=document.getElementById('name-1');if(el_n1)el_n1.addEventListener('input',()=>_renderRecentPersonChips('1'));
   const el_n2=document.getElementById('name-2');if(el_n2)el_n2.addEventListener('input',()=>_renderRecentPersonChips('2'));
 
-  // V2.1.9: sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
+  // sound on main action buttons (ผูกดวง, ผูกดวงจร, วันนี้, บันทึก)
   ['btn-era'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.addEventListener('click',()=>_playBeep(700));
@@ -4285,21 +4253,21 @@ window.addEventListener('DOMContentLoaded',()=>{
   _redraw();
   _updateShareButton();
   _renderQuickMemory();
-  // V3.3.23: KB load async — display populated in _loadEmbeddedKB() callback
+  // KB load async — display populated in _loadEmbeddedKB() callback
   _loadEmbeddedKB();
 
-  // V2.2.33: wire DB indicator listeners + initial check
+  // wire DB indicator listeners + initial check
   _wireDbIndicatorListeners();
   _updateDbIndicator('1');
   _updateDbIndicator('2');
 
-  // V3.3.79: recent person chips
+  // recent person chips
   _renderRecentPersonChips('1');
   _renderRecentPersonChips('2');
 
-  // V3.3.59: LMT badge init + province picker event delegation
+  // LMT badge init + province picker event delegation
   _updateLmtBadge('1');_updateLmtBadge('2');_updateLmtBadge('t');
-  // V3.3.74: Time picker column event delegation
+  // Time picker column event delegation
   const _tpPicker=document.getElementById('tp-col-picker');
   if(_tpPicker){
     _tpPicker.addEventListener('click',e=>{
@@ -4325,7 +4293,7 @@ window.addEventListener('DOMContentLoaded',()=>{
       }
     });
   }
-  // V3.3.79: Column picker event delegation (day/month/year)
+  // Column picker event delegation (day/month/year)
   const _cpCols=document.getElementById('col-picker-cols');
   if(_cpCols){
     _cpCols.addEventListener('click',e=>{
@@ -4405,7 +4373,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     });
   }
 
-  // V3.0.8+H2: URL param auto-import ?h=H1|... or H2|...
+  // URL param auto-import ?h=H1|... or H2|...
   (async()=>{
     const _urlH=new URLSearchParams(location.search).get('h');
     if(!_urlH)return;
