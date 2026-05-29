@@ -29,6 +29,10 @@ on:
 jobs:
   manage:
     runs-on: ubuntu-latest
+    # GUARD 2026-05-29: least-privilege — workflow นี้แค่ checkout + เรียก Graph API
+    # ไม่ push git → ไม่ต้องการ contents:write (ลด blast radius ถ้า token รั่ว/ถูก inject)
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
         with:

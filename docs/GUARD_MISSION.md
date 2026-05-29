@@ -208,6 +208,10 @@
 | R-17 | horatad-auth Worker hardening | medium | high | client gate cosmetic; Worker source review required | **P1** | medium |
 | R-18 | Secret sprawl & inventory drift | medium | medium | docs/SECRETS.md + rotation reminder workflow | **P1** | low |
 | R-19 | TTS text egress to cloud voice engine (Web Speech API) | low | low | local voices preferred (lang=th-TH bias); friendly disclosure if Phase 3 cloud TTS | **informational** | none now |
+| R-20 | `FB_PAGE_TOKEN` never-expire + post/edit/delete blast radius | low | high | SOP-05 quarterly rotation + SECRETS.md entry + GHA mask | **P1 ✅ controls active** | low |
+| R-21 | Destructive FB workflow dispatch ไม่มี approval gate | low | medium | `contents:read` least-priv (✅); GitHub Environment protection = user decision (เมื่อมี collaborator) | **P2 partial** | very low |
+| R-22 | URL-encoded FB token อาจ bypass GHA log mask (token-in-query) | very low | medium | แนะนำ PLATFORM: ใช้ Bearer header แทน token-in-query (GET feed/kpi/manage); ห้าม log url | **P3 → PLATFORM** | low |
+| R-23 | Drive→inbox content supply chain (arbitrary post) | low | medium | fb_policy 6-rule gate + autopost cap 14/wk; accepted (single-user Drive) | **P3 / accepted** | — |
 
 ### 3.3 Things we DON'T do (และเหตุผล)
 

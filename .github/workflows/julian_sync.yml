@@ -398,7 +398,11 @@ jobs:
   # ─── Job 2: Accuracy Backfill (P3447 + Regrade) ──────────────────────────
   backfill:
     needs: [sync]
-    if: needs.sync.result == 'success'
+    # GUARD 2026-05-29 (ขอจาก JULIAN): เดิม == 'success' → ถ้า Job sync timeout 55 นาที
+    # result='failure' จะ skip genealogy/accuracy backfill ทุกรอบ. backfill ทุก step เป็น
+    # --resume + continue-on-error + แตะ data-repo แยก → ปลอดภัยที่จะรันแม้ sync ไม่จบสมบูรณ์.
+    # ใช้ !cancelled() เพื่อรันทั้งกรณี success และ timeout-failure แต่เคารพการ cancel ด้วยมือ
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     env:
