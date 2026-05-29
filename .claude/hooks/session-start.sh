@@ -101,6 +101,13 @@ if [ -f "$SCOPE_FILE" ]; then
         node -e "
           const s = JSON.parse(require('fs').readFileSync('$STATS_FILE','utf8'));
           const fmt = n => n.toLocaleString('en');
+          // genealogy + succession ก่อน (research asset อันดับ 1)
+          const g = s.genealogy || {};
+          const su = s.succession || {};
+          console.log('');
+          console.log('🧬 Genealogy : persons=' + fmt(g.in_db_persons||0) + ' · links=' + fmt(g.in_db_links||0));
+          console.log('👑 Succession: persons=' + fmt(su.in_db_persons||0) + ' · links=' + fmt(su.in_db_links||0));
+          // record count
           const src = s.by_source;
           const srcParts = Object.entries(src).filter(([,v])=>v>0)
             .map(([k,v])=>k+': '+fmt(v)).join(' · ');
@@ -110,8 +117,7 @@ if [ -f "$SCOPE_FILE" ]; then
           const hist = s.history || [];
           const delta7 = hist.length>=2 ? s.total - hist[Math.max(0,hist.length-8)].total : null;
           const delta1 = s.delta_today;
-          console.log('');
-          console.log('📊 JULIAN data: ' + fmt(s.total) + ' / ' + fmt(s.target) + ' (' + s.pct + '% of target)');
+          console.log('📊 Records   : ' + fmt(s.total) + ' / ' + fmt(s.target) + ' (' + s.pct + '% of target)');
           if (delta1 !== null) console.log('   วันนี้: ' + (delta1>=0?'+':'')+fmt(delta1) + (delta7!==null?' | 7 วัน: +'+ fmt(delta7) : ''));
           console.log('   แหล่งข้อมูล: ' + srcParts);
           console.log('   Accuracy: ' + accParts);
