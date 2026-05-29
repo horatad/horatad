@@ -74,6 +74,17 @@ function baitFound(item) {
   return FB_BAIT.filter(re => re.test(body)).map(re => re.source);
 }
 
+// กฎ 5: Prediction framing — ใช้ "พบว่า/แนวโน้ม/สถิติ" ไม่ใช่ "ทำนาย/ดวงบอกว่า"
+// เฉพาะ finding/case_study — education/YouTube ยกเว้น
+const PREDICTION_FRAMING = [
+  /ดวงบอกว่า/i, /ทำนายว่า/i, /ดวงชะตาจะ/i, /โชคชะตา(บอก|ชี้|กำหนด)/i,
+];
+function hasPredictionFraming(item) {
+  if (!DISCLAIMER_REQUIRED_CATS.has(item.category)) return false;
+  const body = (item.body || '') + ' ' + (item.title || '');
+  return PREDICTION_FRAMING.some(re => re.test(body));
+}
+
 // กฎ 2: Disclaimer บังคับเฉพาะ finding/case_study (prediction content)
 // YouTube/education/manual ไม่ต้องมี — เป็น content คนละประเภท
 const DISCLAIMER_REQUIRED_CATS = new Set(['finding', 'case_study']);
@@ -109,10 +120,11 @@ function formatRepeat(item, recentPosts) {
 function fbPolicyViolations(item, recentPosts = []) {
   const v = [];
   const bait = baitFound(item);
-  if (bait.length > 0)                 v.push(`engagement-bait: ${bait.join(', ')}`);
-  if (!hasDisclaimer(item))            v.push('ไม่มี disclaimer (finding/case_study ต้องมี)');
-  if (accuracyWithoutN(item))          v.push('มี accuracy claim แต่ไม่มี n=');
-  if (formatRepeat(item, recentPosts)) v.push('category ซ้ำ 3 วันติด');
+  if (bait.length > 0)                  v.push(`engagement-bait: ${bait.join(', ')}`);
+  if (!hasDisclaimer(item))             v.push('ไม่มี disclaimer (finding/case_study ต้องมี)');
+  if (accuracyWithoutN(item))           v.push('มี accuracy claim แต่ไม่มี n=');
+  if (formatRepeat(item, recentPosts))  v.push('category ซ้ำ 3 วันติด');
+  if (hasPredictionFraming(item))       v.push('prediction framing — ใช้ "พบว่า/แนวโน้ม" แทน');
   return v;
 }
 
