@@ -9,7 +9,7 @@
   ],
   "date_added": "2026-05-28",
   "priority_score": 7,
-  "status": "scheduled",
+  "status": "posted",
   "meta": {
     "youtube_video_id": "4oXBk4jd0dk",
     "youtube_url": "https://www.youtube.com/watch?v=4oXBk4jd0dk",
@@ -18,5 +18,6 @@
     "duration_minutes": 5
   },
   "_file": "1779981470056_yt_4oXBk4jd0dk.json",
-  "scheduled_at": "2026-05-28T15:24:08.690Z"
+  "scheduled_at": "2026-05-28T15:24:08.690Z",
+  "date_posted": "2026-05-28"
 }

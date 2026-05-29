@@ -10,134 +10,106 @@
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #1f2d5e, #272b5b);
     min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 24px 16px;
-  }
-  .card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
-    max-width: 480px;
-    width: 100%;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  }
-  .logo { font-size: 13px; color: #888; margin-bottom: 4px; }
-  h1 { font-size: 20px; color: #1f2d5e; margin-bottom: 20px; }
-
-  .status-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-  .status-ready  { background: #e8f5e9; color: #2e7d32; }
-  .status-posted { background: #e3f2fd; color: #1565c0; }
-  .status-empty  { background: #fff3e0; color: #e65100; }
-
-  .post-box {
-    background: #f8f9fa;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 16px;
-    font-size: 15px;
-    line-height: 1.7;
+    padding: 20px 14px 60px;
     color: #222;
-    white-space: pre-wrap;
-    word-break: break-word;
-    margin-bottom: 16px;
-    min-height: 80px;
   }
-  .post-box.empty { color: #aaa; font-style: italic; text-align: center; padding: 32px; }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  .back { display: inline-block; color: #ba8345; text-decoration: none; font-size: 13px; opacity: .85; margin-bottom: 8px; }
+  h1 { font-size: 22px; color: #fff; margin-bottom: 4px; }
+  .stats { font-size: 13px; color: #c9d2f0; margin-bottom: 18px; }
+  .stats b { color: #ba8345; }
 
-  .btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: opacity .15s, transform .1s;
+  .section-title { font-size: 14px; font-weight: 700; color: #fff; margin: 22px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .section-title .count { background: rgba(255,255,255,.15); color: #fff; font-size: 12px; padding: 1px 9px; border-radius: 10px; }
+
+  /* queue card */
+  .item {
+    background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.18);
   }
+  .item-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .sched-badge {
+    font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 8px;
+    background: #fff3e0; color: #e65100; white-space: nowrap;
+  }
+  .sched-badge.today { background: #e8f5e9; color: #2e7d32; }
+  .order { font-size: 12px; color: #aaa; font-weight: 700; }
+  .chip { font-size: 11px; background: #f0f0f0; color: #666; padding: 2px 8px; border-radius: 6px; }
+  .item-title { font-size: 15px; font-weight: 600; color: #1f2d5e; line-height: 1.45; margin-bottom: 8px; cursor: pointer; }
+  .item-title:hover { color: #ba8345; }
+
+  .body-box {
+    display: none; background: #f8f9fa; border: 1px solid #e8e8e8; border-radius: 8px;
+    padding: 12px; font-size: 13.5px; line-height: 1.65; color: #333;
+    white-space: pre-wrap; word-break: break-word; margin-bottom: 10px;
+  }
+  .body-box.show { display: block; }
+
+  .actions { display: flex; gap: 8px; }
+  .btn { flex: 1; padding: 11px; border: none; border-radius: 9px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity .15s, transform .1s; }
   .btn:active { transform: scale(.97); }
-  .btn-copy   { background: #ba8345; color: #fff; }
-  .btn-done   { background: #1877f2; color: #fff; }
-  .btn-next   { background: #f0f0f0; color: #555; font-size: 14px; }
   .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-copy { background: #ba8345; color: #fff; }
+  .btn-done { background: #1877f2; color: #fff; }
+
+  .empty { background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.25); border-radius: 12px; padding: 26px 16px; text-align: center; color: #c9d2f0; font-size: 14px; line-height: 1.6; }
+
+  /* posted history */
+  .posted-item {
+    background: rgba(255,255,255,.07); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 10px; font-size: 13px; color: #dfe5f7;
+  }
+  .posted-item .pdate { font-size: 11px; color: #9fb0e0; white-space: nowrap; }
+  .posted-item .ptitle { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  details.posted-wrap > summary { cursor: pointer; color: #c9d2f0; font-size: 14px; font-weight: 700; padding: 6px 0; list-style: none; }
+  details.posted-wrap > summary::-webkit-details-marker { display: none; }
+  details.posted-wrap > summary::before { content: '▸ '; }
+  details.posted-wrap[open] > summary::before { content: '▾ '; }
+
+  /* PAT */
+  .pat-box { margin-top: 18px; background: rgba(255,255,255,.06); border-radius: 12px; padding: 4px 14px; }
+  .pat-box summary { cursor: pointer; color: #c9d2f0; padding: 10px 0; user-select: none; font-size: 13px; list-style: none; }
+  .pat-box summary::-webkit-details-marker { display: none; }
+  .pat-hint { color: #aab4d8; line-height: 1.6; margin: 4px 0 10px; font-size: 12.5px; }
+  .pat-hint code { background: rgba(255,255,255,.12); padding: 1px 5px; border-radius: 4px; }
+  #patInput { width: 100%; padding: 10px; border: 1px solid rgba(255,255,255,.2); border-radius: 8px; font-size: 14px; margin-bottom: 8px; background: #fff; }
+  .pat-row { display: flex; gap: 8px; padding-bottom: 12px; }
+  .pat-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .pat-btn.save { background: #ba8345; color: #fff; }
+  .pat-btn.clear { background: rgba(255,255,255,.15); color: #fff; }
+  .pat-state { font-size: 12px; padding-bottom: 12px; color: #8fe0a0; }
 
   .toast {
-    position: fixed;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #222;
-    color: #fff;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    opacity: 0;
-    transition: opacity .3s, transform .3s;
-    pointer-events: none;
-    white-space: nowrap;
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #222; color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 14px;
+    opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none; max-width: 90vw; text-align: center;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  .meta { font-size: 12px; color: #999; margin-top: 12px; border-top: 1px solid #eee; padding-top: 12px; }
-  .meta a { color: #ba8345; text-decoration: none; }
-
-  .step-hint {
-    background: #fff8e1;
-    border-left: 4px solid #ba8345;
-    padding: 10px 14px;
-    border-radius: 0 8px 8px 0;
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 16px;
-    display: none;
-  }
-  .step-hint.show { display: block; }
-
-  .pat-box { margin-top: 4px; font-size: 13px; }
-  .pat-box summary { cursor: pointer; color: #888; padding: 6px 0; user-select: none; }
-  .pat-box summary:hover { color: #ba8345; }
-  .pat-hint { color: #777; line-height: 1.6; margin: 8px 0; }
-  .pat-hint code { background: #f0f0f0; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-  #patInput { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; margin-bottom: 8px; }
-  .pat-row { display: flex; gap: 8px; }
-  .pat-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-  .pat-btn.save  { background: #ba8345; color: #fff; }
-  .pat-btn.clear { background: #f0f0f0; color: #777; }
-  .pat-state { font-size: 12px; margin-top: 8px; color: #2e7d32; }
 </style>
 </head>
 <body>
-<div class="card">
-  <div class="logo"><a href="../index.html" style="color:#ba8345;text-decoration:none;opacity:.7">← Tools</a> · FB Post Helper</div>
-  <h1>โพสต์วันนี้</h1>
+<div class="wrap">
+  <a class="back" href="index.html">← Tools</a>
+  <h1>📱 คิวโพสต์ Facebook</h1>
+  <div class="stats" id="stats">กำลังโหลด…</div>
 
-  <div id="badge" class="status-badge status-empty">กำลังโหลด...</div>
+  <!-- คิวรอโพสต์ -->
+  <div class="section-title">⏳ รอโพสต์ <span class="count" id="queueCount">–</span></div>
+  <div id="queue"></div>
 
-  <div id="postBox" class="post-box empty">กำลังดึงข้อมูล...</div>
+  <!-- โพสต์แล้ว -->
+  <details class="posted-wrap" id="postedWrap" style="margin-top:24px">
+    <summary>✅ โพสต์แล้ว (<span id="postedCount">0</span>)</summary>
+    <div id="posted" style="margin-top:10px"></div>
+  </details>
 
-  <div id="hint" class="step-hint">
-    ✅ Copy แล้ว — เปิด Meta Business Suite → New post → วางข้อความ → Next → Post
-  </div>
-
-  <button id="btnCopy" class="btn btn-copy" disabled onclick="doCopy()">📋 Copy caption + link</button>
-  <button id="btnDone" class="btn btn-done" disabled onclick="markPosted()">✅ โพสต์แล้ว</button>
-  <button id="btnNext" class="btn btn-next" onclick="loadNext()" style="display:none">ดูโพสต์ถัดไป →</button>
-
+  <!-- PAT -->
   <details id="patBox" class="pat-box">
     <summary>🔑 เชื่อมต่อ GitHub (ย้ายโพสต์ออกจากคิวอัตโนมัติ)</summary>
     <p class="pat-hint">
-      ใส่ Classic PAT (ไม่หมดอายุ · scope <b>public_repo</b>) แล้วปุ่ม "โพสต์แล้ว"
+      ใส่ Classic PAT (ไม่หมดอายุ · scope <code>public_repo</code>) แล้วปุ่ม "โพสต์แล้ว"
       จะย้ายไฟล์ <code>scheduled → posted</code> จริง — คิวจะไม่ค้างซ้ำ<br>
-      ถ้าไม่ใส่ ก็ยังใช้ได้ แต่จดสถานะไว้แค่เครื่องนี้
+      ถ้าไม่ใส่ ก็ยังกด Copy ไปโพสต์ได้ แต่จะย้ายออกจากคิวไม่ได้
     </p>
     <input type="password" id="patInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
     <div class="pat-row">
@@ -146,8 +118,6 @@
     </div>
     <div id="patState" class="pat-state"></div>
   </details>
-
-  <div id="meta" class="meta"></div>
 </div>
 
 <div id="toast" class="toast"></div>
@@ -157,226 +127,193 @@ const REPO   = 'horatad/horatad';
 const BRANCH = 'main';
 const SCHED_PATH  = 'content/scheduled';
 const POSTED_PATH = 'content/posted';
-const POSTED_KEY = 'fb_posted_ids';
-const PAT_KEY    = 'fb_post_helper_pat';
+const PAT_KEY = 'fb_post_helper_pat';
 
-let posts = [];   // [{filename, sha, data}]
-let idx   = 0;
+let queue  = [];   // [{filename, sha, data}] รอโพสต์ เรียงเก่า→ใหม่
+let posted = [];   // [{filename, data}] โพสต์แล้ว เรียงใหม่→เก่า
 
-function getPosted() {
-  try { return JSON.parse(localStorage.getItem(POSTED_KEY) || '[]'); } catch { return []; }
-}
-function savePosted(arr) {
-  localStorage.setItem(POSTED_KEY, JSON.stringify(arr));
-}
-
-// --- GitHub PAT (optional — ย้ายไฟล์ scheduled→posted จริง) ---
+// --- PAT (optional) ---
 function getPat() { return localStorage.getItem(PAT_KEY) || ''; }
 function savePat() {
   const v = document.getElementById('patInput').value.trim();
   if (!v) { showToast('ใส่ token ก่อนครับ'); return; }
   localStorage.setItem(PAT_KEY, v);
-  renderPatState();
+  renderPatState(); render();
   showToast('บันทึก Token แล้ว ✅');
 }
 function clearPat() {
   localStorage.removeItem(PAT_KEY);
   document.getElementById('patInput').value = '';
-  renderPatState();
+  renderPatState(); render();
   showToast('ลบ Token แล้ว');
 }
 function renderPatState() {
   const el = document.getElementById('patState');
-  if (!el) return;
-  el.textContent = getPat() ? '✅ เชื่อมต่อแล้ว — ปุ่ม "โพสต์แล้ว" จะย้ายไฟล์ออกจากคิวให้'
-                            : '';
+  if (el) el.textContent = getPat() ? '✅ เชื่อมต่อแล้ว — ปุ่ม "โพสต์แล้ว" จะย้ายไฟล์ออกจากคิวให้' : '';
 }
 
-async function fetchScheduled() {
-  const url = `https://api.github.com/repos/${REPO}/contents/${SCHED_PATH}?ref=${BRANCH}&t=${Date.now()}`;
-  const res  = await fetch(url, { headers: { Accept: 'application/vnd.github.v3+json' } });
+// --- GitHub fetch ---
+async function listDir(path) {
+  const url = `https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}&t=${Date.now()}`;
+  const res = await fetch(url, { headers: { Accept: 'application/vnd.github.v3+json' } });
   if (!res.ok) return [];
   const files = await res.json();
-  return files.filter(f => f.name.endsWith('.json') && !f.name.startsWith('.'));
+  return Array.isArray(files) ? files.filter(f => f.name.endsWith('.json') && !f.name.startsWith('.')) : [];
 }
-
-async function fetchFile(downloadUrl) {
+async function fetchJson(downloadUrl) {
   const res = await fetch(downloadUrl + '?t=' + Date.now());
   return res.json();
 }
 
-function buildText(data) {
-  const lines = [];
-  if (data.body) {
-    lines.push(data.body);
-  } else {
-    lines.push(data.title || '');
-    if (data.meta?.youtube_url) lines.push('\n' + data.meta.youtube_url);
-    const tags = (data.tags || []).map(t => '#' + t.replace(/\s+/g, '')).join(' ');
-    if (tags) lines.push('\n' + tags);
-  }
+// --- caption text (body พร้อมโพสต์ หรือ fallback ประกอบจาก title+link+tags) ---
+function buildText(d) {
+  if (d.body) return d.body.trim();
+  const lines = [d.title || ''];
+  if (d.meta?.youtube_url) lines.push('\n' + d.meta.youtube_url);
+  const tags = (d.tags || []).map(t => '#' + t.replace(/\s+/g, '')).join(' ');
+  if (tags) lines.push('\n' + tags);
   return lines.join('\n').trim();
 }
 
-function render() {
-  const badge   = document.getElementById('badge');
-  const postBox = document.getElementById('postBox');
-  const meta    = document.getElementById('meta');
-  const btnCopy = document.getElementById('btnCopy');
-  const btnDone = document.getElementById('btnDone');
-  const btnNext = document.getElementById('btnNext');
-
-  if (posts.length === 0) {
-    badge.className   = 'status-badge status-empty';
-    badge.textContent = 'ไม่มีโพสต์ในคิว';
-    postBox.className = 'post-box empty';
-    postBox.textContent = 'ยังไม่มีโพสต์ที่ถูก schedule\nรัน Content Curator workflow ก่อนครับ';
-    btnCopy.disabled = true;
-    btnDone.disabled = true;
-    btnNext.style.display = 'none';
-    meta.innerHTML = '';
-    return;
-  }
-
-  const item    = posts[idx];
-  const posted  = getPosted();
-  const isDone  = posted.includes(item.filename);
-  const text    = buildText(item.data);
-
-  postBox.className   = 'post-box';
-  postBox.textContent = text;
-
-  if (isDone) {
-    badge.className   = 'status-badge status-posted';
-    badge.textContent = '✅ โพสต์แล้ว';
-    btnCopy.disabled  = false;
-    btnDone.disabled  = true;
-  } else {
-    badge.className   = 'status-badge status-ready';
-    badge.textContent = '⏳ รอโพสต์';
-    btnCopy.disabled  = false;
-    btnDone.disabled  = false;
-  }
-
-  btnNext.style.display = posts.length > 1 ? 'block' : 'none';
-  btnNext.textContent   = `ดูโพสต์ถัดไป (${idx + 1}/${posts.length}) →`;
-
-  const d = item.data;
-  const ytId = d.meta?.youtube_video_id;
-  meta.innerHTML = [
-    d.title ? `<b>${d.title}</b>` : '',
-    d.date_added ? `วันที่: ${d.date_added}` : '',
-    ytId ? `<a href="https://www.youtube.com/watch?v=${ytId}" target="_blank">เปิด YouTube ▶️</a>` : '',
-  ].filter(Boolean).join(' · ');
+// --- กำหนดเวลาแนะนำโพสต์: 1 โพสต์/วัน เวลา 20:00 (prime time ICT) ---
+const TH_MONTH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function schedLabel(orderIdx) {
+  const d = new Date();
+  d.setDate(d.getDate() + orderIdx);
+  const dateStr = `${d.getDate()} ${TH_MONTH[d.getMonth()]}`;
+  if (orderIdx === 0) return { text: `วันนี้ 20:00`, today: true };
+  if (orderIdx === 1) return { text: `พรุ่งนี้ · ${dateStr}`, today: false };
+  return { text: `${dateStr} · 20:00`, today: false };
 }
 
-function doCopy() {
-  const item = posts[idx];
-  if (!item) return;
-  const text = buildText(item.data);
-  navigator.clipboard.writeText(text).then(() => {
-    document.getElementById('hint').classList.add('show');
-    showToast('Copy แล้ว! วางใน MBS ได้เลยครับ');
-  }).catch(() => {
-    // fallback
+function esc(s) { return (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// --- render ---
+function render() {
+  const stats = document.getElementById('stats');
+  const queueEl = document.getElementById('queue');
+  const postedEl = document.getElementById('posted');
+  const hasPat = !!getPat();
+
+  stats.innerHTML = `<b>${queue.length}</b> รอโพสต์ · <b>${posted.length}</b> โพสต์แล้ว`;
+  document.getElementById('queueCount').textContent = queue.length;
+  document.getElementById('postedCount').textContent = posted.length;
+
+  // queue
+  if (queue.length === 0) {
+    queueEl.innerHTML = `<div class="empty">🎉 คิวว่าง — ไม่มีโพสต์รออยู่<br>Content Curator จะเติมให้อัตโนมัติทุกวัน 08:00</div>`;
+  } else {
+    queueEl.innerHTML = queue.map((item, i) => {
+      const d = item.data;
+      const sl = schedLabel(i);
+      const ytId = d.meta?.youtube_video_id;
+      return `
+        <div class="item" data-i="${i}">
+          <div class="item-top">
+            <span class="order">#${i + 1}</span>
+            <span class="sched-badge ${sl.today ? 'today' : ''}">📅 ${sl.text}</span>
+            ${d.category ? `<span class="chip">${esc(d.category)}</span>` : ''}
+            ${d.source ? `<span class="chip">${esc(d.source)}</span>` : ''}
+          </div>
+          <div class="item-title" onclick="toggleBody(${i})">${esc(d.title)}</div>
+          <div class="body-box" id="body-${i}">${esc(buildText(d))}${ytId ? `\n\n▶️ youtube.com/watch?v=${ytId}` : ''}</div>
+          <div class="actions">
+            <button class="btn btn-copy" onclick="doCopy(${i})">📋 Copy</button>
+            <button class="btn btn-done" onclick="markPosted(${i})" ${hasPat ? '' : 'disabled title="ใส่ Token ก่อนถึงจะย้ายออกจากคิวได้"'}>✅ โพสต์แล้ว</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // posted history
+  postedEl.innerHTML = posted.length === 0
+    ? `<div style="color:#9fb0e0;font-size:13px;padding:4px 2px">ยังไม่มีประวัติ</div>`
+    : posted.map(p => `
+        <div class="posted-item">
+          <span class="pdate">${esc(p.data.date_posted || '–')}</span>
+          <span class="ptitle">${esc(p.data.title)}</span>
+        </div>`).join('');
+}
+
+function toggleBody(i) { document.getElementById('body-' + i)?.classList.toggle('show'); }
+
+function doCopy(i) {
+  const item = queue[i]; if (!item) return;
+  const d = item.data;
+  const ytId = d.meta?.youtube_video_id;
+  const text = buildText(d) + (ytId && !buildText(d).includes(ytId) ? `\n\nhttps://www.youtube.com/watch?v=${ytId}` : '');
+  const done = () => showToast('Copy แล้ว! เปิด Meta Business Suite → วางได้เลย');
+  navigator.clipboard.writeText(text).then(done).catch(() => {
     const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    document.getElementById('hint').classList.add('show');
-    showToast('Copy แล้ว!');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); done();
   });
 }
 
-async function markPosted() {
-  const item = posts[idx];
-  if (!item) return;
-
-  // มี PAT → ย้ายไฟล์ scheduled → posted จริงในรีโป (ปิด loop)
-  if (getPat()) {
-    const btnDone = document.getElementById('btnDone');
-    btnDone.disabled = true;
-    showToast('กำลังย้ายออกจากคิว...');
-    const ok = await moveToPosted(item);
-    if (ok) {
-      posts.splice(idx, 1);
-      if (idx >= posts.length) idx = Math.max(0, posts.length - 1);
-      document.getElementById('hint').classList.remove('show');
-      showToast('ย้ายไป posted แล้ว ✅ คิวอัปเดต');
-      render();
-    } else {
-      btnDone.disabled = false;
-    }
-    return;
-  }
-
-  // ไม่มี PAT → จดสถานะไว้แค่เครื่องนี้ (fallback เดิม)
-  const posted = getPosted();
-  if (!posted.includes(item.filename)) posted.push(item.filename);
-  savePosted(posted);
-  showToast('บันทึกแล้ว (เครื่องนี้) ✅ — ใส่ Token เพื่อย้ายไฟล์จริง');
+async function markPosted(i) {
+  const item = queue[i]; if (!item) return;
+  if (!getPat()) { showToast('ใส่ Token ก่อน (กางส่วน 🔑 ด้านล่าง)'); return; }
+  showToast('กำลังย้ายออกจากคิว…');
+  const ok = await moveToPosted(item);
+  if (!ok) return;
+  // อัปเดต state ในหน้าทันที
+  queue.splice(i, 1);
+  const movedData = { ...item.data, status: 'posted', date_posted: new Date().toISOString().slice(0, 10) };
+  posted.unshift({ filename: item.filename, data: movedData });
+  showToast('ย้ายไป "โพสต์แล้ว" ✅');
   render();
 }
 
-// ย้ายไฟล์: PUT content/posted/<name> (+date_posted) แล้ว DELETE content/scheduled/<name>
+// PUT content/posted/<name> (+date_posted) แล้ว DELETE content/scheduled/<name>
 async function moveToPosted(item) {
   const pat = getPat();
   const data = { ...item.data, status: 'posted', date_posted: new Date().toISOString().slice(0, 10) };
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
 
-  // 1) สร้างไฟล์ใน posted/
   const putRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${POSTED_PATH}/${item.filename}`, {
     method: 'PUT',
     headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: `fb: mark posted ${item.filename}`, content: encoded }),
   });
-  if (!putRes.ok) {
+  if (!putRes.ok && putRes.status !== 422) {
     if (putRes.status === 401) showToast('❌ Token หมดอายุ — กด "ลบ Token" แล้วใส่ใหม่');
-    else if (putRes.status === 422) showToast('ไฟล์นี้อยู่ใน posted แล้ว — ข้ามการย้าย');
     else showToast('ย้ายไม่สำเร็จ: ' + putRes.status);
-    if (putRes.status !== 422) return false;
+    return false;
   }
 
-  // 2) ลบออกจาก scheduled/
   const delRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${SCHED_PATH}/${item.filename}`, {
     method: 'DELETE',
     headers: { Authorization: `token ${pat}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: `fb: remove from queue ${item.filename}`, sha: item.sha }),
   });
-  if (!delRes.ok && delRes.status !== 404) {
-    showToast('ย้ายแล้วแต่ลบจากคิวไม่ได้: ' + delRes.status);
-    return true; // posted สำเร็จแล้ว — ถือว่าโพสต์แล้ว
-  }
+  if (!delRes.ok && delRes.status !== 404) showToast('ย้ายแล้วแต่ลบจากคิวไม่ได้: ' + delRes.status);
   return true;
-}
-
-function loadNext() {
-  idx = (idx + 1) % posts.length;
-  document.getElementById('hint').classList.remove('show');
-  render();
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
 }
 
-// init
+// --- init ---
 (async () => {
+  renderPatState();
   try {
-    const files = await fetchScheduled();
-    for (const f of files) {
-      const data = await fetchFile(f.download_url);
-      posts.push({ filename: f.name, sha: f.sha, data });
-    }
-    renderPatState();
+    const schedFiles = await listDir(SCHED_PATH);
+    for (const f of schedFiles) queue.push({ filename: f.name, sha: f.sha, data: await fetchJson(f.download_url) });
+    // เรียงเก่า→ใหม่ ตาม scheduled_at (fallback date_added / ชื่อไฟล์)
+    queue.sort((a, b) => (a.data.scheduled_at || a.data.date_added || a.filename)
+                         .localeCompare(b.data.scheduled_at || b.data.date_added || b.filename));
+
+    const postedFiles = await listDir(POSTED_PATH);
+    for (const f of postedFiles) posted.push({ filename: f.name, data: await fetchJson(f.download_url) });
+    // เรียงใหม่→เก่า ตาม date_posted
+    posted.sort((a, b) => (b.data.date_posted || '').localeCompare(a.data.date_posted || ''));
+
     render();
   } catch (e) {
-    document.getElementById('postBox').textContent = 'โหลดไม่ได้: ' + e.message;
+    document.getElementById('queue').innerHTML = `<div class="empty">โหลดไม่ได้: ${esc(e.message)}</div>`;
   }
 })();
 </script>
