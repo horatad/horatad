@@ -1,9 +1,9 @@
-// HORATAD:SCRIPT:3.3.85
-// Version 3.3.85 | 2026-05-29
+// HORATAD:SCRIPT:3.3.86
+// Version 3.3.86 | 2026-05-29
 import { KASET_MAP, EXALT_MAP, MAHACHAK_MAP, RACHA_MAP, STD_SCORE, HOUSE_SCORE, MEAN_SPEEDS, getStandards } from './v3/standards.js';
 import { getHouse } from './v3/engine.js';
 
-const APP_VERSION='3.3.85';
+const APP_VERSION='3.3.86';
 // expose ให้ ES module (v3tab.js) อ่านได้ — top-level const ใน classic
 // script ไม่อยู่บน window อัตโนมัติ
 window.APP_VERSION=APP_VERSION;
@@ -2162,8 +2162,9 @@ function _v3Record(input,type='natal'){
   const{name='',gender='-',d=null,m=null,y_be=null,t='',prov='กรุงเทพมหานคร',lat,lng,tz=null,pos=null,vel=null,linkedNatalUid=null}=input||{};
   const lat2=(typeof lat==='number')?lat:(PROVINCES_LAT[prov]||13.75);
   const lng2=(typeof lng==='number')?lng:(PROVINCES[prov]||100.50);
+  const uid=crypto.randomUUID();
   const rec={
-    uid:crypto.randomUUID(),type,
+    uid,type,
     name:(name||'').toString().slice(0,20),
     gender,d,m,y_be,t,
     prov,lat:lat2,lng:lng2,
@@ -2171,7 +2172,14 @@ function _v3Record(input,type='natal'){
     jd:(d&&m&&y_be)?Math.trunc(_calcJD(d,m,y_be)):null,
     pos,vel,savedAt:Date.now(),
     source:(input&&input.source)||'private',
-    tags:Array.isArray(input&&input.tags)?[...input.tags]:[]
+    // identity — mirrors JULIAN internet.source namespace:
+    //   'wikidata:Q517' for public figures · 'local:uuid' for private persons
+    source_id:(input&&input.source_id)||`local:${uid}`,
+    relate_id:Array.isArray(input&&input.relate_id)?[...input.relate_id]:[],
+    event_label:(input&&input.event_label)||null,
+    country:(input&&input.country)||null,
+    tier:(input&&input.tier)||null,
+    time_utc:(input&&input.time_utc)||null,
   };
   if(type==='person'||type==='event')rec.linkedNatalUid=linkedNatalUid;
   if(type==='group'){rec.memberUids=[];['d','m','y_be','t','prov','lat','lng','jd','pos','vel'].forEach(k=>delete rec[k]);}
@@ -2216,6 +2224,81 @@ function _dbRecentLinks(natalUid,limit=5){
 }
 function _loadLastSlot1Uid(){try{return localStorage.getItem(LAST_SLOT1_UID_KEY)||null;}catch{return null;}}
 
+// ── Relation helpers — bidirectional edges via source_id ──────────────────────
+// source_id format: 'wikidata:Q517' | 'local:uuid'
+// relate_id is stored on both ends — O(1) read, O(n) write (n = related count)
+
+function _tankFindBySourceId(sourceId){
+  if(!sourceId)return null;
+  for(const key of[TANK_PRIVATE_KEY,TANK_QR_KEY]){
+    const found=_tankLoad(key).find(r=>r.source_id===sourceId);
+    if(found)return{record:found,tank:key==='horatad_tank_private_v1'?'private':'qr'};
+  }
+  return null;
+}
+
+function _dbFindBySourceId(sourceId){
+  if(!sourceId)return null;
+  return _dbLoad().find(r=>r.source_id===sourceId)||null;
+}
+
+// สร้าง edge ระหว่าง sourceIdA ↔ sourceIdB (bidirectional) ใน Tank
+function _tankRelate(sourceIdA,sourceIdB){
+  if(!sourceIdA||!sourceIdB||sourceIdA===sourceIdB)return false;
+  let changed=false;
+  for(const sid of[sourceIdA,sourceIdB]){
+    const other=sid===sourceIdA?sourceIdB:sourceIdA;
+    for(const key of[TANK_PRIVATE_KEY,TANK_QR_KEY]){
+      const arr=_tankLoad(key);
+      const i=arr.findIndex(r=>r.source_id===sid);
+      if(i<0)continue;
+      if(!Array.isArray(arr[i].relate_id))arr[i].relate_id=[];
+      if(!arr[i].relate_id.includes(other)){arr[i].relate_id.push(other);_tankSave(key,arr);changed=true;}
+    }
+  }
+  return changed;
+}
+
+// ลบ edge ระหว่าง sourceIdA ↔ sourceIdB (bidirectional) ใน Tank
+function _tankUnrelate(sourceIdA,sourceIdB){
+  if(!sourceIdA||!sourceIdB)return false;
+  let changed=false;
+  for(const sid of[sourceIdA,sourceIdB]){
+    const other=sid===sourceIdA?sourceIdB:sourceIdA;
+    for(const key of[TANK_PRIVATE_KEY,TANK_QR_KEY]){
+      const arr=_tankLoad(key);
+      const i=arr.findIndex(r=>r.source_id===sid);
+      if(i<0)continue;
+      if(Array.isArray(arr[i].relate_id)&&arr[i].relate_id.includes(other)){
+        arr[i].relate_id=arr[i].relate_id.filter(s=>s!==other);
+        _tankSave(key,arr);changed=true;
+      }
+    }
+  }
+  return changed;
+}
+
+// ดึง records ทั้งหมดที่ relate กับ sourceId (multi-hop ใช้ BFS)
+function _tankGetRelated(sourceId,depth=1){
+  if(!sourceId||depth<1)return[];
+  const visited=new Set([sourceId]);
+  const queue=[sourceId];
+  const results=[];
+  while(queue.length){
+    const cur=queue.shift();
+    const found=_tankFindBySourceId(cur);
+    if(!found)continue;
+    const relIds=(found.record.relate_id||[]).filter(s=>!visited.has(s));
+    relIds.forEach(s=>{
+      visited.add(s);
+      if(depth>1)queue.push(s);
+      const rel=_tankFindBySourceId(s);
+      if(rel)results.push(rel.record);
+    });
+  }
+  return results;
+}
+
 // One-time notice หลัง migrate
 function _v3MaybeShowMigrateNotice(){
   if(!_v4Migrated)return;
@@ -2252,9 +2335,13 @@ function _addMemory(entry,replaceKey){
   const isDup=mem.some(m=>key(m)===k);
   const willReplaceOld=!!(replaceKey&&replaceKey!==k&&mem.some(m=>key(m)===replaceKey));
   mem=mem.filter(m=>key(m)!==k&&(!replaceKey||key(m)!==replaceKey));
+  const newUid=entry.uid||crypto.randomUUID();
   mem.unshift({...entry,
+    uid:newUid,
     jd:(entry.d&&entry.m&&entry.y_be)?_calcJD(entry.d,entry.m,entry.y_be):null,
     lat:(typeof entry.lat==='number')?entry.lat:(PROVINCES_LAT[entry.prov||'']||13.75),
+    source_id:entry.source_id||`local:${newUid}`,
+    relate_id:Array.isArray(entry.relate_id)?[...entry.relate_id]:[],
     savedAt:Date.now()});
   _tankSave(TANK_PRIVATE_KEY,mem.slice(0,TANK_PRIVATE_MAX));
   return(isDup||willReplaceOld)?'updated':'saved';
@@ -2559,11 +2646,14 @@ window.copyJulianToPrivate=function(i){
   const hasTime=!!r.time_utc;
   const t=hasTime?String(r.time_utc).substring(0,5):'';
   const prov=hasTime?((r.lat&&r.lng)?_latLngToProv(Number(r.lat),Number(r.lng)):'กรุงเทพมหานคร'):'';
-  const rec={name:r.name,gender:'ชาย',d,m:mo,y_be,t,prov,jd:r.jd,source:'julian',savedAt:Date.now(),groups:[],noTime:!hasTime};
+  // source_id mirrors JULIAN internet.source — stable identity across databases
+  const sid=(r.source&&r.source.startsWith('wikidata:'))?r.source:`local:${crypto.randomUUID()}`;
+  const rec={name:r.name,gender:'ชาย',d,m:mo,y_be,t,prov,jd:r.jd,source:'julian',source_id:sid,relate_id:[],savedAt:Date.now(),noTime:!hasTime};
   const privateList=_tankLoad(TANK_PRIVATE_KEY);
-  const existing=privateList.find(m=>_tankKey(m)===_tankKey(rec));
+  // dedup: source_id (stable Wikidata match) takes priority over derived key
+  const existing=privateList.find(m=>(m.source_id&&m.source_id===rec.source_id)||_tankKey(m)===_tankKey(rec));
   const doSave=()=>{
-    const newList=privateList.filter(m=>_tankKey(m)!==_tankKey(rec));
+    const newList=privateList.filter(m=>!(m.source_id&&m.source_id===rec.source_id)&&_tankKey(m)!==_tankKey(rec));
     newList.unshift(rec);
     _tankSave(TANK_PRIVATE_KEY,newList.slice(0,TANK_PRIVATE_MAX));
     _updateTankCounts();
@@ -3702,7 +3792,8 @@ async function _doQRImportFromText(text){
     _showToast('⚠️ QR รุ่นเก่า — รับไว้แต่ไม่ได้ยืนยัน');
   }
   // บันทึกลง QR tank
-  const qrRec={name:data.name,gender:data.gender,d:data.d,m:data.m,y_be:data.y_be,t:data.t,prov:data.prov,lat:data.lat,lng:data.lng,savedAt:Date.now(),groups:[]};
+  const qrUid=data.uid||crypto.randomUUID();
+  const qrRec={name:data.name,gender:data.gender,d:data.d,m:data.m,y_be:data.y_be,t:data.t,prov:data.prov,lat:data.lat,lng:data.lng,uid:qrUid,source:'qr',source_id:data.source_id||`local:${qrUid}`,relate_id:Array.isArray(data.relate_id)?[...data.relate_id]:[],savedAt:Date.now()};
   const qrList=_tankLoad(TANK_QR_KEY);
   if(!qrList.some(r=>_tankKey(r)===_tankKey(qrRec))){
     qrList.unshift(qrRec);
