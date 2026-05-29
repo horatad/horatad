@@ -10,7 +10,7 @@
 | | |
 |---|---|
 | ชื่อจริง | สิทธิเดช ประเสริฐรุ่งเรือง / Sittidath Prasertrungruang |
-| ชื่อเล่น | **ปีเตอร์ / Peter** |
+| ชื่อเล่น | **พี่ปีเตอร์ / Peter** (เรียก "พี่ปีเตอร์" เสมอ) |
 | สมญานาม | โหราทาส / Horatad (ใช้ในวงการนักโหราศาสตร์) |
 | อีเมล (private) | uchujaro5@gmail.com — **ห้ามใส่ใน public-facing ทุกอย่าง** |
 | อีเมล (public) | contact@horatad.com → forward ไป uchujaro5@gmail.com |
@@ -20,7 +20,7 @@
 - BG gradient: `#1f2d5e` top-left · `#995467` top-right · `#0a2c5a` bottom-left · `#272b5b` bottom-right
 - Logo canonical: `horatad_512x512.png` — ใช้ original เท่านั้น ห้าม recolor
 
-**กฎ: เรียกผู้ใช้ว่า "ปีเตอร์" ทุกครั้งเมื่อขึ้น session ใหม่**
+**กฎ: เรียกผู้ใช้ว่า "พี่ปีเตอร์" ทุกครั้งเมื่อขึ้น session ใหม่**
 
 ---
 
