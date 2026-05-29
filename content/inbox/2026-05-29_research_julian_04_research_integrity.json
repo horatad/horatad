@@ -12,13 +12,12 @@
   ],
   "date_added": "2026-05-29",
   "priority_score": 9,
-  "status": "scheduled",
+  "status": "inbox",
   "meta": {
     "series": "julian_research_overview",
     "series_part": 4,
     "series_total": 5,
     "source_doc": "docs/julian_research_report.pdf",
     "content_type": "research_report"
-  },
-  "scheduled_at": "2026-05-29T07:37:12.082Z"
+  }
 }
