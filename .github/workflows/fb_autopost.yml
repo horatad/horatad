@@ -52,6 +52,19 @@ jobs:
             node workers/fb_autopost.mjs
           fi
 
+      - name: Notify on failure
+        if: failure() && steps.gate.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --title "⚠️ fb_autopost failed $(date +%Y-%m-%d)" \
+            --body "Auto-post workflow ล้มเหลว — ตรวจ Actions log: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --label "alert" 2>/dev/null || \
+          gh issue create \
+            --title "⚠️ fb_autopost failed $(date +%Y-%m-%d)" \
+            --body "Auto-post workflow ล้มเหลว — ตรวจ Actions log: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
       - name: Commit moved post
         if: steps.gate.outputs.ready == 'true' && github.event.inputs.dry_run != 'true'
         run: |

@@ -40,7 +40,10 @@ function accuracyWithoutN(item) {
 }
 
 // กฎ 4: Format variation — ไม่โพสต์ category เดิมเกิน 3 วันติด (spam signal)
+// education/behind_scenes ยกเว้น — inbox ส่วนใหญ่เป็น education (YouTube EP) ถ้าไม่ยกเว้นคิวหยุด
+const VARIATION_EXEMPT_CATS = new Set(['education', 'behind_scenes']);
 function formatRepeat(item, recentPosts) {
+  if (VARIATION_EXEMPT_CATS.has(item.category)) return false;
   const sameCat = recentPosts.slice(0, 3).filter(p => p.category === item.category).length;
   return sameCat >= 3;
 }
