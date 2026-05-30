@@ -9,7 +9,7 @@
   ],
   "date_added": "2026-05-28",
   "priority_score": 7,
-  "status": "scheduled",
+  "status": "posted",
   "meta": {
     "youtube_video_id": "dtlyX-p7PBE",
     "youtube_url": "https://www.youtube.com/watch?v=dtlyX-p7PBE",
@@ -18,5 +18,7 @@
     "duration_minutes": 9,
     "episode": 3
   },
-  "scheduled_at": "2026-05-29T12:51:15.030Z"
+  "scheduled_at": "2026-05-29T12:51:15.030Z",
+  "date_posted": "2026-05-30",
+  "fb_post_id": "1095745230295693_122093999091356706"
 }
