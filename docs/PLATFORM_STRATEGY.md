@@ -296,3 +296,38 @@ preflight    : step แรกใน workflow ตรวจ token scope → สร
 ---
 
 *บันทึก: 2026-05-29 · สร้างโดย PLATFORM session (BIG + PLATFORM scope) · อัปเดต PLATFORM_STRATEGY.md*
+
+---
+
+## 🔬 FB Insights Phase 0 — Demand Signal Scan (2026-05-30)
+
+**วิธี:** WebSearch (US-region — สัญญาณไทยจำกัด แต่พอเห็นภูมิทัศน์) สแกน intent keyword 2 ขั้ว: สายตรรกะ/เรียนรู้ vs สายมู/มวล + cluster "ตรวจสอบได้"
+**ข้อจำกัด:** WebSearch ไม่ให้ search volume ตัวเลข — อนุมานจาก breadth ของ result, ความหนาแน่นชุมชน, จำนวนคอร์ส/แบรนด์ที่มีอยู่
+
+### ภูมิทัศน์ 4 cluster
+
+| Cluster | ขนาด/วุฒิภาวะ | ตัวอย่างที่เจอ | ความหมายต่อเรา |
+|---|---|---|---|
+| **มูเตลู/มวล** (ดูดวงฟรี เลขเด็ด เสริมดวง) | 🔴 ใหญ่มาก · red ocean · อิ่มตัว | mu-telu.com, dailynews/thairath/siamrath trend, FB group สายมู, influencer list 8 คน | ❌ audience ที่ policy เราตั้งใจ**ไม่ไล่** — แข่งไม่ได้+ไม่ควรแข่ง |
+| **เรียน/ผูกดวงเอง** | 🟡 กลาง · monetized แล้ว | สมาคมโหรฯ (3,210฿/วิชา, 20+ วิชา), horathai, siamduang (ครู 16 ปี), payakorn | ✅ validate Phase 4 (course) — คน**จ่ายเงินเรียน**ผูกดวงจริง แต่กรอบ "อนุรักษ์/ตำรา" ไม่ใช่ "พิสูจน์ได้" |
+| **"ตรวจสอบได้/จริงไหม"** (skeptic) | 🟢 active แต่**ไร้เจ้าของแบรนด์** | Pantip "ดูดวงมั่วหรือจริง" (3+ เธรด), matichon "ล้มทฤษฎีดูดวง", ThaiPBS "สายมู×สายวิทย์", KMITL gened | ⭐ **นี่คือ ICP เรา + gap** — มี demand ถาม "พิสูจน์ได้ไหม" แต่ยังไม่มีแบรนด์ตอบด้วยข้อมูลจริง |
+| **AI ดูดวง/โหราวิทยาศาสตร์** | 🟡 emerging · คู่แข่งหน้าใหม่ | Destiny Architect "โหราวิทยาศาสตร์", ChatGPT ดูดวง review, "AI วิเคราะห์ pattern จากข้อมูลจริง" | ⚠️ คู่แข่งเฟรม "AI = หมอดูที่ดีกว่า" — เราต้องต่าง: **method โปร่งใส+falsifiable+ซื่อสัตย์เรื่อง pattern อ่อน** ไม่ใช่เคลม "AI แม่นกว่า" |
+
+### Key takeaways
+
+1. **Gap ของเราคือ cluster "ตรวจสอบได้" ที่ไร้เจ้าของ** — มีคนถาม "ดูดวงจริงไหม/แม่นไหม/พิสูจน์ได้ไหม" บน Pantip/มติชน/ThaiPBS ต่อเนื่อง = demand ของ ICP มีจริง แต่ยังไม่มีแบรนด์ใดตอบด้วย "ข้อมูลจริง + ความซื่อสัตย์" → ตรงกับ positioning "สะพาน" เป๊ะ
+
+2. **อย่าแข่ง keyword สายมู** — red ocean + ดึงคนผิดกลุ่ม (ยืนยัน WHY LOG 2026-05-29 "copy เพจมู = สัญญาณผิด")
+
+3. **คู่แข่งที่ต้องจับตา = "AI โหราศาสตร์"** (Destiny Architect ฯลฯ) ไม่ใช่หมอดูดั้งเดิม — เขาเคลม objectivity เหมือนเรา แต่**ไม่มี control group / ไม่ยอมรับ pattern อ่อน** → differentiator เรา = 3 hard gate + "โหราทาส Investigates"
+
+4. **TALS source discoverable แต่ niche** — "โหราศาสตร์ไทยแนวตรรกะ" (ยืนยง นาวาสมุทร) มีบน Ookbee/Shopee/nawasa1950.com → credit ผู้ก่อตั้งได้ + เป็น moat เพราะคนรู้จักน้อย
+
+5. **Demand เรียนผูกดวงมีจริง (monetized)** → Phase 4 course ไม่ใช่ฝัน แต่ต้อง reframe จาก "อนุรักษ์ตำรา" → "เรียนวิธีที่ตรวจสอบได้"
+
+### Recommended content angle (ทดสอบบน FB)
+- ใช้คำถาม cluster skeptic เป็น hook: "ดูดวงพิสูจน์ได้ไหม? เราเอา 134,000 ดวงมาทดสอบ" (เชื่อม JULIAN)
+- ตอบ "AI ดูดวง" frame ด้วยความซื่อสัตย์: "AI ที่กล้าบอกว่า pattern ไหนอ่อน" = สิ่งที่คู่แข่ง AI ไม่ทำ
+- ⚠️ ทุก post ผ่าน 3 hard gate + policy gate เสมอ (ห้าม shortcut ไล่ engagement)
+
+**Next:** เมื่อ followers ≥100 → เทียบ demand signal นี้กับ FB Insights จริง (Phase 1 own-page loop)
