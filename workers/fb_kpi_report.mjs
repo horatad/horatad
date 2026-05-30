@@ -23,9 +23,10 @@ if (!TOKEN || !PAGE_ID) {
   process.exit(1);
 }
 
+// token ส่งผ่าน Authorization header (ไม่ใส่ใน query string) — R-22: กัน token หลุดถ้าเผลอ log url
 async function get(endpoint) {
   const url = `https://graph.facebook.com/v19.0/${endpoint}`;
-  const res  = await fetch(url);
+  const res  = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
   const data = await res.json();
   if (data.error) throw new Error(`FB API error: ${data.error.message} (code ${data.error.code})`);
   return data;
@@ -35,7 +36,7 @@ async function main() {
   console.log('📊 ดึง FB KPI...\n');
 
   // 1. Page info + fan count
-  const page = await get(`${PAGE_ID}?fields=name,fan_count&access_token=${TOKEN}`);
+  const page = await get(`${PAGE_ID}?fields=name,fan_count`);
   console.log(`Page: ${page.name} · Followers: ${page.fan_count.toLocaleString()}`);
 
   // 2. Page insights (28 วันล่าสุด) — ใช้เฉพาะ metric ที่ยังไม่ถูก deprecated
@@ -48,7 +49,7 @@ async function main() {
   let reach = 0, impressions = 0;
   try {
     const insights = await get(
-      `${PAGE_ID}/insights?metric=${metrics}&period=days_28&access_token=${TOKEN}`
+      `${PAGE_ID}/insights?metric=${metrics}&period=days_28`
     );
     const kv = {};
     for (const m of insights.data || []) {
@@ -74,7 +75,7 @@ async function main() {
       `${PAGE_ID}/posts?fields=message,created_time,` +
       `likes.summary(true),comments.summary(true),shares,` +
       `insights.metric(post_impressions_unique)` +
-      `&since=${since30}&limit=25&access_token=${TOKEN}`
+      `&since=${since30}&limit=25`
     );
   } catch (err) {
     console.log(`⚠ posts/engagement ไม่ได้ (${err.message})`);

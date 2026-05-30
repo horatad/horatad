@@ -48,8 +48,9 @@ const DEDUP_WINDOW_SEC = 48 * 3600;
 // ดึงข้อความโพสต์ใน Page feed (window ด้านบน) — ใช้กัน duplicate (F2/F4)
 async function recentlyPostedMessages(pageId, token) {
   const since = Math.floor(Date.now() / 1000) - DEDUP_WINDOW_SEC;
-  const url = `${GRAPH}/${pageId}/feed?fields=message,created_time&since=${since}&limit=25&access_token=${encodeURIComponent(token)}`;
-  const res  = await fetch(url);
+  // token ผ่าน Authorization header ไม่ใส่ใน query — R-22: กัน token หลุดถ้าเผลอ log url
+  const url = `${GRAPH}/${pageId}/feed?fields=message,created_time&since=${since}&limit=25`;
+  const res  = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   const json = await res.json().catch(() => ({}));
   if (json.error) throw new Error(`${json.error.message} (code ${json.error.code})`);
   return (json.data || []).map(p => norm(p.message)).filter(Boolean);
@@ -73,13 +74,14 @@ function pickLink(item) {
 }
 
 async function postToFacebook(pageId, token, item) {
-  const params = { message: item.body || item.title || '', access_token: token };
+  const params = { message: item.body || item.title || '' };
   const link = pickLink(item);
   if (link) params.link = link;   // ให้ FB แสดง preview card (เช่น YouTube)
 
+  // token ผ่าน Authorization header ไม่ใส่ใน body — R-22 (สอดคล้องทุก call)
   const res  = await fetch(`${GRAPH}/${pageId}/feed`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Authorization: `Bearer ${token}` },
     body: new URLSearchParams(params),
   });
   const json = await res.json().catch(() => ({}));

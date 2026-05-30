@@ -25,8 +25,10 @@ const GRAPH = `https://graph.facebook.com/${process.env.GRAPH_VERSION || 'v23.0'
 
 function die(msg) { console.error(`\n❌ ${msg}\n`); process.exit(1); }
 
-async function graph(pathQs, init) {
-  const res  = await fetch(`${GRAPH}/${pathQs}`, init);
+// token ผ่าน Authorization header เสมอ ไม่ใส่ใน query/body — R-22: กัน token หลุดถ้าเผลอ log url
+async function graph(pathQs, init = {}) {
+  const headers = { ...(init.headers || {}), Authorization: `Bearer ${process.env.FB_PAGE_TOKEN}` };
+  const res  = await fetch(`${GRAPH}/${pathQs}`, { ...init, headers });
   const json = await res.json().catch(() => ({}));
   if (json.error) die(`Graph API: ${json.error.message} (code ${json.error.code}, type ${json.error.type})`);
   if (!res.ok)    die(`HTTP ${res.status} — ${JSON.stringify(json)}`);
@@ -58,10 +60,8 @@ async function main() {
     die(`POST_ID ไม่ได้ขึ้นต้นด้วย Page ID ของเรา (${PAGE_ID}_...) — ปฏิเสธเพื่อกันยิงผิดเพจ`);
   }
 
-  const tokenQs = `access_token=${encodeURIComponent(TOKEN)}`;
-
   // กันชน 1+4: echo-before — โชว์โพสต์ปัจจุบัน + อายุ ก่อนลงมือเสมอ
-  const cur = await graph(`${POST_ID}?fields=message,created_time,permalink_url&${tokenQs}`);
+  const cur = await graph(`${POST_ID}?fields=message,created_time,permalink_url`);
   console.log('━━━ โพสต์เป้าหมาย ━━━');
   console.log(`id        : ${POST_ID}`);
   console.log(`อายุ      : ${ageText(cur.created_time)} (created ${cur.created_time || '?'})`);
@@ -74,7 +74,7 @@ async function main() {
     await graph(`${POST_ID}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ message: BODY, access_token: TOKEN }),
+      body: new URLSearchParams({ message: BODY }),
     });
     console.log('\n✅ แก้ไขข้อความเรียบร้อย (การ์ด/attachment เดิมยังอยู่ engagement ครบ)');
     console.log('ข้อความใหม่:\n' + BODY);
@@ -85,7 +85,7 @@ async function main() {
   if (CONFIRM !== 'DELETE') {
     die('ACTION=delete ต้องตั้ง CONFIRM=DELETE (พิมพ์ตัวใหญ่) เพื่อยืนยัน — ยกเลิก (ลบ FB กู้ไม่ได้)');
   }
-  await graph(`${POST_ID}?${tokenQs}`, { method: 'DELETE' });
+  await graph(`${POST_ID}`, { method: 'DELETE' });
   console.log('\n🗑️  ลบโพสต์เรียบร้อย (ถาวร — กู้ไม่ได้)');
 }
 
