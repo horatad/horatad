@@ -17,6 +17,8 @@ import path from 'path';
 
 const TOKEN   = process.env.FB_PAGE_TOKEN;
 const PAGE_ID = process.env.FB_PAGE_ID;
+// align กับ fb_autopost/fb_post_manage — default v23.0 (เลิก hardcode v19.0 ที่ใกล้ถูก deprecate)
+const GRAPH   = `https://graph.facebook.com/${process.env.GRAPH_VERSION || 'v23.0'}`;
 
 if (!TOKEN || !PAGE_ID) {
   console.error('❌ ต้องตั้ง FB_PAGE_TOKEN และ FB_PAGE_ID');
@@ -25,7 +27,7 @@ if (!TOKEN || !PAGE_ID) {
 
 // token ส่งผ่าน Authorization header (ไม่ใส่ใน query string) — R-22: กัน token หลุดถ้าเผลอ log url
 async function get(endpoint) {
-  const url = `https://graph.facebook.com/v19.0/${endpoint}`;
+  const url = `${GRAPH}/${endpoint}`;
   const res  = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
   const data = await res.json();
   if (data.error) throw new Error(`FB API error: ${data.error.message} (code ${data.error.code})`);
