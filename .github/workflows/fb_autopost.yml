@@ -2,7 +2,9 @@ name: FB Auto-post — โพสต์คิวขึ้น Facebook Page
 
 on:
   schedule:
-    - cron: '30 1 * * *'   # ทุกวัน 08:30 ICT (01:30 UTC) — หลัง content_curator (08:00)
+    - cron: '30 1 * * *'   # รอบหลัก 08:30 ICT (01:30 UTC) — หลัง content_curator (08:00)
+    - cron: '30 4 * * *'   # รอบสำรอง 11:30 ICT (04:30 UTC) — กัน cron หลัก drop ทั้งวัน
+                           # รัน --catch-up: โพสต์เฉพาะวันที่รอบหลักยังไม่ได้โพสต์ (worker กันซ้ำ)
   workflow_dispatch:
     inputs:
       dry_run:
@@ -15,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write     # ต้องมี ไม่งั้น "Notify on failure" + token-missing alert จะ 403 เงียบ
 
     steps:
       - uses: actions/checkout@v5
@@ -26,10 +29,20 @@ jobs:
         id: gate
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          GH_TOKEN:      ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ -z "$FB_PAGE_TOKEN" ]; then
             echo "ready=false" >> $GITHUB_OUTPUT
             echo "⏭  ยังไม่ได้ตั้ง FB_PAGE_TOKEN secret — ข้าม auto-post (รัน fb_token_exchange.mjs ก่อน)"
+            # กัน "token หาย/หมดอายุ" เงียบทั้งวัน (root cause class 2026-05-30): ถ้าคิวมีของ → แจ้ง issue
+            QUEUED=$(ls content/scheduled/*.json 2>/dev/null | wc -l)
+            if [ "${{ github.event_name }}" = "schedule" ] && [ "$QUEUED" -gt 0 ]; then
+              BODY="FB_PAGE_TOKEN ไม่ถูกตั้ง/หมดอายุ แต่คิวมี $QUEUED โพสต์รออยู่ — auto-post ถูกข้ามเงียบ
+              แก้: รัน fb_token_exchange.mjs ขอ Page token ใหม่ → ใส่ GitHub Secrets (FB_PAGE_TOKEN)
+              Actions log: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              gh issue create --title "⚠️ fb_autopost: token หาย คิวค้าง $(date +%Y-%m-%d)" --body "$BODY" --label "alert" 2>/dev/null \
+                || gh issue create --title "⚠️ fb_autopost: token หาย คิวค้าง $(date +%Y-%m-%d)" --body "$BODY"
+            fi
           else
             echo "ready=true" >> $GITHUB_OUTPUT
           fi
@@ -48,6 +61,8 @@ jobs:
         run: |
           if [ "$DRY_RUN" = "true" ]; then
             node workers/fb_autopost.mjs --dry-run
+          elif [ "${{ github.event.schedule }}" = "30 4 * * *" ]; then
+            node workers/fb_autopost.mjs --catch-up   # รอบสำรอง: โพสต์เฉพาะวันที่รอบหลักยังไม่ได้โพสต์
           else
             node workers/fb_autopost.mjs
           fi

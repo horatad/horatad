@@ -14,6 +14,7 @@
  *   node workers/fb_autopost.mjs --dry-run   # ดูว่าจะโพสต์อะไร ไม่ยิงจริง
  *   node workers/fb_autopost.mjs             # โพสต์จริง 1 อัน
  *   node workers/fb_autopost.mjs --force     # ข้ามเพดานความถี่รายสัปดาห์
+ *   node workers/fb_autopost.mjs --catch-up  # backup cron — โพสต์เฉพาะวันที่ยังไม่มีโพสต์ออก
  */
 
 import fs from 'fs';
@@ -24,8 +25,9 @@ const SCHEDULED = 'content/scheduled';
 const POSTED    = 'content/posted';
 const GRAPH     = `https://graph.facebook.com/${process.env.GRAPH_VERSION || 'v23.0'}`;
 
-const DRY   = process.argv.includes('--dry-run');
-const FORCE = process.argv.includes('--force');
+const DRY     = process.argv.includes('--dry-run');
+const FORCE   = process.argv.includes('--force');
+const CATCHUP = process.argv.includes('--catch-up');  // backup cron — โพสต์เฉพาะวันที่ยังไม่มีโพสต์ออก
 
 // เพดานความถี่ — sync กับ tools/fb_post_helper.html (organic Page health)
 const WEEKLY_MAX = 14;  // 2/วัน — เกินนี้เสี่ยง reach ลด / spam flag
@@ -93,6 +95,21 @@ async function main() {
   // คิวถัดไป (FIFO ตาม scheduled_at → fallback date_added → ชื่อไฟล์)
   const files = fs.readdirSync(SCHEDULED).filter(f => f.endsWith('.json'));
   if (files.length === 0) { console.log('คิวว่าง — ไม่มีโพสต์รออยู่'); return; }
+
+  // --catch-up: backup cron (รอบสำรองสาย) — กัน "cron แรก drop ทั้งวัน"
+  // โพสต์เฉพาะถ้าวันนี้ "ยังไม่มี" โพสต์ออก → กันโพสต์ 2 รอบ/วันเมื่อ cron หลักสำเร็จไปแล้ว
+  // (worker ยังมี dedup 48 ชม.จาก Page feed เป็นชั้นกันซ้ำของ "ข้อความเดียวกัน" อีกชั้น)
+  if (CATCHUP) {
+    const today = new Date().toISOString().slice(0, 10);
+    const postedToday = fs.readdirSync(POSTED)
+      .filter(f => f.endsWith('.json'))
+      .some(f => {
+        try { return JSON.parse(fs.readFileSync(path.join(POSTED, f), 'utf8')).date_posted === today; }
+        catch { return false; }
+      });
+    if (postedToday) { console.log(`✅ วันนี้ (${today}) โพสต์ไปแล้ว — backup cron ข้าม (รอบหลักทำงานปกติ)`); return; }
+    console.log(`⚠️  วันนี้ (${today}) ยังไม่มีโพสต์ — backup cron เข้ากู้ (รอบหลัก 08:30 น่าจะ cron drop)`);
+  }
 
   const queue = files.map(f => ({ f, item: JSON.parse(fs.readFileSync(path.join(SCHEDULED, f), 'utf8')) }))
     .sort((a, b) =>
