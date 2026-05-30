@@ -1,0 +1,388 @@
+{
+  "_meta": {
+    "schema": "kb-empirical-1.0",
+    "generated_by": "workers/kb_empirical_build.mjs",
+    "generated_at": "2026-05-30T22:11:18.832Z",
+    "source": "ml/models/julian_valid_rules.json",
+    "julian_meta": {
+      "generated": "2026-05-27T17:33:29.357Z",
+      "reviewed": "2026-05-28",
+      "source": "ml/models/julian_full_scan.json",
+      "total_significant": 50,
+      "mr_invalidated": 19,
+      "inconsistent_polarity_rejected": 9,
+      "borderline_monitor": 4,
+      "insufficient_data": 2,
+      "valid_rules": 16,
+      "note": "MR×MR: age proxy (83yr period). SA×MR/SU×MR: inconsistent polarity (dist1 shows opposite direction within same group). SU×SA 16 rules valid — clean hard/soft polarity, 15/15 cross-check symmetric."
+    },
+    "rule_count": 7,
+    "pair_scope": [
+      "SU×SA"
+    ],
+    "excluded_groups": [
+      {
+        "group": "MR×MR",
+        "count": 19,
+        "reason": "age_proxy"
+      },
+      {
+        "group": "SA×MR",
+        "count": 5,
+        "reason": "inconsistent_polarity"
+      },
+      {
+        "group": "SU×MR",
+        "count": 4,
+        "reason": "inconsistent_polarity"
+      }
+    ],
+    "monitor_groups": [
+      {
+        "group": "SA×SA",
+        "count": 2,
+        "reason": "borderline + possible_age_proxy"
+      },
+      {
+        "group": "SU×JU",
+        "count": 2,
+        "reason": "interesting_hypothesis_insufficient_data"
+      },
+      {
+        "group": "SU×MA",
+        "count": 1,
+        "reason": "single_rule_insufficient"
+      },
+      {
+        "group": "SU×MO",
+        "count": 1,
+        "reason": "single_rule_insufficient"
+      }
+    ],
+    "notes": [
+      "ชั้น empirical แยกจาก kb_tals.json (textbook 100CH) — provenance คนละชั้น",
+      "เอาเฉพาะกลุ่มที่ JULIAN ตัดสิน valid — MR×MR (age proxy 83yr), SA×MR/SU×MR (inconsistent polarity) ถูกตัดออกแล้วที่ต้นทาง",
+      "beyond_tals_model=true → มุมอยู่นอก TALS aspect model (dist คี่ 30/90/150°) แต่มีนัยสำคัญทางสถิติ",
+      "ค้นพบ: มุม TALS (dist คู่ กุม/โยค/ตรีโกณ/เล็ง) = soft/award ทั้งหมด · สัญญาณ death (hard) มาจากมุมนอก TALS (dist คี่)",
+      "polarity = ลักษณะของมุม: hard_death (เพิ่มโอกาสเสียชีวิต/ลดรางวัล) · soft_award (เพิ่มโอกาสรางวัล/ลดเสียชีวิต)",
+      "ทุก wording ที่ใช้ชั้นนี้ต้องแนบ disclaimer — เป็นแนวโน้มประชากร ไม่ใช่ชี้ชะตา"
+    ]
+  },
+  "rules": [
+    {
+      "id": "EMP-SUSA-d0",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 0,
+      "angle_deg": 0,
+      "tals_aspect": "KUM",
+      "tals_aspect_th": "กุม",
+      "tals_weight_pct": 100,
+      "beyond_tals_model": false,
+      "polarity": "soft_award",
+      "primary_event": "award_received",
+      "title": "อาทิตย์จรกุมเสาร์เดิม",
+      "meaning": "อาทิตย์จรกุมกับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: award_received ↑15.7% (n=2225), death ↓15.1% (n=1401)",
+      "events": [
+        {
+          "event_type": "award_received",
+          "lift": 1.1565,
+          "p_adj": 0,
+          "class_n": 2225,
+          "direction": "positive"
+        },
+        {
+          "event_type": "death",
+          "lift": 0.8488,
+          "p_adj": 0.000002,
+          "class_n": 1401,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=2225, lift=1.1565, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    },
+    {
+      "id": "EMP-SUSA-d1",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 1,
+      "angle_deg": 30,
+      "tals_aspect": null,
+      "tals_aspect_th": null,
+      "tals_weight_pct": null,
+      "beyond_tals_model": true,
+      "polarity": "hard_death",
+      "primary_event": "death",
+      "title": "อาทิตย์จรทำมุม 30°เสาร์เดิม",
+      "meaning": "อาทิตย์จรทำมุม 30°กับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: death ↑14.5% (n=2801), award_received ↓15.8% (n=2402)",
+      "events": [
+        {
+          "event_type": "death",
+          "lift": 1.145,
+          "p_adj": 0,
+          "class_n": 2801,
+          "direction": "positive"
+        },
+        {
+          "event_type": "award_received",
+          "lift": 0.8423,
+          "p_adj": 0,
+          "class_n": 2402,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=2801, lift=1.145, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    },
+    {
+      "id": "EMP-SUSA-d2",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 2,
+      "angle_deg": 60,
+      "tals_aspect": "YOK",
+      "tals_aspect_th": "โยค",
+      "tals_weight_pct": 60,
+      "beyond_tals_model": false,
+      "polarity": "soft_award",
+      "primary_event": "award_received",
+      "title": "อาทิตย์จรโยคเสาร์เดิม",
+      "meaning": "อาทิตย์จรโยคกับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: award_received ↑16% (n=4434), position_start ↓6.5% (n=2734), death ↓12.9% (n=2854)",
+      "events": [
+        {
+          "event_type": "award_received",
+          "lift": 1.1604,
+          "p_adj": 0,
+          "class_n": 4434,
+          "direction": "positive"
+        },
+        {
+          "event_type": "position_start",
+          "lift": 0.9354,
+          "p_adj": 0.046365,
+          "class_n": 2734,
+          "direction": "negative"
+        },
+        {
+          "event_type": "death",
+          "lift": 0.8706,
+          "p_adj": 0,
+          "class_n": 2854,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=4434, lift=1.1604, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    },
+    {
+      "id": "EMP-SUSA-d3",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 3,
+      "angle_deg": 90,
+      "tals_aspect": null,
+      "tals_aspect_th": null,
+      "tals_weight_pct": null,
+      "beyond_tals_model": true,
+      "polarity": "hard_death",
+      "primary_event": "death",
+      "title": "อาทิตย์จรทำมุม 90°เสาร์เดิม",
+      "meaning": "อาทิตย์จรทำมุม 90°กับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: death ↑12.6% (n=2823), award_received ↓10.6% (n=2614)",
+      "events": [
+        {
+          "event_type": "death",
+          "lift": 1.1261,
+          "p_adj": 0,
+          "class_n": 2823,
+          "direction": "positive"
+        },
+        {
+          "event_type": "award_received",
+          "lift": 0.8945,
+          "p_adj": 0.000002,
+          "class_n": 2614,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=2823, lift=1.1261, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    },
+    {
+      "id": "EMP-SUSA-d4",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 4,
+      "angle_deg": 120,
+      "tals_aspect": "TRI",
+      "tals_aspect_th": "ตรีโกณ",
+      "tals_weight_pct": 50,
+      "beyond_tals_model": false,
+      "polarity": "soft_award",
+      "primary_event": "award_received",
+      "title": "อาทิตย์จรตรีโกณเสาร์เดิม",
+      "meaning": "อาทิตย์จรตรีโกณกับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: award_received ↑6% (n=3616), death ↓6.6% (n=2735)",
+      "events": [
+        {
+          "event_type": "award_received",
+          "lift": 1.0596,
+          "p_adj": 0.02835,
+          "class_n": 3616,
+          "direction": "positive"
+        },
+        {
+          "event_type": "death",
+          "lift": 0.9343,
+          "p_adj": 0.032458,
+          "class_n": 2735,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=3616, lift=1.0596, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    },
+    {
+      "id": "EMP-SUSA-d5",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 5,
+      "angle_deg": 150,
+      "tals_aspect": null,
+      "tals_aspect_th": null,
+      "tals_weight_pct": null,
+      "beyond_tals_model": true,
+      "polarity": "hard_death",
+      "primary_event": "death",
+      "title": "อาทิตย์จรทำมุม 150°เสาร์เดิม",
+      "meaning": "อาทิตย์จรทำมุม 150°กับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: death ↑18.1% (n=2684), position_start ↑8.4% (n=2196), award_received ↓21.9% (n=2068)",
+      "events": [
+        {
+          "event_type": "death",
+          "lift": 1.181,
+          "p_adj": 0,
+          "class_n": 2684,
+          "direction": "positive"
+        },
+        {
+          "event_type": "position_start",
+          "lift": 1.0838,
+          "p_adj": 0.030159,
+          "class_n": 2196,
+          "direction": "positive"
+        },
+        {
+          "event_type": "award_received",
+          "lift": 0.7806,
+          "p_adj": 0,
+          "class_n": 2068,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=2684, lift=1.181, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    },
+    {
+      "id": "EMP-SUSA-d6",
+      "layer": "empirical",
+      "transit_planet": "SU",
+      "transit_planet_id": 1,
+      "natal_planet": "SA",
+      "natal_planet_id": 7,
+      "dist": 6,
+      "angle_deg": 180,
+      "tals_aspect": "LENG",
+      "tals_aspect_th": "เล็ง",
+      "tals_weight_pct": 80,
+      "beyond_tals_model": false,
+      "polarity": "soft_award",
+      "primary_event": "award_received",
+      "title": "อาทิตย์จรเล็งเสาร์เดิม",
+      "meaning": "อาทิตย์จรเล็งกับเสาร์เดิม — ข้อสังเกตเชิงสถิติ: award_received ↑11.9% (n=2080), death ↓13.6% (n=1378)",
+      "events": [
+        {
+          "event_type": "award_received",
+          "lift": 1.1193,
+          "p_adj": 0.000079,
+          "class_n": 2080,
+          "direction": "positive"
+        },
+        {
+          "event_type": "death",
+          "lift": 0.8644,
+          "p_adj": 0.000064,
+          "class_n": 1378,
+          "direction": "negative"
+        }
+      ],
+      "empirical": {
+        "source": "JULIAN",
+        "source_file": "ml/models/julian_valid_rules.json",
+        "scan": "ml/models/julian_full_scan.json",
+        "generated": "2026-05-27T17:33:29.357Z",
+        "reviewed": "2026-05-28",
+        "status": "valid"
+      },
+      "disclaimer": "ข้อสังเกตเชิงสถิติจากฐานข้อมูลบุคคลจริง (n=2080, lift=1.1193, p<0.05 หลังปรับ FDR) — เป็นแนวโน้มเชิงประชากร ไม่ใช่คำพยากรณ์ชี้ชะตารายบุคคล"
+    }
+  ]
+}
